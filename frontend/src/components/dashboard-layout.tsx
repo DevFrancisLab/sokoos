@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Home,
   Inbox,
@@ -20,6 +20,7 @@ import {
   Paperclip,
   Image,
   Send,
+  Bot,
   Plus,
 } from "lucide-react";
 
@@ -294,6 +295,11 @@ const CUSTOMER_PROFILES: Record<string, {
   },
 };
 
+const TEAM_AGENT_NAMES: Record<string, string> = {
+  c1: "Nuru",
+  c3: "Sam",
+};
+
 export default function DashboardLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [selected, setSelected] = useState<string>("Home");
@@ -301,7 +307,22 @@ export default function DashboardLayout() {
   const [searchQuery, setSearchQuery] = useState("");
    const [customerSearch, setCustomerSearch] = useState("");
   const [activeTab, setActiveTab] = useState<(typeof INBOX_TAB_ITEMS)[number]>("All");
-  const activeCustomerProfile = CUSTOMER_PROFILES[activeConversation] ?? CUSTOMER_PROFILES.c1;
+  const activeConversationData = INBOX_CONVERSATIONS.find((item) => item.id === activeConversation);
+  const activeCustomerProfile = CUSTOMER_PROFILES[activeConversation as keyof typeof CUSTOMER_PROFILES] ?? CUSTOMER_PROFILES.c1;
+  const activeMessages = INBOX_MESSAGES[activeConversation as keyof typeof INBOX_MESSAGES] ?? [];
+  const activeAgentName = activeConversationData?.source === "ai" ? "Sokoos AI" : TEAM_AGENT_NAMES[activeConversation] ?? "Team";
+  const [messageInput, setMessageInput] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    textarea.style.height = "auto";
+    const height = Math.min(textarea.scrollHeight, 120);
+    textarea.style.height = `${height}px`;
+    textarea.style.overflowY = textarea.scrollHeight > 120 ? "auto" : "hidden";
+  }, [messageInput]);
   const filteredCustomers = CUSTOMERS.filter((customer) => {
     const query = customerSearch.toLowerCase();
     return (
@@ -625,17 +646,40 @@ export default function DashboardLayout() {
                 </div>
                 <div className="flex min-h-0 flex-1 flex-col p-4">
                   <div className="flex-1 min-h-0 space-y-4 overflow-y-auto pr-2 pb-4 custom-scrollbar">
-                    {INBOX_MESSAGES[activeConversation].map((message, index) => {
+                    {activeMessages.map((message, index) => {
+                      const isCustomer = message.from === "customer";
                       const isAgent = message.from === "agent";
+                      const isAi = isAgent && activeConversationData?.source === "ai";
+                      const senderLabel = isAi ? "Sokoos AI" : activeAgentName;
+
                       return (
-                        <div key={`${message.time}-${index}`} className={`flex ${isAgent ? "justify-start" : "justify-end"}`}>
-                          <div className={`rounded-3xl px-4 py-3 text-sm ${
-                            isAgent
-                              ? "bg-[#F3F4F6] text-[#111827]"
-                              : "bg-[#22C55E] text-white"
-                          }`}>
-                            <p>{message.text}</p>
-                            <div className="mt-1 text-[11px] text-[#6B7280] text-right">{message.time}</div>
+                        <div key={`${message.time}-${index}`} className="space-y-2">
+                          {isAgent ? (
+                            <div className="flex items-center gap-2 text-xs font-semibold text-[#6B7280]">
+                              {isAi ? (
+                                <>
+                                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#ECFDF5] text-[#0C4A6E]">
+                                    <Bot className="h-4 w-4" />
+                                  </span>
+                                  <span>{senderLabel}</span>
+                                  <span className="rounded-full bg-[#E0F2FE] px-2 py-0.5 text-[11px] font-semibold text-[#0C4A6E]">
+                                    AI
+                                  </span>
+                                </>
+                              ) : (
+                                <span>{senderLabel}</span>
+                              )}
+                            </div>
+                          ) : null}
+                          <div className={`flex ${isAgent ? "justify-start" : "justify-end"}`}>
+                            <div className={`rounded-3xl px-4 py-3 text-sm ${
+                              isAgent
+                                ? "bg-[#F3F4F6] text-[#111827]"
+                                : "bg-[#22C55E] text-white"
+                            }`}>
+                              <p>{message.text}</p>
+                              <div className="mt-1 text-[11px] text-[#6B7280] text-right">{message.time}</div>
+                            </div>
                           </div>
                         </div>
                       );
@@ -644,10 +688,14 @@ export default function DashboardLayout() {
                   <div className="sticky bottom-0 z-10 mt-4 bg-white/95 pt-4 pb-4 backdrop-blur-sm">
                     <div className="rounded-[20px] border border-[#E5E7EB] bg-white p-3 shadow-sm">
                       <div className="flex items-center gap-4">
-                        <input
-                          type="text"
+                        <textarea
+                          ref={textareaRef}
+                          value={messageInput}
+                          onChange={(event) => setMessageInput(event.target.value)}
                           placeholder={`Type a message to ${activeCustomerProfile.name}...`}
-                          className="min-w-0 flex-1 rounded-[20px] border border-[#E5E7EB] bg-white px-5 py-3.5 text-sm text-[#111827] outline-none placeholder:text-[#9CA3AF] focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
+                          className="min-w-0 flex-1 resize-none overflow-y-auto custom-scrollbar rounded-[20px] border border-[#E5E7EB] bg-white px-5 py-3.5 text-sm text-[#111827] outline-none placeholder:text-[#9CA3AF] focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
+                          rows={1}
+                          style={{ minHeight: 48, maxHeight: 120 }}
                         />
                         <button
                           type="button"
