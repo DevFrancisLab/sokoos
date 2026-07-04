@@ -58,6 +58,8 @@ const INBOX_CONVERSATIONS = [
     message: "Can you share the latest pricing?",
     time: "2m",
     unread: 3,
+    source: "Human",
+    avatar: "AM",
   },
   {
     id: "c2",
@@ -65,6 +67,8 @@ const INBOX_CONVERSATIONS = [
     message: "How do I update product availability?",
     time: "14m",
     unread: 0,
+    source: "AI",
+    avatar: "J",
   },
   {
     id: "c3",
@@ -72,6 +76,8 @@ const INBOX_CONVERSATIONS = [
     message: "Thanks for the quick response!",
     time: "37m",
     unread: 1,
+    source: "Human",
+    avatar: "G",
   },
   {
     id: "c4",
@@ -79,8 +85,12 @@ const INBOX_CONVERSATIONS = [
     message: "Please pause the AI for tonight.",
     time: "1h",
     unread: 0,
+    source: "AI",
+    avatar: "M",
   },
 ];
+
+const INBOX_TAB_ITEMS = ["All", "Unread", "AI", "Human"] as const;
 
 const INBOX_MESSAGES = {
   c1: [
@@ -117,6 +127,8 @@ export default function DashboardLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [selected, setSelected] = useState<string>("Home");
   const [activeConversation, setActiveConversation] = useState<string>("c1");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState<(typeof INBOX_TAB_ITEMS)[number]>("All");
 
   return (
     <div className="h-screen min-h-screen bg-[#FFFFFF] text-[#111827]">
@@ -302,6 +314,21 @@ export default function DashboardLayout() {
                     </button>
                   </div>
                 </div>
+                <div className="flex flex-wrap gap-2 px-4 pb-4">
+                  {INBOX_TAB_ITEMS.map((tab) => (
+                    <button
+                      key={tab}
+                      onClick={() => setActiveTab(tab)}
+                      className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
+                        activeTab === tab
+                          ? "bg-[#22C55E] text-white"
+                          : "bg-[#F3F4F6] text-[#111827] hover:bg-[#E5E7EB]"
+                      }`}
+                    >
+                      {tab}
+                    </button>
+                  ))}
+                </div>
                 <div className="p-4">
                   <div className="mb-4 rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2">
                     <div className="flex items-center gap-2 text-[#6B7280]">
@@ -309,12 +336,30 @@ export default function DashboardLayout() {
                       <input
                         type="search"
                         placeholder="Search conversations"
+                        value={searchQuery}
+                        onChange={(event) => setSearchQuery(event.target.value)}
                         className="w-full bg-transparent text-sm text-[#111827] outline-none"
                       />
                     </div>
                   </div>
                   <div className="space-y-2">
-                    {INBOX_CONVERSATIONS.map((conversation) => {
+                    {INBOX_CONVERSATIONS.filter((conversation) => {
+                      if (activeTab === "Unread") {
+                        return conversation.unread > 0;
+                      }
+                      if (activeTab === "AI") {
+                        return conversation.source === "AI";
+                      }
+                      if (activeTab === "Human") {
+                        return conversation.source === "Human";
+                      }
+                      return true;
+                    })
+                      .filter((conversation) =>
+                        conversation.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        conversation.message.toLowerCase().includes(searchQuery.toLowerCase()),
+                      )
+                      .map((conversation) => {
                       const active = conversation.id === activeConversation;
                       return (
                         <button
@@ -327,7 +372,15 @@ export default function DashboardLayout() {
                           }`}
                         >
                           <div className="flex items-center justify-between gap-2">
-                            <p className="font-semibold text-[#111827]">{conversation.name}</p>
+                            <div className="flex items-center gap-3">
+                              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#22C55E] text-sm font-semibold text-white">
+                                {conversation.avatar}
+                              </div>
+                              <div>
+                                <p className="font-semibold text-[#111827]">{conversation.name}</p>
+                                <p className="text-xs text-[#6B7280]">{conversation.source}</p>
+                              </div>
+                            </div>
                             <span className="text-xs text-[#6B7280]">{conversation.time}</span>
                           </div>
                           <div className="mt-2 flex items-center justify-between gap-2 text-sm text-[#6B7280]">
