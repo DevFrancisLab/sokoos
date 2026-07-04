@@ -33,14 +33,7 @@ export default function DashboardLayout({
   sidebar?: ReactNode;
 }) {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [pathname, setPathname] = useState("/");
-
-  useEffect(() => {
-    setPathname(window.location.pathname);
-    const onPop = () => setPathname(window.location.pathname);
-    window.addEventListener("popstate", onPop);
-    return () => window.removeEventListener("popstate", onPop);
-  }, []);
+  const [selected, setSelected] = useState<string>("Home");
 
   return (
     <div className="h-screen min-h-screen bg-[#FFFFFF] text-[#111827]">
@@ -56,12 +49,12 @@ export default function DashboardLayout({
         <nav className="flex-1 px-2 overflow-y-auto">
           <ul className="space-y-1">
             {NAV_ITEMS.map(({ label, href, Icon }) => {
-              const active = pathname === href || pathname.startsWith(href + "/");
+              const active = selected === label;
               return (
                 <li key={href}>
-                  <a
-                    href={href}
-                    className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                  <button
+                    onClick={() => setSelected(label)}
+                    className={`w-full text-left flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                       active
                         ? "bg-[#22C55E] text-white"
                         : "text-[#111827] hover:bg-[#F3F4F6] hover:text-[#111827]"
@@ -69,7 +62,7 @@ export default function DashboardLayout({
                   >
                     <Icon className={`h-4 w-4 ${active ? "opacity-100" : "opacity-80"}`} />
                     <span>{label}</span>
-                  </a>
+                  </button>
                 </li>
               );
             })}
@@ -110,13 +103,15 @@ export default function DashboardLayout({
             <nav>
               <ul className="space-y-1">
                 {NAV_ITEMS.map(({ label, href, Icon }) => {
-                  const active = pathname === href || pathname.startsWith(href + "/");
+                  const active = selected === label;
                   return (
                     <li key={href}>
-                      <a
-                        href={href}
-                        onClick={() => setMobileOpen(false)}
-                        className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                      <button
+                        onClick={() => {
+                          setSelected(label);
+                          setMobileOpen(false);
+                        }}
+                        className={`w-full text-left flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                           active
                             ? "bg-[#22C55E] text-white"
                             : "text-[#111827] hover:bg-[#F3F4F6] hover:text-[#111827]"
@@ -124,7 +119,7 @@ export default function DashboardLayout({
                       >
                         <Icon className="h-4 w-4" />
                         <span>{label}</span>
-                      </a>
+                      </button>
                     </li>
                   );
                 })}
@@ -136,7 +131,36 @@ export default function DashboardLayout({
 
       {/* Main content area. On desktop, add left padding to allow for fixed sidebar. On mobile, add top padding to account for the header. */}
       <main className="h-full md:pl-64 pt-14 md:pt-0">
-        <div className="max-w-7xl mx-auto h-full p-4">{children}</div>
+        <div className="max-w-7xl mx-auto h-full p-4">
+          {/* Render placeholder pages based on selected state */}
+          {selected === "Home" && (
+            <div className="p-6 bg-white rounded-md border border-[#E5E7EB]">Sokoos Home</div>
+          )}
+          {selected === "Inbox" && (
+            <div className="p-6 bg-white rounded-md border border-[#E5E7EB]">Sokoos Inbox</div>
+          )}
+          {selected === "Status Scheduler" && (
+            <div className="p-6 bg-white rounded-md border border-[#E5E7EB]">Sokoos Status Scheduler</div>
+          )}
+          {selected === "Broadcasts" && (
+            <div className="p-6 bg-white rounded-md border border-[#E5E7EB]">Sokoos Broadcasts</div>
+          )}
+          {selected === "Customers" && (
+            <div className="p-6 bg-white rounded-md border border-[#E5E7EB]">Sokoos Customers</div>
+          )}
+          {selected === "Catalog" && (
+            <div className="p-6 bg-white rounded-md border border-[#E5E7EB]">Sokoos Catalog</div>
+          )}
+          {selected === "AI Assistant" && (
+            <div className="p-6 bg-white rounded-md border border-[#E5E7EB]">Sokoos AI Assistant</div>
+          )}
+          {selected === "Analytics" && (
+            <div className="p-6 bg-white rounded-md border border-[#E5E7EB]">Sokoos Analytics</div>
+          )}
+          {selected === "Settings" && (
+            <div className="p-6 bg-white rounded-md border border-[#E5E7EB]">Sokoos Settings</div>
+          )}
+        </div>
       </main>
     </div>
   );
