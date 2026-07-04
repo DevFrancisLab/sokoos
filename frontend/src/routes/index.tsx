@@ -118,10 +118,6 @@ function Hero() {
       <div className="container-page relative pt-16 pb-10 sm:pt-24 sm:pb-16">
         <Reveal>
           <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-white/70 px-3 py-1 text-xs font-medium text-muted-foreground shadow-[var(--shadow-soft)] backdrop-blur">
-              <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-              Built for African Businesses
-            </span>
             <h1 className="mt-6 text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl">
               Your AI Employee
               <br />
@@ -138,12 +134,6 @@ function Hero() {
               >
                 Start Free Trial
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </a>
-              <a
-                href="#cta"
-                className="inline-flex items-center gap-2 rounded-xl border border-border bg-white px-6 py-3.5 text-sm font-semibold text-foreground shadow-[var(--shadow-soft)] transition-colors hover:bg-secondary"
-              >
-                Book a Demo
               </a>
             </div>
           </div>
