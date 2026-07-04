@@ -16,6 +16,10 @@ import {
   Clock,
   Phone,
   Tag,
+  Smile,
+  Paperclip,
+  Image,
+  Send,
 } from "lucide-react";
 
 const NAV_ITEMS: { label: string; href: string; Icon: any }[] = [
@@ -410,29 +414,46 @@ export default function DashboardLayout() {
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col justify-between p-4">
-                  <div className="space-y-3 overflow-y-auto pr-2">
-                    {INBOX_MESSAGES[activeConversation].map((message, index) => (
-                      <div key={`${message.time}-${index}`} className={`flex ${message.from === "agent" ? "justify-end" : "justify-start"}`}>
-                        <div className={`max-w-[74%] rounded-3xl px-4 py-3 text-sm ${
-                          message.from === "agent"
-                            ? "bg-[#22C55E] text-white"
-                            : "bg-[#F3F4F6] text-[#111827]"
-                        }`}>
-                          {message.text}
-                          <div className="mt-1 text-[11px] text-[#6B7280]">{message.time}</div>
+                <div className="flex h-[calc(100vh-260px)] flex-col justify-between p-4">
+                  <div className="space-y-4 overflow-y-auto pr-2">
+                    {INBOX_MESSAGES[activeConversation].map((message, index) => {
+                      const isAgent = message.from === "agent";
+                      return (
+                        <div key={`${message.time}-${index}`} className={`flex ${isAgent ? "justify-start" : "justify-end"}`}>
+                          <div className={`rounded-3xl px-4 py-3 text-sm ${
+                            isAgent
+                              ? "bg-[#F3F4F6] text-[#111827]"
+                              : "bg-[#22C55E] text-white"
+                          }`}>
+                            <p>{message.text}</p>
+                            <div className="mt-1 text-[11px] text-[#6B7280] text-right">{message.time}</div>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
-                  <div className="mt-4 rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-3">
+                  <div className="mt-4 rounded-3xl border border-[#E5E7EB] bg-[#FFFFFF] p-3 shadow-sm">
                     <div className="flex items-center gap-3">
-                      <MessageCircle className="h-5 w-5 text-[#6B7280]" />
+                      <button type="button" className="rounded-full p-2 text-[#6B7280] hover:bg-[#F3F4F6]">
+                        <Smile className="h-5 w-5" />
+                      </button>
+                      <button type="button" className="rounded-full p-2 text-[#6B7280] hover:bg-[#F3F4F6]">
+                        <Paperclip className="h-5 w-5" />
+                      </button>
+                      <button type="button" className="rounded-full p-2 text-[#6B7280] hover:bg-[#F3F4F6]">
+                        <Image className="h-5 w-5" />
+                      </button>
                       <input
                         type="text"
-                        placeholder="Type a message..."
-                        className="w-full bg-transparent text-sm text-[#111827] outline-none"
+                        placeholder="Type a message"
+                        className="min-w-0 flex-1 rounded-full border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
                       />
+                      <button
+                        type="button"
+                        className="inline-flex items-center justify-center rounded-full bg-[#22C55E] px-4 py-3 text-white shadow-sm transition hover:bg-[#16A34A]"
+                      >
+                        <Send className="h-5 w-5" />
+                      </button>
                     </div>
                   </div>
                 </div>
