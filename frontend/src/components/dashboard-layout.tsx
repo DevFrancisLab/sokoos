@@ -38,7 +38,7 @@ const NAV_ITEMS: { label: string; href: string; Icon: any }[] = [
 const STAT_CARDS = [
   { label: "Messages Today", value: "1,284", delta: "+18%" },
   { label: "AI Responses", value: "912", delta: "+24%" },
-  { label: "Human Takeovers", value: "72", delta: "-4%" },
+  { label: "Team Takeovers", value: "72", delta: "-4%" },
   { label: "New Leads", value: "38", delta: "+11%" },
 ];
 
@@ -176,8 +176,8 @@ const INBOX_CONVERSATIONS = [
     name: "Aisha from Nairobi",
     message: "Can you share the latest pricing?",
     time: "2m",
-    unread: 3,
-    source: "Human",
+    badge: 3,
+    source: "team",
     avatar: "AM",
   },
   {
@@ -185,8 +185,8 @@ const INBOX_CONVERSATIONS = [
     name: "James - Tech Store",
     message: "How do I update product availability?",
     time: "14m",
-    unread: 0,
-    source: "AI",
+    badge: 0,
+    source: "ai",
     avatar: "J",
   },
   {
@@ -194,8 +194,9 @@ const INBOX_CONVERSATIONS = [
     name: "Grace",
     message: "Thanks for the quick response!",
     time: "37m",
-    unread: 1,
-    source: "Human",
+    badge: 1,
+    source: "needs_attention",
+    needsAttention: true,
     avatar: "G",
   },
   {
@@ -203,13 +204,13 @@ const INBOX_CONVERSATIONS = [
     name: "Michael",
     message: "Please pause the AI for tonight.",
     time: "1h",
-    unread: 0,
-    source: "AI",
+    badge: 0,
+    source: "ai",
     avatar: "M",
   },
 ];
 
-const INBOX_TAB_ITEMS = ["All", "Unread", "AI", "Human"] as const;
+const INBOX_TAB_ITEMS = ["All", "AI", "Team", "Needs Attention"] as const;
 
 const INBOX_MESSAGES = {
   c1: [
@@ -265,7 +266,8 @@ export default function DashboardLayout() {
     image: "",
     caption: "",
     date: "",
-    time: "",
+    source: "ai",
+    needsAttention: true,
   });
   const [products, setProducts] = useState(PRODUCTS);
   const chartMax = Math.max(...ANALYTICS_CHART.map((point) => point.value));
@@ -447,35 +449,33 @@ export default function DashboardLayout() {
             </div>
           )}
           {selected === "Inbox" && (
-            <div className="grid gap-4 xl:grid-cols-[280px_minmax(0,1fr)_320px]">
-              <section className={CARD}>
+            <div className="grid h-[calc(100vh-4.5rem)] gap-4 xl:grid-cols-[280px_minmax(0,1fr)_320px]">
+              <section className={`${CARD} flex min-h-0 flex-col overflow-hidden`}>
                 <div className="border-b border-[#E5E7EB] p-4">
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <h2 className="text-lg font-semibold text-[#111827]">Conversations</h2>
                       <p className="text-sm text-[#6B7280]">Recent messages and active chats</p>
                     </div>
-                    <button className="rounded-full bg-[#F9FAFB] px-3 py-1 text-xs font-semibold text-[#111827] hover:bg-[#F3F4F6]">
-                      New
-                    </button>
+                    {/* Removed 'New' button to simplify header per design request */}
                   </div>
                 </div>
-                <div className="flex flex-wrap gap-2 px-4 pb-4">
+                <div className="flex flex-nowrap items-center gap-2 overflow-x-auto px-4 pb-4">
                   {INBOX_TAB_ITEMS.map((tab) => (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab)}
-                      className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
+                      className={`whitespace-nowrap rounded-full px-4 py-2 text-xs font-semibold transition duration-200 ease-in-out ${
                         activeTab === tab
-                          ? "bg-[#22C55E] text-white"
-                          : "bg-[#F3F4F6] text-[#111827] hover:bg-[#E5E7EB]"
+                          ? "bg-[#22C55E] text-white shadow-sm"
+                          : "bg-[#F3F4F6] text-[#111827] hover:bg-[#ECFDF5] hover:-translate-y-0.5"
                       }`}
                     >
                       {tab}
                     </button>
                   ))}
                 </div>
-                <div className="p-4">
+                <div className="flex min-h-0 flex-1 flex-col p-4">
                   <div className="mb-4 rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2">
                     <div className="flex items-center gap-2 text-[#6B7280]">
                       <Search className="h-4 w-4" />
@@ -488,16 +488,16 @@ export default function DashboardLayout() {
                       />
                     </div>
                   </div>
-                  <div className="space-y-2">
+                  <div className="flex-1 space-y-2 overflow-y-auto overflow-x-hidden pr-2">
                     {INBOX_CONVERSATIONS.filter((conversation) => {
-                      if (activeTab === "Unread") {
-                        return conversation.unread > 0;
+                      if (activeTab === "Needs Attention") {
+                        return conversation.source === "needs_attention";
                       }
                       if (activeTab === "AI") {
-                        return conversation.source === "AI";
+                        return conversation.source === "ai";
                       }
-                      if (activeTab === "Human") {
-                        return conversation.source === "Human";
+                        if (activeTab === "Team") {
+                        return conversation.source === "team";
                       }
                       return true;
                     })
@@ -511,7 +511,7 @@ export default function DashboardLayout() {
                         <button
                           key={conversation.id}
                           onClick={() => setActiveConversation(conversation.id)}
-                          className={`w-full rounded-3xl border px-4 py-4 text-left transition ${
+                          className={`w-full overflow-hidden rounded-3xl border px-3 py-3 text-left transition ${
                             active
                               ? "border-[#22C55E] bg-[#ECFDF5]"
                               : "border-transparent bg-[#FFFFFF] hover:border-[#E5E7EB] hover:bg-[#F9FAFB]"
@@ -519,21 +519,38 @@ export default function DashboardLayout() {
                         >
                           <div className="flex items-center justify-between gap-2">
                             <div className="flex items-center gap-3">
-                              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#22C55E] text-sm font-semibold text-white">
-                                {conversation.avatar}
-                              </div>
-                              <div>
-                                <p className="font-semibold text-[#111827]">{conversation.name}</p>
-                                <p className="text-xs text-[#6B7280]">{conversation.source}</p>
-                              </div>
-                            </div>
-                            <span className="text-xs text-[#6B7280]">{conversation.time}</span>
+                                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#22C55E] text-sm font-semibold text-white">
+                                    {conversation.avatar}
+                                  </div>
+                                  <div className="min-w-0 max-w-[12ch]">
+                                        <div className="flex items-center gap-2">
+                                          <p
+                                            className="text-base font-medium text-[#111827] truncate"
+                                            title={conversation.name}
+                                          >
+                                            {conversation.name && conversation.name.length > 12 ? `${conversation.name.slice(0, 12)}…` : conversation.name}
+                                          </p>
+                                          {conversation.source === "needs_attention" ? (
+                                            <span className="inline-flex items-center gap-1 rounded-full bg-[#fee2e2] px-2 py-0.5 text-[11px] font-semibold text-[#b91c1c]">
+                                              <span className="inline-block h-2 w-2 rounded-full bg-[#b91c1c]" aria-hidden />
+                                              Needs Attention
+                                            </span>
+                                          ) : (
+                                            <span
+                                              className={`inline-block h-2 w-2 rounded-full ${conversation.source === "ai" ? "bg-[#16A34A]" : "bg-[#6B7280]"}`}
+                                              aria-hidden
+                                            />
+                                          )}
+                                        </div>
+                                  </div>
+                                </div>
+                                <span className="text-xs text-[#6B7280]">{conversation.time}</span>
                           </div>
-                          <div className="mt-2 flex items-center justify-between gap-2 text-sm text-[#6B7280]">
-                            <p>{conversation.message}</p>
-                            {conversation.unread > 0 ? (
+                          <div className="mt-1 flex items-center justify-between gap-2 text-[#6B7280]">
+                            <p className="min-w-0 text-sm truncate">{conversation.message}</p>
+                            {conversation.badge > 0 ? (
                               <span className="rounded-full bg-[#22C55E] px-2 py-0.5 text-[10px] font-semibold text-white">
-                                {conversation.unread}
+                                {conversation.badge}
                               </span>
                             ) : null}
                           </div>
@@ -544,7 +561,7 @@ export default function DashboardLayout() {
                 </div>
               </section>
 
-              <section className={CARD}>
+              <section className={`${CARD} flex min-h-0 flex-col overflow-hidden`}>
                 <div className="border-b border-[#E5E7EB] p-4">
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div>
@@ -556,7 +573,7 @@ export default function DashboardLayout() {
                     </div>
                   </div>
                 </div>
-                <div className="flex h-[calc(100vh-260px)] flex-col justify-between p-4">
+                <div className="flex min-h-0 flex-1 flex-col p-4">
                   <div className="space-y-4 overflow-y-auto pr-2">
                     {INBOX_MESSAGES[activeConversation].map((message, index) => {
                       const isAgent = message.from === "agent";
@@ -601,7 +618,7 @@ export default function DashboardLayout() {
                 </div>
               </section>
 
-              <section className={`${CARD} p-6`}>
+              <section className={`${CARD} flex min-h-0 flex-col overflow-hidden p-6`}>
                 <div className="flex flex-col gap-3">
                   <div>
                     <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">Customer</p>
@@ -650,39 +667,7 @@ export default function DashboardLayout() {
                   </div>
                 </div>
 
-                <div className="mt-6 space-y-4">
-                  <div className="rounded-3xl border border-[#E5E7EB] bg-[#FFFFFF] p-5 shadow-sm">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">AI Assistant</p>
-                        <h3 className="mt-2 text-lg font-semibold text-[#111827]">Suggested Reply</h3>
-                      </div>
-                      <span className="rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#16A34A]">Smart</span>
-                    </div>
-                    <p className="mt-4 text-sm leading-6 text-[#6B7280]">I can help schedule a demo, answer pricing questions, or clarify package details quickly.</p>
-                    <div className="mt-4 rounded-3xl bg-[#F9FAFB] p-4 text-sm text-[#111827]">
-                      "Hi Aisha, thanks for reaching out! Our 20 Mbps plan includes unlimited data and free installation. Would you like me to share the full pricing details?"
-                    </div>
-                    <div className="mt-4 flex flex-wrap gap-3">
-                      <button className="rounded-2xl bg-[#22C55E] px-4 py-2 text-sm font-semibold text-white hover:bg-[#16A34A]">Send Reply</button>
-                      <button className="rounded-2xl border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] hover:bg-[#F3F4F6]">Regenerate</button>
-                    </div>
-                  </div>
-
-                  <div className="rounded-3xl border border-[#E5E7EB] bg-[#FFFFFF] p-5 shadow-sm">
-                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">Quick Products</p>
-                    <div className="mt-4 space-y-3">
-                      {CUSTOMER_PROFILE.interestedProducts.map((product) => (
-                        <div key={product} className="flex items-center justify-between rounded-3xl bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827]">
-                          <div>
-                            <p className="font-semibold">{product}</p>
-                          </div>
-                          <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#16A34A]">Add</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+                {/* AI Assistant and Quick Products removed from Customer card per request */}
               </section>
             </div>
           )}
@@ -980,8 +965,8 @@ export default function DashboardLayout() {
                     <div className="rounded-3xl bg-white p-5 shadow-sm">
                       <div className="flex items-center justify-between gap-4">
                         <div>
-                          <p className="text-sm font-semibold text-[#111827]">Human Takeover</p>
-                          <p className="mt-2 text-sm text-[#6B7280]">Allow a human agent to step in when the customer needs real support.</p>
+                          <p className="text-sm font-semibold text-[#111827]">Team Takeover</p>
+                          <p className="mt-2 text-sm text-[#6B7280]">Allow a team member to step in when the customer needs real support.</p>
                         </div>
                         <button
                           type="button"
