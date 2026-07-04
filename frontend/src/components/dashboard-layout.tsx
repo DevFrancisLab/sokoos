@@ -11,6 +11,11 @@ import {
   Settings,
   Menu,
   X,
+  Search,
+  MessageCircle,
+  Clock,
+  Phone,
+  Tag,
 } from "lucide-react";
 
 const NAV_ITEMS: { label: string; href: string; Icon: any }[] = [
@@ -46,9 +51,72 @@ const QUICK_ACTIONS = [
   "Add Product",
 ];
 
+const INBOX_CONVERSATIONS = [
+  {
+    id: "c1",
+    name: "Aisha from Nairobi",
+    message: "Can you share the latest pricing?",
+    time: "2m",
+    unread: 3,
+  },
+  {
+    id: "c2",
+    name: "James - Tech Store",
+    message: "How do I update product availability?",
+    time: "14m",
+    unread: 0,
+  },
+  {
+    id: "c3",
+    name: "Grace",
+    message: "Thanks for the quick response!",
+    time: "37m",
+    unread: 1,
+  },
+  {
+    id: "c4",
+    name: "Michael",
+    message: "Please pause the AI for tonight.",
+    time: "1h",
+    unread: 0,
+  },
+];
+
+const INBOX_MESSAGES = {
+  c1: [
+    { from: "customer", text: "Can you share the latest pricing?", time: "2:13 PM" },
+    { from: "agent", text: "Sure — our starter plan is available from $29/month.", time: "2:14 PM" },
+    { from: "customer", text: "Great, and is there a free trial?", time: "2:15 PM" },
+  ],
+  c2: [
+    { from: "agent", text: "You can edit availability in Catalog > Products.", time: "1:35 PM" },
+    { from: "customer", text: "Got it, thanks!", time: "1:36 PM" },
+  ],
+  c3: [
+    { from: "customer", text: "Thanks for the quick response!", time: "12:05 PM" },
+    { from: "agent", text: "Happy to help — let me know if you need anything else.", time: "12:06 PM" },
+  ],
+  c4: [
+    { from: "customer", text: "Please pause the AI for tonight.", time: "11:20 AM" },
+    { from: "agent", text: "Sure, I’ll pause it from 9PM tonight.", time: "11:21 AM" },
+  ],
+};
+
+const CUSTOMER_PROFILE = {
+  name: "Aisha Mwangi",
+  company: "Nairobi Essentials",
+  phone: "+254 712 345 678",
+  email: "aisha@nairobiessentials.co.ke",
+  location: "Nairobi, Kenya",
+  tags: ["VIP", "Retail", "High priority"],
+  status: "Active",
+  lastOrder: "2 days ago",
+};
+
 export default function DashboardLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [selected, setSelected] = useState<string>("Home");
+  const [activeConversation, setActiveConversation] = useState<string>("c1");
 
   return (
     <div className="h-screen min-h-screen bg-[#FFFFFF] text-[#111827]">
@@ -221,7 +289,137 @@ export default function DashboardLayout() {
             </div>
           )}
           {selected === "Inbox" && (
-            <div className="p-6 bg-white rounded-md border border-[#E5E7EB]">Sokoos Inbox</div>
+            <div className="grid gap-4 xl:grid-cols-[280px_minmax(0,1fr)_320px]">
+              <section className="rounded-3xl border border-[#E5E7EB] bg-[#FFFFFF] shadow-sm">
+                <div className="border-b border-[#E5E7EB] p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <h2 className="text-lg font-semibold text-[#111827]">Conversations</h2>
+                      <p className="text-sm text-[#6B7280]">Recent messages and active chats</p>
+                    </div>
+                    <button className="rounded-full bg-[#F9FAFB] px-3 py-1 text-xs font-semibold text-[#111827] hover:bg-[#F3F4F6]">
+                      New
+                    </button>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <div className="mb-4 rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2">
+                    <div className="flex items-center gap-2 text-[#6B7280]">
+                      <Search className="h-4 w-4" />
+                      <input
+                        type="search"
+                        placeholder="Search conversations"
+                        className="w-full bg-transparent text-sm text-[#111827] outline-none"
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    {INBOX_CONVERSATIONS.map((conversation) => {
+                      const active = conversation.id === activeConversation;
+                      return (
+                        <button
+                          key={conversation.id}
+                          onClick={() => setActiveConversation(conversation.id)}
+                          className={`w-full rounded-3xl border px-4 py-4 text-left transition ${
+                            active
+                              ? "border-[#22C55E] bg-[#ECFDF5]"
+                              : "border-transparent bg-[#FFFFFF] hover:border-[#E5E7EB] hover:bg-[#F9FAFB]"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between gap-2">
+                            <p className="font-semibold text-[#111827]">{conversation.name}</p>
+                            <span className="text-xs text-[#6B7280]">{conversation.time}</span>
+                          </div>
+                          <div className="mt-2 flex items-center justify-between gap-2 text-sm text-[#6B7280]">
+                            <p>{conversation.message}</p>
+                            {conversation.unread > 0 ? (
+                              <span className="rounded-full bg-[#22C55E] px-2 py-0.5 text-[10px] font-semibold text-white">
+                                {conversation.unread}
+                              </span>
+                            ) : null}
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </section>
+
+              <section className="rounded-3xl border border-[#E5E7EB] bg-[#FFFFFF] shadow-sm">
+                <div className="border-b border-[#E5E7EB] p-4">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-[#6B7280]">Live chat</p>
+                      <h2 className="text-xl font-semibold text-[#111827]">{INBOX_CONVERSATIONS.find((item) => item.id === activeConversation)?.name}</h2>
+                    </div>
+                    <div className="rounded-2xl bg-[#F9FAFB] px-3 py-2 text-sm text-[#111827]">
+                      Active now
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-col justify-between p-4">
+                  <div className="space-y-3 overflow-y-auto pr-2">
+                    {INBOX_MESSAGES[activeConversation].map((message, index) => (
+                      <div key={`${message.time}-${index}`} className={`flex ${message.from === "agent" ? "justify-end" : "justify-start"}`}>
+                        <div className={`max-w-[74%] rounded-3xl px-4 py-3 text-sm ${
+                          message.from === "agent"
+                            ? "bg-[#22C55E] text-white"
+                            : "bg-[#F3F4F6] text-[#111827]"
+                        }`}>
+                          {message.text}
+                          <div className="mt-1 text-[11px] text-[#6B7280]">{message.time}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-4 rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-3">
+                    <div className="flex items-center gap-3">
+                      <MessageCircle className="h-5 w-5 text-[#6B7280]" />
+                      <input
+                        type="text"
+                        placeholder="Type a message..."
+                        className="w-full bg-transparent text-sm text-[#111827] outline-none"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section className="rounded-3xl border border-[#E5E7EB] bg-[#FFFFFF] shadow-sm p-6">
+                <div className="flex flex-col gap-3">
+                  <div>
+                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">Customer</p>
+                    <h2 className="mt-2 text-xl font-semibold text-[#111827]">{CUSTOMER_PROFILE.name}</h2>
+                    <p className="text-sm text-[#6B7280]">{CUSTOMER_PROFILE.company}</p>
+                  </div>
+                  <div className="space-y-3 rounded-3xl bg-[#F9FAFB] p-4">
+                    <div className="flex items-center gap-3 text-sm text-[#111827]">
+                      <Phone className="h-4 w-4" />
+                      <span>{CUSTOMER_PROFILE.phone}</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm text-[#111827]">
+                      <Tag className="h-4 w-4" />
+                      <span>{CUSTOMER_PROFILE.email}</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm text-[#111827]">
+                      <Clock className="h-4 w-4" />
+                      <span>Last order: {CUSTOMER_PROFILE.lastOrder}</span>
+                    </div>
+                    <div className="flex items-center gap-3 text-sm text-[#111827]">
+                      <Phone className="h-4 w-4" />
+                      <span>{CUSTOMER_PROFILE.location}</span>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    {CUSTOMER_PROFILE.tags.map((tag) => (
+                      <span key={tag} className="inline-flex items-center rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#16A34A]">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            </div>
           )}
           {selected === "Status Scheduler" && (
             <div className="p-6 bg-white rounded-md border border-[#E5E7EB]">Sokoos Status Scheduler</div>
