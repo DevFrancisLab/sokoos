@@ -108,3 +108,29 @@
 @utility float-y {
   animation: floatY 6s ease-in-out infinite;
 }
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.6) transparent;
+}
+.custom-scrollbar:hover {
+  scrollbar-color: rgba(148, 163, 184, 0.85) transparent;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(148, 163, 184, 0.5);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out, background-color 0.2s ease-in-out;
+}
+.custom-scrollbar:hover::-webkit-scrollbar-thumb {
+  opacity: 1;
+  background-color: rgba(148, 163, 184, 0.85);
+}

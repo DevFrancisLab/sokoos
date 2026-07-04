@@ -232,17 +232,66 @@ const INBOX_MESSAGES = {
   ],
 };
 
-const CUSTOMER_PROFILE = {
-  name: "Aisha Mwangi",
-  company: "Nairobi Essentials",
-  phone: "+254 712 345 678",
-  email: "aisha@nairobiessentials.co.ke",
-  location: "Nairobi, Kenya",
-  tags: ["VIP", "Retail", "High priority"],
-  status: "Active",
-  lastOrder: "2 days ago",
-  leadStatus: "Hot lead",
-  interestedProducts: ["10 Mbps", "20 Mbps", "Business Package"],
+const CUSTOMER_PROFILES: Record<string, {
+  name: string;
+  company: string;
+  phone: string;
+  email: string;
+  location: string;
+  tags: string[];
+  status: string;
+  lastOrder: string;
+  leadStatus: string;
+  interestedProducts: string[];
+}> = {
+  c1: {
+    name: "Aisha Mwangi",
+    company: "Nairobi Essentials",
+    phone: "+254 712 345 678",
+    email: "aisha@nairobiessentials.co.ke",
+    location: "Nairobi, Kenya",
+    tags: ["VIP", "Retail", "High priority"],
+    status: "Active",
+    lastOrder: "2 days ago",
+    leadStatus: "Hot lead",
+    interestedProducts: ["10 Mbps", "20 Mbps", "Business Package"],
+  },
+  c2: {
+    name: "James Njoroge",
+    company: "Tech Store",
+    phone: "+254 700 123 456",
+    email: "james@techstore.co.ke",
+    location: "Thika, Kenya",
+    tags: ["Team", "Wholesale", "Priority"],
+    status: "Active",
+    lastOrder: "Yesterday",
+    leadStatus: "Warm lead",
+    interestedProducts: ["Business Package", "20 Mbps"],
+  },
+  c3: {
+    name: "Grace Wanjiru",
+    company: "Wanjiru Boutique",
+    phone: "+254 733 987 654",
+    email: "grace@wanjiruboutique.co.ke",
+    location: "Nairobi, Kenya",
+    tags: ["New lead", "Fashion", "Important"],
+    status: "Active",
+    lastOrder: "3 days ago",
+    leadStatus: "New lead",
+    interestedProducts: ["10 Mbps", "20 Mbps"],
+  },
+  c4: {
+    name: "Michael",
+    company: "Service Solutions",
+    phone: "+254 711 222 333",
+    email: "michael@servicesolutions.co.ke",
+    location: "Mombasa, Kenya",
+    tags: ["AI", "Support", "Follow-up"],
+    status: "Active",
+    lastOrder: "Today",
+    leadStatus: "Hot lead",
+    interestedProducts: ["Business Package", "20 Mbps"],
+  },
 };
 
 export default function DashboardLayout() {
@@ -252,6 +301,7 @@ export default function DashboardLayout() {
   const [searchQuery, setSearchQuery] = useState("");
    const [customerSearch, setCustomerSearch] = useState("");
   const [activeTab, setActiveTab] = useState<(typeof INBOX_TAB_ITEMS)[number]>("All");
+  const activeCustomerProfile = CUSTOMER_PROFILES[activeConversation] ?? CUSTOMER_PROFILES.c1;
   const filteredCustomers = CUSTOMERS.filter((customer) => {
     const query = customerSearch.toLowerCase();
     return (
@@ -460,12 +510,12 @@ export default function DashboardLayout() {
                     {/* Removed 'New' button to simplify header per design request */}
                   </div>
                 </div>
-                <div className="flex flex-nowrap items-center gap-2 overflow-x-auto px-4 pb-4">
+                <div className="flex flex-wrap items-center gap-2 px-4 pb-4">
                   {INBOX_TAB_ITEMS.map((tab) => (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab)}
-                      className={`whitespace-nowrap rounded-full px-4 py-2 text-xs font-semibold transition duration-200 ease-in-out ${
+                      className={`whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-semibold transition duration-200 ease-in-out ${
                         activeTab === tab
                           ? "bg-[#22C55E] text-white shadow-sm"
                           : "bg-[#F3F4F6] text-[#111827] hover:bg-[#ECFDF5] hover:-translate-y-0.5"
@@ -488,7 +538,7 @@ export default function DashboardLayout() {
                       />
                     </div>
                   </div>
-                  <div className="flex-1 space-y-2 overflow-y-auto overflow-x-hidden pr-2">
+                  <div className="flex-1 space-y-2 overflow-y-auto overflow-x-hidden pr-2 scroll-smooth custom-scrollbar">
                     {INBOX_CONVERSATIONS.filter((conversation) => {
                       if (activeTab === "Needs Attention") {
                         return conversation.source === "needs_attention";
@@ -561,7 +611,7 @@ export default function DashboardLayout() {
                 </div>
               </section>
 
-              <section className={`${CARD} flex min-h-0 flex-col overflow-hidden`}>
+              <section className={`${CARD} flex h-full min-h-0 flex-col overflow-hidden`}>
                 <div className="border-b border-[#E5E7EB] p-4">
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div>
@@ -574,7 +624,7 @@ export default function DashboardLayout() {
                   </div>
                 </div>
                 <div className="flex min-h-0 flex-1 flex-col p-4">
-                  <div className="space-y-4 overflow-y-auto pr-2">
+                  <div className="flex-1 min-h-0 space-y-4 overflow-y-auto pr-2 pb-4 custom-scrollbar">
                     {INBOX_MESSAGES[activeConversation].map((message, index) => {
                       const isAgent = message.from === "agent";
                       return (
@@ -591,28 +641,30 @@ export default function DashboardLayout() {
                       );
                     })}
                   </div>
-                  <div className="mt-4 rounded-3xl border border-[#E5E7EB] bg-[#FFFFFF] p-3 shadow-sm">
-                    <div className="flex items-center gap-3">
-                      <button type="button" className="rounded-full p-2 text-[#6B7280] hover:bg-[#F3F4F6]">
-                        <Smile className="h-5 w-5" />
-                      </button>
-                      <button type="button" className="rounded-full p-2 text-[#6B7280] hover:bg-[#F3F4F6]">
-                        <Paperclip className="h-5 w-5" />
-                      </button>
-                      <button type="button" className="rounded-full p-2 text-[#6B7280] hover:bg-[#F3F4F6]">
-                        <Image className="h-5 w-5" />
-                      </button>
-                      <input
-                        type="text"
-                        placeholder="Type a message"
-                        className="min-w-0 flex-1 rounded-full border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
-                      />
-                      <button
-                        type="button"
-                        className="inline-flex items-center justify-center rounded-full bg-[#22C55E] px-4 py-3 text-white shadow-sm transition hover:bg-[#16A34A]"
-                      >
-                        <Send className="h-5 w-5" />
-                      </button>
+                  <div className="sticky bottom-0 z-10 mt-4 bg-white/95 pt-4 pb-4 backdrop-blur-sm">
+                    <div className="rounded-[20px] border border-[#E5E7EB] bg-white p-3 shadow-sm">
+                      <div className="flex items-center gap-4">
+                        <button type="button" className="rounded-full p-3 text-[#6B7280] hover:bg-[#E5E7EF]">
+                          <Smile className="h-5 w-5" />
+                        </button>
+                        <button type="button" className="rounded-full p-3 text-[#6B7280] hover:bg-[#E5E7EF]">
+                          <Paperclip className="h-5 w-5" />
+                        </button>
+                        <button type="button" className="rounded-full p-3 text-[#6B7280] hover:bg-[#E5E7EF]">
+                          <Image className="h-5 w-5" />
+                        </button>
+                        <input
+                          type="text"
+                          placeholder="Type a message to Grace..."
+                          className="min-w-0 flex-1 rounded-[20px] border border-[#E5E7EB] bg-white px-5 py-3.5 text-sm text-[#111827] outline-none placeholder:text-[#9CA3AF] focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
+                        />
+                        <button
+                          type="button"
+                          className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white shadow-lg transition hover:bg-[#16A34A]"
+                        >
+                          <Send className="h-5 w-5" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -622,31 +674,23 @@ export default function DashboardLayout() {
                 <div className="flex flex-col gap-3">
                   <div>
                     <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">Customer</p>
-                    <h2 className="mt-2 text-xl font-semibold text-[#111827]">{CUSTOMER_PROFILE.name}</h2>
-                    <p className="text-sm text-[#6B7280]">{CUSTOMER_PROFILE.company}</p>
+                    <h2 className="mt-2 text-xl font-semibold text-[#111827]">{activeCustomerProfile.name}</h2>
+                    <p className="text-sm text-[#6B7280]">{activeCustomerProfile.company}</p>
                   </div>
                   <div className="space-y-4 rounded-3xl bg-[#F9FAFB] p-4">
                     <div className="space-y-3">
                       <div className="flex items-center justify-between text-sm text-[#111827]">
                         <span className="font-medium">Phone</span>
-                        <span>{CUSTOMER_PROFILE.phone}</span>
+                        <span>{activeCustomerProfile.phone}</span>
                       </div>
                       <div className="flex items-center justify-between text-sm text-[#111827]">
                         <span className="font-medium">Lead status</span>
-                        <span className="rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#16A34A]">{CUSTOMER_PROFILE.leadStatus}</span>
-                      </div>
-                      <div className="flex items-center justify-between text-sm text-[#111827]">
-                        <span className="font-medium">Location</span>
-                        <span>{CUSTOMER_PROFILE.location}</span>
-                      </div>
-                      <div className="flex items-center justify-between text-sm text-[#111827]">
-                        <span className="font-medium">Last order</span>
-                        <span>{CUSTOMER_PROFILE.lastOrder}</span>
+                        <span className="rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#16A34A]">{activeCustomerProfile.leadStatus}</span>
                       </div>
                       <div className="flex flex-col gap-2">
                         <span className="font-medium text-sm text-[#111827]">Tags</span>
                         <div className="flex flex-wrap gap-2">
-                          {CUSTOMER_PROFILE.tags.map((tag) => (
+                          {activeCustomerProfile.tags.map((tag) => (
                             <span key={tag} className="inline-flex items-center rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#16A34A]">
                               {tag}
                             </span>
@@ -654,10 +698,10 @@ export default function DashboardLayout() {
                         </div>
                       </div>
                     </div>
-                    <div className="rounded-3xl border border-[#E5E7EB] bg-white p-4">
+                    <div className="rounded-3xl border border-[#E5E7EB] bg-white p-4 space-y-4">
                       <p className="text-sm font-semibold text-[#111827]">Interested products</p>
                       <div className="mt-3 space-y-2">
-                        {CUSTOMER_PROFILE.interestedProducts.map((product) => (
+                        {activeCustomerProfile.interestedProducts.map((product) => (
                           <div key={product} className="rounded-2xl bg-[#F9FAFB] px-3 py-2 text-sm text-[#111827]">
                             {product}
                           </div>
