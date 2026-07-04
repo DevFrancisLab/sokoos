@@ -91,7 +91,7 @@ function Nav() {
         </nav>
           <div className="flex items-center gap-2">
           <a
-            href="/sign-in"
+            href="/dashboard"
             className="hidden rounded-lg px-3 py-2 text-sm font-medium text-foreground hover:bg-secondary sm:inline-flex"
           >
             Sign in
