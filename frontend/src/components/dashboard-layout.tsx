@@ -644,18 +644,9 @@ export default function DashboardLayout() {
                   <div className="sticky bottom-0 z-10 mt-4 bg-white/95 pt-4 pb-4 backdrop-blur-sm">
                     <div className="rounded-[20px] border border-[#E5E7EB] bg-white p-3 shadow-sm">
                       <div className="flex items-center gap-4">
-                        <button type="button" className="rounded-full p-3 text-[#6B7280] hover:bg-[#E5E7EF]">
-                          <Smile className="h-5 w-5" />
-                        </button>
-                        <button type="button" className="rounded-full p-3 text-[#6B7280] hover:bg-[#E5E7EF]">
-                          <Paperclip className="h-5 w-5" />
-                        </button>
-                        <button type="button" className="rounded-full p-3 text-[#6B7280] hover:bg-[#E5E7EF]">
-                          <Image className="h-5 w-5" />
-                        </button>
                         <input
                           type="text"
-                          placeholder="Type a message to Grace..."
+                          placeholder={`Type a message to ${activeCustomerProfile.name}...`}
                           className="min-w-0 flex-1 rounded-[20px] border border-[#E5E7EB] bg-white px-5 py-3.5 text-sm text-[#111827] outline-none placeholder:text-[#9CA3AF] focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
                         />
                         <button
