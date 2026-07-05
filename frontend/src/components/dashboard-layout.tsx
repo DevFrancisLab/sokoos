@@ -663,9 +663,9 @@ export default function DashboardLayout() {
                                             </div>
                                           )}
                                           {conversation.source === "needs_attention" ? (
-                                            <span className="inline-flex items-center gap-1 rounded-full bg-[#fee2e2] px-2 py-0.5 text-[11px] font-semibold text-[#b91c1c]">
+                                            <span className="inline-flex items-center gap-1 rounded-full bg-[#fee2e2] px-2 py-1 text-xs font-semibold text-[#b91c1c]">
                                               <span className="inline-block h-2 w-2 rounded-full bg-[#b91c1c]" aria-hidden />
-                                              Needs Attention
+                                              Attention
                                             </span>
                                           ) : (
                                             <span
