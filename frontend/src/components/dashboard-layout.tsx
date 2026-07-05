@@ -349,7 +349,18 @@ export default function DashboardLayout() {
   const activeConversationData = INBOX_CONVERSATIONS.find((item) => item.id === activeConversation);
   const activeCustomerProfile = CUSTOMER_PROFILES[activeConversation as keyof typeof CUSTOMER_PROFILES] ?? CUSTOMER_PROFILES.c1;
   const activeMessages = INBOX_MESSAGES[activeConversation as keyof typeof INBOX_MESSAGES] ?? [];
-  const activeAgentName = String(activeConversationData?.source).startsWith("ai") ? "Sokoos AI" : OWNER_NAMES[activeConversation] ?? "Owner";
+  const [sourceOverrides, setSourceOverrides] = useState<Record<string, string>>({});
+  const getEffectiveSource = (id: string, original?: string) => sourceOverrides[id] ?? original ?? "owner";
+  const effectiveActiveSource = getEffectiveSource(activeConversation, activeConversationData?.source);
+  const activeAgentName = String(effectiveActiveSource).startsWith("ai") ? "Sokoos AI" : OWNER_NAMES[activeConversation] ?? "Owner";
+  const toggleAiForActive = () => {
+    const current = sourceOverrides[activeConversation] ?? activeConversationData?.source ?? "";
+    if (String(current).startsWith("ai")) {
+      setSourceOverrides((s) => ({ ...s, [activeConversation]: "owner" }));
+    } else {
+      setSourceOverrides((s) => ({ ...s, [activeConversation]: "ai_handling" }));
+    }
+  };
   const [messageInput, setMessageInput] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -622,14 +633,15 @@ export default function DashboardLayout() {
                   </div>
                   <div className="flex-1 space-y-3 overflow-y-auto overflow-x-hidden pr-2 scroll-smooth custom-scrollbar">
                     {INBOX_CONVERSATIONS.filter((conversation) => {
+                      const src = sourceOverrides[conversation.id] ?? conversation.source;
                       if (activeTab === "Needs Attention") {
-                        return conversation.source === "needs_attention";
+                        return src === "needs_attention";
                       }
                       if (activeTab === "AI") {
-                        return String(conversation.source).startsWith("ai");
+                        return String(src).startsWith("ai");
                       }
                         if (activeTab === "Owner") {
-                        return conversation.source === "owner";
+                        return src === "owner";
                       }
                       return true;
                     })
@@ -640,6 +652,7 @@ export default function DashboardLayout() {
                       )
                       .map((conversation) => {
                       const active = conversation.id === activeConversation;
+                      const effectiveSource = sourceOverrides[conversation.id] ?? conversation.source;
                       return (
                         <button
                           key={conversation.id}
@@ -664,7 +677,7 @@ export default function DashboardLayout() {
                                     >
                                       {conversation.name.length > 22 ? `${conversation.name.slice(0, 22)}…` : conversation.name}
                                     </p>
-                                    {conversation.source === "needs_attention" ? (
+                                    {effectiveSource === "needs_attention" ? (
                                       <span className="inline-flex items-center gap-1 rounded-full bg-[#fee2e2] px-2 py-1 text-xs font-semibold text-[#b91c1c]">
                                         <span className="inline-block h-2 w-2 rounded-full bg-[#b91c1c]" aria-hidden />
                                         Attention
@@ -681,22 +694,22 @@ export default function DashboardLayout() {
                                     </p>
                                   </div>
                                 )}
-                                {conversation.source === "ai_handling" ? (
+                                {effectiveSource === "ai_handling" ? (
                                   <span className="inline-flex mt-1 items-center gap-1 rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#166534]">
                                     <span aria-hidden>🤖</span>
                                     AI Handling
                                   </span>
-                                ) : conversation.source === "ai_handled" ? (
+                                ) : effectiveSource === "ai_handled" ? (
                                   <span className="inline-flex mt-1 items-center gap-1 rounded-full bg-[#F0FDF4] px-2 py-1 text-xs font-semibold text-[#14532d]">
                                     <span aria-hidden>🤖</span>
                                     AI Handled
                                   </span>
-                                ) : conversation.source === "owner" ? (
+                                ) : effectiveSource === "owner" ? (
                                   <span className="inline-flex mt-1 items-center gap-1 rounded-full bg-[#EFF6FF] px-2 py-1 text-xs font-semibold text-[#1E3A8A]">
                                     <span aria-hidden>👤</span>
                                     Owner
                                   </span>
-                                ) : conversation.source !== "needs_attention" ? (
+                                ) : effectiveSource !== "needs_attention" ? (
                                   <span
                                     className="inline-block mt-1 h-2 w-2 rounded-full bg-[#6B7280]"
                                     aria-hidden
@@ -712,19 +725,19 @@ export default function DashboardLayout() {
                               <span className="rounded-full bg-[#22C55E] px-2 py-0.5 text-[10px] font-semibold text-white">
                                 {conversation.badge}
                               </span>
-                            ) : conversation.source === "ai_handling" ? (
+                            ) : effectiveSource === "ai_handling" ? (
                               <span className="inline-flex rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#166534]">
                                 🤖 AI Handling
                               </span>
-                            ) : conversation.source === "ai_handled" ? (
+                            ) : effectiveSource === "ai_handled" ? (
                               <span className="inline-flex rounded-full bg-[#F0FDF4] px-2 py-1 text-xs font-semibold text-[#14532d]">
                                 🤖 AI Handled
                               </span>
-                            ) : conversation.source === "needs_attention" ? (
+                            ) : effectiveSource === "needs_attention" ? (
                               <span className="inline-flex rounded-full bg-[#FEF2F2] px-2 py-1 text-xs font-semibold text-[#B91C1C]">
                                 🔴 Needs Owner
                               </span>
-                            ) : conversation.source === "owner" ? (
+                            ) : effectiveSource === "owner" ? (
                               <span className="inline-flex rounded-full bg-[#EFF6FF] px-2 py-1 text-xs font-semibold text-[#1E3A8A]">
                                 👤 Owner
                               </span>
@@ -739,10 +752,20 @@ export default function DashboardLayout() {
 
               <section className={`${CARD} flex h-full min-h-0 flex-col overflow-hidden self-stretch`}>
                 <div className="border-b border-[#E5E7EB] p-4">
-                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                       <p className="text-sm font-medium text-[#6B7280]">Live chat</p>
-                      <h2 className="text-xl font-semibold text-[#111827]">{INBOX_CONVERSATIONS.find((item) => item.id === activeConversation)?.name}</h2>
+                      <div className="flex items-center gap-3">
+                        <h2 className="text-xl font-semibold text-[#111827]">{INBOX_CONVERSATIONS.find((item) => item.id === activeConversation)?.name}</h2>
+                        <button
+                          type="button"
+                          onClick={toggleAiForActive}
+                          className={`inline-flex items-center gap-2 rounded-full px-2 py-1 text-xs font-semibold transition ${String(effectiveActiveSource).startsWith("ai") ? "bg-[#ECFDF5] text-[#166534]" : "bg-[#F3F4F6] text-[#111827]"}`}
+                          title={String(effectiveActiveSource).startsWith("ai") ? "AI ON" : "Owner Mode"}
+                        >
+                          {String(effectiveActiveSource).startsWith("ai") ? "🤖 AI ON" : "👤 Owner Mode"}
+                        </button>
+                      </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="rounded-2xl bg-[#F9FAFB] px-3 py-2 text-sm text-[#111827]">
@@ -765,9 +788,14 @@ export default function DashboardLayout() {
                 <div className="flex min-h-0 flex-1 flex-col p-4">
                   <div className="flex-1 min-h-0 space-y-4 overflow-y-auto pr-2 pb-4 custom-scrollbar">
                     {activeMessages.map((message, index) => {
+                      const originalWasAi = String(activeConversationData?.source).startsWith("ai");
+                      // If the AI originally handled messages but AI is toggled off, hide AI-generated agent messages (mock behavior)
+                      if (message.from === "agent" && originalWasAi && !String(effectiveActiveSource).startsWith("ai")) {
+                        return null;
+                      }
                       const isCustomer = message.from === "customer";
                       const isAgent = message.from === "agent";
-                      const isAi = isAgent && String(activeConversationData?.source).startsWith("ai");
+                      const isAi = isAgent && String(effectiveActiveSource).startsWith("ai");
                       const senderLabel = isAi ? "Sokoos AI" : activeAgentName;
 
                       return (
@@ -887,13 +915,10 @@ export default function DashboardLayout() {
           )}
           {selected === "Status Scheduler" && (
             <div className={`space-y-6 ${CARD}`}>
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">Status Scheduler</p>
-                  <h2 className="mt-2 text-2xl font-semibold text-[#111827]">Schedule WhatsApp status updates</h2>
-                  <p className="mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl">
-                    Plan and publish status posts ahead of time. Use AI to generate copy, then schedule images and captions for the week.
-                  </p>
+                  <p className="text-sm font-medium text-[#6B7280]">Status Scheduler</p>
+                  <p className="mt-1 text-sm text-[#6B7280]">Plan and publish status posts ahead of time. Use AI to generate copy, then schedule images and captions for the week.</p>
                 </div>
                 <button
                   type="button"
