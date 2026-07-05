@@ -211,6 +211,16 @@ const INBOX_CONVERSATIONS = [
     source: "ai",
     avatar: "M",
   },
+  {
+    id: "c5",
+    name: "",
+    phone: "+254 712 345 678",
+    message: "I’m interested in your business package — can you share details?",
+    time: "4h",
+    badge: 0,
+    source: "team",
+    avatar: "UC",
+  },
 ];
 
 const INBOX_TAB_ITEMS = ["All", "AI", "Team", "Needs Attention"] as const;
@@ -232,6 +242,10 @@ const INBOX_MESSAGES = {
   c4: [
     { from: "customer", text: "Please pause the AI for tonight.", time: "11:20 AM" },
     { from: "agent", text: "Sure, I’ll pause it from 9PM tonight.", time: "11:21 AM" },
+  ],
+  c5: [
+    { from: "customer", text: "I’m interested in your business package — can you share details?", time: "4:10 PM" },
+    { from: "agent", text: "Absolutely — I’ll send you the package details now.", time: "4:12 PM" },
   ],
 };
 
@@ -294,6 +308,18 @@ const CUSTOMER_PROFILES: Record<string, {
     lastOrder: "Today",
     leadStatus: "Hot lead",
     interestedProducts: ["Business Package", "20 Mbps"],
+  },
+  c5: {
+    name: "Unknown Customer",
+    company: "New Inquiry",
+    phone: "+254 712 345 678",
+    email: "",
+    location: "Nairobi, Kenya",
+    tags: ["New lead", "Unknown", "Needs follow-up"],
+    status: "New",
+    lastOrder: "N/A",
+    leadStatus: "New lead",
+    interestedProducts: ["Business Package"],
   },
 };
 
@@ -596,7 +622,8 @@ export default function DashboardLayout() {
                       return true;
                     })
                       .filter((conversation) =>
-                        conversation.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        (conversation.name ?? "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+                        (conversation.phone ?? "").toLowerCase().includes(searchQuery.toLowerCase()) ||
                         conversation.message.toLowerCase().includes(searchQuery.toLowerCase()),
                       )
                       .map((conversation) => {
@@ -617,13 +644,22 @@ export default function DashboardLayout() {
                                     {conversation.avatar}
                                   </div>
                                   <div className="min-w-0 max-w-[12ch]">
-                                        <div className="flex items-center gap-2">
-                                          <p
-                                            className="text-base font-medium text-[#111827] truncate"
-                                            title={conversation.name}
-                                          >
-                                            {conversation.name && conversation.name.length > 12 ? `${conversation.name.slice(0, 12)}…` : conversation.name}
-                                          </p>
+                                        <div className="min-w-0">
+                                          {conversation.name ? (
+                                            <p
+                                              className="text-base font-medium text-[#111827] truncate"
+                                              title={conversation.name}
+                                            >
+                                              {conversation.name.length > 18 ? `${conversation.name.slice(0, 18)}…` : conversation.name}
+                                            </p>
+                                          ) : (
+                                            <div className="min-w-0">
+                                              <p className="text-base font-medium text-[#111827]">Unknown Customer</p>
+                                              <p className="text-sm text-[#6B7280] truncate" title={conversation.phone}>
+                                                {conversation.phone}
+                                              </p>
+                                            </div>
+                                          )}
                                           {conversation.source === "needs_attention" ? (
                                             <span className="inline-flex items-center gap-1 rounded-full bg-[#fee2e2] px-2 py-0.5 text-[11px] font-semibold text-[#b91c1c]">
                                               <span className="inline-block h-2 w-2 rounded-full bg-[#b91c1c]" aria-hidden />
