@@ -181,7 +181,7 @@ const INBOX_CONVERSATIONS = [
     message: "Can you share the latest pricing?",
     time: "2m",
     badge: 3,
-    source: "team",
+    source: "owner",
     isSaved: true,
     avatar: "AM",
   },
@@ -226,7 +226,7 @@ const INBOX_CONVERSATIONS = [
     message: "I’m interested in your business package — can you share details?",
     time: "Yesterday",
     badge: 0,
-    source: "team",
+    source: "owner",
     isSaved: false,
     avatar: "UC",
   },
@@ -234,7 +234,7 @@ const INBOX_CONVERSATIONS = [
 
 const formatConversationTime = (time: string | undefined) => time || "Unknown";
 
-const INBOX_TAB_ITEMS = ["All", "AI", "Team", "Needs Attention"] as const;
+const INBOX_TAB_ITEMS = ["All", "AI", "Owner", "Needs Attention"] as const;
 
 const INBOX_MESSAGES = {
   c1: [
@@ -334,9 +334,9 @@ const CUSTOMER_PROFILES: Record<string, {
   },
 };
 
-const TEAM_AGENT_NAMES: Record<string, string> = {
-  c1: "Nuru",
-  c3: "Sam",
+const OWNER_NAMES: Record<string, string> = {
+  c1: "Owner",
+  c3: "Owner",
 };
 
 export default function DashboardLayout() {
@@ -349,7 +349,7 @@ export default function DashboardLayout() {
   const activeConversationData = INBOX_CONVERSATIONS.find((item) => item.id === activeConversation);
   const activeCustomerProfile = CUSTOMER_PROFILES[activeConversation as keyof typeof CUSTOMER_PROFILES] ?? CUSTOMER_PROFILES.c1;
   const activeMessages = INBOX_MESSAGES[activeConversation as keyof typeof INBOX_MESSAGES] ?? [];
-  const activeAgentName = activeConversationData?.source === "ai" ? "Sokoos AI" : TEAM_AGENT_NAMES[activeConversation] ?? "Team";
+  const activeAgentName = String(activeConversationData?.source).startsWith("ai") ? "Sokoos AI" : OWNER_NAMES[activeConversation] ?? "Owner";
   const [messageInput, setMessageInput] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -628,8 +628,8 @@ export default function DashboardLayout() {
                       if (activeTab === "AI") {
                         return String(conversation.source).startsWith("ai");
                       }
-                        if (activeTab === "Team") {
-                        return conversation.source === "team";
+                        if (activeTab === "Owner") {
+                        return conversation.source === "owner";
                       }
                       return true;
                     })
@@ -691,10 +691,10 @@ export default function DashboardLayout() {
                                     <span aria-hidden>🤖</span>
                                     AI Handled
                                   </span>
-                                ) : conversation.source === "team" ? (
+                                ) : conversation.source === "owner" ? (
                                   <span className="inline-flex mt-1 items-center gap-1 rounded-full bg-[#EFF6FF] px-2 py-1 text-xs font-semibold text-[#1E3A8A]">
                                     <span aria-hidden>👤</span>
-                                    Team
+                                    Owner
                                   </span>
                                 ) : conversation.source !== "needs_attention" ? (
                                   <span
@@ -722,11 +722,11 @@ export default function DashboardLayout() {
                               </span>
                             ) : conversation.source === "needs_attention" ? (
                               <span className="inline-flex rounded-full bg-[#FEF2F2] px-2 py-1 text-xs font-semibold text-[#B91C1C]">
-                                🔴 Attention
+                                🔴 Needs Owner
                               </span>
-                            ) : conversation.source === "team" ? (
+                            ) : conversation.source === "owner" ? (
                               <span className="inline-flex rounded-full bg-[#EFF6FF] px-2 py-1 text-xs font-semibold text-[#1E3A8A]">
-                                👤 Team
+                                👤 Owner
                               </span>
                             ) : null}
                           </div>
@@ -767,7 +767,7 @@ export default function DashboardLayout() {
                     {activeMessages.map((message, index) => {
                       const isCustomer = message.from === "customer";
                       const isAgent = message.from === "agent";
-                      const isAi = isAgent && activeConversationData?.source === "ai";
+                      const isAi = isAgent && String(activeConversationData?.source).startsWith("ai");
                       const senderLabel = isAi ? "Sokoos AI" : activeAgentName;
 
                       return (
