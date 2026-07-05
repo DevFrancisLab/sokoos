@@ -351,6 +351,7 @@ export default function DashboardLayout() {
   const [language, setLanguage] = useState<(typeof LANGUAGES)[number]>("English");
   const [personality, setPersonality] = useState<(typeof PERSONALITIES)[number]>("Friendly");
   const [imageLabel, setImageLabel] = useState("No file selected");
+  const [customerCollapsed, setCustomerCollapsed] = useState(false);
 
   return (
     <div className="h-screen min-h-screen bg-[#FFFFFF] text-[#111827]">
@@ -540,8 +541,10 @@ export default function DashboardLayout() {
             </div>
           )}
           {selected === "Inbox" && (
-            <div className="grid h-[calc(100vh-4.5rem)] gap-4 xl:grid-cols-[280px_minmax(0,1fr)_320px]">
-              <section className={`${CARD} flex min-h-0 flex-col overflow-hidden`}>
+            <div className={`grid h-[calc(100vh-4.5rem)] min-h-[calc(100vh-4.5rem)] gap-4 transition-all duration-300 ease-out items-stretch auto-rows-fr ${
+              customerCollapsed ? "xl:grid-cols-[280px_minmax(0,1fr)]" : "xl:grid-cols-[280px_minmax(0,1fr)_320px]"
+            }`}>
+              <section className={`${CARD} h-full min-h-0 flex flex-col self-stretch overflow-hidden`}>
                 <div className="border-b border-[#E5E7EB] p-4">
                   <div className="flex items-center justify-between gap-3">
                     <div>
@@ -652,15 +655,28 @@ export default function DashboardLayout() {
                 </div>
               </section>
 
-              <section className={`${CARD} flex h-full min-h-0 flex-col overflow-hidden`}>
+              <section className={`${CARD} flex h-full min-h-0 flex-col overflow-hidden self-stretch`}>
                 <div className="border-b border-[#E5E7EB] p-4">
                   <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                       <p className="text-sm font-medium text-[#6B7280]">Live chat</p>
                       <h2 className="text-xl font-semibold text-[#111827]">{INBOX_CONVERSATIONS.find((item) => item.id === activeConversation)?.name}</h2>
                     </div>
-                    <div className="rounded-2xl bg-[#F9FAFB] px-3 py-2 text-sm text-[#111827]">
-                      Active now
+                    <div className="flex items-center gap-2">
+                      <div className="rounded-2xl bg-[#F9FAFB] px-3 py-2 text-sm text-[#111827]">
+                        Active now
+                      </div>
+                      {customerCollapsed && (
+                        <button
+                          type="button"
+                          onClick={() => setCustomerCollapsed(false)}
+                          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#111827] transition hover:bg-[#F3F4F6]"
+                          aria-label="Expand customer panel"
+                          title="Expand customer panel"
+                        >
+                          <ChevronRight className="h-4 w-4" />
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -729,14 +745,26 @@ export default function DashboardLayout() {
                 </div>
               </section>
 
-              <section className={`${CARD} flex min-h-0 flex-col overflow-hidden p-6`}>
-                <div className="flex flex-col gap-3">
-                  <div>
-                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">Customer</p>
-                    <h2 className="mt-2 text-xl font-semibold text-[#111827]">{activeCustomerProfile.name}</h2>
-                    <p className="text-sm text-[#6B7280]">{activeCustomerProfile.company}</p>
+              {!customerCollapsed && (
+                <section className={`${CARD} h-full min-h-0 flex flex-col self-stretch overflow-hidden transition-opacity duration-300 ease-out opacity-100 p-6`}>
+                <div className="flex flex-col gap-3 min-h-0 flex-1">
+                  <div className="flex items-start justify-between gap-3 shrink-0">
+                    <div>
+                      <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">Customer</p>
+                      <h2 className="mt-2 text-xl font-semibold text-[#111827]">{activeCustomerProfile.name}</h2>
+                      <p className="text-sm text-[#6B7280]">{activeCustomerProfile.company}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setCustomerCollapsed(true)}
+                      className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#111827] transition hover:bg-[#F3F4F6] shrink-0"
+                      aria-label="Collapse customer panel"
+                      title="Collapse customer panel"
+                    >
+                      <ChevronRight className="h-4 w-4 rotate-180" />
+                    </button>
                   </div>
-                  <div className="space-y-4 rounded-3xl bg-[#F9FAFB] p-4">
+                  <div className="space-y-4 rounded-3xl bg-[#F9FAFB] p-4 overflow-y-auto flex-1 min-h-0 custom-scrollbar">
                     <div className="space-y-3">
                       <div className="flex items-center justify-between text-sm text-[#111827]">
                         <span className="font-medium">Phone</span>
@@ -771,7 +799,8 @@ export default function DashboardLayout() {
                 </div>
 
                 {/* AI Assistant and Quick Products removed from Customer card per request */}
-              </section>
+                </section>
+              )}
             </div>
           )}
           {selected === "Status Scheduler" && (
