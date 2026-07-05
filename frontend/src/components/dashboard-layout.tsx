@@ -223,6 +223,27 @@ const CONVERSATION_POLICIES_ITEMS = [
   { policy: "Data retention", value: "Keep conversation history for 90 days" },
 ];
 
+type TestAiMessage = {
+  id: string;
+  role: "user" | "ai";
+  text: string;
+  source?: string;
+};
+
+const TEST_AI_MESSAGES: TestAiMessage[] = [
+  {
+    id: "t1",
+    role: "user",
+    text: "How much is your Business Package?",
+  },
+  {
+    id: "t2",
+    role: "ai",
+    text: "Our Business Package costs KES 5,000/month.",
+    source: "Products & Services → Business Package",
+  },
+];
+
 const INBOX_CONVERSATIONS = [
   {
     id: "c1",
@@ -416,6 +437,57 @@ export default function DashboardLayout() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   const [aiAssistantTab, setAiAssistantTab] = useState<(typeof AI_ASSISTANT_TABS)[number]>("Business Knowledge");
+  const [testAiMessages, setTestAiMessages] = useState<TestAiMessage[]>(TEST_AI_MESSAGES);
+  const [testAiInput, setTestAiInput] = useState("");
+  const testAiContainerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const container = testAiContainerRef.current;
+    if (!container) return;
+    container.scrollTop = container.scrollHeight;
+  }, [testAiMessages]);
+
+  const handleTestAiSend = () => {
+    const trimmed = testAiInput.trim();
+    if (!trimmed) return;
+
+    const userMessage: TestAiMessage = {
+      id: `user-${Date.now()}`,
+      role: "user",
+      text: trimmed,
+    };
+
+    setTestAiInput("");
+    setTestAiMessages((current) => [...current, userMessage]);
+
+    setTimeout(() => {
+      const normalized = trimmed.toLowerCase();
+      const response = normalized.includes("business package")
+        ? {
+            text: "Our Business Package costs KES 5,000/month.",
+            source: "Products & Services → Business Package",
+          }
+        : normalized.includes("installation")
+        ? {
+            text: "Installation costs KES 2,000 and is scheduled within 48 hours of payment confirmation.",
+            source: "Business Policies → Delivery Policy",
+          }
+        : {
+            text: "I’m still learning your business details. Try asking about services, prices, or policies.",
+            source: "Business Knowledge",
+          };
+
+      setTestAiMessages((current) => [
+        ...current,
+        {
+          id: `ai-${Date.now()}`,
+          role: "ai",
+          text: response.text,
+          source: response.source,
+        },
+      ]);
+    }, 300);
+  };
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -1586,24 +1658,56 @@ export default function DashboardLayout() {
               )}
 
               {aiAssistantTab === "Test AI" && (
-                <div className={CARD}>
+                <div className={`${CARD} flex h-[660px] flex-col overflow-hidden`}> 
                   <div className="space-y-4">
                     <div>
                       <p className="text-sm font-medium text-[#6B7280]">Test Your AI Agent</p>
                       <h3 className="mt-2 text-lg font-semibold text-[#111827]">Try conversations with your AI</h3>
                       <p className="mt-2 text-sm text-[#6B7280]">Test how your AI responds to common questions. Use this to refine business knowledge and tone.</p>
                     </div>
-                    <div className="rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4">
-                      <textarea
-                        placeholder="Ask your AI a test question..."
-                        className="w-full resize-none rounded-lg border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] outline-none placeholder:text-[#9CA3AF] focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
-                        rows={3}
-                      />
+                    <div
+                      ref={testAiContainerRef}
+                      className="flex-1 space-y-4 overflow-y-auto pr-2"
+                    >
+                      {testAiMessages.map((message) => (
+                        <div
+                          key={message.id}
+                          className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                        >
+                          <div className={`max-w-[90%] rounded-3xl p-4 text-sm ${
+                            message.role === "user"
+                              ? "bg-[#22C55E] text-white"
+                              : "bg-[#F3F4F6] text-[#111827]"
+                          }`}>
+                            <p>{message.text}</p>
+                            {message.role === "ai" && message.source ? (
+                              <div className="mt-3 rounded-2xl bg-[#E0F2FE] px-3 py-1 text-xs font-semibold text-[#0C4A6E]">
+                                Source: {message.source}
+                              </div>
+                            ) : null}
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                    <button className="inline-flex items-center gap-2 rounded-2xl bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]">
-                      <Send className="h-4 w-4" />
-                      Send Test Message
-                    </button>
+                  </div>
+                  <div className="sticky bottom-0 mt-4 rounded-3xl bg-[#F9FAFB] p-4 shadow-inner">
+                    <label htmlFor="test-ai-input" className="sr-only">Ask your AI</label>
+                    <div className="flex gap-3">
+                      <textarea
+                        id="test-ai-input"
+                        value={testAiInput}
+                        onChange={(event) => setTestAiInput(event.target.value)}
+                        placeholder="Ask your AI a test question..."
+                        className="min-h-[88px] flex-1 resize-none rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] outline-none placeholder:text-[#9CA3AF] focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
+                      />
+                      <button
+                        type="button"
+                        onClick={handleTestAiSend}
+                        className="inline-flex h-12 items-center justify-center rounded-3xl bg-[#22C55E] px-5 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
+                      >
+                        <Send className="h-4 w-4" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               )}
