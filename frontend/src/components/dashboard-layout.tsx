@@ -11,6 +11,8 @@ import {
   Settings,
   Menu,
   X,
+  ChevronLeft,
+  ChevronRight,
   Search,
   MessageCircle,
   Clock,
@@ -313,6 +315,7 @@ export default function DashboardLayout() {
   const activeAgentName = activeConversationData?.source === "ai" ? "Sokoos AI" : TEAM_AGENT_NAMES[activeConversation] ?? "Team";
   const [messageInput, setMessageInput] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -352,15 +355,28 @@ export default function DashboardLayout() {
   return (
     <div className="h-screen min-h-screen bg-[#FFFFFF] text-[#111827]">
       {/* Desktop fixed left sidebar */}
-      <aside className="hidden md:fixed md:inset-y-0 md:left-0 md:w-64 md:flex md:flex-col md:pt-6 bg-[#FFFFFF] border-r border-[#E5E7EB]">
+      <aside className={`hidden md:fixed md:inset-y-0 md:left-0 md:flex md:flex-col md:pt-6 bg-[#FFFFFF] border-r border-[#E5E7EB] transition-all duration-300 ease-out ${
+        sidebarCollapsed ? "md:w-[80px]" : "md:w-[240px]"
+      }`}>
         <div className="px-4 pb-4">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-md bg-[#22C55E] flex items-center justify-center text-white font-bold">S</div>
-            <span className="text-lg font-bold">Sokoos</span>
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-md bg-[#22C55E] flex items-center justify-center text-white font-bold">S</div>
+              {!sidebarCollapsed && <span className="text-lg font-bold">Sokoos</span>}
+            </div>
+            <button
+              type="button"
+              onClick={() => setSidebarCollapsed((value) => !value)}
+              title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+              aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#111827] transition hover:bg-[#F3F4F6]"
+            >
+              {sidebarCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+            </button>
           </div>
         </div>
 
-        <nav className="flex-1 px-2 overflow-y-auto">
+        <nav className={`flex-1 overflow-y-auto transition-all duration-300 ${sidebarCollapsed ? "px-1" : "px-2"}`}>
           <ul className="space-y-1">
             {NAV_ITEMS.map(({ label, href, Icon }) => {
               const active = selected === label;
@@ -368,14 +384,18 @@ export default function DashboardLayout() {
                 <li key={href}>
                   <button
                     onClick={() => setSelected(label)}
-                    className={`w-full text-left flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                    title={label}
+                    aria-label={label}
+                    className={`w-full flex items-center gap-3 rounded-md py-2 text-sm font-medium transition-colors ${
+                      sidebarCollapsed ? "justify-center" : "justify-start px-3"
+                    } ${
                       active
                         ? "bg-[#22C55E] text-white"
                         : "text-[#111827] hover:bg-[#F3F4F6] hover:text-[#111827]"
                     }`}
                   >
                     <Icon className={`h-4 w-4 ${active ? "opacity-100" : "opacity-80"}`} />
-                    <span>{label}</span>
+                    {!sidebarCollapsed && <span>{label}</span>}
                   </button>
                 </li>
               );
@@ -444,7 +464,7 @@ export default function DashboardLayout() {
       )}
 
       {/* Main content area. On desktop, add left padding to allow for fixed sidebar. On mobile, add top padding to account for the header. */}
-      <main className="h-full md:pl-64 pt-14 md:pt-0">
+      <main className={`h-full pt-14 md:pt-0 transition-all duration-300 ${sidebarCollapsed ? "md:pl-[80px]" : "md:pl-[240px]"}`}>
         <div className="max-w-7xl mx-auto h-full p-4">
           {/* Render placeholder pages based on selected state */}
           {selected === "Home" && (
