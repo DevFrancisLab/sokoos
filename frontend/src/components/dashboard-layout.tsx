@@ -219,6 +219,24 @@ const OUTSIDE_BUSINESS_HOURS_OPTIONS = [
   "Inform customers that the business is closed",
 ] as const;
 
+const PERSONAL_CONTACTS = [
+  {
+    name: "Mary Wanjiku",
+    relationship: "Wife",
+    phone: "+254712345678",
+  },
+  {
+    name: "Peter Mwangi",
+    relationship: "Supplier",
+    phone: "+254733222222",
+  },
+  {
+    name: "Alice Kamau",
+    relationship: "Accountant",
+    phone: "+254722111333",
+  },
+];
+
 type TestAiMessage = {
   id: string;
   role: "user" | "ai";
@@ -1979,7 +1997,40 @@ export default function DashboardLayout() {
             </div>
           )}
           {selected === "Settings" && (
-            <div className="p-6 bg-white rounded-md border border-[#E5E7EB]">Sokoos Settings</div>
+            <div className="space-y-6">
+              <div className={CARD}>
+                <div>
+                  <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">Settings</p>
+                  <h2 className="mt-2 text-2xl font-semibold text-[#111827]">Personal Contacts</h2>
+                  <p className="mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl">
+                    Manage the key contacts your business needs for support, suppliers and family members.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                {PERSONAL_CONTACTS.map((contact) => (
+                  <div key={contact.phone} className={`${CARD} bg-[#F9FAFB]`}>
+                    <div className="space-y-4">
+                      <div>
+                        <p className="text-sm font-semibold text-[#111827]">{contact.name}</p>
+                        <p className="mt-1 text-sm text-[#6B7280]">{contact.relationship}</p>
+                      </div>
+                      <div className="rounded-3xl border border-[#E5E7EB] bg-white p-4">
+                        <p className="text-sm font-semibold text-[#111827]">Phone</p>
+                        <p className="mt-2 text-sm text-[#111827]">{contact.phone}</p>
+                      </div>
+                      <button
+                        type="button"
+                        className="rounded-3xl bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
+                      >
+                        View contact
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           )}
         </div>
       </main>
