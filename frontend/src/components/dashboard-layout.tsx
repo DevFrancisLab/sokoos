@@ -610,7 +610,7 @@ export default function DashboardLayout() {
                       />
                     </div>
                   </div>
-                  <div className="flex-1 space-y-2 overflow-y-auto overflow-x-hidden pr-2 scroll-smooth custom-scrollbar">
+                  <div className="flex-1 space-y-3 overflow-y-auto overflow-x-hidden pr-2 scroll-smooth custom-scrollbar">
                     {INBOX_CONVERSATIONS.filter((conversation) => {
                       if (activeTab === "Needs Attention") {
                         return conversation.source === "needs_attention";
@@ -640,46 +640,47 @@ export default function DashboardLayout() {
                               : "border-transparent bg-[#FFFFFF] hover:border-[#E5E7EB] hover:bg-[#F9FAFB]"
                           }`}
                         >
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="flex items-center gap-3">
-                                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#22C55E] text-sm font-semibold text-white">
-                                    {conversation.avatar}
+                          <div className="flex items-start justify-between gap-3">
+                            <div className="flex min-w-0 gap-3">
+                              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-sm font-semibold text-white">
+                                {conversation.avatar}
+                              </div>
+                              <div className="min-w-0">
+                                {conversation.name ? (
+                                  <div className="flex flex-wrap items-center gap-2">
+                                    <p
+                                      className="min-w-0 text-base font-medium text-[#111827] truncate"
+                                      title={conversation.name}
+                                    >
+                                      {conversation.name.length > 22 ? `${conversation.name.slice(0, 22)}…` : conversation.name}
+                                    </p>
+                                    {conversation.source === "needs_attention" ? (
+                                      <span className="inline-flex items-center gap-1 rounded-full bg-[#fee2e2] px-2 py-1 text-xs font-semibold text-[#b91c1c]">
+                                        <span className="inline-block h-2 w-2 rounded-full bg-[#b91c1c]" aria-hidden />
+                                        Attention
+                                      </span>
+                                    ) : null}
                                   </div>
-                                  <div className="min-w-0 max-w-[12ch]">
-                                        <div className="min-w-0">
-                                          {conversation.name ? (
-                                            <p
-                                              className="text-base font-medium text-[#111827] truncate"
-                                              title={conversation.name}
-                                            >
-                                              {conversation.name.length > 18 ? `${conversation.name.slice(0, 18)}…` : conversation.name}
-                                            </p>
-                                          ) : (
-                                            <div className="min-w-0">
-                                              <p className="text-base font-medium text-[#111827]">Unknown Customer</p>
-                                              <p className="text-sm text-[#6B7280] truncate" title={conversation.phone}>
-                                                {conversation.phone}
-                                              </p>
-                                            </div>
-                                          )}
-                                          {conversation.source === "needs_attention" ? (
-                                            <span className="inline-flex items-center gap-1 rounded-full bg-[#fee2e2] px-2 py-1 text-xs font-semibold text-[#b91c1c]">
-                                              <span className="inline-block h-2 w-2 rounded-full bg-[#b91c1c]" aria-hidden />
-                                              Attention
-                                            </span>
-                                          ) : (
-                                            <span
-                                              className={`inline-block h-2 w-2 rounded-full ${conversation.source === "ai" ? "bg-[#16A34A]" : "bg-[#6B7280]"}`}
-                                              aria-hidden
-                                            />
-                                          )}
-                                        </div>
+                                ) : (
+                                  <div className="space-y-0.5">
+                                    <p className="text-base font-medium text-[#111827]">Unknown Customer</p>
+                                    <p className="text-sm text-[#6B7280] truncate" title={conversation.phone}>
+                                      {conversation.phone}
+                                    </p>
                                   </div>
-                                </div>
-                                <span className="text-xs text-[#6B7280]">{formatConversationTime(conversation.time)}</span>
+                                )}
+                                {conversation.name && conversation.source !== "needs_attention" ? (
+                                  <span
+                                    className={`inline-block mt-1 h-2 w-2 rounded-full ${conversation.source === "ai" ? "bg-[#16A34A]" : "bg-[#6B7280]"}`}
+                                    aria-hidden
+                                  />
+                                ) : null}
+                              </div>
+                            </div>
+                            <span className="shrink-0 text-xs text-[#6B7280]">{formatConversationTime(conversation.time)}</span>
                           </div>
-                          <div className="mt-1 flex items-center justify-between gap-2 text-[#6B7280]">
-                            <p className="min-w-0 text-sm truncate">{conversation.message}</p>
+                          <div className="mt-2 flex items-center justify-between gap-2 text-sm text-[#6B7280]">
+                            <p className="min-w-0 truncate">{conversation.message}</p>
                             {conversation.source === "ai" ? null : conversation.source === "needs_attention" ? (
                               <span className="inline-flex h-3.5 w-3.5 rounded-full bg-[#DC2626]" aria-label="Needs attention" />
                             ) : conversation.badge > 0 ? (
