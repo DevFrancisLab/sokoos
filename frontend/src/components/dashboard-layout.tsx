@@ -202,12 +202,7 @@ const BUSINESS_POLICIES = {
   cancellationPolicy: "Customers may cancel within 24 hours of booking without penalty.",
 };
 
-const AI_SETTINGS_ITEMS = [
-  { setting: "Conversation Tone", value: "Friendly & Professional", status: "Active" },
-  { setting: "Response Language", value: "English (default) + Kiswahili", status: "Active" },
-  { setting: "Max Response Length", value: "500 characters", status: "Active" },
-  { setting: "Follow-up Frequency", value: "Auto-follow-up after 2 hours of inactivity", status: "Active" },
-];
+const TONE_OPTIONS = ["Professional", "Friendly", "Formal", "Sales-focused"] as const;
 
 const ESCALATION_RULES_ITEMS = [
   { trigger: "Angry sentiment detected", action: "Escalate to owner", priority: "High" },
@@ -522,6 +517,14 @@ export default function DashboardLayout() {
   const [businessHours, setBusinessHours] = useState("Mon–Fri, 8:00 AM - 6:00 PM");
   const [humanTakeover, setHumanTakeover] = useState(true);
   const [language, setLanguage] = useState<(typeof LANGUAGES)[number]>("English");
+  const [secondaryLanguage, setSecondaryLanguage] = useState<(typeof LANGUAGES)[number]>("Kiswahili");
+  const [assistantName, setAssistantName] = useState("Nuru");
+  const [tone, setTone] = useState<(typeof TONE_OPTIONS)[number]>("Friendly");
+  const [salesBehavior, setSalesBehavior] = useState({
+    upsellProducts: true,
+    recommendAlternatives: true,
+    closeSalesAutomatically: false,
+  });
   const [personality, setPersonality] = useState<(typeof PERSONALITIES)[number]>("Friendly");
   const [imageLabel, setImageLabel] = useState("No file selected");
   const [customerCollapsed, setCustomerCollapsed] = useState(false);
@@ -1640,20 +1643,131 @@ export default function DashboardLayout() {
               )}
 
               {aiAssistantTab === "AI Settings" && (
-                <div className="space-y-4">
-                  {AI_SETTINGS_ITEMS.map((item) => (
-                    <div key={item.setting} className={CARD}>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-medium text-[#6B7280]">{item.setting}</p>
-                          <p className="mt-2 text-base font-semibold text-[#111827]">{item.value}</p>
-                        </div>
-                        <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#166534]">
-                          {item.status}
-                        </span>
+                <div className="space-y-6">
+                  <div className={CARD}>
+                    <div className="space-y-4">
+                      <div>
+                        <p className="text-sm font-medium text-[#6B7280]">AI Identity</p>
+                        <h3 className="mt-2 text-lg font-semibold text-[#111827]">Assistant Name</h3>
+                      </div>
+                      <div className="space-y-2">
+                        <label className="block text-sm font-semibold text-[#111827]" htmlFor="assistant-name">
+                          Assistant Name
+                        </label>
+                        <input
+                          id="assistant-name"
+                          value={assistantName}
+                          onChange={(event) => setAssistantName(event.target.value)}
+                          className="w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
+                          placeholder="Nuru"
+                        />
+                        <p className="text-sm text-[#6B7280]">This is the name your AI assistant uses when answering customer questions.</p>
                       </div>
                     </div>
-                  ))}
+                  </div>
+
+                  <div className="grid gap-4 xl:grid-cols-2">
+                    <div className={CARD}>
+                      <div className="space-y-4">
+                        <div>
+                          <p className="text-sm font-medium text-[#6B7280]">Languages</p>
+                          <h3 className="mt-2 text-lg font-semibold text-[#111827]">Primary & Secondary</h3>
+                        </div>
+                        <div className="space-y-4 text-sm text-[#111827]">
+                          <div>
+                            <label className="block font-semibold" htmlFor="primary-language">Primary Language</label>
+                            <select
+                              id="primary-language"
+                              value={language}
+                              onChange={(event) => setLanguage(event.target.value as typeof LANGUAGES[number])}
+                              className="mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
+                            >
+                              {LANGUAGES.map((option) => (
+                                <option key={option} value={option}>{option}</option>
+                              ))}
+                            </select>
+                          </div>
+                          <div>
+                            <label className="block font-semibold" htmlFor="secondary-language">Secondary Language</label>
+                            <select
+                              id="secondary-language"
+                              value={secondaryLanguage}
+                              onChange={(event) => setSecondaryLanguage(event.target.value as typeof LANGUAGES[number])}
+                              className="mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
+                            >
+                              {LANGUAGES.map((option) => (
+                                <option key={option} value={option}>{option}</option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className={CARD}>
+                      <div className="space-y-4">
+                        <div>
+                          <p className="text-sm font-medium text-[#6B7280]">Tone</p>
+                          <h3 className="mt-2 text-lg font-semibold text-[#111827]">AI Personality</h3>
+                        </div>
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          {TONE_OPTIONS.map((option) => (
+                            <button
+                              key={option}
+                              type="button"
+                              onClick={() => setTone(option)}
+                              className={`rounded-3xl border px-4 py-3 text-left text-sm font-semibold transition ${
+                                tone === option
+                                  ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]"
+                                  : "border-[#E5E7EB] bg-white text-[#111827] hover:bg-[#F3F4F6]"
+                              }`}
+                            >
+                              {option}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className={CARD}>
+                    <div className="space-y-4">
+                      <div>
+                        <p className="text-sm font-medium text-[#6B7280]">Sales Behavior</p>
+                        <h3 className="mt-2 text-lg font-semibold text-[#111827]">Guide sales conversations</h3>
+                      </div>
+                      <div className="space-y-3 text-sm text-[#111827]">
+                        <label className="flex items-center gap-3 rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3">
+                          <input
+                            type="checkbox"
+                            checked={salesBehavior.upsellProducts}
+                            onChange={(event) => setSalesBehavior((current) => ({ ...current, upsellProducts: event.target.checked }))}
+                            className="h-4 w-4 rounded border-[#D1D5DB] text-[#22C55E] focus:ring-[#22C55E]"
+                          />
+                          <span>Upsell Products</span>
+                        </label>
+                        <label className="flex items-center gap-3 rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3">
+                          <input
+                            type="checkbox"
+                            checked={salesBehavior.recommendAlternatives}
+                            onChange={(event) => setSalesBehavior((current) => ({ ...current, recommendAlternatives: event.target.checked }))}
+                            className="h-4 w-4 rounded border-[#D1D5DB] text-[#22C55E] focus:ring-[#22C55E]"
+                          />
+                          <span>Recommend Alternatives</span>
+                        </label>
+                        <label className="flex items-center gap-3 rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3">
+                          <input
+                            type="checkbox"
+                            checked={salesBehavior.closeSalesAutomatically}
+                            onChange={(event) => setSalesBehavior((current) => ({ ...current, closeSalesAutomatically: event.target.checked }))}
+                            className="h-4 w-4 rounded border-[#D1D5DB] text-[#22C55E] focus:ring-[#22C55E]"
+                          />
+                          <span>Close Sales Automatically</span>
+                        </label>
+                      </div>
+                      <p className="text-sm text-[#6B7280]">These settings are used to shape how the AI recommends and closes on offers in conversations.</p>
+                    </div>
+                  </div>
                 </div>
               )}
 
