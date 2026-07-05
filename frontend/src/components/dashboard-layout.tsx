@@ -177,48 +177,57 @@ const INBOX_CONVERSATIONS = [
   {
     id: "c1",
     name: "Aisha from Nairobi",
+    phone: "+254712345678",
     message: "Can you share the latest pricing?",
     time: "2m",
     badge: 3,
     source: "team",
+    isSaved: true,
     avatar: "AM",
   },
   {
     id: "c2",
     name: "James - Tech Store",
+    phone: "+254700123456",
     message: "How do I update product availability?",
     time: "14m",
     badge: 0,
     source: "ai",
+    isSaved: true,
     avatar: "J",
   },
   {
     id: "c3",
     name: "Grace",
+    phone: "+254733987654",
     message: "Thanks for the quick response!",
     time: "37m",
     badge: 1,
     source: "needs_attention",
     needsAttention: true,
+    isSaved: true,
     avatar: "G",
   },
   {
     id: "c4",
     name: "Michael",
+    phone: "+254711222333",
     message: "Please pause the AI for tonight.",
     time: "1h",
     badge: 0,
     source: "ai",
+    isSaved: true,
     avatar: "M",
   },
   {
     id: "c5",
-    name: "",
-    phone: "+254 712 345 678",
+    name: null,
+    phone: "+254712345678",
     message: "I’m interested in your business package — can you share details?",
     time: "Yesterday",
     badge: 0,
     source: "team",
+    isSaved: false,
     avatar: "UC",
   },
 ];
@@ -368,6 +377,7 @@ export default function DashboardLayout() {
     image: "",
     caption: "",
     date: "",
+    time: "",
     source: "ai",
     needsAttention: true,
   });
@@ -646,7 +656,7 @@ export default function DashboardLayout() {
                                 {conversation.avatar}
                               </div>
                               <div className="min-w-0">
-                                {conversation.name ? (
+                                {conversation.isSaved && conversation.name ? (
                                   <div className="flex flex-wrap items-center gap-2">
                                     <p
                                       className="min-w-0 text-base font-medium text-[#111827] truncate"
@@ -663,13 +673,15 @@ export default function DashboardLayout() {
                                   </div>
                                 ) : (
                                   <div className="space-y-0.5">
-                                    <p className="text-base font-medium text-[#111827]">Unknown Customer</p>
-                                    <p className="text-sm text-[#6B7280] truncate" title={conversation.phone}>
-                                      {conversation.phone}
+                                    <p
+                                      className="text-base font-medium text-[#111827] truncate"
+                                      title={conversation.phone ?? "Unknown Customer"}
+                                    >
+                                      {conversation.phone ?? "Unknown Customer"}
                                     </p>
                                   </div>
                                 )}
-                                {conversation.name && conversation.source !== "needs_attention" ? (
+                                {conversation.source !== "needs_attention" ? (
                                   <span
                                     className={`inline-block mt-1 h-2 w-2 rounded-full ${conversation.source === "ai" ? "bg-[#16A34A]" : "bg-[#6B7280]"}`}
                                     aria-hidden
