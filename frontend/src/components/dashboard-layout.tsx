@@ -681,9 +681,14 @@ export default function DashboardLayout() {
                                     </p>
                                   </div>
                                 )}
-                                {conversation.source !== "needs_attention" ? (
+                                {conversation.source === "ai" ? (
+                                  <span className="inline-flex mt-1 items-center gap-1 rounded-full bg-[#ECFDF5] px-2 py-1 text-[11px] font-semibold text-[#166534]">
+                                    <span aria-hidden>🤖</span>
+                                    AI Handling
+                                  </span>
+                                ) : conversation.source !== "needs_attention" ? (
                                   <span
-                                    className={`inline-block mt-1 h-2 w-2 rounded-full ${conversation.source === "ai" ? "bg-[#16A34A]" : "bg-[#6B7280]"}`}
+                                    className="inline-block mt-1 h-2 w-2 rounded-full bg-[#6B7280]"
                                     aria-hidden
                                   />
                                 ) : null}
@@ -693,7 +698,11 @@ export default function DashboardLayout() {
                           </div>
                           <div className="mt-2 flex items-center justify-between gap-2 text-sm text-[#6B7280]">
                             <p className="min-w-0 truncate">{conversation.message}</p>
-                            {conversation.source === "ai" ? null : conversation.source === "needs_attention" ? (
+                            {conversation.source === "ai" ? (
+                              <span className="inline-flex rounded-full bg-[#ECFDF5] px-2 py-1 text-[10px] font-semibold text-[#166534]">
+                                🤖 AI Active
+                              </span>
+                            ) : conversation.source === "needs_attention" ? (
                               <span className="inline-flex h-3.5 w-3.5 rounded-full bg-[#DC2626]" aria-label="Needs attention" />
                             ) : conversation.badge > 0 ? (
                               <span className="rounded-full bg-[#22C55E] px-2 py-0.5 text-[10px] font-semibold text-white">
