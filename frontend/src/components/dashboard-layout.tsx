@@ -213,12 +213,11 @@ const ESCALATION_OPTIONS = [
   { key: "negotiationsAbove10000", label: "Negotiations Above KES 10,000" },
 ] as const;
 
-const CONVERSATION_POLICIES_ITEMS = [
-  { policy: "Max conversation length", value: "50 messages before summary required" },
-  { policy: "Inactivity timeout", value: "Close after 24 hours of no messages" },
-  { policy: "Customer re-engagement", value: "Send reminder after 7 days of inactivity" },
-  { policy: "Data retention", value: "Keep conversation history for 90 days" },
-];
+const OUTSIDE_BUSINESS_HOURS_OPTIONS = [
+  "Continue AI conversations",
+  "Collect customer information only",
+  "Inform customers that the business is closed",
+] as const;
 
 type TestAiMessage = {
   id: string;
@@ -538,6 +537,11 @@ export default function DashboardLayout() {
   });
   const [imageLabel, setImageLabel] = useState("No file selected");
   const [customerCollapsed, setCustomerCollapsed] = useState(false);
+  const [policyBusinessHours, setPolicyBusinessHours] = useState("8:00 AM - 6:00 PM");
+  const [outsideBusinessHoursBehavior, setOutsideBusinessHoursBehavior] = useState<(typeof OUTSIDE_BUSINESS_HOURS_OPTIONS)[number]>("Collect customer information only");
+  const [maxAiMessages, setMaxAiMessages] = useState(10);
+  const [allowAiCloseSales, setAllowAiCloseSales] = useState(true);
+  const [allowAiScheduleAppointments, setAllowAiScheduleAppointments] = useState(true);
 
   return (
     <div className="h-screen min-h-screen bg-[#FFFFFF] text-[#111827]">
@@ -1874,20 +1878,102 @@ export default function DashboardLayout() {
               )}
 
               {aiAssistantTab === "Conversation Policies" && (
-                <div className="space-y-4">
-                  {CONVERSATION_POLICIES_ITEMS.map((item) => (
-                    <div key={item.policy} className={CARD}>
-                      <div className="flex items-center justify-between">
+                <div className="space-y-6">
+                  <div className={CARD}>
+                    <div className="space-y-4">
+                      <div>
+                        <p className="text-sm font-medium text-[#6B7280]">Conversation Policies</p>
+                        <h3 className="mt-2 text-lg font-semibold text-[#111827]">AI behavior around business hours</h3>
+                      </div>
+                      <div className="space-y-3 text-sm text-[#111827]">
+                        <label className="block font-semibold">Business Hours</label>
+                        <input
+                          value={policyBusinessHours}
+                          onChange={(event) => setPolicyBusinessHours(event.target.value)}
+                          className="w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className={CARD}>
+                    <div className="space-y-4">
+                      <div>
+                        <p className="text-sm font-medium text-[#6B7280]">Outside Business Hours</p>
+                        <p className="mt-2 text-sm text-[#6B7280]">Choose how the AI should behave when the business is closed.</p>
+                      </div>
+                      <div className="space-y-3">
+                        {OUTSIDE_BUSINESS_HOURS_OPTIONS.map((option) => (
+                          <label key={option} className="flex items-center gap-3 rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827]">
+                            <input
+                              type="radio"
+                              name="outside-business-hours"
+                              checked={outsideBusinessHoursBehavior === option}
+                              onChange={() => setOutsideBusinessHoursBehavior(option)}
+                              className="h-4 w-4 rounded-full border-[#D1D5DB] text-[#22C55E] focus:ring-[#22C55E]"
+                            />
+                            <span>{option}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid gap-4 xl:grid-cols-2">
+                    <div className={CARD}>
+                      <div className="space-y-4">
                         <div>
-                          <p className="text-sm font-medium text-[#6B7280]">{item.policy}</p>
-                          <p className="mt-2 font-semibold text-[#111827]">{item.value}</p>
+                          <p className="text-sm font-medium text-[#6B7280]">Maximum AI Messages</p>
+                          <p className="mt-2 text-sm text-[#6B7280]">Limit how many times the AI can respond before the conversation is reviewed.</p>
                         </div>
-                        <button className="rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#166534] hover:bg-[#DCF4F0]">
-                          Configure
+                        <input
+                          type="number"
+                          min={1}
+                          value={maxAiMessages}
+                          onChange={(event) => setMaxAiMessages(Number(event.target.value))}
+                          className="w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
+                        />
+                      </div>
+                    </div>
+
+                    <div className={CARD}>
+                      <div className="space-y-4">
+                        <div>
+                          <p className="text-sm font-medium text-[#6B7280]">Allow AI to Close Sales</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setAllowAiCloseSales((current) => !current)}
+                          className={`inline-flex items-center rounded-3xl px-4 py-3 text-sm font-semibold ${
+                            allowAiCloseSales
+                              ? "bg-[#22C55E] text-white"
+                              : "bg-[#E5E7EB] text-[#6B7280]"
+                          }`}
+                        >
+                          {allowAiCloseSales ? "On" : "Off"}
                         </button>
                       </div>
                     </div>
-                  ))}
+                  </div>
+
+                  <div className={CARD}>
+                    <div className="space-y-4">
+                      <div>
+                        <p className="text-sm font-medium text-[#6B7280]">Allow AI to Schedule Appointments</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setAllowAiScheduleAppointments((current) => !current)}
+                        className={`inline-flex items-center rounded-3xl px-4 py-3 text-sm font-semibold ${
+                          allowAiScheduleAppointments
+                            ? "bg-[#22C55E] text-white"
+                            : "bg-[#E5E7EB] text-[#6B7280]"
+                        }`}
+                      >
+                        {allowAiScheduleAppointments ? "On" : "Off"}
+                      </button>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
