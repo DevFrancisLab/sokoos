@@ -204,12 +204,14 @@ const BUSINESS_POLICIES = {
 
 const TONE_OPTIONS = ["Professional", "Friendly", "Formal", "Sales-focused"] as const;
 
-const ESCALATION_RULES_ITEMS = [
-  { trigger: "Angry sentiment detected", action: "Escalate to owner", priority: "High" },
-  { trigger: "3+ customer questions unanswered", action: "Escalate & notify owner", priority: "High" },
-  { trigger: "Request for billing info", action: "Escalate to owner", priority: "Critical" },
-  { trigger: "Refund request", action: "Escalate to owner", priority: "Critical" },
-];
+const ESCALATION_OPTIONS = [
+  { key: "complaints", label: "Complaints" },
+  { key: "refundRequests", label: "Refund Requests" },
+  { key: "legalQuestions", label: "Legal Questions" },
+  { key: "humanRequested", label: "Human Requested" },
+  { key: "unknownQuestions", label: "Unknown Questions" },
+  { key: "negotiationsAbove10000", label: "Negotiations Above KES 10,000" },
+] as const;
 
 const CONVERSATION_POLICIES_ITEMS = [
   { policy: "Max conversation length", value: "50 messages before summary required" },
@@ -526,6 +528,14 @@ export default function DashboardLayout() {
     closeSalesAutomatically: false,
   });
   const [personality, setPersonality] = useState<(typeof PERSONALITIES)[number]>("Friendly");
+  const [escalationRules, setEscalationRules] = useState({
+    complaints: true,
+    refundRequests: true,
+    legalQuestions: true,
+    humanRequested: true,
+    unknownQuestions: true,
+    negotiationsAbove10000: true,
+  });
   const [imageLabel, setImageLabel] = useState("No file selected");
   const [customerCollapsed, setCustomerCollapsed] = useState(false);
 
@@ -1828,20 +1838,38 @@ export default function DashboardLayout() {
 
               {aiAssistantTab === "Escalation Rules" && (
                 <div className="space-y-4">
-                  {ESCALATION_RULES_ITEMS.map((item) => (
-                    <div key={item.trigger} className={CARD}>
-                      <div className="flex items-start justify-between">
-                        <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium text-[#6B7280]">Trigger</p>
-                          <p className="mt-2 font-semibold text-[#111827]">{item.trigger}</p>
-                          <p className="mt-2 text-sm text-[#6B7280]">Action: {item.action}</p>
-                        </div>
-                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${item.priority === "Critical" ? "bg-[#FEF2F2] text-[#B91C1C]" : "bg-[#FEF3C7] text-[#B45309]"}`}>
-                          {item.priority}
-                        </span>
+                  <div className={CARD}>
+                    <div className="space-y-3">
+                      <div>
+                        <p className="text-sm font-medium text-[#6B7280]">Escalation Rules</p>
+                        <h3 className="mt-2 text-lg font-semibold text-[#111827]">Send these conversations to a human</h3>
                       </div>
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        {ESCALATION_OPTIONS.map((option) => (
+                          <label
+                            key={option.key}
+                            className="flex items-center gap-3 rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827]"
+                          >
+                            <input
+                              type="checkbox"
+                              checked={escalationRules[option.key]}
+                              onChange={(event) =>
+                                setEscalationRules((current) => ({
+                                  ...current,
+                                  [option.key]: event.target.checked,
+                                }))
+                              }
+                              className="h-4 w-4 rounded border-[#D1D5DB] text-[#22C55E] focus:ring-[#22C55E]"
+                            />
+                            <span>{option.label}</span>
+                          </label>
+                        ))}
+                      </div>
+                      <p className="text-sm text-[#6B7280]">
+                        When these situations occur, the AI stops responding and requests owner intervention.
+                      </p>
                     </div>
-                  ))}
+                  </div>
                 </div>
               )}
 
