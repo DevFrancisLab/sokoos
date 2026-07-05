@@ -192,7 +192,7 @@ const INBOX_CONVERSATIONS = [
     message: "How do I update product availability?",
     time: "14m",
     badge: 0,
-    source: "ai",
+    source: "ai_handling",
     isSaved: true,
     avatar: "J",
   },
@@ -215,7 +215,7 @@ const INBOX_CONVERSATIONS = [
     message: "Please pause the AI for tonight.",
     time: "1h",
     badge: 0,
-    source: "ai",
+    source: "ai_handled",
     isSaved: true,
     avatar: "M",
   },
@@ -626,7 +626,7 @@ export default function DashboardLayout() {
                         return conversation.source === "needs_attention";
                       }
                       if (activeTab === "AI") {
-                        return conversation.source === "ai";
+                        return String(conversation.source).startsWith("ai");
                       }
                         if (activeTab === "Team") {
                         return conversation.source === "team";
@@ -681,10 +681,20 @@ export default function DashboardLayout() {
                                     </p>
                                   </div>
                                 )}
-                                {conversation.source === "ai" ? (
-                                  <span className="inline-flex mt-1 items-center gap-1 rounded-full bg-[#ECFDF5] px-2 py-1 text-[11px] font-semibold text-[#166534]">
+                                {conversation.source === "ai_handling" ? (
+                                  <span className="inline-flex mt-1 items-center gap-1 rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#166534]">
                                     <span aria-hidden>🤖</span>
                                     AI Handling
+                                  </span>
+                                ) : conversation.source === "ai_handled" ? (
+                                  <span className="inline-flex mt-1 items-center gap-1 rounded-full bg-[#F0FDF4] px-2 py-1 text-xs font-semibold text-[#14532d]">
+                                    <span aria-hidden>🤖</span>
+                                    AI Handled
+                                  </span>
+                                ) : conversation.source === "team" ? (
+                                  <span className="inline-flex mt-1 items-center gap-1 rounded-full bg-[#EFF6FF] px-2 py-1 text-xs font-semibold text-[#1E3A8A]">
+                                    <span aria-hidden>👤</span>
+                                    Team
                                   </span>
                                 ) : conversation.source !== "needs_attention" ? (
                                   <span
@@ -698,15 +708,25 @@ export default function DashboardLayout() {
                           </div>
                           <div className="mt-2 flex items-center justify-between gap-2 text-sm text-[#6B7280]">
                             <p className="min-w-0 truncate">{conversation.message}</p>
-                            {conversation.source === "ai" ? (
-                              <span className="inline-flex rounded-full bg-[#ECFDF5] px-2 py-1 text-[10px] font-semibold text-[#166534]">
-                                🤖 AI Active
-                              </span>
-                            ) : conversation.source === "needs_attention" ? (
-                              <span className="inline-flex h-3.5 w-3.5 rounded-full bg-[#DC2626]" aria-label="Needs attention" />
-                            ) : conversation.badge > 0 ? (
+                            {conversation.badge > 0 ? (
                               <span className="rounded-full bg-[#22C55E] px-2 py-0.5 text-[10px] font-semibold text-white">
                                 {conversation.badge}
+                              </span>
+                            ) : conversation.source === "ai_handling" ? (
+                              <span className="inline-flex rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#166534]">
+                                🤖 AI Handling
+                              </span>
+                            ) : conversation.source === "ai_handled" ? (
+                              <span className="inline-flex rounded-full bg-[#F0FDF4] px-2 py-1 text-xs font-semibold text-[#14532d]">
+                                🤖 AI Handled
+                              </span>
+                            ) : conversation.source === "needs_attention" ? (
+                              <span className="inline-flex rounded-full bg-[#FEF2F2] px-2 py-1 text-xs font-semibold text-[#B91C1C]">
+                                🔴 Attention
+                              </span>
+                            ) : conversation.source === "team" ? (
+                              <span className="inline-flex rounded-full bg-[#EFF6FF] px-2 py-1 text-xs font-semibold text-[#1E3A8A]">
+                                👤 Team
                               </span>
                             ) : null}
                           </div>
