@@ -678,7 +678,9 @@ export default function DashboardLayout() {
                           </div>
                           <div className="mt-1 flex items-center justify-between gap-2 text-[#6B7280]">
                             <p className="min-w-0 text-sm truncate">{conversation.message}</p>
-                            {conversation.badge > 0 ? (
+                            {conversation.source === "ai" ? null : conversation.source === "needs_attention" ? (
+                              <span className="inline-flex h-3.5 w-3.5 rounded-full bg-[#DC2626]" aria-label="Needs attention" />
+                            ) : conversation.badge > 0 ? (
                               <span className="rounded-full bg-[#22C55E] px-2 py-0.5 text-[10px] font-semibold text-white">
                                 {conversation.badge}
                               </span>
