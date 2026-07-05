@@ -755,22 +755,30 @@ export default function DashboardLayout() {
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                       <p className="text-sm font-medium text-[#6B7280]">Live chat</p>
-                      <div className="flex items-center gap-3">
+                      <div className="flex flex-col">
                         <h2 className="text-xl font-semibold text-[#111827]">{INBOX_CONVERSATIONS.find((item) => item.id === activeConversation)?.name}</h2>
-                        <button
-                          type="button"
-                          onClick={toggleAiForActive}
-                          className={`inline-flex items-center gap-2 rounded-full px-2 py-1 text-xs font-semibold transition ${String(effectiveActiveSource).startsWith("ai") ? "bg-[#ECFDF5] text-[#166534]" : "bg-[#F3F4F6] text-[#111827]"}`}
-                          title={String(effectiveActiveSource).startsWith("ai") ? "AI ON" : "Owner Mode"}
-                        >
-                          {String(effectiveActiveSource).startsWith("ai") ? "🤖 AI ON" : "👤 Owner Mode"}
-                        </button>
+                        <p className="mt-1 text-sm text-[#6B7280]">
+                          {activeConversationData?.message
+                            ? `Last customer message • ${formatConversationTime(activeConversationData?.time)}`
+                            : "Waiting for customer response"}
+                        </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="rounded-2xl bg-[#F9FAFB] px-3 py-2 text-sm text-[#111827]">
-                        Active now
-                      </div>
+                      <button
+                        type="button"
+                        onClick={toggleAiForActive}
+                        aria-label="Toggle AI/Owner mode"
+                        className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold transition ${effectiveActiveSource.startsWith("ai") ? "bg-[#ECFDF5] text-[#166534]" : effectiveActiveSource === "needs_attention" ? "bg-[#FEF2F2] text-[#B91C1C]" : "bg-[#EFF6FF] text-[#1E3A8A]"}`}
+                      >
+                        {effectiveActiveSource.startsWith("ai") ? (
+                          effectiveActiveSource === "ai_handling" ? "🤖 AI ON" : "🤖 AI Handled"
+                        ) : effectiveActiveSource === "needs_attention" ? (
+                          "🔴 Needs Owner"
+                        ) : (
+                          "👤 Owner Mode"
+                        )}
+                      </button>
                       {customerCollapsed && (
                         <button
                           type="button"
