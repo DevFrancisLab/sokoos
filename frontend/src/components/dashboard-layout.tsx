@@ -174,13 +174,33 @@ const LANGUAGES = ["English", "Kiswahili"] as const;
 const PERSONALITIES = ["Friendly", "Professional", "Sales Focused"] as const;
 
 const AI_ASSISTANT_TABS = ["Business Knowledge", "AI Settings", "Test AI", "Escalation Rules", "Conversation Policies"] as const;
+const BUSINESS_INFO = {
+  businessName: "Sokoos Internet Solutions",
+  businessType: "Telecom & ISP",
+  aboutUs: "We deliver affordable, reliable internet solutions for small and medium businesses across Nairobi and surrounding regions.",
+  businessHours: "Mon–Fri 8:00 AM - 6:00 PM",
+  serviceAreas: "Nairobi, Thika, Mombasa, Kisumu",
+  paymentMethods: "Mobile money, bank transfer, cash on delivery",
+};
 
-const BUSINESS_KNOWLEDGE_ITEMS = [
-  { title: "Company Mission", value: "Provide affordable, reliable internet to African businesses.", category: "Core" },
-  { title: "Main Products", value: "10 Mbps, 20 Mbps, Business Package with priority support.", category: "Products" },
-  { title: "Pricing", value: "10 Mbps: KSh 1,999/mo | 20 Mbps: KSh 3,499/mo | Business: KSh 6,999/mo", category: "Sales" },
-  { title: "Support Hours", value: "Mon–Fri 8:00 AM – 6:00 PM EAT. Weekend support via email.", category: "Support" },
+const PRODUCTS_AND_SERVICES = [
+  { title: "10 Mbps Internet", price: "KES 2,500/month" },
+  { title: "20 Mbps Internet", price: "KES 3,500/month" },
+  { title: "Business Package", price: "KES 5,000/month" },
 ];
+
+const FAQ_ITEMS = [
+  {
+    question: "Do you offer installation?",
+    answer: "Yes, installation costs KES 2,000.",
+  },
+];
+
+const BUSINESS_POLICIES = {
+  returnPolicy: "Customers can request a refund within 7 days of installation if the service is not delivered as promised.",
+  deliveryPolicy: "Installation appointments are scheduled within 48 hours of payment confirmation.",
+  cancellationPolicy: "Customers may cancel within 24 hours of booking without penalty.",
+};
 
 const AI_SETTINGS_ITEMS = [
   { setting: "Conversation Tone", value: "Friendly & Professional", status: "Active" },
@@ -1425,21 +1445,125 @@ export default function DashboardLayout() {
               </div>
 
               {aiAssistantTab === "Business Knowledge" && (
-                <div className="grid gap-4 lg:grid-cols-2">
-                  {BUSINESS_KNOWLEDGE_ITEMS.map((item) => (
-                    <div key={item.title} className={CARD}>
-                      <div className="flex items-start justify-between">
-                        <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium text-[#6B7280]">{item.category}</p>
-                          <h3 className="mt-2 text-lg font-semibold text-[#111827]">{item.title}</h3>
-                          <p className="mt-3 text-sm text-[#6B7280]">{item.value}</p>
-                        </div>
-                        <button className="ml-4 rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#166534] hover:bg-[#DCF4F0]">
-                          Edit
-                        </button>
+                <div className="grid gap-4 lg:grid-cols-[1fr_1.2fr]">
+                  <div className={CARD}>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-medium text-[#6B7280]">Business Information</p>
+                        <h3 className="mt-2 text-lg font-semibold text-[#111827]">About your business</h3>
+                      </div>
+                      <button className="rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#166534] hover:bg-[#DCF4F0]">
+                        Edit
+                      </button>
+                    </div>
+                    <div className="mt-4 space-y-4 text-sm text-[#6B7280]">
+                      <div>
+                        <p className="font-semibold text-[#111827]">Business Name</p>
+                        <p>{BUSINESS_INFO.businessName}</p>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-[#111827]">Business Type</p>
+                        <p>{BUSINESS_INFO.businessType}</p>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-[#111827]">About Us</p>
+                        <p>{BUSINESS_INFO.aboutUs}</p>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-[#111827]">Business Hours</p>
+                        <p>{BUSINESS_INFO.businessHours}</p>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-[#111827]">Service Areas</p>
+                        <p>{BUSINESS_INFO.serviceAreas}</p>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-[#111827]">Payment Methods</p>
+                        <p>{BUSINESS_INFO.paymentMethods}</p>
                       </div>
                     </div>
-                  ))}
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className={CARD}>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-[#6B7280]">Products & Services</p>
+                          <h3 className="mt-2 text-lg font-semibold text-[#111827]">What you sell</h3>
+                        </div>
+                        <button className="rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#166534] hover:bg-[#DCF4F0]">
+                          Add item
+                        </button>
+                      </div>
+                      <div className="mt-4 space-y-3 text-sm text-[#6B7280]">
+                        {PRODUCTS_AND_SERVICES.map((product) => (
+                          <div key={product.title} className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+                            <p className="font-semibold text-[#111827]">{product.title}</p>
+                            <p className="mt-1">{product.price}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className={CARD}>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-[#6B7280]">FAQs</p>
+                          <h3 className="mt-2 text-lg font-semibold text-[#111827]">Common customer questions</h3>
+                        </div>
+                        <button className="rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#166534] hover:bg-[#DCF4F0]">
+                          Add FAQ
+                        </button>
+                      </div>
+                      <div className="mt-4 space-y-4 text-sm text-[#6B7280]">
+                        {FAQ_ITEMS.map((item) => (
+                          <div key={item.question} className="rounded-3xl border border-[#E5E7EB] bg-white p-4">
+                            <p className="font-semibold text-[#111827]">Question</p>
+                            <p className="mt-1">{item.question}</p>
+                            <p className="mt-3 font-semibold text-[#111827]">Answer</p>
+                            <p className="mt-1">{item.answer}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className={CARD}>
+                      <div>
+                        <p className="text-sm font-medium text-[#6B7280]">Policies</p>
+                        <h3 className="mt-2 text-lg font-semibold text-[#111827]">AI response reference</h3>
+                        <p className="mt-2 text-sm text-[#6B7280]">This information is used by the AI when responding to customers.</p>
+                      </div>
+                      <div className="mt-4 space-y-4 text-sm text-[#6B7280]">
+                        <div>
+                          <p className="font-semibold text-[#111827]">Return Policy</p>
+                          <textarea
+                            readOnly
+                            className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none"
+                            rows={3}
+                            value={BUSINESS_POLICIES.returnPolicy}
+                          />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-[#111827]">Delivery Policy</p>
+                          <textarea
+                            readOnly
+                            className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none"
+                            rows={3}
+                            value={BUSINESS_POLICIES.deliveryPolicy}
+                          />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-[#111827]">Cancellation Policy</p>
+                          <textarea
+                            readOnly
+                            className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none"
+                            rows={3}
+                            value={BUSINESS_POLICIES.cancellationPolicy}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
 
