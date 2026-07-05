@@ -216,12 +216,14 @@ const INBOX_CONVERSATIONS = [
     name: "",
     phone: "+254 712 345 678",
     message: "I’m interested in your business package — can you share details?",
-    time: "4h",
+    time: "Yesterday",
     badge: 0,
     source: "team",
     avatar: "UC",
   },
 ];
+
+const formatConversationTime = (time: string | undefined) => time || "Unknown";
 
 const INBOX_TAB_ITEMS = ["All", "AI", "Team", "Needs Attention"] as const;
 
@@ -638,7 +640,7 @@ export default function DashboardLayout() {
                               : "border-transparent bg-[#FFFFFF] hover:border-[#E5E7EB] hover:bg-[#F9FAFB]"
                           }`}
                         >
-                          <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-start justify-between gap-2">
                             <div className="flex items-center gap-3">
                                   <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#22C55E] text-sm font-semibold text-white">
                                     {conversation.avatar}
@@ -674,7 +676,7 @@ export default function DashboardLayout() {
                                         </div>
                                   </div>
                                 </div>
-                                <span className="text-xs text-[#6B7280]">{conversation.time}</span>
+                                <span className="text-xs text-[#6B7280]">{formatConversationTime(conversation.time)}</span>
                           </div>
                           <div className="mt-1 flex items-center justify-between gap-2 text-[#6B7280]">
                             <p className="min-w-0 text-sm truncate">{conversation.message}</p>
