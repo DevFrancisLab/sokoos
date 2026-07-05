@@ -142,10 +142,10 @@ const PRODUCTS = [
 ];
 
 const ANALYTICS_METRICS = [
-  { label: "Messages", value: "13.4k", delta: "+12%", description: "Compared to last week" },
-  { label: "Leads", value: "1,280", delta: "+8%", description: "Warm and new leads" },
+  { label: "Messages", value: "13.4k", delta: "+12%", description: "Compared to last week (excludes personal)" },
+  { label: "Leads", value: "1,280", delta: "+8%", description: "Warm and new leads (excludes personal)" },
   { label: "Sales", value: "KSh 4.2M", delta: "+18%", description: "Revenue from campaigns" },
-  { label: "AI Resolution", value: "78%", delta: "+6%", description: "Handled without human support" },
+  { label: "AI Resolution", value: "78%", delta: "+6%", description: "Handled without human support (excludes personal)" },
 ];
 
 const ANALYTICS_CHART = [
@@ -314,6 +314,18 @@ const INBOX_CONVERSATIONS = [
     source: "owner",
     isSaved: false,
     avatar: "UC",
+  },
+  {
+    id: "c6",
+    name: "Mary Wanjiku",
+    phone: "+254712345678",
+    message: "Can you remind me about the meeting at 3?",
+    time: "Today",
+    badge: 0,
+    source: "personal",
+    isPersonal: true,
+    isSaved: true,
+    avatar: "MW",
   },
 ];
 
@@ -884,6 +896,10 @@ export default function DashboardLayout() {
                               <span className="rounded-full bg-[#22C55E] px-2 py-0.5 text-[10px] font-semibold text-white">
                                 {conversation.badge}
                               </span>
+                            ) : effectiveSource === "personal" ? (
+                              <span className="inline-flex rounded-full bg-[#E5E7EB] px-2 py-1 text-xs font-semibold text-[#6B7280]">
+                                👤 Personal
+                              </span>
                             ) : effectiveSource === "ai_handling" ? (
                               <span className="inline-flex rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#166534]">
                                 🤖 AI Handling
@@ -924,20 +940,26 @@ export default function DashboardLayout() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={toggleAiForActive}
-                        aria-label="Toggle AI/Owner mode"
-                        className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold transition ${effectiveActiveSource.startsWith("ai") ? "bg-[#ECFDF5] text-[#166534]" : effectiveActiveSource === "needs_attention" ? "bg-[#FEF2F2] text-[#B91C1C]" : "bg-[#EFF6FF] text-[#1E3A8A]"}`}
-                      >
-                        {effectiveActiveSource.startsWith("ai") ? (
-                          effectiveActiveSource === "ai_handling" ? "🤖 AI ON" : "🤖 AI Handled"
-                        ) : effectiveActiveSource === "needs_attention" ? (
-                          "🔴 Needs Owner"
-                        ) : (
-                          "👤 Owner Mode"
-                        )}
-                      </button>
+                      {effectiveActiveSource === "personal" ? (
+                        <span className="inline-flex items-center gap-2 rounded-full bg-[#E5E7EB] px-3 py-1 text-xs font-semibold text-[#6B7280]">
+                          👤 Personal Contact
+                        </span>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={toggleAiForActive}
+                          aria-label="Toggle AI/Owner mode"
+                          className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold transition ${effectiveActiveSource.startsWith("ai") ? "bg-[#ECFDF5] text-[#166534]" : effectiveActiveSource === "needs_attention" ? "bg-[#FEF2F2] text-[#B91C1C]" : "bg-[#EFF6FF] text-[#1E3A8A]"}`}
+                        >
+                          {effectiveActiveSource.startsWith("ai") ? (
+                            effectiveActiveSource === "ai_handling" ? "🤖 AI ON" : "🤖 AI Handled"
+                          ) : effectiveActiveSource === "needs_attention" ? (
+                            "🔴 Needs Owner"
+                          ) : (
+                            "👤 Owner Mode"
+                          )}
+                        </button>
+                      )}
                       {customerCollapsed && (
                         <button
                           type="button"
@@ -953,16 +975,23 @@ export default function DashboardLayout() {
                   </div>
                 </div>
                 <div className="flex min-h-0 flex-1 flex-col p-4">
+                  {effectiveActiveSource === "personal" && (
+                    <div className="mb-4 rounded-3xl border border-[#E5E7EB] bg-[#FEF3F2] p-4">
+                      <p className="text-sm text-[#B91C1C] font-semibold">👤 Personal Contact</p>
+                      <p className="mt-1 text-sm text-[#7F1D1D]">AI does not handle personal contacts. Messages are owner-only.</p>
+                    </div>
+                  )}
                   <div className="flex-1 min-h-0 space-y-4 overflow-y-auto pr-2 pb-4 custom-scrollbar">
                     {activeMessages.map((message, index) => {
                       const originalWasAi = String(activeConversationData?.source).startsWith("ai");
                       // If the AI originally handled messages but AI is toggled off, hide AI-generated agent messages (mock behavior)
-                      if (message.from === "agent" && originalWasAi && !String(effectiveActiveSource).startsWith("ai")) {
+                      // Personal contacts never show AI-generated messages
+                      if (message.from === "agent" && (effectiveActiveSource === "personal" || (originalWasAi && !String(effectiveActiveSource).startsWith("ai")))) {
                         return null;
                       }
                       const isCustomer = message.from === "customer";
                       const isAgent = message.from === "agent";
-                      const isAi = isAgent && String(effectiveActiveSource).startsWith("ai");
+                      const isAi = isAgent && String(effectiveActiveSource).startsWith("ai") && effectiveActiveSource !== "personal";
                       const senderLabel = isAi ? "Sokoos AI" : activeAgentName;
 
                       return (
