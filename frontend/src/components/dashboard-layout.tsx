@@ -173,6 +173,36 @@ const POPULAR_PRODUCTS = [
 const LANGUAGES = ["English", "Kiswahili"] as const;
 const PERSONALITIES = ["Friendly", "Professional", "Sales Focused"] as const;
 
+const AI_ASSISTANT_TABS = ["Business Knowledge", "AI Settings", "Test AI", "Escalation Rules", "Conversation Policies"] as const;
+
+const BUSINESS_KNOWLEDGE_ITEMS = [
+  { title: "Company Mission", value: "Provide affordable, reliable internet to African businesses.", category: "Core" },
+  { title: "Main Products", value: "10 Mbps, 20 Mbps, Business Package with priority support.", category: "Products" },
+  { title: "Pricing", value: "10 Mbps: KSh 1,999/mo | 20 Mbps: KSh 3,499/mo | Business: KSh 6,999/mo", category: "Sales" },
+  { title: "Support Hours", value: "Mon–Fri 8:00 AM – 6:00 PM EAT. Weekend support via email.", category: "Support" },
+];
+
+const AI_SETTINGS_ITEMS = [
+  { setting: "Conversation Tone", value: "Friendly & Professional", status: "Active" },
+  { setting: "Response Language", value: "English (default) + Kiswahili", status: "Active" },
+  { setting: "Max Response Length", value: "500 characters", status: "Active" },
+  { setting: "Follow-up Frequency", value: "Auto-follow-up after 2 hours of inactivity", status: "Active" },
+];
+
+const ESCALATION_RULES_ITEMS = [
+  { trigger: "Angry sentiment detected", action: "Escalate to owner", priority: "High" },
+  { trigger: "3+ customer questions unanswered", action: "Escalate & notify owner", priority: "High" },
+  { trigger: "Request for billing info", action: "Escalate to owner", priority: "Critical" },
+  { trigger: "Refund request", action: "Escalate to owner", priority: "Critical" },
+];
+
+const CONVERSATION_POLICIES_ITEMS = [
+  { policy: "Max conversation length", value: "50 messages before summary required" },
+  { policy: "Inactivity timeout", value: "Close after 24 hours of no messages" },
+  { policy: "Customer re-engagement", value: "Send reminder after 7 days of inactivity" },
+  { policy: "Data retention", value: "Keep conversation history for 90 days" },
+];
+
 const INBOX_CONVERSATIONS = [
   {
     id: "c1",
@@ -364,6 +394,8 @@ export default function DashboardLayout() {
   const [messageInput, setMessageInput] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+
+  const [aiAssistantTab, setAiAssistantTab] = useState<(typeof AI_ASSISTANT_TABS)[number]>("Business Knowledge");
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -1362,6 +1394,132 @@ export default function DashboardLayout() {
                   </div>
                 </section>
               </div>
+            </div>
+          )}
+          {selected === "AI Assistant" && (
+            <div className="space-y-6">
+              <div className={CARD}>
+                <div>
+                  <p className="text-sm font-medium text-[#6B7280]">AI Assistant Control Center</p>
+                  <h1 className="mt-2 text-3xl font-semibold text-[#111827]">Customize Your AI Agent</h1>
+                  <p className="mt-2 text-sm text-[#6B7280]">Configure business knowledge, AI behavior, escalation rules, and conversation policies.</p>
+                </div>
+              </div>
+
+              <div className={CARD}>
+                <div className="flex gap-2 overflow-x-auto pb-2">
+                  {AI_ASSISTANT_TABS.map((tab) => (
+                    <button
+                      key={tab}
+                      onClick={() => setAiAssistantTab(tab)}
+                      className={`whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-semibold transition duration-200 ease-in-out ${
+                        aiAssistantTab === tab
+                          ? "bg-[#22C55E] text-white shadow-sm"
+                          : "bg-[#F3F4F6] text-[#111827] hover:bg-[#ECFDF5] hover:-translate-y-0.5"
+                      }`}
+                    >
+                      {tab}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {aiAssistantTab === "Business Knowledge" && (
+                <div className="grid gap-4 lg:grid-cols-2">
+                  {BUSINESS_KNOWLEDGE_ITEMS.map((item) => (
+                    <div key={item.title} className={CARD}>
+                      <div className="flex items-start justify-between">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-medium text-[#6B7280]">{item.category}</p>
+                          <h3 className="mt-2 text-lg font-semibold text-[#111827]">{item.title}</h3>
+                          <p className="mt-3 text-sm text-[#6B7280]">{item.value}</p>
+                        </div>
+                        <button className="ml-4 rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#166534] hover:bg-[#DCF4F0]">
+                          Edit
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {aiAssistantTab === "AI Settings" && (
+                <div className="space-y-4">
+                  {AI_SETTINGS_ITEMS.map((item) => (
+                    <div key={item.setting} className={CARD}>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-[#6B7280]">{item.setting}</p>
+                          <p className="mt-2 text-base font-semibold text-[#111827]">{item.value}</p>
+                        </div>
+                        <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#166534]">
+                          {item.status}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {aiAssistantTab === "Test AI" && (
+                <div className={CARD}>
+                  <div className="space-y-4">
+                    <div>
+                      <p className="text-sm font-medium text-[#6B7280]">Test Your AI Agent</p>
+                      <h3 className="mt-2 text-lg font-semibold text-[#111827]">Try conversations with your AI</h3>
+                      <p className="mt-2 text-sm text-[#6B7280]">Test how your AI responds to common questions. Use this to refine business knowledge and tone.</p>
+                    </div>
+                    <div className="rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+                      <textarea
+                        placeholder="Ask your AI a test question..."
+                        className="w-full resize-none rounded-lg border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] outline-none placeholder:text-[#9CA3AF] focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
+                        rows={3}
+                      />
+                    </div>
+                    <button className="inline-flex items-center gap-2 rounded-2xl bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]">
+                      <Send className="h-4 w-4" />
+                      Send Test Message
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {aiAssistantTab === "Escalation Rules" && (
+                <div className="space-y-4">
+                  {ESCALATION_RULES_ITEMS.map((item) => (
+                    <div key={item.trigger} className={CARD}>
+                      <div className="flex items-start justify-between">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-sm font-medium text-[#6B7280]">Trigger</p>
+                          <p className="mt-2 font-semibold text-[#111827]">{item.trigger}</p>
+                          <p className="mt-2 text-sm text-[#6B7280]">Action: {item.action}</p>
+                        </div>
+                        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${item.priority === "Critical" ? "bg-[#FEF2F2] text-[#B91C1C]" : "bg-[#FEF3C7] text-[#B45309]"}`}>
+                          {item.priority}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {aiAssistantTab === "Conversation Policies" && (
+                <div className="space-y-4">
+                  {CONVERSATION_POLICIES_ITEMS.map((item) => (
+                    <div key={item.policy} className={CARD}>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-[#6B7280]">{item.policy}</p>
+                          <p className="mt-2 font-semibold text-[#111827]">{item.value}</p>
+                        </div>
+                        <button className="rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#166534] hover:bg-[#DCF4F0]">
+                          Configure
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           )}
           {selected === "Settings" && (
