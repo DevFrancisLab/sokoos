@@ -511,6 +511,10 @@ export default function DashboardLayout() {
   const [policyKeepShort, setPolicyKeepShort] = useState(true);
   const [policyUseProfessionalTone, setPolicyUseProfessionalTone] = useState(true);
   const [policyRespectHours, setPolicyRespectHours] = useState(true);
+  const [outsideHoursMode, setOutsideHoursMode] = useState<"continue" | "collect" | "closed">("collect");
+  const [maxAiMessages, setMaxAiMessages] = useState(10);
+  const [allowCloseSales, setAllowCloseSales] = useState(true);
+  const [allowScheduleAppointments, setAllowScheduleAppointments] = useState(true);
   const [assistantName, setAssistantName] = useState("Nuru");
   const [primaryLanguage, setPrimaryLanguage] = useState<(typeof LANGUAGES)[number]>("English");
   const [secondaryLanguage, setSecondaryLanguage] = useState<(typeof LANGUAGES)[number]>("Kiswahili");
@@ -1877,67 +1881,140 @@ export default function DashboardLayout() {
                   )}
 
                   {assistantTab === "Conversation Policies" && (
-                    <div className="space-y-4">
-                      <div className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
-                        <p className="text-sm font-semibold text-[#111827]">Conversation policies</p>
-                        <p className="mt-2 text-sm text-[#6B7280]">Keep your AI responses aligned with business expectations and customer experience.</p>
-                      </div>
-                      <div className="rounded-3xl border border-[#E5E7EB] bg-white p-5 shadow-sm">
-                        <div className="flex items-center justify-between gap-4">
-                          <div>
-                            <p className="text-sm font-semibold text-[#111827]">Keep replies concise</p>
-                            <p className="mt-1 text-sm text-[#6B7280]">Short answers make it easier for customers to scan messages on mobile.</p>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => setPolicyKeepShort((value) => !value)}
-                            className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                              policyKeepShort
-                                ? "bg-[#DCFCE7] text-[#166534]"
-                                : "bg-[#E5E7EB] text-[#6B7280]"
-                            }`}
-                          >
-                            {policyKeepShort ? "On" : "Off"}
-                          </button>
+                    <div className="space-y-6">
+                      <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                        <p className="text-sm font-semibold text-[#111827]">Business Hours</p>
+                        <p className="mt-2 text-sm text-[#6B7280]">Set the hours when your business operates.</p>
+                        <div className="mt-4">
+                          <label className="text-sm font-semibold text-[#111827]" htmlFor="business-hours">
+                            Operating Hours
+                          </label>
+                          <input
+                            id="business-hours"
+                            type="text"
+                            value={businessHours}
+                            onChange={(event) => setBusinessHours(event.target.value)}
+                            className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                            placeholder="e.g., 8:00 AM - 6:00 PM"
+                          />
+                          <p className="mt-2 text-xs text-[#6B7280]">Example: Mon–Fri 8:00 AM - 6:00 PM, Sat 9:00 AM - 2:00 PM</p>
                         </div>
-                      </div>
-                      <div className="rounded-3xl border border-[#E5E7EB] bg-white p-5 shadow-sm">
-                        <div className="flex items-center justify-between gap-4">
-                          <div>
-                            <p className="text-sm font-semibold text-[#111827]">Use polite and professional language</p>
-                            <p className="mt-1 text-sm text-[#6B7280]">Avoid slang and keep the business tone respectful.</p>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => setPolicyUseProfessionalTone((value) => !value)}
-                            className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                              policyUseProfessionalTone
-                                ? "bg-[#DCFCE7] text-[#166534]"
-                                : "bg-[#E5E7EB] text-[#6B7280]"
-                            }`}
-                          >
-                            {policyUseProfessionalTone ? "On" : "Off"}
-                          </button>
+                      </section>
+
+                      <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                        <p className="text-sm font-semibold text-[#111827]">Outside Business Hours</p>
+                        <p className="mt-2 text-sm text-[#6B7280]">Choose how the AI behaves when customers message outside operating hours.</p>
+                        <div className="mt-4 space-y-3">
+                          <label className="flex items-start gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
+                            <input
+                              type="radio"
+                              name="outside-hours"
+                              value="continue"
+                              checked={outsideHoursMode === "continue"}
+                              onChange={() => setOutsideHoursMode("continue")}
+                              className="mt-1 w-4 h-4"
+                            />
+                            <div>
+                              <span className="text-sm font-semibold text-[#111827]">Continue AI conversations</span>
+                              <p className="mt-1 text-xs text-[#6B7280]">AI responds normally, treating it as in-hours.</p>
+                            </div>
+                          </label>
+                          <label className="flex items-start gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
+                            <input
+                              type="radio"
+                              name="outside-hours"
+                              value="collect"
+                              checked={outsideHoursMode === "collect"}
+                              onChange={() => setOutsideHoursMode("collect")}
+                              className="mt-1 w-4 h-4"
+                            />
+                            <div>
+                              <span className="text-sm font-semibold text-[#111827]">Collect customer information only</span>
+                              <p className="mt-1 text-xs text-[#6B7280]">AI gathers contact details and messages for follow-up.</p>
+                            </div>
+                          </label>
+                          <label className="flex items-start gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
+                            <input
+                              type="radio"
+                              name="outside-hours"
+                              value="closed"
+                              checked={outsideHoursMode === "closed"}
+                              onChange={() => setOutsideHoursMode("closed")}
+                              className="mt-1 w-4 h-4"
+                            />
+                            <div>
+                              <span className="text-sm font-semibold text-[#111827]">Inform customers that the business is closed</span>
+                              <p className="mt-1 text-xs text-[#6B7280]">AI informs customers of next opening time and offers to store messages.</p>
+                            </div>
+                          </label>
                         </div>
-                      </div>
-                      <div className="rounded-3xl border border-[#E5E7EB] bg-white p-5 shadow-sm">
-                        <div className="flex items-center justify-between gap-4">
-                          <div>
-                            <p className="text-sm font-semibold text-[#111827]">Respect business hours</p>
-                            <p className="mt-1 text-sm text-[#6B7280]">Let customers know when the business will return outside operating hours.</p>
+                      </section>
+
+                      <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                        <p className="text-sm font-semibold text-[#111827]">Maximum AI Messages</p>
+                        <p className="mt-2 text-sm text-[#6B7280]">Limit how many consecutive messages the AI can send before escalating to a human.</p>
+                        <div className="mt-4">
+                          <div className="flex items-center gap-3">
+                            <input
+                              type="number"
+                              value={maxAiMessages}
+                              onChange={(event) => setMaxAiMessages(Math.max(1, parseInt(event.target.value) || 1))}
+                              min="1"
+                              max="50"
+                              className="w-20 rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                            />
+                            <span className="text-sm text-[#6B7280]">messages per conversation</span>
                           </div>
-                          <button
-                            type="button"
-                            onClick={() => setPolicyRespectHours((value) => !value)}
-                            className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                              policyRespectHours
-                                ? "bg-[#DCFCE7] text-[#166534]"
-                                : "bg-[#E5E7EB] text-[#6B7280]"
-                            }`}
-                          >
-                            {policyRespectHours ? "On" : "Off"}
-                          </button>
+                          <p className="mt-2 text-xs text-[#6B7280]">Recommended: 8–12 messages before human escalation.</p>
                         </div>
+                      </section>
+
+                      <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm space-y-4">
+                        <div>
+                          <div className="flex items-center justify-between gap-4">
+                            <div>
+                              <p className="text-sm font-semibold text-[#111827]">Allow AI to Close Sales</p>
+                              <p className="mt-1 text-sm text-[#6B7280]">Let the AI send purchase confirmations and checkout links.</p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setAllowCloseSales((value) => !value)}
+                              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                                allowCloseSales
+                                  ? "bg-[#DCFCE7] text-[#166534]"
+                                  : "bg-[#E5E7EB] text-[#6B7280]"
+                              }`}
+                            >
+                              {allowCloseSales ? "On" : "Off"}
+                            </button>
+                          </div>
+                        </div>
+                        <div className="border-t border-[#E5E7EB] pt-4">
+                          <div className="flex items-center justify-between gap-4">
+                            <div>
+                              <p className="text-sm font-semibold text-[#111827]">Allow AI to Schedule Appointments</p>
+                              <p className="mt-1 text-sm text-[#6B7280]">Let the AI book consultations or service visits without human review.</p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setAllowScheduleAppointments((value) => !value)}
+                              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                                allowScheduleAppointments
+                                  ? "bg-[#DCFCE7] text-[#166534]"
+                                  : "bg-[#E5E7EB] text-[#6B7280]"
+                              }`}
+                            >
+                              {allowScheduleAppointments ? "On" : "Off"}
+                            </button>
+                          </div>
+                        </div>
+                      </section>
+
+                      <div className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-5 text-sm text-[#6B7280]">
+                        <p className="font-semibold text-[#111827]">Note</p>
+                        <p className="mt-2">
+                          These policies guide how your AI assistant handles conversations across different scenarios. All changes are automatically saved and take effect immediately.
+                        </p>
                       </div>
                     </div>
                   )}
