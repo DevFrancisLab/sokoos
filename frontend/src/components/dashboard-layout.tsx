@@ -206,11 +206,11 @@ const TEST_AI_PROMPTS = [
 const ESCALATION_RULES = [
   {
     label: "Escalate when customer asks for a live person",
-    description: "Send urgent requests directly to the owner when customers request human support.",
+    description: "Send urgent requests directly to you when customers request human support."
   },
   {
     label: "Escalate after business hours",
-    description: "If a message arrives outside the set hours, flag it for owner follow-up.",
+    description: "If a message arrives outside the set hours, flag it for your follow-up.",
   },
   {
     label: "Escalate after repeated unanswered questions",
@@ -294,7 +294,7 @@ const INBOX_CONVERSATIONS = [
 
 const formatConversationTime = (time: string | undefined) => time || "Unknown";
 
-const INBOX_TAB_ITEMS = ["All", "AI", "Owner", "Needs Attention"] as const;
+const INBOX_TAB_ITEMS = ["All", "AI", "You", "Needs Attention"] as const;
 
 const INBOX_MESSAGES = {
   c1: [
@@ -395,8 +395,8 @@ const CUSTOMER_PROFILES: Record<string, {
 };
 
 const OWNER_NAMES: Record<string, string> = {
-  c1: "Owner",
-  c3: "Owner",
+  c1: "You",
+  c3: "You",
 };
 
 // Team Support Architecture
@@ -600,7 +600,7 @@ export default function DashboardLayout() {
   const activePersonalEntry = personalContacts.find((pc) => pc.phone === activeConversationData?.phone);
   const activePersonalIcon = activePersonalEntry && ["wife", "husband", "spouse", "family"].some((k) => activePersonalEntry.relationship.toLowerCase().includes(k)) ? "🏠" : "👤";
   const effectiveActiveSource = isPersonalActive ? "personal" : getEffectiveSource(activeConversation, activeConversationData?.source);
-  const activeAgentName = isPersonalActive ? "Personal" : String(effectiveActiveSource).startsWith("ai") ? "Sokoos AI" : OWNER_NAMES[activeConversation] ?? "Owner";
+  const activeAgentName = isPersonalActive ? "Personal" : String(effectiveActiveSource).startsWith("ai") ? "Sokoos AI" : OWNER_NAMES[activeConversation] ?? "You";
   const toggleAiForActive = () => {
     // Do not allow toggling AI for personal contacts (mock behavior).
     if (isPersonalActive) return;
@@ -879,7 +879,7 @@ export default function DashboardLayout() {
                       if (activeTab === "AI") {
                         return String(src).startsWith("ai");
                       }
-                        if (activeTab === "Owner") {
+                        if (activeTab === "You") {
                         return src === "owner";
                       }
                       return true;
@@ -953,7 +953,7 @@ export default function DashboardLayout() {
                                 ) : effectiveSource === "owner" ? (
                                   <span className="inline-flex mt-1 items-center gap-1 rounded-full bg-[#EFF6FF] px-2 py-1 text-xs font-semibold text-[#1E3A8A]">
                                     <span aria-hidden>👤</span>
-                                    Owner
+                                    You
                                   </span>
                                 ) : effectiveSource !== "needs_attention" ? (
                                   <span
@@ -985,11 +985,11 @@ export default function DashboardLayout() {
                               </span>
                             ) : effectiveSource === "needs_attention" ? (
                               <span className="inline-flex rounded-full bg-[#FEF2F2] px-2 py-1 text-xs font-semibold text-[#B91C1C]">
-                                🔴 Needs Owner
+                                🔴 Needs You
                               </span>
                             ) : effectiveSource === "owner" ? (
                               <span className="inline-flex rounded-full bg-[#EFF6FF] px-2 py-1 text-xs font-semibold text-[#1E3A8A]">
-                                👤 Owner
+                                👤 You
                               </span>
                             ) : null}
                           </div>
@@ -1028,15 +1028,15 @@ export default function DashboardLayout() {
                         <button
                           type="button"
                           onClick={toggleAiForActive}
-                          aria-label="Toggle AI/Owner mode"
+                          aria-label="Toggle AI/Human mode"
                           className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold transition ${effectiveActiveSource.startsWith("ai") ? "bg-[#ECFDF5] text-[#166534]" : effectiveActiveSource === "needs_attention" ? "bg-[#FEF2F2] text-[#B91C1C]" : "bg-[#EFF6FF] text-[#1E3A8A]"}`}
                         >
                           {effectiveActiveSource.startsWith("ai") ? (
-                            effectiveActiveSource === "ai_handling" ? "🤖 AI ON" : "🤖 AI Handled"
+                            effectiveActiveSource === "ai_handling" ? "🤖 AI Mode" : "🤖 AI Handled"
                           ) : effectiveActiveSource === "needs_attention" ? (
-                            "🔴 Needs Owner"
+                            "🔴 Needs You"
                           ) : (
-                            "👤 Owner Mode"
+                            "👤 Human Mode"
                           )}
                         </button>
                       )}
