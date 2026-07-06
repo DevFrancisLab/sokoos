@@ -399,7 +399,59 @@ const OWNER_NAMES: Record<string, string> = {
   c3: "Owner",
 };
 
+// Team Support Architecture
+// Current MVP: Single owner business (hasTeam = false)
+// Future: Add team functionality by setting hasTeam = true and implementing Team Settings
+const hasTeam = false;
+
+// Mock team member type (for future team support)
+interface TeamMember {
+  id: string;
+  name: string;
+  email: string;
+  role: "admin" | "agent" | "viewer";
+  avatar: string;
+  status: "active" | "inactive";
+  joinedDate: string;
+}
+
+// Mock team data (for future implementation)
+const MOCK_TEAM_MEMBERS: TeamMember[] = [
+  {
+    id: "tm1",
+    name: "Frank Kariuki",
+    email: "frank@sokoos.co.ke",
+    role: "admin",
+    avatar: "FK",
+    status: "active",
+    joinedDate: "Jun 01, 2026",
+  },
+  {
+    id: "tm2",
+    name: "Jane Kipchoge",
+    email: "jane@sokoos.co.ke",
+    role: "agent",
+    avatar: "JK",
+    status: "active",
+    joinedDate: "Jun 15, 2026",
+  },
+  {
+    id: "tm3",
+    name: "David Omondi",
+    email: "david@sokoos.co.ke",
+    role: "agent",
+    avatar: "DO",
+    status: "inactive",
+    joinedDate: "Jul 01, 2026",
+  },
+];
+
 export default function DashboardLayout() {
+  // Team context: In future, use React Context or state management library for team data
+  // For now: Single owner (hasTeam = false)
+  const currentUserId = hasTeam ? "tm1" : "owner"; // Will be from auth context in future
+  const currentUserRole = hasTeam ? "admin" : "owner"; // Will be from auth context in future
+
   const [mobileOpen, setMobileOpen] = useState(false);
   const [selected, setSelected] = useState<string>("Home");
   const [assistantTab, setAssistantTab] = useState<(typeof ASSISTANT_TABS)[number]>("Business Knowledge");
@@ -545,6 +597,8 @@ export default function DashboardLayout() {
   // Personal-contact helpers (moved here so personalContacts is defined first)
   const isPersonalByPhone = (phone?: string | null) => !!phone && personalContacts.some((pc) => pc.phone === phone);
   const isPersonalActive = isPersonalByPhone(activeConversationData?.phone ?? null);
+  const activePersonalEntry = personalContacts.find((pc) => pc.phone === activeConversationData?.phone);
+  const activePersonalIcon = activePersonalEntry && ["wife", "husband", "spouse", "family"].some((k) => activePersonalEntry.relationship.toLowerCase().includes(k)) ? "🏠" : "👤";
   const effectiveActiveSource = isPersonalActive ? "personal" : getEffectiveSource(activeConversation, activeConversationData?.source);
   const activeAgentName = isPersonalActive ? "Personal" : String(effectiveActiveSource).startsWith("ai") ? "Sokoos AI" : OWNER_NAMES[activeConversation] ?? "Owner";
   const toggleAiForActive = () => {
@@ -582,6 +636,10 @@ export default function DashboardLayout() {
   });
   const [imageLabel, setImageLabel] = useState("No file selected");
   const [customerCollapsed, setCustomerCollapsed] = useState(false);
+  
+  // Future team state (initialized but not used when hasTeam = false)
+  const teamMembers = hasTeam ? MOCK_TEAM_MEMBERS : [];
+  const currentMember = hasTeam ? MOCK_TEAM_MEMBERS.find((m) => m.id === currentUserId) : null;
 
   return (
     <div className="h-screen min-h-screen bg-[#FFFFFF] text-[#111827]">
