@@ -3,7 +3,7 @@ import { n as require_jsx_runtime, r as require_react, t as QueryClientProvider 
 import { c as HeadContent, d as Outlet, f as lazyRouteComponent, g as useRouter, h as Link, m as createRootRouteWithContext, p as createFileRoute, s as Scripts, u as createRouter } from "../_libs/@tanstack/react-router+[...].mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
 import { A as Calendar, D as ChevronLeft, E as ChevronRight, I as Activity, N as Box, P as Bot, _ as Megaphone, a as Settings, b as Image, d as Plus, g as Menu, n as Users, o as Send, s as Search, t as X, w as Cpu, x as House, y as Inbox } from "../_libs/lucide-react.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-fNs8xHYf.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router-Dp6JOI8h.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var styles_default = "/assets/styles-BxygCo73.css";
@@ -795,6 +795,12 @@ function DashboardLayout() {
 	const [escalateOnLiveRequest, setEscalateOnLiveRequest] = (0, import_react.useState)(true);
 	const [escalateOutsideHours, setEscalateOutsideHours] = (0, import_react.useState)(true);
 	const [escalateUnanswered, setEscalateUnanswered] = (0, import_react.useState)(false);
+	const [escalateComplaints, setEscalateComplaints] = (0, import_react.useState)(true);
+	const [escalateRefunds, setEscalateRefunds] = (0, import_react.useState)(true);
+	const [escalateLegalQuestions, setEscalateLegalQuestions] = (0, import_react.useState)(true);
+	const [escalateHumanRequested, setEscalateHumanRequested] = (0, import_react.useState)(true);
+	const [escalateUnknownQuestions, setEscalateUnknownQuestions] = (0, import_react.useState)(true);
+	const [escalateNegotiationsAbove10k, setEscalateNegotiationsAbove10k] = (0, import_react.useState)(true);
 	const [policyKeepShort, setPolicyKeepShort] = (0, import_react.useState)(true);
 	const [policyUseProfessionalTone, setPolicyUseProfessionalTone] = (0, import_react.useState)(true);
 	const [policyRespectHours, setPolicyRespectHours] = (0, import_react.useState)(true);
@@ -2228,74 +2234,123 @@ function DashboardLayout() {
 												})]
 											}),
 											assistantTab === "Escalation Rules" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "space-y-4",
-												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-														className: "text-sm font-semibold text-[#111827]",
-														children: "Escalation control"
-													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-														className: "mt-2 text-sm text-[#6B7280]",
-														children: "Choose when the assistant should hand off conversations to a human."
-													})]
-												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "space-y-4",
+												className: "space-y-6",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+													className: "rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm",
 													children: [
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-															className: "rounded-3xl border border-[#E5E7EB] bg-white p-5 shadow-sm",
-															children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-																className: "flex items-center justify-between gap-4",
-																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																	className: "text-sm font-semibold text-[#111827]",
-																	children: "Escalate on live support requests"
-																}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																	className: "mt-1 text-sm text-[#6B7280]",
-																	children: "Send urgent buyer messages straight to the owner."
-																})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-																	type: "button",
-																	onClick: () => setEscalateOnLiveRequest((value) => !value),
-																	className: `rounded-full px-4 py-2 text-sm font-semibold transition ${escalateOnLiveRequest ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#E5E7EB] text-[#6B7280]"}`,
-																	children: escalateOnLiveRequest ? "On" : "Off"
-																})]
-															})
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: "text-sm font-semibold text-[#111827]",
+															children: "Escalation Rules"
 														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-															className: "rounded-3xl border border-[#E5E7EB] bg-white p-5 shadow-sm",
-															children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-																className: "flex items-center justify-between gap-4",
-																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																	className: "text-sm font-semibold text-[#111827]",
-																	children: "Escalate after hours"
-																}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																	className: "mt-1 text-sm text-[#6B7280]",
-																	children: "Flag messages received outside business hours."
-																})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-																	type: "button",
-																	onClick: () => setEscalateOutsideHours((value) => !value),
-																	className: `rounded-full px-4 py-2 text-sm font-semibold transition ${escalateOutsideHours ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#E5E7EB] text-[#6B7280]"}`,
-																	children: escalateOutsideHours ? "On" : "Off"
-																})]
-															})
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: "mt-2 text-sm text-[#6B7280]",
+															children: "Choose which situations trigger handoff to a human representative."
 														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-															className: "rounded-3xl border border-[#E5E7EB] bg-white p-5 shadow-sm",
-															children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-																className: "flex items-center justify-between gap-4",
-																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																	className: "text-sm font-semibold text-[#111827]",
-																	children: "Escalate after unanswered questions"
-																}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																	className: "mt-1 text-sm text-[#6B7280]",
-																	children: "Alert the owner when the customer asks multiple questions without resolution."
-																})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-																	type: "button",
-																	onClick: () => setEscalateUnanswered((value) => !value),
-																	className: `rounded-full px-4 py-2 text-sm font-semibold transition ${escalateUnanswered ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#E5E7EB] text-[#6B7280]"}`,
-																	children: escalateUnanswered ? "On" : "Off"
-																})]
-															})
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "mt-6 space-y-3",
+															children: [
+																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+																	className: "flex items-start gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition",
+																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																		type: "checkbox",
+																		checked: escalateComplaints,
+																		onChange: () => setEscalateComplaints((value) => !value),
+																		className: "mt-1 w-4 h-4"
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																		className: "text-sm font-semibold text-[#111827]",
+																		children: "Complaints"
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																		className: "mt-1 text-xs text-[#6B7280]",
+																		children: "Detect negative sentiment and escalate immediately."
+																	})] })]
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+																	className: "flex items-start gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition",
+																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																		type: "checkbox",
+																		checked: escalateRefunds,
+																		onChange: () => setEscalateRefunds((value) => !value),
+																		className: "mt-1 w-4 h-4"
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																		className: "text-sm font-semibold text-[#111827]",
+																		children: "Refund Requests"
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																		className: "mt-1 text-xs text-[#6B7280]",
+																		children: "Hand off all refund-related conversations to the owner."
+																	})] })]
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+																	className: "flex items-start gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition",
+																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																		type: "checkbox",
+																		checked: escalateLegalQuestions,
+																		onChange: () => setEscalateLegalQuestions((value) => !value),
+																		className: "mt-1 w-4 h-4"
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																		className: "text-sm font-semibold text-[#111827]",
+																		children: "Legal Questions"
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																		className: "mt-1 text-xs text-[#6B7280]",
+																		children: "Escalate any conversation involving legal matters or regulations."
+																	})] })]
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+																	className: "flex items-start gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition",
+																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																		type: "checkbox",
+																		checked: escalateHumanRequested,
+																		onChange: () => setEscalateHumanRequested((value) => !value),
+																		className: "mt-1 w-4 h-4"
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																		className: "text-sm font-semibold text-[#111827]",
+																		children: "Human Requested"
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																		className: "mt-1 text-xs text-[#6B7280]",
+																		children: "Stop responding when customers explicitly ask for a person."
+																	})] })]
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+																	className: "flex items-start gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition",
+																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																		type: "checkbox",
+																		checked: escalateUnknownQuestions,
+																		onChange: () => setEscalateUnknownQuestions((value) => !value),
+																		className: "mt-1 w-4 h-4"
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																		className: "text-sm font-semibold text-[#111827]",
+																		children: "Unknown Questions"
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																		className: "mt-1 text-xs text-[#6B7280]",
+																		children: "Hand off queries outside the AI's knowledge base."
+																	})] })]
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+																	className: "flex items-start gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition",
+																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																		type: "checkbox",
+																		checked: escalateNegotiationsAbove10k,
+																		onChange: () => setEscalateNegotiationsAbove10k((value) => !value),
+																		className: "mt-1 w-4 h-4"
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																		className: "text-sm font-semibold text-[#111827]",
+																		children: "Negotiations Above KES 10,000"
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																		className: "mt-1 text-xs text-[#6B7280]",
+																		children: "Escalate any negotiation involving amounts above KES 10,000."
+																	})] })]
+																})
+															]
 														})
 													]
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-5 text-sm text-[#6B7280]",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: "font-semibold text-[#111827]",
+														children: "How escalation works"
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: "mt-2",
+														children: "When these situations occur, the AI stops responding and requests owner intervention. You'll receive a notification and can take over the conversation."
+													})]
 												})]
 											}),
 											assistantTab === "Conversation Policies" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
