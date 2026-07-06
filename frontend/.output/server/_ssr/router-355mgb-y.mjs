@@ -3,7 +3,7 @@ import { n as require_jsx_runtime, r as require_react, t as QueryClientProvider 
 import { c as HeadContent, d as Outlet, f as lazyRouteComponent, g as useRouter, h as Link, m as createRootRouteWithContext, p as createFileRoute, s as Scripts, u as createRouter } from "../_libs/@tanstack/react-router+[...].mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
 import { A as Calendar, D as ChevronLeft, E as ChevronRight, I as Activity, N as Box, P as Bot, _ as Megaphone, a as Settings, b as Image, d as Plus, g as Menu, n as Users, o as Send, s as Search, t as X, w as Cpu, x as House, y as Inbox } from "../_libs/lucide-react.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-zOqweKAu.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router-355mgb-y.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var styles_default = "/assets/styles-BI6IaeU-.css";
@@ -544,6 +544,39 @@ var INBOX_CONVERSATIONS = [
 		source: "owner",
 		isSaved: false,
 		avatar: "UC"
+	},
+	{
+		id: "c6",
+		name: "Samuel Kipkemboi",
+		phone: "+254722888999",
+		message: "Your 20 Mbps plan is perfect for our office. Let's proceed with the order.",
+		time: "3h ago",
+		badge: 0,
+		source: "owner",
+		isSaved: true,
+		avatar: "SK"
+	},
+	{
+		id: "c7",
+		name: "Fatima Hassan",
+		phone: "+254744555666",
+		message: "Thank you! I'll set up the installation for next Monday.",
+		time: "5h ago",
+		badge: 0,
+		source: "owner",
+		isSaved: true,
+		avatar: "FH"
+	},
+	{
+		id: "c8",
+		name: "Peter Ochieng",
+		phone: "+254701333222",
+		message: "We've received your payment. Service activation starts tomorrow morning.",
+		time: "Yesterday",
+		badge: 0,
+		source: "owner",
+		isSaved: true,
+		avatar: "PO"
 	}
 ];
 var formatConversationTime = (time) => time || "Unknown";
@@ -606,6 +639,49 @@ var INBOX_MESSAGES = {
 		from: "agent",
 		text: "Absolutely — I’ll send you the package details now.",
 		time: "4:12 PM"
+	}],
+	c6: [
+		{
+			from: "customer",
+			text: "What's the fastest plan you have?",
+			time: "2:30 PM"
+		},
+		{
+			from: "agent",
+			text: "Our 20 Mbps plan is ideal for offices. Would you like more details?",
+			time: "2:32 PM"
+		},
+		{
+			from: "customer",
+			text: "Your 20 Mbps plan is perfect for our office. Let's proceed with the order.",
+			time: "2:45 PM"
+		}
+	],
+	c7: [
+		{
+			from: "customer",
+			text: "How long will installation take?",
+			time: "11:00 AM"
+		},
+		{
+			from: "agent",
+			text: "Installation usually takes 2-3 hours. We can schedule it for next week.",
+			time: "11:02 AM"
+		},
+		{
+			from: "customer",
+			text: "Thank you! I'll set up the installation for next Monday.",
+			time: "11:15 AM"
+		}
+	],
+	c8: [{
+		from: "customer",
+		text: "I've sent the payment. When does service start?",
+		time: "9:00 AM"
+	}, {
+		from: "agent",
+		text: "We've received your payment. Service activation starts tomorrow morning.",
+		time: "9:05 AM"
 	}]
 };
 var CUSTOMER_PROFILES = {

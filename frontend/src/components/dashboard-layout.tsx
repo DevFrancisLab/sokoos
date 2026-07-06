@@ -290,6 +290,39 @@ const INBOX_CONVERSATIONS = [
     isSaved: false,
     avatar: "UC",
   },
+  {
+    id: "c6",
+    name: "Samuel Kipkemboi",
+    phone: "+254722888999",
+    message: "Your 20 Mbps plan is perfect for our office. Let's proceed with the order.",
+    time: "3h ago",
+    badge: 0,
+    source: "owner",
+    isSaved: true,
+    avatar: "SK",
+  },
+  {
+    id: "c7",
+    name: "Fatima Hassan",
+    phone: "+254744555666",
+    message: "Thank you! I'll set up the installation for next Monday.",
+    time: "5h ago",
+    badge: 0,
+    source: "owner",
+    isSaved: true,
+    avatar: "FH",
+  },
+  {
+    id: "c8",
+    name: "Peter Ochieng",
+    phone: "+254701333222",
+    message: "We've received your payment. Service activation starts tomorrow morning.",
+    time: "Yesterday",
+    badge: 0,
+    source: "owner",
+    isSaved: true,
+    avatar: "PO",
+  },
 ];
 
 const formatConversationTime = (time: string | undefined) => time || "Unknown";
@@ -317,6 +350,20 @@ const INBOX_MESSAGES = {
   c5: [
     { from: "customer", text: "I’m interested in your business package — can you share details?", time: "4:10 PM" },
     { from: "agent", text: "Absolutely — I’ll send you the package details now.", time: "4:12 PM" },
+  ],
+  c6: [
+    { from: "customer", text: "What's the fastest plan you have?", time: "2:30 PM" },
+    { from: "agent", text: "Our 20 Mbps plan is ideal for offices. Would you like more details?", time: "2:32 PM" },
+    { from: "customer", text: "Your 20 Mbps plan is perfect for our office. Let's proceed with the order.", time: "2:45 PM" },
+  ],
+  c7: [
+    { from: "customer", text: "How long will installation take?", time: "11:00 AM" },
+    { from: "agent", text: "Installation usually takes 2-3 hours. We can schedule it for next week.", time: "11:02 AM" },
+    { from: "customer", text: "Thank you! I'll set up the installation for next Monday.", time: "11:15 AM" },
+  ],
+  c8: [
+    { from: "customer", text: "I've sent the payment. When does service start?", time: "9:00 AM" },
+    { from: "agent", text: "We've received your payment. Service activation starts tomorrow morning.", time: "9:05 AM" },
   ],
 };
 
