@@ -460,6 +460,44 @@ export default function DashboardLayout() {
   const [language, setLanguage] = useState<(typeof LANGUAGES)[number]>("English");
   const [personality, setPersonality] = useState<(typeof PERSONALITIES)[number]>("Friendly");
   const [testAiInput, setTestAiInput] = useState("How much is the Business Package?");
+  const [testAiMessages, setTestAiMessages] = useState([
+    {
+      id: "m1",
+      role: "user" as const,
+      text: "How much is your Business Package?",
+    },
+    {
+      id: "m2",
+      role: "ai" as const,
+      text: "Our Business Package costs KES 5,000/month.",
+      source: "Products & Services → Business Package",
+    },
+  ]);
+  const testAiScrollRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    if (!testAiScrollRef.current) return;
+    testAiScrollRef.current.scrollTop = testAiScrollRef.current.scrollHeight;
+  }, [testAiMessages]);
+
+  const sendTestAiMessage = () => {
+    const trimmed = testAiInput.trim();
+    if (!trimmed) return;
+    const userMessage = {
+      id: `user-${Date.now()}`,
+      role: "user" as const,
+      text: trimmed,
+    };
+    const aiMessage = {
+      id: `ai-${Date.now()}`,
+      role: "ai" as const,
+      text: trimmed.toLowerCase().includes("business package")
+        ? "Our Business Package costs KES 5,000/month."
+        : "This is a mock reply from your AI assistant based on the configured business knowledge.",
+      source: "Products & Services → Business Package",
+    };
+    setTestAiMessages((current) => [...current, userMessage, aiMessage]);
+    setTestAiInput("");
+  };
   const [escalateOnLiveRequest, setEscalateOnLiveRequest] = useState(true);
   const [escalateOutsideHours, setEscalateOutsideHours] = useState(true);
   const [escalateUnanswered, setEscalateUnanswered] = useState(false);
@@ -1609,40 +1647,58 @@ export default function DashboardLayout() {
 
                   {assistantTab === "Test AI" && (
                     <div className="grid gap-6 lg:grid-cols-[1.4fr_0.8fr]">
-                      <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                        <div className="space-y-4">
-                          <div>
+                      <section className="rounded-3xl border border-[#E5E7EB] bg-white shadow-sm">
+                        <div className="flex h-full min-h-[620px] flex-col">
+                          <div className="border-b border-[#E5E7EB] p-6">
                             <p className="text-sm font-semibold text-[#111827]">Test your assistant</p>
-                            <p className="mt-2 text-sm text-[#6B7280]">Send a sample prompt and preview how the assistant responds to common customer questions.</p>
+                            <p className="mt-2 text-sm text-[#6B7280]">Run a mock conversation before customers interact with the AI.</p>
                           </div>
-                          <div className="space-y-3 rounded-3xl bg-[#F9FAFB] p-5">
-                            <div className="rounded-3xl bg-white p-4 text-sm text-[#111827] shadow-sm">
-                              <p className="font-semibold">Customer</p>
-                              <p className="mt-2 text-[#6B7280]">{testAiInput}</p>
-                            </div>
-                            <div className="rounded-3xl bg-[#ECFDF5] p-4 text-sm text-[#166534] shadow-sm">
-                              <p className="font-semibold">AI Assistant</p>
-                              <p className="mt-2">This is a mock reply based on your current AI settings and business knowledge.</p>
-                            </div>
+                          <div ref={testAiScrollRef} className="flex-1 overflow-y-auto px-6 py-5 space-y-4 bg-[#F9FAFB]">
+                            {testAiMessages.map((message) => (
+                              <div key={message.id} className={`max-w-[90%] ${message.role === "user" ? "ml-auto text-right" : "mr-auto text-left"}`}>
+                                <div className={`inline-block rounded-3xl px-5 py-4 text-sm shadow-sm ${
+                                  message.role === "user"
+                                    ? "bg-[#22C55E] text-white"
+                                    : "bg-white text-[#111827]"
+                                }`}>
+                                  <p>{message.text}</p>
+                                </div>
+                                {message.role === "ai" && message.source ? (
+                                  <span className="mt-2 inline-flex rounded-full bg-[#E5E7EB] px-3 py-1 text-[11px] font-semibold text-[#475569]">
+                                    Source: {message.source}
+                                  </span>
+                                ) : null}
+                              </div>
+                            ))}
                           </div>
-                          <div className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-5">
-                            <label className="text-sm font-semibold text-[#111827]" htmlFor="test-ai-prompt">
-                              Prompt
-                            </label>
-                            <textarea
-                              id="test-ai-prompt"
-                              value={testAiInput}
-                              onChange={(event) => setTestAiInput(event.target.value)}
-                              className="mt-3 min-h-[120px] w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
-                            />
-                            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                              <p className="text-xs text-[#6B7280]">This is a mocked experience only; no backend call is made.</p>
-                              <button
-                                type="button"
-                                className="inline-flex items-center justify-center rounded-2xl bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
-                              >
-                                Run Test
-                              </button>
+                          <div className="sticky bottom-0 border-t border-[#E5E7EB] bg-white p-4">
+                            <div className="space-y-3">
+                              <label className="text-sm font-semibold text-[#111827]" htmlFor="test-ai-prompt">
+                                Message
+                              </label>
+                              <textarea
+                                id="test-ai-prompt"
+                                value={testAiInput}
+                                onChange={(event) => setTestAiInput(event.target.value)}
+                                onKeyDown={(event) => {
+                                  if (event.key === "Enter" && !event.shiftKey) {
+                                    event.preventDefault();
+                                    sendTestAiMessage();
+                                  }
+                                }}
+                                className="min-h-[110px] w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                                placeholder="Type a message to the assistant..."
+                              />
+                              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                <p className="text-xs text-[#6B7280]">This is a mocked experience only; no backend call is made.</p>
+                                <button
+                                  type="button"
+                                  onClick={sendTestAiMessage}
+                                  className="inline-flex items-center justify-center rounded-2xl bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
+                                >
+                                  Send message
+                                </button>
+                              </div>
                             </div>
                           </div>
                         </div>
