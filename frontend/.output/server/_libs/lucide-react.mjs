@@ -352,6 +352,26 @@ var Check = createLucideIcon("check", [["path", {
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var ChevronLeft = createLucideIcon("chevron-left", [["path", {
+	d: "m15 18-6-6 6-6",
+	key: "1wnfg3"
+}]]);
+/**
+* @license lucide-react v0.575.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var ChevronRight = createLucideIcon("chevron-right", [["path", {
+	d: "m9 18 6-6-6-6",
+	key: "mthhwq"
+}]]);
+/**
+* @license lucide-react v0.575.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var Clock = createLucideIcon("clock", [["circle", {
 	cx: "12",
 	cy: "12",
@@ -644,16 +664,6 @@ var Package = createLucideIcon("package", [
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
-var Paperclip = createLucideIcon("paperclip", [["path", {
-	d: "m16 6-8.414 8.586a2 2 0 0 0 2.829 2.829l8.414-8.586a4 4 0 1 0-5.657-5.657l-8.379 8.551a6 6 0 1 0 8.485 8.485l8.379-8.551",
-	key: "1miecu"
-}]]);
-/**
-* @license lucide-react v0.575.0 - ISC
-*
-* This source code is licensed under the ISC license.
-* See the LICENSE file in the root directory of this source tree.
-*/
 var Plug = createLucideIcon("plug", [
 	["path", {
 		d: "M12 22v-5",
@@ -806,38 +816,6 @@ var Settings = createLucideIcon("settings", [["path", {
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
-var Smile = createLucideIcon("smile", [
-	["circle", {
-		cx: "12",
-		cy: "12",
-		r: "10",
-		key: "1mglay"
-	}],
-	["path", {
-		d: "M8 14s1.5 2 4 2 4-2 4-2",
-		key: "1y1vjs"
-	}],
-	["line", {
-		x1: "9",
-		x2: "9.01",
-		y1: "9",
-		y2: "9",
-		key: "yxxnd0"
-	}],
-	["line", {
-		x1: "15",
-		x2: "15.01",
-		y1: "9",
-		y2: "9",
-		key: "1p4y9e"
-	}]
-]);
-/**
-* @license lucide-react v0.575.0 - ISC
-*
-* This source code is licensed under the ISC license.
-* See the LICENSE file in the root directory of this source tree.
-*/
 var Sparkles = createLucideIcon("sparkles", [
 	["path", {
 		d: "M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z",
@@ -908,4 +886,4 @@ var X = createLucideIcon("x", [["path", {
 	key: "d8bk6v"
 }]]);
 //#endregion
-export { Calendar as A, House as C, Clock as D, Cpu as E, ArrowRight as F, Activity as I, Boxes as M, Box as N, Check as O, Bot as P, Image as S, Database as T, MessageCircle as _, Smile as a, Linkedin as b, Search as c, RefreshCw as d, Plus as f, MessageSquareOff as g, Package as h, Sparkles as i, Brain as j, ChartColumn as k, Rocket as l, Paperclip as m, Users as n, Settings as o, Plug as p, Star as r, Send as s, X as t, Repeat as u, Menu as v, Facebook as w, Inbox as x, Megaphone as y };
+export { Calendar as A, Database as C, ChevronLeft as D, ChevronRight as E, ArrowRight as F, Activity as I, Boxes as M, Box as N, Check as O, Bot as P, Facebook as S, Clock as T, Megaphone as _, Settings as a, Image as b, Rocket as c, Plus as d, Plug as f, Menu as g, MessageCircle as h, Sparkles as i, Brain as j, ChartColumn as k, Repeat as l, MessageSquareOff as m, Users as n, Send as o, Package as p, Star as r, Search as s, X as t, RefreshCw as u, Linkedin as v, Cpu as w, House as x, Inbox as y };
