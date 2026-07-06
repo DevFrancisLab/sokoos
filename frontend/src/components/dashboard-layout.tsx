@@ -1080,20 +1080,35 @@ export default function DashboardLayout() {
                         <span className="font-medium">Phone</span>
                         <span>{activeCustomerProfile.phone}</span>
                       </div>
-                      <div className="flex items-center justify-between text-sm text-[#111827]">
-                        <span className="font-medium">Lead status</span>
-                        <span className="rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#16A34A]">{activeCustomerProfile.leadStatus}</span>
-                      </div>
-                      <div className="flex flex-col gap-2">
-                        <span className="font-medium text-sm text-[#111827]">Tags</span>
-                        <div className="flex flex-wrap gap-2">
-                          {activeCustomerProfile.tags.map((tag) => (
-                            <span key={tag} className="inline-flex items-center rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#16A34A]">
-                              {tag}
+                      {isPersonalActive ? (
+                        <>
+                          <div className="flex items-center justify-between text-sm text-[#111827]">
+                            <span className="font-medium">Contact type</span>
+                            <span className="inline-flex items-center gap-2 rounded-full bg-[#E5E7EB] px-3 py-1 text-xs font-semibold text-[#6B7280]">
+                              <span aria-hidden>{activePersonalIcon}</span>
+                              {activePersonalEntry?.relationship ?? "Personal"}
                             </span>
-                          ))}
-                        </div>
-                      </div>
+                          </div>
+                          <p className="text-sm text-[#6B7280]">This is a personal contact. AI, analytics, and lead tracking are disabled for this conversation.</p>
+                        </>
+                      ) : (
+                        <>
+                          <div className="flex items-center justify-between text-sm text-[#111827]">
+                            <span className="font-medium">Lead status</span>
+                            <span className="rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#16A34A]">{activeCustomerProfile.leadStatus}</span>
+                          </div>
+                          <div className="flex flex-col gap-2">
+                            <span className="font-medium text-sm text-[#111827]">Tags</span>
+                            <div className="flex flex-wrap gap-2">
+                              {activeCustomerProfile.tags.map((tag) => (
+                                <span key={tag} className="inline-flex items-center rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#16A34A]">
+                                  {tag}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </div>
                     <div className="rounded-3xl border border-[#E5E7EB] bg-white p-4 space-y-4">
                       <p className="text-sm font-semibold text-[#111827]">Interested products</p>
@@ -1267,7 +1282,7 @@ export default function DashboardLayout() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#E5E7EB] bg-white">
-                    {filteredCustomers.map((customer) => (
+                    {filteredCustomers.filter((customer) => !isPersonalByPhone(customer.phone)).map((customer) => (
                       <tr key={customer.id} className="hover:bg-[#F3F4F6] transition-colors">
                         <td className="px-6 py-4">
                           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ECFDF5] text-sm font-semibold text-[#16A34A]">
