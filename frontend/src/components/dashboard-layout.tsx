@@ -142,10 +142,10 @@ const PRODUCTS = [
 ];
 
 const ANALYTICS_METRICS = [
-  { label: "Messages", value: "13.4k", delta: "+12%", description: "Compared to last week (excludes personal)" },
-  { label: "Leads", value: "1,280", delta: "+8%", description: "Warm and new leads (excludes personal)" },
+  { label: "Messages", value: "13.4k", delta: "+12%", description: "Compared to last week" },
+  { label: "Leads", value: "1,280", delta: "+8%", description: "Warm and new leads" },
   { label: "Sales", value: "KSh 4.2M", delta: "+18%", description: "Revenue from campaigns" },
-  { label: "AI Resolution", value: "78%", delta: "+6%", description: "Handled without human support (excludes personal)" },
+  { label: "AI Resolution", value: "78%", delta: "+6%", description: "Handled without human support" },
 ];
 
 const ANALYTICS_CHART = [
@@ -173,88 +173,62 @@ const POPULAR_PRODUCTS = [
 const LANGUAGES = ["English", "Kiswahili"] as const;
 const PERSONALITIES = ["Friendly", "Professional", "Sales Focused"] as const;
 
-const AI_ASSISTANT_TABS = ["Business Knowledge", "AI Settings", "Test AI", "Escalation Rules", "Conversation Policies"] as const;
-const BUSINESS_INFO = {
-  businessName: "Sokoos Internet Solutions",
-  businessType: "Telecom & ISP",
-  aboutUs: "We deliver affordable, reliable internet solutions for small and medium businesses across Nairobi and surrounding regions.",
-  businessHours: "Mon–Fri 8:00 AM - 6:00 PM",
-  serviceAreas: "Nairobi, Thika, Mombasa, Kisumu",
-  paymentMethods: "Mobile money, bank transfer, cash on delivery",
-};
-
-const PRODUCTS_AND_SERVICES = [
-  { title: "10 Mbps Internet", price: "KES 2,500/month" },
-  { title: "20 Mbps Internet", price: "KES 3,500/month" },
-  { title: "Business Package", price: "KES 5,000/month" },
-];
-
-const FAQ_ITEMS = [
-  {
-    question: "Do you offer installation?",
-    answer: "Yes, installation costs KES 2,000.",
-  },
-];
-
-const BUSINESS_POLICIES = {
-  returnPolicy: "Customers can request a refund within 7 days of installation if the service is not delivered as promised.",
-  deliveryPolicy: "Installation appointments are scheduled within 48 hours of payment confirmation.",
-  cancellationPolicy: "Customers may cancel within 24 hours of booking without penalty.",
-};
-
-const TONE_OPTIONS = ["Professional", "Friendly", "Formal", "Sales-focused"] as const;
-
-const ESCALATION_OPTIONS = [
-  { key: "complaints", label: "Complaints" },
-  { key: "refundRequests", label: "Refund Requests" },
-  { key: "legalQuestions", label: "Legal Questions" },
-  { key: "humanRequested", label: "Human Requested" },
-  { key: "unknownQuestions", label: "Unknown Questions" },
-  { key: "negotiationsAbove10000", label: "Negotiations Above KES 10,000" },
+const ASSISTANT_TABS = [
+  "Business Knowledge",
+  "AI Settings",
+  "Test AI",
+  "Escalation Rules",
+  "Conversation Policies",
 ] as const;
 
-const OUTSIDE_BUSINESS_HOURS_OPTIONS = [
-  "Continue AI conversations",
-  "Collect customer information only",
-  "Inform customers that the business is closed",
-] as const;
-
-const PERSONAL_CONTACTS = [
+const BUSINESS_KNOWLEDGE_ITEMS = [
   {
-    name: "Mary Wanjiku",
-    relationship: "Wife",
-    phone: "+254712345678",
+    title: "Brand voice",
+    description: "Friendly, helpful, and sales-aware responses that reflect the business’s local presence.",
   },
   {
-    name: "Peter Mwangi",
-    relationship: "Supplier",
-    phone: "+254733222222",
+    title: "Key offerings",
+    description: "20 Mbps, Business Package, and 10 Mbps plans are the most common recommendations.",
   },
   {
-    name: "Alice Kamau",
-    relationship: "Accountant",
-    phone: "+254722111333",
+    title: "FAQ focus",
+    description: "Business hours, plan pricing, trial availability, and support escalation are prioritized.",
   },
 ];
 
-type TestAiMessage = {
-  id: string;
-  role: "user" | "ai";
-  text: string;
-  source?: string;
-};
+const TEST_AI_PROMPTS = [
+  "What is the Business Package price?",
+  "Can I get a trial before I sign up?",
+  "When are you open for support?",
+];
 
-const TEST_AI_MESSAGES: TestAiMessage[] = [
+const ESCALATION_RULES = [
   {
-    id: "t1",
-    role: "user",
-    text: "How much is your Business Package?",
+    label: "Escalate when customer asks for a live person",
+    description: "Send urgent requests directly to the owner when customers request human support.",
   },
   {
-    id: "t2",
-    role: "ai",
-    text: "Our Business Package costs KES 5,000/month.",
-    source: "Products & Services → Business Package",
+    label: "Escalate after business hours",
+    description: "If a message arrives outside the set hours, flag it for owner follow-up.",
+  },
+  {
+    label: "Escalate after repeated unanswered questions",
+    description: "Detect when the customer asks multiple questions in a row without a clear response.",
+  },
+];
+
+const CONVERSATION_POLICIES = [
+  {
+    label: "Keep replies concise",
+    description: "Prefer short, helpful answers that are easy for customers to read on mobile.",
+  },
+  {
+    label: "Use polite and professional language",
+    description: "Avoid slang and keep tone appropriate for business customers.",
+  },
+  {
+    label: "Respect business hours",
+    description: "Use outside-hours messages to let customers know when the business will respond next.",
   },
 ];
 
@@ -314,18 +288,6 @@ const INBOX_CONVERSATIONS = [
     source: "owner",
     isSaved: false,
     avatar: "UC",
-  },
-  {
-    id: "c6",
-    name: "Mary Wanjiku",
-    phone: "+254712345678",
-    message: "Can you remind me about the meeting at 3?",
-    time: "Today",
-    badge: 0,
-    source: "personal",
-    isPersonal: true,
-    isSaved: true,
-    avatar: "MW",
   },
 ];
 
@@ -439,6 +401,7 @@ const OWNER_NAMES: Record<string, string> = {
 export default function DashboardLayout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [selected, setSelected] = useState<string>("Home");
+  const [assistantTab, setAssistantTab] = useState<(typeof ASSISTANT_TABS)[number]>("Business Knowledge");
   const [activeConversation, setActiveConversation] = useState<string>("c1");
   const [searchQuery, setSearchQuery] = useState("");
    const [customerSearch, setCustomerSearch] = useState("");
@@ -461,59 +424,6 @@ export default function DashboardLayout() {
   const [messageInput, setMessageInput] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-
-  const [aiAssistantTab, setAiAssistantTab] = useState<(typeof AI_ASSISTANT_TABS)[number]>("Business Knowledge");
-  const [testAiMessages, setTestAiMessages] = useState<TestAiMessage[]>(TEST_AI_MESSAGES);
-  const [testAiInput, setTestAiInput] = useState("");
-  const testAiContainerRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    const container = testAiContainerRef.current;
-    if (!container) return;
-    container.scrollTop = container.scrollHeight;
-  }, [testAiMessages]);
-
-  const handleTestAiSend = () => {
-    const trimmed = testAiInput.trim();
-    if (!trimmed) return;
-
-    const userMessage: TestAiMessage = {
-      id: `user-${Date.now()}`,
-      role: "user",
-      text: trimmed,
-    };
-
-    setTestAiInput("");
-    setTestAiMessages((current) => [...current, userMessage]);
-
-    setTimeout(() => {
-      const normalized = trimmed.toLowerCase();
-      const response = normalized.includes("business package")
-        ? {
-            text: "Our Business Package costs KES 5,000/month.",
-            source: "Products & Services → Business Package",
-          }
-        : normalized.includes("installation")
-        ? {
-            text: "Installation costs KES 2,000 and is scheduled within 48 hours of payment confirmation.",
-            source: "Business Policies → Delivery Policy",
-          }
-        : {
-            text: "I’m still learning your business details. Try asking about services, prices, or policies.",
-            source: "Business Knowledge",
-          };
-
-      setTestAiMessages((current) => [
-        ...current,
-        {
-          id: `ai-${Date.now()}`,
-          role: "ai",
-          text: response.text,
-          source: response.source,
-        },
-      ]);
-    }, 300);
-  };
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -548,30 +458,41 @@ export default function DashboardLayout() {
   const [businessHours, setBusinessHours] = useState("Mon–Fri, 8:00 AM - 6:00 PM");
   const [humanTakeover, setHumanTakeover] = useState(true);
   const [language, setLanguage] = useState<(typeof LANGUAGES)[number]>("English");
-  const [secondaryLanguage, setSecondaryLanguage] = useState<(typeof LANGUAGES)[number]>("Kiswahili");
-  const [assistantName, setAssistantName] = useState("Nuru");
-  const [tone, setTone] = useState<(typeof TONE_OPTIONS)[number]>("Friendly");
-  const [salesBehavior, setSalesBehavior] = useState({
-    upsellProducts: true,
-    recommendAlternatives: true,
-    closeSalesAutomatically: false,
-  });
   const [personality, setPersonality] = useState<(typeof PERSONALITIES)[number]>("Friendly");
-  const [escalationRules, setEscalationRules] = useState({
-    complaints: true,
-    refundRequests: true,
-    legalQuestions: true,
-    humanRequested: true,
-    unknownQuestions: true,
-    negotiationsAbove10000: true,
+  const [testAiInput, setTestAiInput] = useState("How much is the Business Package?");
+  const [escalateOnLiveRequest, setEscalateOnLiveRequest] = useState(true);
+  const [escalateOutsideHours, setEscalateOutsideHours] = useState(true);
+  const [escalateUnanswered, setEscalateUnanswered] = useState(false);
+  const [policyKeepShort, setPolicyKeepShort] = useState(true);
+  const [policyUseProfessionalTone, setPolicyUseProfessionalTone] = useState(true);
+  const [policyRespectHours, setPolicyRespectHours] = useState(true);
+  const [businessInfo, setBusinessInfo] = useState({
+    name: "Sokoos Internet",
+    type: "Telecom & Connectivity",
+    about: "We help local businesses stay online with reliable internet plans, fast support, and easy onboarding.",
+    hours: "Mon–Fri, 8:00 AM - 6:00 PM",
+    serviceAreas: "Nairobi, Kiambu, Thika",
+    paymentMethods: "Mobile Money, Bank Transfer, Cash",
+  });
+  const [knowledgeProducts, setKnowledgeProducts] = useState([
+    { id: "kp1", name: "10 Mbps Internet", price: "KES 2,500/month" },
+    { id: "kp2", name: "20 Mbps Internet", price: "KES 3,500/month" },
+    { id: "kp3", name: "Business Package", price: "KES 5,000/month" },
+  ]);
+  const [faqItems, setFaqItems] = useState([
+    {
+      id: "faq1",
+      question: "Do you offer installation?",
+      answer: "Yes, installation costs KES 2,000.",
+    },
+  ]);
+  const [policies, setPolicies] = useState({
+    returnPolicy: "Customers may return services within 7 days if there is a technical issue requiring a fix.",
+    deliveryPolicy: "We deliver service activation details via WhatsApp within 24 hours of payment.",
+    cancellationPolicy: "Cancel anytime with 48 hours notice before the next billing cycle.",
   });
   const [imageLabel, setImageLabel] = useState("No file selected");
   const [customerCollapsed, setCustomerCollapsed] = useState(false);
-  const [policyBusinessHours, setPolicyBusinessHours] = useState("8:00 AM - 6:00 PM");
-  const [outsideBusinessHoursBehavior, setOutsideBusinessHoursBehavior] = useState<(typeof OUTSIDE_BUSINESS_HOURS_OPTIONS)[number]>("Collect customer information only");
-  const [maxAiMessages, setMaxAiMessages] = useState(10);
-  const [allowAiCloseSales, setAllowAiCloseSales] = useState(true);
-  const [allowAiScheduleAppointments, setAllowAiScheduleAppointments] = useState(true);
 
   return (
     <div className="h-screen min-h-screen bg-[#FFFFFF] text-[#111827]">
@@ -896,10 +817,6 @@ export default function DashboardLayout() {
                               <span className="rounded-full bg-[#22C55E] px-2 py-0.5 text-[10px] font-semibold text-white">
                                 {conversation.badge}
                               </span>
-                            ) : effectiveSource === "personal" ? (
-                              <span className="inline-flex rounded-full bg-[#E5E7EB] px-2 py-1 text-xs font-semibold text-[#6B7280]">
-                                👤 Personal
-                              </span>
                             ) : effectiveSource === "ai_handling" ? (
                               <span className="inline-flex rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#166534]">
                                 🤖 AI Handling
@@ -940,26 +857,20 @@ export default function DashboardLayout() {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      {effectiveActiveSource === "personal" ? (
-                        <span className="inline-flex items-center gap-2 rounded-full bg-[#E5E7EB] px-3 py-1 text-xs font-semibold text-[#6B7280]">
-                          👤 Personal Contact
-                        </span>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={toggleAiForActive}
-                          aria-label="Toggle AI/Owner mode"
-                          className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold transition ${effectiveActiveSource.startsWith("ai") ? "bg-[#ECFDF5] text-[#166534]" : effectiveActiveSource === "needs_attention" ? "bg-[#FEF2F2] text-[#B91C1C]" : "bg-[#EFF6FF] text-[#1E3A8A]"}`}
-                        >
-                          {effectiveActiveSource.startsWith("ai") ? (
-                            effectiveActiveSource === "ai_handling" ? "🤖 AI ON" : "🤖 AI Handled"
-                          ) : effectiveActiveSource === "needs_attention" ? (
-                            "🔴 Needs Owner"
-                          ) : (
-                            "👤 Owner Mode"
-                          )}
-                        </button>
-                      )}
+                      <button
+                        type="button"
+                        onClick={toggleAiForActive}
+                        aria-label="Toggle AI/Owner mode"
+                        className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold transition ${effectiveActiveSource.startsWith("ai") ? "bg-[#ECFDF5] text-[#166534]" : effectiveActiveSource === "needs_attention" ? "bg-[#FEF2F2] text-[#B91C1C]" : "bg-[#EFF6FF] text-[#1E3A8A]"}`}
+                      >
+                        {effectiveActiveSource.startsWith("ai") ? (
+                          effectiveActiveSource === "ai_handling" ? "🤖 AI ON" : "🤖 AI Handled"
+                        ) : effectiveActiveSource === "needs_attention" ? (
+                          "🔴 Needs Owner"
+                        ) : (
+                          "👤 Owner Mode"
+                        )}
+                      </button>
                       {customerCollapsed && (
                         <button
                           type="button"
@@ -975,23 +886,16 @@ export default function DashboardLayout() {
                   </div>
                 </div>
                 <div className="flex min-h-0 flex-1 flex-col p-4">
-                  {effectiveActiveSource === "personal" && (
-                    <div className="mb-4 rounded-3xl border border-[#E5E7EB] bg-[#FEF3F2] p-4">
-                      <p className="text-sm text-[#B91C1C] font-semibold">👤 Personal Contact</p>
-                      <p className="mt-1 text-sm text-[#7F1D1D]">AI does not handle personal contacts. Messages are owner-only.</p>
-                    </div>
-                  )}
                   <div className="flex-1 min-h-0 space-y-4 overflow-y-auto pr-2 pb-4 custom-scrollbar">
                     {activeMessages.map((message, index) => {
                       const originalWasAi = String(activeConversationData?.source).startsWith("ai");
                       // If the AI originally handled messages but AI is toggled off, hide AI-generated agent messages (mock behavior)
-                      // Personal contacts never show AI-generated messages
-                      if (message.from === "agent" && (effectiveActiveSource === "personal" || (originalWasAi && !String(effectiveActiveSource).startsWith("ai")))) {
+                      if (message.from === "agent" && originalWasAi && !String(effectiveActiveSource).startsWith("ai")) {
                         return null;
                       }
                       const isCustomer = message.from === "customer";
                       const isAgent = message.from === "agent";
-                      const isAi = isAgent && String(effectiveActiveSource).startsWith("ai") && effectiveActiveSource !== "personal";
+                      const isAi = isAgent && String(effectiveActiveSource).startsWith("ai");
                       const senderLabel = isAi ? "Sokoos AI" : activeAgentName;
 
                       return (
@@ -1365,106 +1269,537 @@ export default function DashboardLayout() {
             </div>
           )}
           {selected === "AI Assistant" && (
-            <div className={`space-y-6 ${CARD}`}>
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">AI Assistant</p>
-                  <h2 className="mt-2 text-2xl font-semibold text-[#111827]">Business AI settings</h2>
-                  <p className="mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl">
-                    Keep your AI assistant aligned with business hours, handoff rules, languages and tone without the technical jargon.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setAiEnabled((value) => !value)}
-                  className={`inline-flex items-center rounded-2xl px-4 py-3 text-sm font-semibold transition ${
-                    aiEnabled ? "bg-[#22C55E] text-white" : "bg-[#E5E7EB] text-[#6B7280]"
-                  }`}
-                >
-                  {aiEnabled ? "Enabled" : "Disabled"}
-                </button>
-              </div>
-
-              <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-                <section className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
-                  <div className="space-y-4">
-                    <div className="rounded-3xl bg-white p-5 shadow-sm">
-                      <div className="flex items-center justify-between gap-4">
-                        <div>
-                          <p className="text-sm font-semibold text-[#111827]">Business Hours</p>
-                          <p className="mt-2 text-sm text-[#6B7280]">Set the hours when support should be prioritized.</p>
-                        </div>
-                        <span className="rounded-full bg-[#E0F2FE] px-3 py-1 text-xs font-semibold text-[#0C4A6E]">{businessHours}</span>
-                      </div>
-                    </div>
-                    <div className="rounded-3xl bg-white p-5 shadow-sm">
-                      <div className="flex items-center justify-between gap-4">
-                        <div>
-                          <p className="text-sm font-semibold text-[#111827]">Team Takeover</p>
-                          <p className="mt-2 text-sm text-[#6B7280]">Allow a team member to step in when the customer needs real support.</p>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => setHumanTakeover((value) => !value)}
-                          className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                            humanTakeover
-                              ? "bg-[#DCFCE7] text-[#166534]"
-                              : "bg-[#E5E7EB] text-[#6B7280]"
-                          }`}
-                        >
-                          {humanTakeover ? "On" : "Off"}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-
-                <section className="space-y-6 rounded-3xl border border-[#E5E7EB] bg-[#FFFFFF] p-6 shadow-sm">
+            <div className="space-y-6">
+              <div className={CARD}>
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#6B7280]">Languages</p>
-                    <div className="mt-4 flex flex-wrap gap-3">
-                      {LANGUAGES.map((option) => (
-                        <button
-                          key={option}
-                          type="button"
-                          onClick={() => setLanguage(option)}
-                          className={`rounded-2xl border px-4 py-3 text-sm font-semibold transition ${
-                            language === option
-                              ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]"
-                              : "border-[#E5E7EB] bg-white text-[#111827] hover:bg-[#F3F4F6]"
-                          }`}
-                        >
-                          {option}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#6B7280]">Personality</p>
-                    <div className="mt-4 flex flex-wrap gap-3">
-                      {PERSONALITIES.map((option) => (
-                        <button
-                          key={option}
-                          type="button"
-                          onClick={() => setPersonality(option)}
-                          className={`rounded-2xl border px-4 py-3 text-sm font-semibold transition ${
-                            personality === option
-                              ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]"
-                              : "border-[#E5E7EB] bg-white text-[#111827] hover:bg-[#F3F4F6]"
-                          }`}
-                        >
-                          {option}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-5 text-sm text-[#6B7280]">
-                    <p className="font-semibold text-[#111827]">Note</p>
-                    <p className="mt-2">
-                      These settings keep your assistant sounding professional and helpful while making it easy to hand off conversations to a person.
+                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">AI Assistant</p>
+                    <h2 className="mt-2 text-2xl font-semibold text-[#111827]">Customize your business AI agent</h2>
+                    <p className="mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl">
+                      Manage knowledge, behavior rules, escalation and testing from one place. All settings are mocked for now.
                     </p>
                   </div>
-                </section>
+                  <button
+                    type="button"
+                    onClick={() => setAiEnabled((value) => !value)}
+                    className={`inline-flex items-center rounded-2xl px-4 py-3 text-sm font-semibold transition ${
+                      aiEnabled ? "bg-[#22C55E] text-white" : "bg-[#E5E7EB] text-[#6B7280]"
+                    }`}
+                  >
+                    {aiEnabled ? "AI Enabled" : "AI Disabled"}
+                  </button>
+                </div>
+
+                <div className="mt-6 border-b border-[#E5E7EB] pb-4">
+                  <div className="flex flex-wrap gap-2">
+                    {ASSISTANT_TABS.map((tab) => {
+                      const active = assistantTab === tab;
+                      return (
+                        <button
+                          key={tab}
+                          type="button"
+                          onClick={() => setAssistantTab(tab)}
+                          className={`rounded-2xl px-4 py-2 text-sm font-semibold transition ${
+                            active
+                              ? "bg-[#22C55E] text-white"
+                              : "bg-[#F3F4F6] text-[#374151] hover:bg-[#E5E7EB]"
+                          }`}
+                        >
+                          {tab}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="space-y-6 pt-4">
+                  {assistantTab === "Business Knowledge" && (
+                    <div className="space-y-6">
+                      <section className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
+                        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                          <div>
+                            <p className="text-sm font-semibold text-[#111827]">Business Information</p>
+                            <p className="mt-2 text-sm text-[#6B7280]">This information helps the AI respond accurately to customer questions.</p>
+                          </div>
+                        </div>
+                        <div className="mt-6 grid gap-4 lg:grid-cols-2">
+                          <div className="space-y-4">
+                            <div>
+                              <label className="text-sm font-semibold text-[#111827]">Business Name</label>
+                              <input
+                                value={businessInfo.name}
+                                onChange={(event) => setBusinessInfo((prev) => ({ ...prev, name: event.target.value }))}
+                                className="mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-sm font-semibold text-[#111827]">Business Type</label>
+                              <input
+                                value={businessInfo.type}
+                                onChange={(event) => setBusinessInfo((prev) => ({ ...prev, type: event.target.value }))}
+                                className="mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-sm font-semibold text-[#111827]">Business Hours</label>
+                              <input
+                                value={businessInfo.hours}
+                                onChange={(event) => setBusinessInfo((prev) => ({ ...prev, hours: event.target.value }))}
+                                className="mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                              />
+                            </div>
+                          </div>
+                          <div className="space-y-4">
+                            <div>
+                              <label className="text-sm font-semibold text-[#111827]">About Us</label>
+                              <textarea
+                                value={businessInfo.about}
+                                onChange={(event) => setBusinessInfo((prev) => ({ ...prev, about: event.target.value }))}
+                                className="mt-2 min-h-[130px] w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-sm font-semibold text-[#111827]">Service Areas</label>
+                              <input
+                                value={businessInfo.serviceAreas}
+                                onChange={(event) => setBusinessInfo((prev) => ({ ...prev, serviceAreas: event.target.value }))}
+                                className="mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-sm font-semibold text-[#111827]">Payment Methods</label>
+                              <input
+                                value={businessInfo.paymentMethods}
+                                onChange={(event) => setBusinessInfo((prev) => ({ ...prev, paymentMethods: event.target.value }))}
+                                className="mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </section>
+
+                      <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                          <div>
+                            <p className="text-sm font-semibold text-[#111827]">Products & Services</p>
+                            <p className="mt-2 text-sm text-[#6B7280]">Add the plans and prices your AI assistant should know.</p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setKnowledgeProducts((current) => [
+                                ...current,
+                                { id: `kp${current.length + 1}`, name: "", price: "" },
+                              ])
+                            }
+                            className="inline-flex items-center rounded-2xl bg-[#22C55E] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
+                          >
+                            Add product
+                          </button>
+                        </div>
+                        <div className="mt-6 space-y-4">
+                          {knowledgeProducts.map((product) => (
+                            <div key={product.id} className="grid gap-4 lg:grid-cols-[1fr_0.6fr]">
+                              <input
+                                value={product.name}
+                                onChange={(event) =>
+                                  setKnowledgeProducts((current) =>
+                                    current.map((item) =>
+                                      item.id === product.id ? { ...item, name: event.target.value } : item
+                                    )
+                                  )
+                                }
+                                placeholder="Product name"
+                                className="w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                              />
+                              <input
+                                value={product.price}
+                                onChange={(event) =>
+                                  setKnowledgeProducts((current) =>
+                                    current.map((item) =>
+                                      item.id === product.id ? { ...item, price: event.target.value } : item
+                                    )
+                                  )
+                                }
+                                placeholder="Price"
+                                className="w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </section>
+
+                      <section className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
+                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                          <div>
+                            <p className="text-sm font-semibold text-[#111827]">FAQs</p>
+                            <p className="mt-2 text-sm text-[#6B7280]">Common customer questions the assistant will use when answering.</p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setFaqItems((current) => [
+                                ...current,
+                                { id: `faq${current.length + 1}`, question: "", answer: "" },
+                              ])
+                            }
+                            className="inline-flex items-center rounded-2xl bg-[#22C55E] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
+                          >
+                            Add FAQ
+                          </button>
+                        </div>
+                        <div className="mt-6 space-y-4">
+                          {faqItems.map((faq) => (
+                            <div key={faq.id} className="space-y-3 rounded-3xl bg-white p-5 shadow-sm">
+                              <div>
+                                <label className="text-sm font-semibold text-[#111827]">Question</label>
+                                <input
+                                  value={faq.question}
+                                  onChange={(event) =>
+                                    setFaqItems((current) =>
+                                      current.map((item) =>
+                                        item.id === faq.id ? { ...item, question: event.target.value } : item
+                                      )
+                                    )
+                                  }
+                                  className="mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                                />
+                              </div>
+                              <div>
+                                <label className="text-sm font-semibold text-[#111827]">Answer</label>
+                                <textarea
+                                  value={faq.answer}
+                                  onChange={(event) =>
+                                    setFaqItems((current) =>
+                                      current.map((item) =>
+                                        item.id === faq.id ? { ...item, answer: event.target.value } : item
+                                      )
+                                    )
+                                  }
+                                  className="mt-2 min-h-[100px] w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                                />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </section>
+
+                      <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                        <div className="space-y-4">
+                          <div>
+                            <p className="text-sm font-semibold text-[#111827]">Policies</p>
+                            <p className="mt-2 text-sm text-[#6B7280]">
+                              This information is used by the AI when responding to customers.
+                            </p>
+                          </div>
+                          <div className="space-y-4">
+                            <div>
+                              <label className="text-sm font-semibold text-[#111827]">Return Policy</label>
+                              <textarea
+                                value={policies.returnPolicy}
+                                onChange={(event) => setPolicies((prev) => ({ ...prev, returnPolicy: event.target.value }))}
+                                className="mt-2 min-h-[100px] w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-sm font-semibold text-[#111827]">Delivery Policy</label>
+                              <textarea
+                                value={policies.deliveryPolicy}
+                                onChange={(event) => setPolicies((prev) => ({ ...prev, deliveryPolicy: event.target.value }))}
+                                className="mt-2 min-h-[100px] w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-sm font-semibold text-[#111827]">Cancellation Policy</label>
+                              <textarea
+                                value={policies.cancellationPolicy}
+                                onChange={(event) => setPolicies((prev) => ({ ...prev, cancellationPolicy: event.target.value }))}
+                                className="mt-2 min-h-[100px] w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </section>
+                    </div>
+                  )}
+
+                  {assistantTab === "AI Settings" && (
+                    <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
+                      <section className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
+                        <div className="space-y-4">
+                          <div className="rounded-3xl bg-white p-5 shadow-sm">
+                            <div className="flex items-center justify-between gap-4">
+                              <div>
+                                <p className="text-sm font-semibold text-[#111827]">Business Hours</p>
+                                <p className="mt-2 text-sm text-[#6B7280]">Set the hours when your assistant prioritizes support.</p>
+                              </div>
+                              <span className="rounded-full bg-[#E0F2FE] px-3 py-1 text-xs font-semibold text-[#0C4A6E]">{businessHours}</span>
+                            </div>
+                          </div>
+                          <div className="rounded-3xl bg-white p-5 shadow-sm">
+                            <div className="flex items-center justify-between gap-4">
+                              <div>
+                                <p className="text-sm font-semibold text-[#111827]">Human takeover</p>
+                                <p className="mt-2 text-sm text-[#6B7280]">Let the assistant hand off conversations to a human when needed.</p>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => setHumanTakeover((value) => !value)}
+                                className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                                  humanTakeover
+                                    ? "bg-[#DCFCE7] text-[#166534]"
+                                    : "bg-[#E5E7EB] text-[#6B7280]"
+                                }`}
+                              >
+                                {humanTakeover ? "On" : "Off"}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </section>
+
+                      <section className="space-y-6 rounded-3xl border border-[#E5E7EB] bg-[#FFFFFF] p-6 shadow-sm">
+                        <div>
+                          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#6B7280]">Languages</p>
+                          <div className="mt-4 flex flex-wrap gap-3">
+                            {LANGUAGES.map((option) => (
+                              <button
+                                key={option}
+                                type="button"
+                                onClick={() => setLanguage(option)}
+                                className={`rounded-2xl border px-4 py-3 text-sm font-semibold transition ${
+                                  language === option
+                                    ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]"
+                                    : "border-[#E5E7EB] bg-white text-[#111827] hover:bg-[#F3F4F6]"
+                                }`}
+                              >
+                                {option}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#6B7280]">Personality</p>
+                          <div className="mt-4 flex flex-wrap gap-3">
+                            {PERSONALITIES.map((option) => (
+                              <button
+                                key={option}
+                                type="button"
+                                onClick={() => setPersonality(option)}
+                                className={`rounded-2xl border px-4 py-3 text-sm font-semibold transition ${
+                                  personality === option
+                                    ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]"
+                                    : "border-[#E5E7EB] bg-white text-[#111827] hover:bg-[#F3F4F6]"
+                                }`}
+                              >
+                                {option}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-5 text-sm text-[#6B7280]">
+                          <p className="font-semibold text-[#111827]">Note</p>
+                          <p className="mt-2">
+                            These settings keep your assistant sounding professional and helpful while maintaining a consistent business tone.
+                          </p>
+                        </div>
+                      </section>
+                    </div>
+                  )}
+
+                  {assistantTab === "Test AI" && (
+                    <div className="grid gap-6 lg:grid-cols-[1.4fr_0.8fr]">
+                      <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                        <div className="space-y-4">
+                          <div>
+                            <p className="text-sm font-semibold text-[#111827]">Test your assistant</p>
+                            <p className="mt-2 text-sm text-[#6B7280]">Send a sample prompt and preview how the assistant responds to common customer questions.</p>
+                          </div>
+                          <div className="space-y-3 rounded-3xl bg-[#F9FAFB] p-5">
+                            <div className="rounded-3xl bg-white p-4 text-sm text-[#111827] shadow-sm">
+                              <p className="font-semibold">Customer</p>
+                              <p className="mt-2 text-[#6B7280]">{testAiInput}</p>
+                            </div>
+                            <div className="rounded-3xl bg-[#ECFDF5] p-4 text-sm text-[#166534] shadow-sm">
+                              <p className="font-semibold">AI Assistant</p>
+                              <p className="mt-2">This is a mock reply based on your current AI settings and business knowledge.</p>
+                            </div>
+                          </div>
+                          <div className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-5">
+                            <label className="text-sm font-semibold text-[#111827]" htmlFor="test-ai-prompt">
+                              Prompt
+                            </label>
+                            <textarea
+                              id="test-ai-prompt"
+                              value={testAiInput}
+                              onChange={(event) => setTestAiInput(event.target.value)}
+                              className="mt-3 min-h-[120px] w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                            />
+                            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                              <p className="text-xs text-[#6B7280]">This is a mocked experience only; no backend call is made.</p>
+                              <button
+                                type="button"
+                                className="inline-flex items-center justify-center rounded-2xl bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
+                              >
+                                Run Test
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </section>
+
+                      <section className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
+                        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#6B7280]">Quick prompts</p>
+                        <div className="mt-4 space-y-3">
+                          {TEST_AI_PROMPTS.map((prompt) => (
+                            <button
+                              key={prompt}
+                              type="button"
+                              onClick={() => setTestAiInput(prompt)}
+                              className="w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-left text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6]"
+                            >
+                              {prompt}
+                            </button>
+                          ))}
+                        </div>
+                      </section>
+                    </div>
+                  )}
+
+                  {assistantTab === "Escalation Rules" && (
+                    <div className="space-y-4">
+                      <div className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
+                        <p className="text-sm font-semibold text-[#111827]">Escalation control</p>
+                        <p className="mt-2 text-sm text-[#6B7280]">Choose when the assistant should hand off conversations to a human.</p>
+                      </div>
+                      <div className="space-y-4">
+                        <div className="rounded-3xl border border-[#E5E7EB] bg-white p-5 shadow-sm">
+                          <div className="flex items-center justify-between gap-4">
+                            <div>
+                              <p className="text-sm font-semibold text-[#111827]">Escalate on live support requests</p>
+                              <p className="mt-1 text-sm text-[#6B7280]">Send urgent buyer messages straight to the owner.</p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setEscalateOnLiveRequest((value) => !value)}
+                              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                                escalateOnLiveRequest
+                                  ? "bg-[#DCFCE7] text-[#166534]"
+                                  : "bg-[#E5E7EB] text-[#6B7280]"
+                              }`}
+                            >
+                              {escalateOnLiveRequest ? "On" : "Off"}
+                            </button>
+                          </div>
+                        </div>
+                        <div className="rounded-3xl border border-[#E5E7EB] bg-white p-5 shadow-sm">
+                          <div className="flex items-center justify-between gap-4">
+                            <div>
+                              <p className="text-sm font-semibold text-[#111827]">Escalate after hours</p>
+                              <p className="mt-1 text-sm text-[#6B7280]">Flag messages received outside business hours.</p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setEscalateOutsideHours((value) => !value)}
+                              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                                escalateOutsideHours
+                                  ? "bg-[#DCFCE7] text-[#166534]"
+                                  : "bg-[#E5E7EB] text-[#6B7280]"
+                              }`}
+                            >
+                              {escalateOutsideHours ? "On" : "Off"}
+                            </button>
+                          </div>
+                        </div>
+                        <div className="rounded-3xl border border-[#E5E7EB] bg-white p-5 shadow-sm">
+                          <div className="flex items-center justify-between gap-4">
+                            <div>
+                              <p className="text-sm font-semibold text-[#111827]">Escalate after unanswered questions</p>
+                              <p className="mt-1 text-sm text-[#6B7280]">Alert the owner when the customer asks multiple questions without resolution.</p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => setEscalateUnanswered((value) => !value)}
+                              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                                escalateUnanswered
+                                  ? "bg-[#DCFCE7] text-[#166534]"
+                                  : "bg-[#E5E7EB] text-[#6B7280]"
+                              }`}
+                            >
+                              {escalateUnanswered ? "On" : "Off"}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {assistantTab === "Conversation Policies" && (
+                    <div className="space-y-4">
+                      <div className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
+                        <p className="text-sm font-semibold text-[#111827]">Conversation policies</p>
+                        <p className="mt-2 text-sm text-[#6B7280]">Keep your AI responses aligned with business expectations and customer experience.</p>
+                      </div>
+                      <div className="rounded-3xl border border-[#E5E7EB] bg-white p-5 shadow-sm">
+                        <div className="flex items-center justify-between gap-4">
+                          <div>
+                            <p className="text-sm font-semibold text-[#111827]">Keep replies concise</p>
+                            <p className="mt-1 text-sm text-[#6B7280]">Short answers make it easier for customers to scan messages on mobile.</p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setPolicyKeepShort((value) => !value)}
+                            className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                              policyKeepShort
+                                ? "bg-[#DCFCE7] text-[#166534]"
+                                : "bg-[#E5E7EB] text-[#6B7280]"
+                            }`}
+                          >
+                            {policyKeepShort ? "On" : "Off"}
+                          </button>
+                        </div>
+                      </div>
+                      <div className="rounded-3xl border border-[#E5E7EB] bg-white p-5 shadow-sm">
+                        <div className="flex items-center justify-between gap-4">
+                          <div>
+                            <p className="text-sm font-semibold text-[#111827]">Use polite and professional language</p>
+                            <p className="mt-1 text-sm text-[#6B7280]">Avoid slang and keep the business tone respectful.</p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setPolicyUseProfessionalTone((value) => !value)}
+                            className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                              policyUseProfessionalTone
+                                ? "bg-[#DCFCE7] text-[#166534]"
+                                : "bg-[#E5E7EB] text-[#6B7280]"
+                            }`}
+                          >
+                            {policyUseProfessionalTone ? "On" : "Off"}
+                          </button>
+                        </div>
+                      </div>
+                      <div className="rounded-3xl border border-[#E5E7EB] bg-white p-5 shadow-sm">
+                        <div className="flex items-center justify-between gap-4">
+                          <div>
+                            <p className="text-sm font-semibold text-[#111827]">Respect business hours</p>
+                            <p className="mt-1 text-sm text-[#6B7280]">Let customers know when the business will return outside operating hours.</p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setPolicyRespectHours((value) => !value)}
+                            className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
+                              policyRespectHours
+                                ? "bg-[#DCFCE7] text-[#166534]"
+                                : "bg-[#E5E7EB] text-[#6B7280]"
+                            }`}
+                          >
+                            {policyRespectHours ? "On" : "Off"}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           )}
@@ -1552,514 +1887,8 @@ export default function DashboardLayout() {
               </div>
             </div>
           )}
-          {selected === "AI Assistant" && (
-            <div className="space-y-6">
-              <div className={CARD}>
-                <div>
-                  <p className="text-sm font-medium text-[#6B7280]">AI Assistant Control Center</p>
-                  <h1 className="mt-2 text-3xl font-semibold text-[#111827]">Customize Your AI Agent</h1>
-                  <p className="mt-2 text-sm text-[#6B7280]">Configure business knowledge, AI behavior, escalation rules, and conversation policies.</p>
-                </div>
-              </div>
-
-              <div className={CARD}>
-                <div className="flex gap-2 overflow-x-auto pb-2">
-                  {AI_ASSISTANT_TABS.map((tab) => (
-                    <button
-                      key={tab}
-                      onClick={() => setAiAssistantTab(tab)}
-                      className={`whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-semibold transition duration-200 ease-in-out ${
-                        aiAssistantTab === tab
-                          ? "bg-[#22C55E] text-white shadow-sm"
-                          : "bg-[#F3F4F6] text-[#111827] hover:bg-[#ECFDF5] hover:-translate-y-0.5"
-                      }`}
-                    >
-                      {tab}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {aiAssistantTab === "Business Knowledge" && (
-                <div className="grid gap-4 lg:grid-cols-[1fr_1.2fr]">
-                  <div className={CARD}>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-[#6B7280]">Business Information</p>
-                        <h3 className="mt-2 text-lg font-semibold text-[#111827]">About your business</h3>
-                      </div>
-                      <button className="rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#166534] hover:bg-[#DCF4F0]">
-                        Edit
-                      </button>
-                    </div>
-                    <div className="mt-4 space-y-4 text-sm text-[#6B7280]">
-                      <div>
-                        <p className="font-semibold text-[#111827]">Business Name</p>
-                        <p>{BUSINESS_INFO.businessName}</p>
-                      </div>
-                      <div>
-                        <p className="font-semibold text-[#111827]">Business Type</p>
-                        <p>{BUSINESS_INFO.businessType}</p>
-                      </div>
-                      <div>
-                        <p className="font-semibold text-[#111827]">About Us</p>
-                        <p>{BUSINESS_INFO.aboutUs}</p>
-                      </div>
-                      <div>
-                        <p className="font-semibold text-[#111827]">Business Hours</p>
-                        <p>{BUSINESS_INFO.businessHours}</p>
-                      </div>
-                      <div>
-                        <p className="font-semibold text-[#111827]">Service Areas</p>
-                        <p>{BUSINESS_INFO.serviceAreas}</p>
-                      </div>
-                      <div>
-                        <p className="font-semibold text-[#111827]">Payment Methods</p>
-                        <p>{BUSINESS_INFO.paymentMethods}</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div className={CARD}>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-medium text-[#6B7280]">Products & Services</p>
-                          <h3 className="mt-2 text-lg font-semibold text-[#111827]">What you sell</h3>
-                        </div>
-                        <button className="rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#166534] hover:bg-[#DCF4F0]">
-                          Add item
-                        </button>
-                      </div>
-                      <div className="mt-4 space-y-3 text-sm text-[#6B7280]">
-                        {PRODUCTS_AND_SERVICES.map((product) => (
-                          <div key={product.title} className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-4">
-                            <p className="font-semibold text-[#111827]">{product.title}</p>
-                            <p className="mt-1">{product.price}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className={CARD}>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="text-sm font-medium text-[#6B7280]">FAQs</p>
-                          <h3 className="mt-2 text-lg font-semibold text-[#111827]">Common customer questions</h3>
-                        </div>
-                        <button className="rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#166534] hover:bg-[#DCF4F0]">
-                          Add FAQ
-                        </button>
-                      </div>
-                      <div className="mt-4 space-y-4 text-sm text-[#6B7280]">
-                        {FAQ_ITEMS.map((item) => (
-                          <div key={item.question} className="rounded-3xl border border-[#E5E7EB] bg-white p-4">
-                            <p className="font-semibold text-[#111827]">Question</p>
-                            <p className="mt-1">{item.question}</p>
-                            <p className="mt-3 font-semibold text-[#111827]">Answer</p>
-                            <p className="mt-1">{item.answer}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className={CARD}>
-                      <div>
-                        <p className="text-sm font-medium text-[#6B7280]">Policies</p>
-                        <h3 className="mt-2 text-lg font-semibold text-[#111827]">AI response reference</h3>
-                        <p className="mt-2 text-sm text-[#6B7280]">This information is used by the AI when responding to customers.</p>
-                      </div>
-                      <div className="mt-4 space-y-4 text-sm text-[#6B7280]">
-                        <div>
-                          <p className="font-semibold text-[#111827]">Return Policy</p>
-                          <textarea
-                            readOnly
-                            className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none"
-                            rows={3}
-                            value={BUSINESS_POLICIES.returnPolicy}
-                          />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-[#111827]">Delivery Policy</p>
-                          <textarea
-                            readOnly
-                            className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none"
-                            rows={3}
-                            value={BUSINESS_POLICIES.deliveryPolicy}
-                          />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-[#111827]">Cancellation Policy</p>
-                          <textarea
-                            readOnly
-                            className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none"
-                            rows={3}
-                            value={BUSINESS_POLICIES.cancellationPolicy}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {aiAssistantTab === "AI Settings" && (
-                <div className="space-y-6">
-                  <div className={CARD}>
-                    <div className="space-y-4">
-                      <div>
-                        <p className="text-sm font-medium text-[#6B7280]">AI Identity</p>
-                        <h3 className="mt-2 text-lg font-semibold text-[#111827]">Assistant Name</h3>
-                      </div>
-                      <div className="space-y-2">
-                        <label className="block text-sm font-semibold text-[#111827]" htmlFor="assistant-name">
-                          Assistant Name
-                        </label>
-                        <input
-                          id="assistant-name"
-                          value={assistantName}
-                          onChange={(event) => setAssistantName(event.target.value)}
-                          className="w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
-                          placeholder="Nuru"
-                        />
-                        <p className="text-sm text-[#6B7280]">This is the name your AI assistant uses when answering customer questions.</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid gap-4 xl:grid-cols-2">
-                    <div className={CARD}>
-                      <div className="space-y-4">
-                        <div>
-                          <p className="text-sm font-medium text-[#6B7280]">Languages</p>
-                          <h3 className="mt-2 text-lg font-semibold text-[#111827]">Primary & Secondary</h3>
-                        </div>
-                        <div className="space-y-4 text-sm text-[#111827]">
-                          <div>
-                            <label className="block font-semibold" htmlFor="primary-language">Primary Language</label>
-                            <select
-                              id="primary-language"
-                              value={language}
-                              onChange={(event) => setLanguage(event.target.value as typeof LANGUAGES[number])}
-                              className="mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
-                            >
-                              {LANGUAGES.map((option) => (
-                                <option key={option} value={option}>{option}</option>
-                              ))}
-                            </select>
-                          </div>
-                          <div>
-                            <label className="block font-semibold" htmlFor="secondary-language">Secondary Language</label>
-                            <select
-                              id="secondary-language"
-                              value={secondaryLanguage}
-                              onChange={(event) => setSecondaryLanguage(event.target.value as typeof LANGUAGES[number])}
-                              className="mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
-                            >
-                              {LANGUAGES.map((option) => (
-                                <option key={option} value={option}>{option}</option>
-                              ))}
-                            </select>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className={CARD}>
-                      <div className="space-y-4">
-                        <div>
-                          <p className="text-sm font-medium text-[#6B7280]">Tone</p>
-                          <h3 className="mt-2 text-lg font-semibold text-[#111827]">AI Personality</h3>
-                        </div>
-                        <div className="grid gap-3 sm:grid-cols-2">
-                          {TONE_OPTIONS.map((option) => (
-                            <button
-                              key={option}
-                              type="button"
-                              onClick={() => setTone(option)}
-                              className={`rounded-3xl border px-4 py-3 text-left text-sm font-semibold transition ${
-                                tone === option
-                                  ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]"
-                                  : "border-[#E5E7EB] bg-white text-[#111827] hover:bg-[#F3F4F6]"
-                              }`}
-                            >
-                              {option}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className={CARD}>
-                    <div className="space-y-4">
-                      <div>
-                        <p className="text-sm font-medium text-[#6B7280]">Sales Behavior</p>
-                        <h3 className="mt-2 text-lg font-semibold text-[#111827]">Guide sales conversations</h3>
-                      </div>
-                      <div className="space-y-3 text-sm text-[#111827]">
-                        <label className="flex items-center gap-3 rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3">
-                          <input
-                            type="checkbox"
-                            checked={salesBehavior.upsellProducts}
-                            onChange={(event) => setSalesBehavior((current) => ({ ...current, upsellProducts: event.target.checked }))}
-                            className="h-4 w-4 rounded border-[#D1D5DB] text-[#22C55E] focus:ring-[#22C55E]"
-                          />
-                          <span>Upsell Products</span>
-                        </label>
-                        <label className="flex items-center gap-3 rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3">
-                          <input
-                            type="checkbox"
-                            checked={salesBehavior.recommendAlternatives}
-                            onChange={(event) => setSalesBehavior((current) => ({ ...current, recommendAlternatives: event.target.checked }))}
-                            className="h-4 w-4 rounded border-[#D1D5DB] text-[#22C55E] focus:ring-[#22C55E]"
-                          />
-                          <span>Recommend Alternatives</span>
-                        </label>
-                        <label className="flex items-center gap-3 rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3">
-                          <input
-                            type="checkbox"
-                            checked={salesBehavior.closeSalesAutomatically}
-                            onChange={(event) => setSalesBehavior((current) => ({ ...current, closeSalesAutomatically: event.target.checked }))}
-                            className="h-4 w-4 rounded border-[#D1D5DB] text-[#22C55E] focus:ring-[#22C55E]"
-                          />
-                          <span>Close Sales Automatically</span>
-                        </label>
-                      </div>
-                      <p className="text-sm text-[#6B7280]">These settings are used to shape how the AI recommends and closes on offers in conversations.</p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {aiAssistantTab === "Test AI" && (
-                <div className={`${CARD} flex h-[660px] flex-col overflow-hidden`}> 
-                  <div className="space-y-4">
-                    <div>
-                      <p className="text-sm font-medium text-[#6B7280]">Test Your AI Agent</p>
-                      <h3 className="mt-2 text-lg font-semibold text-[#111827]">Try conversations with your AI</h3>
-                      <p className="mt-2 text-sm text-[#6B7280]">Test how your AI responds to common questions. Use this to refine business knowledge and tone.</p>
-                    </div>
-                    <div
-                      ref={testAiContainerRef}
-                      className="flex-1 space-y-4 overflow-y-auto pr-2"
-                    >
-                      {testAiMessages.map((message) => (
-                        <div
-                          key={message.id}
-                          className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
-                        >
-                          <div className={`max-w-[90%] rounded-3xl p-4 text-sm ${
-                            message.role === "user"
-                              ? "bg-[#22C55E] text-white"
-                              : "bg-[#F3F4F6] text-[#111827]"
-                          }`}>
-                            <p>{message.text}</p>
-                            {message.role === "ai" && message.source ? (
-                              <div className="mt-3 rounded-2xl bg-[#E0F2FE] px-3 py-1 text-xs font-semibold text-[#0C4A6E]">
-                                Source: {message.source}
-                              </div>
-                            ) : null}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="sticky bottom-0 mt-4 rounded-3xl bg-[#F9FAFB] p-4 shadow-inner">
-                    <label htmlFor="test-ai-input" className="sr-only">Ask your AI</label>
-                    <div className="flex gap-3">
-                      <textarea
-                        id="test-ai-input"
-                        value={testAiInput}
-                        onChange={(event) => setTestAiInput(event.target.value)}
-                        placeholder="Ask your AI a test question..."
-                        className="min-h-[88px] flex-1 resize-none rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] outline-none placeholder:text-[#9CA3AF] focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
-                      />
-                      <button
-                        type="button"
-                        onClick={handleTestAiSend}
-                        className="inline-flex h-12 items-center justify-center rounded-3xl bg-[#22C55E] px-5 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
-                      >
-                        <Send className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {aiAssistantTab === "Escalation Rules" && (
-                <div className="space-y-4">
-                  <div className={CARD}>
-                    <div className="space-y-3">
-                      <div>
-                        <p className="text-sm font-medium text-[#6B7280]">Escalation Rules</p>
-                        <h3 className="mt-2 text-lg font-semibold text-[#111827]">Send these conversations to a human</h3>
-                      </div>
-                      <div className="grid gap-3 sm:grid-cols-2">
-                        {ESCALATION_OPTIONS.map((option) => (
-                          <label
-                            key={option.key}
-                            className="flex items-center gap-3 rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827]"
-                          >
-                            <input
-                              type="checkbox"
-                              checked={escalationRules[option.key]}
-                              onChange={(event) =>
-                                setEscalationRules((current) => ({
-                                  ...current,
-                                  [option.key]: event.target.checked,
-                                }))
-                              }
-                              className="h-4 w-4 rounded border-[#D1D5DB] text-[#22C55E] focus:ring-[#22C55E]"
-                            />
-                            <span>{option.label}</span>
-                          </label>
-                        ))}
-                      </div>
-                      <p className="text-sm text-[#6B7280]">
-                        When these situations occur, the AI stops responding and requests owner intervention.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {aiAssistantTab === "Conversation Policies" && (
-                <div className="space-y-6">
-                  <div className={CARD}>
-                    <div className="space-y-4">
-                      <div>
-                        <p className="text-sm font-medium text-[#6B7280]">Conversation Policies</p>
-                        <h3 className="mt-2 text-lg font-semibold text-[#111827]">AI behavior around business hours</h3>
-                      </div>
-                      <div className="space-y-3 text-sm text-[#111827]">
-                        <label className="block font-semibold">Business Hours</label>
-                        <input
-                          value={policyBusinessHours}
-                          onChange={(event) => setPolicyBusinessHours(event.target.value)}
-                          className="w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className={CARD}>
-                    <div className="space-y-4">
-                      <div>
-                        <p className="text-sm font-medium text-[#6B7280]">Outside Business Hours</p>
-                        <p className="mt-2 text-sm text-[#6B7280]">Choose how the AI should behave when the business is closed.</p>
-                      </div>
-                      <div className="space-y-3">
-                        {OUTSIDE_BUSINESS_HOURS_OPTIONS.map((option) => (
-                          <label key={option} className="flex items-center gap-3 rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827]">
-                            <input
-                              type="radio"
-                              name="outside-business-hours"
-                              checked={outsideBusinessHoursBehavior === option}
-                              onChange={() => setOutsideBusinessHoursBehavior(option)}
-                              className="h-4 w-4 rounded-full border-[#D1D5DB] text-[#22C55E] focus:ring-[#22C55E]"
-                            />
-                            <span>{option}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid gap-4 xl:grid-cols-2">
-                    <div className={CARD}>
-                      <div className="space-y-4">
-                        <div>
-                          <p className="text-sm font-medium text-[#6B7280]">Maximum AI Messages</p>
-                          <p className="mt-2 text-sm text-[#6B7280]">Limit how many times the AI can respond before the conversation is reviewed.</p>
-                        </div>
-                        <input
-                          type="number"
-                          min={1}
-                          value={maxAiMessages}
-                          onChange={(event) => setMaxAiMessages(Number(event.target.value))}
-                          className="w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
-                        />
-                      </div>
-                    </div>
-
-                    <div className={CARD}>
-                      <div className="space-y-4">
-                        <div>
-                          <p className="text-sm font-medium text-[#6B7280]">Allow AI to Close Sales</p>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => setAllowAiCloseSales((current) => !current)}
-                          className={`inline-flex items-center rounded-3xl px-4 py-3 text-sm font-semibold ${
-                            allowAiCloseSales
-                              ? "bg-[#22C55E] text-white"
-                              : "bg-[#E5E7EB] text-[#6B7280]"
-                          }`}
-                        >
-                          {allowAiCloseSales ? "On" : "Off"}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className={CARD}>
-                    <div className="space-y-4">
-                      <div>
-                        <p className="text-sm font-medium text-[#6B7280]">Allow AI to Schedule Appointments</p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => setAllowAiScheduleAppointments((current) => !current)}
-                        className={`inline-flex items-center rounded-3xl px-4 py-3 text-sm font-semibold ${
-                          allowAiScheduleAppointments
-                            ? "bg-[#22C55E] text-white"
-                            : "bg-[#E5E7EB] text-[#6B7280]"
-                        }`}
-                      >
-                        {allowAiScheduleAppointments ? "On" : "Off"}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
           {selected === "Settings" && (
-            <div className="space-y-6">
-              <div className={CARD}>
-                <div>
-                  <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">Settings</p>
-                  <h2 className="mt-2 text-2xl font-semibold text-[#111827]">Personal Contacts</h2>
-                  <p className="mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl">
-                    Manage the key contacts your business needs for support, suppliers and family members.
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                {PERSONAL_CONTACTS.map((contact) => (
-                  <div key={contact.phone} className={`${CARD} bg-[#F9FAFB]`}>
-                    <div className="space-y-4">
-                      <div>
-                        <p className="text-sm font-semibold text-[#111827]">{contact.name}</p>
-                        <p className="mt-1 text-sm text-[#6B7280]">{contact.relationship}</p>
-                      </div>
-                      <div className="rounded-3xl border border-[#E5E7EB] bg-white p-4">
-                        <p className="text-sm font-semibold text-[#111827]">Phone</p>
-                        <p className="mt-2 text-sm text-[#111827]">{contact.phone}</p>
-                      </div>
-                      <button
-                        type="button"
-                        className="rounded-3xl bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
-                      >
-                        View contact
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <div className="p-6 bg-white rounded-md border border-[#E5E7EB]">Sokoos Settings</div>
           )}
         </div>
       </main>
