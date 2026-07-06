@@ -3,7 +3,7 @@ import { n as require_jsx_runtime, r as require_react, t as QueryClientProvider 
 import { c as HeadContent, d as Outlet, f as lazyRouteComponent, g as useRouter, h as Link, m as createRootRouteWithContext, p as createFileRoute, s as Scripts, u as createRouter } from "../_libs/@tanstack/react-router+[...].mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
 import { A as Calendar, D as ChevronLeft, E as ChevronRight, I as Activity, N as Box, P as Bot, _ as Megaphone, a as Settings, b as Image, d as Plus, g as Menu, n as Users, o as Send, s as Search, t as X, w as Cpu, x as House, y as Inbox } from "../_libs/lucide-react.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-mAYINkZj.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router-DFvx2RdK.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var styles_default = "/assets/styles-BI6IaeU-.css";
@@ -711,19 +711,6 @@ function DashboardLayout() {
 	const activeMessages = INBOX_MESSAGES[activeConversation] ?? [];
 	const [sourceOverrides, setSourceOverrides] = (0, import_react.useState)({});
 	const getEffectiveSource = (id, original) => sourceOverrides[id] ?? original ?? "owner";
-	const effectiveActiveSource = getEffectiveSource(activeConversation, activeConversationData?.source);
-	const activeAgentName = String(effectiveActiveSource).startsWith("ai") ? "Sokoos AI" : OWNER_NAMES[activeConversation] ?? "Owner";
-	const toggleAiForActive = () => {
-		const current = sourceOverrides[activeConversation] ?? activeConversationData?.source ?? "";
-		if (String(current).startsWith("ai")) setSourceOverrides((s) => ({
-			...s,
-			[activeConversation]: "owner"
-		}));
-		else setSourceOverrides((s) => ({
-			...s,
-			[activeConversation]: "ai_handling"
-		}));
-	};
 	const [messageInput, setMessageInput] = (0, import_react.useState)("");
 	const textareaRef = (0, import_react.useRef)(null);
 	const [sidebarCollapsed, setSidebarCollapsed] = (0, import_react.useState)(false);
@@ -872,6 +859,22 @@ function DashboardLayout() {
 			relationship: "",
 			phone: ""
 		});
+	};
+	const isPersonalByPhone = (phone) => !!phone && personalContacts.some((pc) => pc.phone === phone);
+	const isPersonalActive = isPersonalByPhone(activeConversationData?.phone ?? null);
+	const effectiveActiveSource = isPersonalActive ? "personal" : getEffectiveSource(activeConversation, activeConversationData?.source);
+	const activeAgentName = isPersonalActive ? "Personal" : String(effectiveActiveSource).startsWith("ai") ? "Sokoos AI" : OWNER_NAMES[activeConversation] ?? "Owner";
+	const toggleAiForActive = () => {
+		if (isPersonalActive) return;
+		const current = sourceOverrides[activeConversation] ?? activeConversationData?.source ?? "";
+		if (String(current).startsWith("ai")) setSourceOverrides((s) => ({
+			...s,
+			[activeConversation]: "owner"
+		}));
+		else setSourceOverrides((s) => ({
+			...s,
+			[activeConversation]: "ai_handling"
+		}));
 	};
 	const [faqItems, setFaqItems] = (0, import_react.useState)([{
 		id: "faq1",
@@ -1138,7 +1141,8 @@ function DashboardLayout() {
 													return true;
 												}).filter((conversation) => (conversation.name ?? "").toLowerCase().includes(searchQuery.toLowerCase()) || (conversation.phone ?? "").toLowerCase().includes(searchQuery.toLowerCase()) || conversation.message.toLowerCase().includes(searchQuery.toLowerCase())).map((conversation) => {
 													const active = conversation.id === activeConversation;
-													const effectiveSource = sourceOverrides[conversation.id] ?? conversation.source;
+													const effectiveSourceRaw = sourceOverrides[conversation.id] ?? conversation.source;
+													const effectiveSource = personalContacts.some((pc) => pc.phone === conversation.phone) ? "personal" : effectiveSourceRaw;
 													return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 														onClick: () => setActiveConversation(conversation.id),
 														className: `w-full overflow-hidden rounded-3xl border px-3 py-3 text-left transition ${active ? "border-[#22C55E] bg-[#ECFDF5]" : "border-transparent bg-[#FFFFFF] hover:border-[#E5E7EB] hover:bg-[#F9FAFB]"}`,
@@ -1171,7 +1175,13 @@ function DashboardLayout() {
 																			title: conversation.phone ?? "Unknown Customer",
 																			children: conversation.phone ?? "Unknown Customer"
 																		})
-																	}), effectiveSource === "ai_handling" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+																	}), effectiveSource === "personal" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+																		className: "inline-flex mt-1 items-center gap-1 rounded-full bg-[#E5E7EB] px-2 py-1 text-xs font-semibold text-[#6B7280]",
+																		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																			"aria-hidden": true,
+																			children: "👤"
+																		}), "Personal"]
+																	}) : effectiveSource === "ai_handling" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
 																		className: "inline-flex mt-1 items-center gap-1 rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#166534]",
 																		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 																			"aria-hidden": true,
@@ -1206,6 +1216,9 @@ function DashboardLayout() {
 															}), conversation.badge > 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 																className: "rounded-full bg-[#22C55E] px-2 py-0.5 text-[10px] font-semibold text-white",
 																children: conversation.badge
+															}) : effectiveSource === "personal" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																className: "inline-flex rounded-full bg-[#E5E7EB] px-2 py-1 text-xs font-semibold text-[#6B7280]",
+																children: "👤 Personal"
 															}) : effectiveSource === "ai_handling" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 																className: "inline-flex rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#166534]",
 																children: "🤖 AI Handling"
@@ -1242,11 +1255,17 @@ function DashboardLayout() {
 													children: INBOX_CONVERSATIONS.find((item) => item.id === activeConversation)?.name
 												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 													className: "mt-1 text-sm text-[#6B7280]",
-													children: activeConversationData?.message ? `Last customer message • ${formatConversationTime(activeConversationData?.time)}` : "Waiting for customer response"
+													children: isPersonalActive ? "Personal contact — AI disabled for this conversation" : activeConversationData?.message ? `Last customer message • ${formatConversationTime(activeConversationData?.time)}` : "Waiting for customer response"
 												})]
 											})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 												className: "flex items-center gap-2",
-												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+												children: [isPersonalActive ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+													className: "inline-flex items-center gap-2 rounded-full bg-[#E5E7EB] px-3 py-1 text-xs font-semibold text-[#6B7280]",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+														"aria-hidden": true,
+														children: "👤"
+													}), "Personal"]
+												}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 													type: "button",
 													onClick: toggleAiForActive,
 													"aria-label": "Toggle AI/Owner mode",
