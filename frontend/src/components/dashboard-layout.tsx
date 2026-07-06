@@ -407,21 +407,12 @@ export default function DashboardLayout() {
   const [searchQuery, setSearchQuery] = useState("");
    const [customerSearch, setCustomerSearch] = useState("");
   const [activeTab, setActiveTab] = useState<(typeof INBOX_TAB_ITEMS)[number]>("All");
+  
   const activeConversationData = INBOX_CONVERSATIONS.find((item) => item.id === activeConversation);
   const activeCustomerProfile = CUSTOMER_PROFILES[activeConversation as keyof typeof CUSTOMER_PROFILES] ?? CUSTOMER_PROFILES.c1;
   const activeMessages = INBOX_MESSAGES[activeConversation as keyof typeof INBOX_MESSAGES] ?? [];
   const [sourceOverrides, setSourceOverrides] = useState<Record<string, string>>({});
   const getEffectiveSource = (id: string, original?: string) => sourceOverrides[id] ?? original ?? "owner";
-  const effectiveActiveSource = getEffectiveSource(activeConversation, activeConversationData?.source);
-  const activeAgentName = String(effectiveActiveSource).startsWith("ai") ? "Sokoos AI" : OWNER_NAMES[activeConversation] ?? "Owner";
-  const toggleAiForActive = () => {
-    const current = sourceOverrides[activeConversation] ?? activeConversationData?.source ?? "";
-    if (String(current).startsWith("ai")) {
-      setSourceOverrides((s) => ({ ...s, [activeConversation]: "owner" }));
-    } else {
-      setSourceOverrides((s) => ({ ...s, [activeConversation]: "ai_handling" }));
-    }
-  };
   const [messageInput, setMessageInput] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -550,6 +541,21 @@ export default function DashboardLayout() {
       { id: `pc-${Date.now()}`, name, relationship: relationship || "Contact", phone },
     ]);
     setNewContact({ name: "", relationship: "", phone: "" });
+  };
+  // Personal-contact helpers (moved here so personalContacts is defined first)
+  const isPersonalByPhone = (phone?: string | null) => !!phone && personalContacts.some((pc) => pc.phone === phone);
+  const isPersonalActive = isPersonalByPhone(activeConversationData?.phone ?? null);
+  const effectiveActiveSource = isPersonalActive ? "personal" : getEffectiveSource(activeConversation, activeConversationData?.source);
+  const activeAgentName = isPersonalActive ? "Personal" : String(effectiveActiveSource).startsWith("ai") ? "Sokoos AI" : OWNER_NAMES[activeConversation] ?? "Owner";
+  const toggleAiForActive = () => {
+    // Do not allow toggling AI for personal contacts (mock behavior).
+    if (isPersonalActive) return;
+    const current = sourceOverrides[activeConversation] ?? activeConversationData?.source ?? "";
+    if (String(current).startsWith("ai")) {
+      setSourceOverrides((s) => ({ ...s, [activeConversation]: "owner" }));
+    } else {
+      setSourceOverrides((s) => ({ ...s, [activeConversation]: "ai_handling" }));
+    }
   };
   const [faqItems, setFaqItems] = useState([
     {
@@ -816,7 +822,9 @@ export default function DashboardLayout() {
                       )
                       .map((conversation) => {
                       const active = conversation.id === activeConversation;
-                      const effectiveSource = sourceOverrides[conversation.id] ?? conversation.source;
+                      const effectiveSourceRaw = sourceOverrides[conversation.id] ?? conversation.source;
+                      const isPersonal = personalContacts.some((pc) => pc.phone === conversation.phone);
+                      const effectiveSource = isPersonal ? "personal" : effectiveSourceRaw;
                       return (
                         <button
                           key={conversation.id}
@@ -858,7 +866,12 @@ export default function DashboardLayout() {
                                     </p>
                                   </div>
                                 )}
-                                {effectiveSource === "ai_handling" ? (
+                                {effectiveSource === "personal" ? (
+                                  <span className="inline-flex mt-1 items-center gap-1 rounded-full bg-[#E5E7EB] px-2 py-1 text-xs font-semibold text-[#6B7280]">
+                                    <span aria-hidden>👤</span>
+                                    Personal
+                                  </span>
+                                ) : effectiveSource === "ai_handling" ? (
                                   <span className="inline-flex mt-1 items-center gap-1 rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#166534]">
                                     <span aria-hidden>🤖</span>
                                     AI Handling
@@ -888,6 +901,10 @@ export default function DashboardLayout() {
                             {conversation.badge > 0 ? (
                               <span className="rounded-full bg-[#22C55E] px-2 py-0.5 text-[10px] font-semibold text-white">
                                 {conversation.badge}
+                              </span>
+                            ) : effectiveSource === "personal" ? (
+                              <span className="inline-flex rounded-full bg-[#E5E7EB] px-2 py-1 text-xs font-semibold text-[#6B7280]">
+                                👤 Personal
                               </span>
                             ) : effectiveSource === "ai_handling" ? (
                               <span className="inline-flex rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#166534]">
@@ -922,27 +939,38 @@ export default function DashboardLayout() {
                       <div className="flex flex-col">
                         <h2 className="text-xl font-semibold text-[#111827]">{INBOX_CONVERSATIONS.find((item) => item.id === activeConversation)?.name}</h2>
                         <p className="mt-1 text-sm text-[#6B7280]">
-                          {activeConversationData?.message
-                            ? `Last customer message • ${formatConversationTime(activeConversationData?.time)}`
-                            : "Waiting for customer response"}
+                          {isPersonalActive ? (
+                            "Personal contact — AI disabled for this conversation"
+                          ) : activeConversationData?.message ? (
+                            `Last customer message • ${formatConversationTime(activeConversationData?.time)}`
+                          ) : (
+                            "Waiting for customer response"
+                          )}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={toggleAiForActive}
-                        aria-label="Toggle AI/Owner mode"
-                        className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold transition ${effectiveActiveSource.startsWith("ai") ? "bg-[#ECFDF5] text-[#166534]" : effectiveActiveSource === "needs_attention" ? "bg-[#FEF2F2] text-[#B91C1C]" : "bg-[#EFF6FF] text-[#1E3A8A]"}`}
-                      >
-                        {effectiveActiveSource.startsWith("ai") ? (
-                          effectiveActiveSource === "ai_handling" ? "🤖 AI ON" : "🤖 AI Handled"
-                        ) : effectiveActiveSource === "needs_attention" ? (
-                          "🔴 Needs Owner"
-                        ) : (
-                          "👤 Owner Mode"
-                        )}
-                      </button>
+                      {isPersonalActive ? (
+                        <span className="inline-flex items-center gap-2 rounded-full bg-[#E5E7EB] px-3 py-1 text-xs font-semibold text-[#6B7280]">
+                          <span aria-hidden>👤</span>
+                          Personal
+                        </span>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={toggleAiForActive}
+                          aria-label="Toggle AI/Owner mode"
+                          className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold transition ${effectiveActiveSource.startsWith("ai") ? "bg-[#ECFDF5] text-[#166534]" : effectiveActiveSource === "needs_attention" ? "bg-[#FEF2F2] text-[#B91C1C]" : "bg-[#EFF6FF] text-[#1E3A8A]"}`}
+                        >
+                          {effectiveActiveSource.startsWith("ai") ? (
+                            effectiveActiveSource === "ai_handling" ? "🤖 AI ON" : "🤖 AI Handled"
+                          ) : effectiveActiveSource === "needs_attention" ? (
+                            "🔴 Needs Owner"
+                          ) : (
+                            "👤 Owner Mode"
+                          )}
+                        </button>
+                      )}
                       {customerCollapsed && (
                         <button
                           type="button"
