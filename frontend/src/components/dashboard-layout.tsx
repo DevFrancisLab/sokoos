@@ -535,6 +535,22 @@ export default function DashboardLayout() {
     { id: "kp2", name: "20 Mbps Internet", price: "KES 3,500/month" },
     { id: "kp3", name: "Business Package", price: "KES 5,000/month" },
   ]);
+  const [personalContacts, setPersonalContacts] = useState([
+    { id: "pc1", name: "Mary Wanjiku", relationship: "Wife", phone: "+254712345678" },
+    { id: "pc2", name: "Peter Mwangi", relationship: "Supplier", phone: "+254733222222" },
+  ]);
+  const [newContact, setNewContact] = useState({ name: "", relationship: "", phone: "" });
+  const addPersonalContact = () => {
+    const name = newContact.name.trim();
+    const phone = newContact.phone.trim();
+    const relationship = newContact.relationship.trim();
+    if (!name || !phone) return;
+    setPersonalContacts((c) => [
+      ...c,
+      { id: `pc-${Date.now()}`, name, relationship: relationship || "Contact", phone },
+    ]);
+    setNewContact({ name: "", relationship: "", phone: "" });
+  };
   const [faqItems, setFaqItems] = useState([
     {
       id: "faq1",
@@ -2107,7 +2123,83 @@ export default function DashboardLayout() {
             </div>
           )}
           {selected === "Settings" && (
-            <div className="p-6 bg-white rounded-md border border-[#E5E7EB]">Sokoos Settings</div>
+            <div className="space-y-6">
+              <div className={`${CARD}`}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">Settings</p>
+                    <h2 className="mt-2 text-2xl font-semibold text-[#111827]">Personal Contacts</h2>
+                    <p className="mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl">Manage personal contacts the business owner may need quick access to.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-6 lg:grid-cols-[1.4fr_0.6fr]">
+                <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                  <p className="text-sm font-semibold text-[#111827]">Contacts</p>
+                  <p className="mt-1 text-sm text-[#6B7280]">Card view of personal contacts stored for quick reference.</p>
+                  <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                    {personalContacts.map((pc) => (
+                      <div key={pc.id} className="rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-lg font-semibold text-[#111827]">{pc.name}</p>
+                            <p className="mt-1 text-sm text-[#6B7280]">{pc.relationship}</p>
+                          </div>
+                          <div className="text-sm text-[#111827]">{pc.phone}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+
+                <aside className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
+                  <p className="text-sm font-semibold text-[#111827]">Add Contact</p>
+                  <p className="mt-1 text-sm text-[#6B7280]">Add a personal contact for quick access.</p>
+                  <div className="mt-4 space-y-3">
+                    <div>
+                      <label className="text-sm font-semibold text-[#111827]">Name</label>
+                      <input
+                        type="text"
+                        value={newContact.name}
+                        onChange={(e) => setNewContact((s) => ({ ...s, name: e.target.value }))}
+                        className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        placeholder="e.g., Mary Wanjiku"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-semibold text-[#111827]">Relationship</label>
+                      <input
+                        type="text"
+                        value={newContact.relationship}
+                        onChange={(e) => setNewContact((s) => ({ ...s, relationship: e.target.value }))}
+                        className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        placeholder="e.g., Wife, Supplier"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-semibold text-[#111827]">Phone Number</label>
+                      <input
+                        type="tel"
+                        value={newContact.phone}
+                        onChange={(e) => setNewContact((s) => ({ ...s, phone: e.target.value }))}
+                        className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        placeholder="e.g., +254712345678"
+                      />
+                    </div>
+                    <div className="flex items-center justify-end">
+                      <button
+                        type="button"
+                        onClick={addPersonalContact}
+                        className="inline-flex items-center justify-center rounded-2xl bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
+                      >
+                        Add contact
+                      </button>
+                    </div>
+                  </div>
+                </aside>
+              </div>
+            </div>
           )}
         </div>
       </main>
