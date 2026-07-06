@@ -3,7 +3,7 @@ import { n as require_jsx_runtime, r as require_react, t as QueryClientProvider 
 import { c as HeadContent, d as Outlet, f as lazyRouteComponent, g as useRouter, h as Link, m as createRootRouteWithContext, p as createFileRoute, s as Scripts, u as createRouter } from "../_libs/@tanstack/react-router+[...].mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
 import { A as Calendar, D as ChevronLeft, E as ChevronRight, I as Activity, N as Box, P as Bot, _ as Megaphone, a as Settings, b as Image, d as Plus, g as Menu, n as Users, o as Send, s as Search, t as X, w as Cpu, x as House, y as Inbox } from "../_libs/lucide-react.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-DFvx2RdK.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router-DsoX4JXD.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var styles_default = "/assets/styles-BI6IaeU-.css";
@@ -1377,38 +1377,49 @@ function DashboardLayout() {
 											className: "space-y-4 rounded-3xl bg-[#F9FAFB] p-4 overflow-y-auto flex-1 min-h-0 custom-scrollbar",
 											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 												className: "space-y-3",
-												children: [
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "flex items-center justify-between text-sm text-[#111827]",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "flex items-center justify-between text-sm text-[#111827]",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+														className: "font-medium",
+														children: "Phone"
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: activeCustomerProfile.phone })]
+												}), isPersonalActive ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "flex items-center justify-between text-sm text-[#111827]",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+														className: "font-medium",
+														children: "Contact type"
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+														className: "inline-flex items-center gap-2 rounded-full bg-[#E5E7EB] px-3 py-1 text-xs font-semibold text-[#6B7280]",
 														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "font-medium",
-															children: "Phone"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: activeCustomerProfile.phone })]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "flex items-center justify-between text-sm text-[#111827]",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "font-medium",
-															children: "Lead status"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#16A34A]",
-															children: activeCustomerProfile.leadStatus
-														})]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "flex flex-col gap-2",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "font-medium text-sm text-[#111827]",
-															children: "Tags"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-															className: "flex flex-wrap gap-2",
-															children: activeCustomerProfile.tags.map((tag) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-																className: "inline-flex items-center rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#16A34A]",
-																children: tag
-															}, tag))
-														})]
-													})
-												]
+															"aria-hidden": true,
+															children: activePersonalIcon
+														}), activePersonalEntry?.relationship ?? "Personal"]
+													})]
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "text-sm text-[#6B7280]",
+													children: "This is a personal contact. AI, analytics, and lead tracking are disabled for this conversation."
+												})] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "flex items-center justify-between text-sm text-[#111827]",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+														className: "font-medium",
+														children: "Lead status"
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+														className: "rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#16A34A]",
+														children: activeCustomerProfile.leadStatus
+													})]
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "flex flex-col gap-2",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+														className: "font-medium text-sm text-[#111827]",
+														children: "Tags"
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+														className: "flex flex-wrap gap-2",
+														children: activeCustomerProfile.tags.map((tag) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "inline-flex items-center rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#16A34A]",
+															children: tag
+														}, tag))
+													})]
+												})] })]
 											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 												className: "rounded-3xl border border-[#E5E7EB] bg-white p-4 space-y-4",
 												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
@@ -1649,7 +1660,7 @@ function DashboardLayout() {
 										] })
 									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tbody", {
 										className: "divide-y divide-[#E5E7EB] bg-white",
-										children: [filteredCustomers.map((customer) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+										children: [filteredCustomers.filter((customer) => !isPersonalByPhone(customer.phone)).map((customer) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
 											className: "hover:bg-[#F3F4F6] transition-colors",
 											children: [
 												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {

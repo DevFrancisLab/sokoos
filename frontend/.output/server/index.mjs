@@ -15,40 +15,40 @@ globalThis.__nitro_vite_envs__ = services;
 //#endregion
 //#region #nitro/virtual/public-assets-data
 var public_assets_data_default = {
-	"/assets/index-DF8IYZvB.js": {
+	"/assets/index-PXiAJaxf.js": {
 		"type": "text/javascript; charset=utf-8",
-		"etag": "\"67965-KIsoWqCQZWym7zUl+GeiEGKk2gY\"",
-		"mtime": "2026-07-06T08:16:42.718Z",
-		"size": 424293,
-		"path": "../public/assets/index-DF8IYZvB.js"
+		"etag": "\"67c17-a0FqjsjZgrhEeHJB+jtCWKMwrVc\"",
+		"mtime": "2026-07-06T08:30:32.492Z",
+		"size": 424983,
+		"path": "../public/assets/index-PXiAJaxf.js"
 	},
-	"/assets/routes-CiAGOY7s.js": {
+	"/assets/routes-D_6p2nvD.js": {
 		"type": "text/javascript; charset=utf-8",
-		"etag": "\"69f3-hxGCvdt7reo/MbQfzbPFZnI0d8E\"",
-		"mtime": "2026-07-06T08:16:42.718Z",
+		"etag": "\"69f3-jTUZl711rxNeonn+Q0RqnEHx4ks\"",
+		"mtime": "2026-07-06T08:30:32.492Z",
 		"size": 27123,
-		"path": "../public/assets/routes-CiAGOY7s.js"
+		"path": "../public/assets/routes-D_6p2nvD.js"
 	},
 	"/assets/styles-BI6IaeU-.css": {
 		"type": "text/css; charset=utf-8",
 		"etag": "\"160cd-U1NfrlAxjDUlD0zUtOtrKkClnI4\"",
-		"mtime": "2026-07-06T08:16:42.724Z",
+		"mtime": "2026-07-06T08:30:32.495Z",
 		"size": 90317,
 		"path": "../public/assets/styles-BI6IaeU-.css"
-	},
-	"/assets/solution-dashboard-BITB5GZi.png": {
-		"type": "image/png",
-		"etag": "\"135e39-8KXujycB59ycXDtOjw6MRyzLXZs\"",
-		"mtime": "2026-07-06T08:16:42.722Z",
-		"size": 1269305,
-		"path": "../public/assets/solution-dashboard-BITB5GZi.png"
 	},
 	"/assets/hero-dashboard-D-CXLQyc.png": {
 		"type": "image/png",
 		"etag": "\"147362-41kBF9Vn5e/eKUEVeST+cDUDypM\"",
-		"mtime": "2026-07-06T08:16:42.719Z",
+		"mtime": "2026-07-06T08:30:32.493Z",
 		"size": 1340258,
 		"path": "../public/assets/hero-dashboard-D-CXLQyc.png"
+	},
+	"/assets/solution-dashboard-BITB5GZi.png": {
+		"type": "image/png",
+		"etag": "\"135e39-8KXujycB59ycXDtOjw6MRyzLXZs\"",
+		"mtime": "2026-07-06T08:30:32.494Z",
+		"size": 1269305,
+		"path": "../public/assets/solution-dashboard-BITB5GZi.png"
 	}
 };
 //#endregion
