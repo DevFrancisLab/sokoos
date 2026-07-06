@@ -45,8 +45,9 @@ const STAT_CARDS = [
   { label: "New Leads", value: "38", delta: "+11%" },
 ];
 
-const CARD = "rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm transition-shadow duration-200 hover:shadow-lg";
-const CARD_SOFT = "rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm transition-shadow duration-200 hover:shadow-lg";
+// Visual style: softer borders, slightly larger internal padding (24-28px), and gentler shadows
+const CARD = "rounded-3xl border border-[#E5E7EB]/30 bg-white p-7 shadow-[0_6px_18px_rgba(16,24,40,0.04)] transition-shadow duration-200 hover:shadow-[0_8px_24px_rgba(16,24,40,0.06)]";
+const CARD_SOFT = "rounded-3xl border border-[#E5E7EB]/30 bg-[#F9FAFB] p-7 shadow-[0_6px_18px_rgba(16,24,40,0.04)] transition-shadow duration-200 hover:shadow-[0_8px_24px_rgba(16,24,40,0.06)]";
 const SECTION_HEADING = "text-sm font-semibold uppercase tracking-[0.2em] text-[#6B7280]";
 
 const RECENT_ACTIVITY = [
@@ -691,7 +692,7 @@ export default function DashboardLayout() {
   return (
     <div className="h-screen min-h-screen bg-[#FFFFFF] text-[#111827]">
       {/* Desktop fixed left sidebar */}
-      <aside className={`hidden md:fixed md:inset-y-0 md:left-0 md:flex md:flex-col md:pt-6 bg-[#FFFFFF] border-r border-[#E5E7EB] transition-all duration-300 ease-out ${
+      <aside className={`hidden md:fixed md:inset-y-0 md:left-0 md:flex md:flex-col md:pt-6 bg-[#FFFFFF] border-r border-[#E5E7EB]/20 transition-all duration-300 ease-out ${
         sidebarCollapsed ? "md:w-[80px]" : "md:w-[240px]"
       }`}>
         <div className="px-4 pb-4">
@@ -741,7 +742,7 @@ export default function DashboardLayout() {
       </aside>
 
       {/* Mobile top header with menu button */}
-      <header className="md:hidden fixed top-0 left-0 right-0 h-14 bg-[#FFFFFF] border-b border-[#E5E7EB] flex items-center px-4 z-30">
+      <header className="md:hidden fixed top-0 left-0 right-0 h-14 bg-[#FFFFFF] border-b border-[#E5E7EB]/20 flex items-center px-4 z-30">
         <button
           aria-label="Open menu"
           onClick={() => setMobileOpen(true)}
@@ -759,7 +760,7 @@ export default function DashboardLayout() {
       {mobileOpen && (
         <div className="fixed inset-0 z-40 md:hidden">
           <div className="absolute inset-0 bg-black/40" onClick={() => setMobileOpen(false)} />
-          <div className="absolute left-0 top-0 bottom-0 w-72 bg-[#FFFFFF] border-r border-[#E5E7EB] p-4 overflow-y-auto">
+          <div className="absolute left-0 top-0 bottom-0 w-72 bg-[#FFFFFF] border-r border-[#E5E7EB]/20 p-4 overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <div className="h-8 w-8 rounded-md bg-[#22C55E] flex items-center justify-center text-white font-bold">S</div>
@@ -880,7 +881,7 @@ export default function DashboardLayout() {
               customerCollapsed ? "xl:grid-cols-[280px_minmax(0,1fr)]" : "xl:grid-cols-[280px_minmax(0,1fr)_320px]"
             }`}>
               <section className={`${CARD} h-full min-h-0 flex flex-col self-stretch overflow-hidden`}>
-                <div className="border-b border-[#E5E7EB] p-4">
+                <div className="border-b border-[#E5E7EB]/20 p-4">
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <h2 className="text-lg font-semibold text-[#111827]">Conversations</h2>
@@ -1048,7 +1049,7 @@ export default function DashboardLayout() {
               </section>
 
               <section className={`${CARD} flex h-full min-h-0 flex-col overflow-hidden self-stretch`}>
-                <div className="border-b border-[#E5E7EB] p-4">
+                <div className="border-b border-[#E5E7EB]/20 p-4">
                     <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                       <p className="text-sm font-medium text-[#6B7280]">Live chat</p>
@@ -1148,7 +1149,7 @@ export default function DashboardLayout() {
                     })}
                   </div>
                   <div className="sticky bottom-0 z-10 mt-4 bg-white/95 pt-4 pb-4 backdrop-blur-sm">
-                    <div className="rounded-[20px] border border-[#E5E7EB] bg-white p-3 shadow-sm">
+                    <div className="rounded-[20px] border border-[#E5E7EB]/30 bg-white p-6 shadow-[0_6px_18px_rgba(16,24,40,0.04)]">
                       <div className="flex items-center gap-4">
                         <textarea
                           ref={textareaRef}
@@ -1172,7 +1173,7 @@ export default function DashboardLayout() {
               </section>
 
               {!customerCollapsed && (
-                <section className={`${CARD} h-full min-h-0 flex flex-col self-stretch overflow-hidden transition-opacity duration-300 ease-out opacity-100 p-6`}>
+                <section className={`${CARD} h-full min-h-0 flex flex-col self-stretch overflow-hidden transition-opacity duration-300 ease-out opacity-100`}>
                 <div className="flex flex-col gap-3 min-h-0 flex-1">
                   <div className="flex items-start justify-between gap-3 shrink-0">
                     <div>
@@ -1361,7 +1362,7 @@ export default function DashboardLayout() {
             </div>
           )}
           {selected === "Broadcasts" && (
-            <div className="p-6 bg-white rounded-md border border-[#E5E7EB]">Sokoos Broadcasts</div>
+              <div className="p-7 bg-white rounded-md border border-[#E5E7EB]/30 shadow-[0_6px_18px_rgba(16,24,40,0.04)]">Sokoos Broadcasts</div>
           )}
           {selected === "Customers" && (
             <div className={`space-y-6 ${CARD}`}>
@@ -1385,8 +1386,8 @@ export default function DashboardLayout() {
                 </div>
               </div>
 
-              <div className="overflow-hidden rounded-3xl border border-[#E5E7EB] bg-[#FFFFFF] shadow-sm">
-                <table className="min-w-full divide-y divide-[#E5E7EB] text-left">
+              <div className="overflow-hidden rounded-3xl border border-[#E5E7EB]/20 bg-[#FFFFFF] shadow-[0_6px_18px_rgba(16,24,40,0.04)]">
+                <table className="min-w-full divide-y divide-[#E5E7EB]/20 text-left">
                   <thead className="bg-[#F9FAFB]">
                     <tr>
                       <th className="px-6 py-4 text-sm font-semibold text-[#6B7280]">Avatar</th>
@@ -1397,7 +1398,7 @@ export default function DashboardLayout() {
                       <th className="px-6 py-4 text-sm font-semibold text-[#6B7280]">Last Interaction</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-[#E5E7EB] bg-white">
+                  <tbody className="divide-y divide-[#E5E7EB]/20 bg-white">
                     {filteredCustomers.filter((customer) => !isPersonalByPhone(customer.phone)).map((customer) => (
                       <tr key={customer.id} className="hover:bg-[#F3F4F6] transition-colors">
                         <td className="px-6 py-4">
