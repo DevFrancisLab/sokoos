@@ -502,6 +502,12 @@ export default function DashboardLayout() {
   const [escalateOnLiveRequest, setEscalateOnLiveRequest] = useState(true);
   const [escalateOutsideHours, setEscalateOutsideHours] = useState(true);
   const [escalateUnanswered, setEscalateUnanswered] = useState(false);
+  const [escalateComplaints, setEscalateComplaints] = useState(true);
+  const [escalateRefunds, setEscalateRefunds] = useState(true);
+  const [escalateLegalQuestions, setEscalateLegalQuestions] = useState(true);
+  const [escalateHumanRequested, setEscalateHumanRequested] = useState(true);
+  const [escalateUnknownQuestions, setEscalateUnknownQuestions] = useState(true);
+  const [escalateNegotiationsAbove10k, setEscalateNegotiationsAbove10k] = useState(true);
   const [policyKeepShort, setPolicyKeepShort] = useState(true);
   const [policyUseProfessionalTone, setPolicyUseProfessionalTone] = useState(true);
   const [policyRespectHours, setPolicyRespectHours] = useState(true);
@@ -1781,69 +1787,91 @@ export default function DashboardLayout() {
                   )}
 
                   {assistantTab === "Escalation Rules" && (
-                    <div className="space-y-4">
-                      <div className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
-                        <p className="text-sm font-semibold text-[#111827]">Escalation control</p>
-                        <p className="mt-2 text-sm text-[#6B7280]">Choose when the assistant should hand off conversations to a human.</p>
-                      </div>
-                      <div className="space-y-4">
-                        <div className="rounded-3xl border border-[#E5E7EB] bg-white p-5 shadow-sm">
-                          <div className="flex items-center justify-between gap-4">
+                    <div className="space-y-6">
+                      <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                        <p className="text-sm font-semibold text-[#111827]">Escalation Rules</p>
+                        <p className="mt-2 text-sm text-[#6B7280]">Choose which situations trigger handoff to a human representative.</p>
+                        <div className="mt-6 space-y-3">
+                          <label className="flex items-start gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
+                            <input
+                              type="checkbox"
+                              checked={escalateComplaints}
+                              onChange={() => setEscalateComplaints((value) => !value)}
+                              className="mt-1 w-4 h-4"
+                            />
                             <div>
-                              <p className="text-sm font-semibold text-[#111827]">Escalate on live support requests</p>
-                              <p className="mt-1 text-sm text-[#6B7280]">Send urgent buyer messages straight to the owner.</p>
+                              <span className="text-sm font-semibold text-[#111827]">Complaints</span>
+                              <p className="mt-1 text-xs text-[#6B7280]">Detect negative sentiment and escalate immediately.</p>
                             </div>
-                            <button
-                              type="button"
-                              onClick={() => setEscalateOnLiveRequest((value) => !value)}
-                              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                                escalateOnLiveRequest
-                                  ? "bg-[#DCFCE7] text-[#166534]"
-                                  : "bg-[#E5E7EB] text-[#6B7280]"
-                              }`}
-                            >
-                              {escalateOnLiveRequest ? "On" : "Off"}
-                            </button>
-                          </div>
-                        </div>
-                        <div className="rounded-3xl border border-[#E5E7EB] bg-white p-5 shadow-sm">
-                          <div className="flex items-center justify-between gap-4">
+                          </label>
+                          <label className="flex items-start gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
+                            <input
+                              type="checkbox"
+                              checked={escalateRefunds}
+                              onChange={() => setEscalateRefunds((value) => !value)}
+                              className="mt-1 w-4 h-4"
+                            />
                             <div>
-                              <p className="text-sm font-semibold text-[#111827]">Escalate after hours</p>
-                              <p className="mt-1 text-sm text-[#6B7280]">Flag messages received outside business hours.</p>
+                              <span className="text-sm font-semibold text-[#111827]">Refund Requests</span>
+                              <p className="mt-1 text-xs text-[#6B7280]">Hand off all refund-related conversations to the owner.</p>
                             </div>
-                            <button
-                              type="button"
-                              onClick={() => setEscalateOutsideHours((value) => !value)}
-                              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                                escalateOutsideHours
-                                  ? "bg-[#DCFCE7] text-[#166534]"
-                                  : "bg-[#E5E7EB] text-[#6B7280]"
-                              }`}
-                            >
-                              {escalateOutsideHours ? "On" : "Off"}
-                            </button>
-                          </div>
-                        </div>
-                        <div className="rounded-3xl border border-[#E5E7EB] bg-white p-5 shadow-sm">
-                          <div className="flex items-center justify-between gap-4">
+                          </label>
+                          <label className="flex items-start gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
+                            <input
+                              type="checkbox"
+                              checked={escalateLegalQuestions}
+                              onChange={() => setEscalateLegalQuestions((value) => !value)}
+                              className="mt-1 w-4 h-4"
+                            />
                             <div>
-                              <p className="text-sm font-semibold text-[#111827]">Escalate after unanswered questions</p>
-                              <p className="mt-1 text-sm text-[#6B7280]">Alert the owner when the customer asks multiple questions without resolution.</p>
+                              <span className="text-sm font-semibold text-[#111827]">Legal Questions</span>
+                              <p className="mt-1 text-xs text-[#6B7280]">Escalate any conversation involving legal matters or regulations.</p>
                             </div>
-                            <button
-                              type="button"
-                              onClick={() => setEscalateUnanswered((value) => !value)}
-                              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                                escalateUnanswered
-                                  ? "bg-[#DCFCE7] text-[#166534]"
-                                  : "bg-[#E5E7EB] text-[#6B7280]"
-                              }`}
-                            >
-                              {escalateUnanswered ? "On" : "Off"}
-                            </button>
-                          </div>
+                          </label>
+                          <label className="flex items-start gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
+                            <input
+                              type="checkbox"
+                              checked={escalateHumanRequested}
+                              onChange={() => setEscalateHumanRequested((value) => !value)}
+                              className="mt-1 w-4 h-4"
+                            />
+                            <div>
+                              <span className="text-sm font-semibold text-[#111827]">Human Requested</span>
+                              <p className="mt-1 text-xs text-[#6B7280]">Stop responding when customers explicitly ask for a person.</p>
+                            </div>
+                          </label>
+                          <label className="flex items-start gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
+                            <input
+                              type="checkbox"
+                              checked={escalateUnknownQuestions}
+                              onChange={() => setEscalateUnknownQuestions((value) => !value)}
+                              className="mt-1 w-4 h-4"
+                            />
+                            <div>
+                              <span className="text-sm font-semibold text-[#111827]">Unknown Questions</span>
+                              <p className="mt-1 text-xs text-[#6B7280]">Hand off queries outside the AI's knowledge base.</p>
+                            </div>
+                          </label>
+                          <label className="flex items-start gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
+                            <input
+                              type="checkbox"
+                              checked={escalateNegotiationsAbove10k}
+                              onChange={() => setEscalateNegotiationsAbove10k((value) => !value)}
+                              className="mt-1 w-4 h-4"
+                            />
+                            <div>
+                              <span className="text-sm font-semibold text-[#111827]">Negotiations Above KES 10,000</span>
+                              <p className="mt-1 text-xs text-[#6B7280]">Escalate any negotiation involving amounts above KES 10,000.</p>
+                            </div>
+                          </label>
                         </div>
+                      </section>
+
+                      <div className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-5 text-sm text-[#6B7280]">
+                        <p className="font-semibold text-[#111827]">How escalation works</p>
+                        <p className="mt-2">
+                          When these situations occur, the AI stops responding and requests owner intervention. You'll receive a notification and can take over the conversation.
+                        </p>
                       </div>
                     </div>
                   )}
