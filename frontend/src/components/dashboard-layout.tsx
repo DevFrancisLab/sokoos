@@ -569,6 +569,17 @@ export default function DashboardLayout() {
     deliveryPolicy: "We deliver service activation details via WhatsApp within 24 hours of payment.",
     cancellationPolicy: "Cancel anytime with 48 hours notice before the next billing cycle.",
   });
+  const [businessProfile, setBusinessProfile] = useState({
+    name: "Sokoos Internet",
+    industry: "Telecom & Connectivity",
+    description: "We help local businesses stay online with reliable internet plans, fast support, and easy onboarding.",
+    phone: "+254 20 3949 0101",
+    email: "support@sokoos.co.ke",
+    location: "Nairobi, Kenya",
+    businessHours: "Mon–Fri, 8:00 AM - 6:00 PM",
+    serviceAreas: "Nairobi, Kiambu, Thika",
+    paymentMethods: { mPesa: true, cash: true, bankTransfer: true },
+  });
   const [imageLabel, setImageLabel] = useState("No file selected");
   const [customerCollapsed, setCustomerCollapsed] = useState(false);
 
@@ -2167,6 +2178,160 @@ export default function DashboardLayout() {
           )}
           {selected === "Settings" && (
             <div className="space-y-6">
+              <div className={`${CARD}`}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">Settings</p>
+                    <h2 className="mt-2 text-2xl font-semibold text-[#111827]">Business Profile</h2>
+                    <p className="mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl">This information is used by the AI assistant when communicating with customers.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-6 lg:grid-cols-2">
+                <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                  <p className="text-sm font-semibold text-[#111827]">Business Details</p>
+                  <div className="mt-4 space-y-4">
+                    <div>
+                      <label className="text-sm font-semibold text-[#111827]">Business Name</label>
+                      <input
+                        type="text"
+                        value={businessProfile.name}
+                        onChange={(e) => setBusinessProfile((s) => ({ ...s, name: e.target.value }))}
+                        className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        placeholder="e.g., Sokoos Internet"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-semibold text-[#111827]">Industry</label>
+                      <input
+                        type="text"
+                        value={businessProfile.industry}
+                        onChange={(e) => setBusinessProfile((s) => ({ ...s, industry: e.target.value }))}
+                        className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        placeholder="e.g., Telecom & Connectivity"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-semibold text-[#111827]">Description</label>
+                      <textarea
+                        value={businessProfile.description}
+                        onChange={(e) => setBusinessProfile((s) => ({ ...s, description: e.target.value }))}
+                        className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        placeholder="What does your business do?"
+                        rows={4}
+                      />
+                    </div>
+                  </div>
+                </section>
+
+                <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                  <p className="text-sm font-semibold text-[#111827]">Contact Information</p>
+                  <div className="mt-4 space-y-4">
+                    <div>
+                      <label className="text-sm font-semibold text-[#111827]">Phone</label>
+                      <input
+                        type="tel"
+                        value={businessProfile.phone}
+                        onChange={(e) => setBusinessProfile((s) => ({ ...s, phone: e.target.value }))}
+                        className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        placeholder="e.g., +254 20 3949 0101"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-semibold text-[#111827]">Email</label>
+                      <input
+                        type="email"
+                        value={businessProfile.email}
+                        onChange={(e) => setBusinessProfile((s) => ({ ...s, email: e.target.value }))}
+                        className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        placeholder="e.g., support@sokoos.co.ke"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-semibold text-[#111827]">Location</label>
+                      <input
+                        type="text"
+                        value={businessProfile.location}
+                        onChange={(e) => setBusinessProfile((s) => ({ ...s, location: e.target.value }))}
+                        className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        placeholder="e.g., Nairobi, Kenya"
+                      />
+                    </div>
+                  </div>
+                </section>
+              </div>
+
+              <div className="grid gap-6 lg:grid-cols-2">
+                <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                  <p className="text-sm font-semibold text-[#111827]">Operations</p>
+                  <div className="mt-4 space-y-4">
+                    <div>
+                      <label className="text-sm font-semibold text-[#111827]">Business Hours</label>
+                      <input
+                        type="text"
+                        value={businessProfile.businessHours}
+                        onChange={(e) => setBusinessProfile((s) => ({ ...s, businessHours: e.target.value }))}
+                        className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        placeholder="e.g., Mon–Fri, 8:00 AM - 6:00 PM"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-semibold text-[#111827]">Service Areas</label>
+                      <input
+                        type="text"
+                        value={businessProfile.serviceAreas}
+                        onChange={(e) => setBusinessProfile((s) => ({ ...s, serviceAreas: e.target.value }))}
+                        className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        placeholder="e.g., Nairobi, Kiambu, Thika"
+                      />
+                    </div>
+                  </div>
+                </section>
+
+                <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                  <p className="text-sm font-semibold text-[#111827]">Payment Methods</p>
+                  <div className="mt-4 space-y-3">
+                    <label className="flex items-center gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
+                      <input
+                        type="checkbox"
+                        checked={businessProfile.paymentMethods.mPesa}
+                        onChange={() => setBusinessProfile((s) => ({
+                          ...s,
+                          paymentMethods: { ...s.paymentMethods, mPesa: !s.paymentMethods.mPesa },
+                        }))}
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm font-semibold text-[#111827]">M-Pesa</span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
+                      <input
+                        type="checkbox"
+                        checked={businessProfile.paymentMethods.cash}
+                        onChange={() => setBusinessProfile((s) => ({
+                          ...s,
+                          paymentMethods: { ...s.paymentMethods, cash: !s.paymentMethods.cash },
+                        }))}
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm font-semibold text-[#111827]">Cash</span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
+                      <input
+                        type="checkbox"
+                        checked={businessProfile.paymentMethods.bankTransfer}
+                        onChange={() => setBusinessProfile((s) => ({
+                          ...s,
+                          paymentMethods: { ...s.paymentMethods, bankTransfer: !s.paymentMethods.bankTransfer },
+                        }))}
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm font-semibold text-[#111827]">Bank Transfer</span>
+                    </label>
+                  </div>
+                </section>
+              </div>
+
               <div className={`${CARD}`}>
                 <div className="flex items-center justify-between">
                   <div>
