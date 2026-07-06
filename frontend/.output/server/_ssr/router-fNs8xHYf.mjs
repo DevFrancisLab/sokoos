@@ -3,10 +3,10 @@ import { n as require_jsx_runtime, r as require_react, t as QueryClientProvider 
 import { c as HeadContent, d as Outlet, f as lazyRouteComponent, g as useRouter, h as Link, m as createRootRouteWithContext, p as createFileRoute, s as Scripts, u as createRouter } from "../_libs/@tanstack/react-router+[...].mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
 import { A as Calendar, D as ChevronLeft, E as ChevronRight, I as Activity, N as Box, P as Bot, _ as Megaphone, a as Settings, b as Image, d as Plus, g as Menu, n as Users, o as Send, s as Search, t as X, w as Cpu, x as House, y as Inbox } from "../_libs/lucide-react.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-CbDs5j2J.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router-fNs8xHYf.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
-var styles_default = "/assets/styles-DQlCaGWa.css";
+var styles_default = "/assets/styles-BxygCo73.css";
 function reportLovableError(error, context = {}) {
 	if (typeof window === "undefined") return;
 	window.__lovableEvents?.captureException?.(error, {
@@ -470,10 +470,11 @@ var POPULAR_PRODUCTS = [
 	}
 ];
 var LANGUAGES = ["English", "Kiswahili"];
-var PERSONALITIES = [
-	"Friendly",
+var TONES = [
 	"Professional",
-	"Sales Focused"
+	"Friendly",
+	"Formal",
+	"Sales-focused"
 ];
 var ASSISTANT_TABS = [
 	"Business Knowledge",
@@ -797,6 +798,13 @@ function DashboardLayout() {
 	const [policyKeepShort, setPolicyKeepShort] = (0, import_react.useState)(true);
 	const [policyUseProfessionalTone, setPolicyUseProfessionalTone] = (0, import_react.useState)(true);
 	const [policyRespectHours, setPolicyRespectHours] = (0, import_react.useState)(true);
+	const [assistantName, setAssistantName] = (0, import_react.useState)("Nuru");
+	const [primaryLanguage, setPrimaryLanguage] = (0, import_react.useState)("English");
+	const [secondaryLanguage, setSecondaryLanguage] = (0, import_react.useState)("Kiswahili");
+	const [tone, setTone] = (0, import_react.useState)("Friendly");
+	const [upsellProducts, setUpsellProducts] = (0, import_react.useState)(true);
+	const [recommendAlternatives, setRecommendAlternatives] = (0, import_react.useState)(true);
+	const [closeSalesAutomatically, setCloseSalesAutomatically] = (0, import_react.useState)(false);
 	const [businessInfo, setBusinessInfo] = (0, import_react.useState)({
 		name: "Sokoos Internet",
 		type: "Telecom & Connectivity",
@@ -1965,84 +1973,172 @@ function DashboardLayout() {
 												]
 											}),
 											assistantTab === "AI Settings" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "grid gap-6 lg:grid-cols-[1.2fr_0.8fr]",
-												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("section", {
-													className: "rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm",
-													children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "space-y-4",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-															className: "rounded-3xl bg-white p-5 shadow-sm",
-															children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-																className: "flex items-center justify-between gap-4",
-																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "space-y-6",
+												children: [
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+														className: "rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm",
+														children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-sm font-semibold text-[#111827]",
+																children: "AI Identity"
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "mt-1 text-sm text-[#6B7280]",
+																children: "Give your assistant a name and personality."
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																className: "mt-4 space-y-4",
+																children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
 																	className: "text-sm font-semibold text-[#111827]",
-																	children: "Business Hours"
-																}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																	className: "mt-2 text-sm text-[#6B7280]",
-																	children: "Set the hours when your assistant prioritizes support."
-																})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-																	className: "rounded-full bg-[#E0F2FE] px-3 py-1 text-xs font-semibold text-[#0C4A6E]",
-																	children: businessHours
-																})]
+																	htmlFor: "assistant-name",
+																	children: "Assistant Name"
+																}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																	id: "assistant-name",
+																	type: "text",
+																	value: assistantName,
+																	onChange: (event) => setAssistantName(event.target.value),
+																	className: "mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none",
+																	placeholder: "e.g., Nuru"
+																})] })
 															})
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-															className: "rounded-3xl bg-white p-5 shadow-sm",
-															children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-																className: "flex items-center justify-between gap-4",
-																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+														className: "rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm",
+														children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-sm font-semibold text-[#111827]",
+																children: "Languages"
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "mt-1 text-sm text-[#6B7280]",
+																children: "Choose which languages your assistant uses."
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																className: "mt-4 grid gap-4 sm:grid-cols-2",
+																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
 																	className: "text-sm font-semibold text-[#111827]",
-																	children: "Human takeover"
-																}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																	className: "mt-2 text-sm text-[#6B7280]",
-																	children: "Let the assistant hand off conversations to a human when needed."
-																})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-																	type: "button",
-																	onClick: () => setHumanTakeover((value) => !value),
-																	className: `rounded-full px-4 py-2 text-sm font-semibold transition ${humanTakeover ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#E5E7EB] text-[#6B7280]"}`,
-																	children: humanTakeover ? "On" : "Off"
-																})]
+																	htmlFor: "primary-language",
+																	children: "Primary Language"
+																}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																	className: "mt-2 flex flex-wrap gap-2",
+																	children: LANGUAGES.map((option) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																		type: "button",
+																		onClick: () => setPrimaryLanguage(option),
+																		className: `rounded-2xl border px-3 py-2 text-sm font-semibold transition ${primaryLanguage === option ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]" : "border-[#E5E7EB] bg-[#F9FAFB] text-[#111827] hover:bg-white"}`,
+																		children: option
+																	}, option))
+																})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+																	className: "text-sm font-semibold text-[#111827]",
+																	htmlFor: "secondary-language",
+																	children: "Secondary Language"
+																}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																	className: "mt-2 flex flex-wrap gap-2",
+																	children: LANGUAGES.map((option) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																		type: "button",
+																		onClick: () => setSecondaryLanguage(option),
+																		className: `rounded-2xl border px-3 py-2 text-sm font-semibold transition ${secondaryLanguage === option ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]" : "border-[#E5E7EB] bg-[#F9FAFB] text-[#111827] hover:bg-white"}`,
+																		children: option
+																	}, option))
+																})] })]
 															})
+														]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+														className: "rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm",
+														children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-sm font-semibold text-[#111827]",
+																children: "Tone"
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "mt-1 text-sm text-[#6B7280]",
+																children: "Select how your assistant communicates with customers."
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																className: "mt-4 space-y-3",
+																children: TONES.map((option) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+																	className: "flex items-center gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition",
+																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																		type: "radio",
+																		name: "tone",
+																		value: option,
+																		checked: tone === option,
+																		onChange: () => setTone(option),
+																		className: "w-4 h-4"
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																		className: "text-sm font-semibold text-[#111827]",
+																		children: option
+																	})]
+																}, option))
+															})
+														]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+														className: "rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm",
+														children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-sm font-semibold text-[#111827]",
+																children: "Sales Behavior"
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "mt-1 text-sm text-[#6B7280]",
+																children: "Configure how your assistant handles sales interactions."
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																className: "mt-4 space-y-3",
+																children: [
+																	/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+																		className: "flex items-center gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition",
+																		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																			type: "checkbox",
+																			checked: upsellProducts,
+																			onChange: () => setUpsellProducts((value) => !value),
+																			className: "w-4 h-4"
+																		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																			className: "text-sm font-semibold text-[#111827]",
+																			children: "Upsell Products"
+																		})]
+																	}),
+																	/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+																		className: "flex items-center gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition",
+																		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																			type: "checkbox",
+																			checked: recommendAlternatives,
+																			onChange: () => setRecommendAlternatives((value) => !value),
+																			className: "w-4 h-4"
+																		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																			className: "text-sm font-semibold text-[#111827]",
+																			children: "Recommend Alternatives"
+																		})]
+																	}),
+																	/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+																		className: "flex items-center gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition",
+																		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																			type: "checkbox",
+																			checked: closeSalesAutomatically,
+																			onChange: () => setCloseSalesAutomatically((value) => !value),
+																			className: "w-4 h-4"
+																		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																			className: "text-sm font-semibold text-[#111827]",
+																			children: "Close Sales Automatically"
+																		})]
+																	})
+																]
+															})
+														]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-5 text-sm text-[#6B7280]",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: "font-semibold text-[#111827]",
+															children: "Note"
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: "mt-2",
+															children: "These settings control how your assistant represents your business and interacts with customers. All changes are saved automatically."
 														})]
 													})
-												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-													className: "space-y-6 rounded-3xl border border-[#E5E7EB] bg-[#FFFFFF] p-6 shadow-sm",
-													children: [
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-															className: "text-sm font-semibold uppercase tracking-[0.2em] text-[#6B7280]",
-															children: "Languages"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-															className: "mt-4 flex flex-wrap gap-3",
-															children: LANGUAGES.map((option) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-																type: "button",
-																onClick: () => setLanguage(option),
-																className: `rounded-2xl border px-4 py-3 text-sm font-semibold transition ${language === option ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#111827] hover:bg-[#F3F4F6]"}`,
-																children: option
-															}, option))
-														})] }),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-															className: "text-sm font-semibold uppercase tracking-[0.2em] text-[#6B7280]",
-															children: "Personality"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-															className: "mt-4 flex flex-wrap gap-3",
-															children: PERSONALITIES.map((option) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-																type: "button",
-																onClick: () => setPersonality(option),
-																className: `rounded-2xl border px-4 py-3 text-sm font-semibold transition ${personality === option ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#111827] hover:bg-[#F3F4F6]"}`,
-																children: option
-															}, option))
-														})] }),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-5 text-sm text-[#6B7280]",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "font-semibold text-[#111827]",
-																children: "Note"
-															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "mt-2",
-																children: "These settings keep your assistant sounding professional and helpful while maintaining a consistent business tone."
-															})]
-														})
-													]
-												})]
+												]
 											}),
 											assistantTab === "Test AI" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 												className: "grid gap-6 lg:grid-cols-[1.4fr_0.8fr]",
