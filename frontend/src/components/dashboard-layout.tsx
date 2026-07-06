@@ -172,6 +172,7 @@ const POPULAR_PRODUCTS = [
 
 const LANGUAGES = ["English", "Kiswahili"] as const;
 const PERSONALITIES = ["Friendly", "Professional", "Sales Focused"] as const;
+const TONES = ["Professional", "Friendly", "Formal", "Sales-focused"] as const;
 
 const ASSISTANT_TABS = [
   "Business Knowledge",
@@ -504,6 +505,13 @@ export default function DashboardLayout() {
   const [policyKeepShort, setPolicyKeepShort] = useState(true);
   const [policyUseProfessionalTone, setPolicyUseProfessionalTone] = useState(true);
   const [policyRespectHours, setPolicyRespectHours] = useState(true);
+  const [assistantName, setAssistantName] = useState("Nuru");
+  const [primaryLanguage, setPrimaryLanguage] = useState<(typeof LANGUAGES)[number]>("English");
+  const [secondaryLanguage, setSecondaryLanguage] = useState<(typeof LANGUAGES)[number]>("Kiswahili");
+  const [tone, setTone] = useState<(typeof TONES)[number]>("Friendly");
+  const [upsellProducts, setUpsellProducts] = useState(true);
+  const [recommendAlternatives, setRecommendAlternatives] = useState(true);
+  const [closeSalesAutomatically, setCloseSalesAutomatically] = useState(false);
   const [businessInfo, setBusinessInfo] = useState({
     name: "Sokoos Internet",
     type: "Telecom & Connectivity",
@@ -1562,86 +1570,136 @@ export default function DashboardLayout() {
                   )}
 
                   {assistantTab === "AI Settings" && (
-                    <div className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-                      <section className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
-                        <div className="space-y-4">
-                          <div className="rounded-3xl bg-white p-5 shadow-sm">
-                            <div className="flex items-center justify-between gap-4">
-                              <div>
-                                <p className="text-sm font-semibold text-[#111827]">Business Hours</p>
-                                <p className="mt-2 text-sm text-[#6B7280]">Set the hours when your assistant prioritizes support.</p>
-                              </div>
-                              <span className="rounded-full bg-[#E0F2FE] px-3 py-1 text-xs font-semibold text-[#0C4A6E]">{businessHours}</span>
+                    <div className="space-y-6">
+                      <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                        <p className="text-sm font-semibold text-[#111827]">AI Identity</p>
+                        <p className="mt-1 text-sm text-[#6B7280]">Give your assistant a name and personality.</p>
+                        <div className="mt-4 space-y-4">
+                          <div>
+                            <label className="text-sm font-semibold text-[#111827]" htmlFor="assistant-name">
+                              Assistant Name
+                            </label>
+                            <input
+                              id="assistant-name"
+                              type="text"
+                              value={assistantName}
+                              onChange={(event) => setAssistantName(event.target.value)}
+                              className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                              placeholder="e.g., Nuru"
+                            />
+                          </div>
+                        </div>
+                      </section>
+
+                      <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                        <p className="text-sm font-semibold text-[#111827]">Languages</p>
+                        <p className="mt-1 text-sm text-[#6B7280]">Choose which languages your assistant uses.</p>
+                        <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                          <div>
+                            <label className="text-sm font-semibold text-[#111827]" htmlFor="primary-language">
+                              Primary Language
+                            </label>
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              {LANGUAGES.map((option) => (
+                                <button
+                                  key={option}
+                                  type="button"
+                                  onClick={() => setPrimaryLanguage(option)}
+                                  className={`rounded-2xl border px-3 py-2 text-sm font-semibold transition ${
+                                    primaryLanguage === option
+                                      ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]"
+                                      : "border-[#E5E7EB] bg-[#F9FAFB] text-[#111827] hover:bg-white"
+                                  }`}
+                                >
+                                  {option}
+                                </button>
+                              ))}
                             </div>
                           </div>
-                          <div className="rounded-3xl bg-white p-5 shadow-sm">
-                            <div className="flex items-center justify-between gap-4">
-                              <div>
-                                <p className="text-sm font-semibold text-[#111827]">Human takeover</p>
-                                <p className="mt-2 text-sm text-[#6B7280]">Let the assistant hand off conversations to a human when needed.</p>
-                              </div>
-                              <button
-                                type="button"
-                                onClick={() => setHumanTakeover((value) => !value)}
-                                className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                                  humanTakeover
-                                    ? "bg-[#DCFCE7] text-[#166534]"
-                                    : "bg-[#E5E7EB] text-[#6B7280]"
-                                }`}
-                              >
-                                {humanTakeover ? "On" : "Off"}
-                              </button>
+                          <div>
+                            <label className="text-sm font-semibold text-[#111827]" htmlFor="secondary-language">
+                              Secondary Language
+                            </label>
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              {LANGUAGES.map((option) => (
+                                <button
+                                  key={option}
+                                  type="button"
+                                  onClick={() => setSecondaryLanguage(option)}
+                                  className={`rounded-2xl border px-3 py-2 text-sm font-semibold transition ${
+                                    secondaryLanguage === option
+                                      ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]"
+                                      : "border-[#E5E7EB] bg-[#F9FAFB] text-[#111827] hover:bg-white"
+                                  }`}
+                                >
+                                  {option}
+                                </button>
+                              ))}
                             </div>
                           </div>
                         </div>
                       </section>
 
-                      <section className="space-y-6 rounded-3xl border border-[#E5E7EB] bg-[#FFFFFF] p-6 shadow-sm">
-                        <div>
-                          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#6B7280]">Languages</p>
-                          <div className="mt-4 flex flex-wrap gap-3">
-                            {LANGUAGES.map((option) => (
-                              <button
-                                key={option}
-                                type="button"
-                                onClick={() => setLanguage(option)}
-                                className={`rounded-2xl border px-4 py-3 text-sm font-semibold transition ${
-                                  language === option
-                                    ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]"
-                                    : "border-[#E5E7EB] bg-white text-[#111827] hover:bg-[#F3F4F6]"
-                                }`}
-                              >
-                                {option}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#6B7280]">Personality</p>
-                          <div className="mt-4 flex flex-wrap gap-3">
-                            {PERSONALITIES.map((option) => (
-                              <button
-                                key={option}
-                                type="button"
-                                onClick={() => setPersonality(option)}
-                                className={`rounded-2xl border px-4 py-3 text-sm font-semibold transition ${
-                                  personality === option
-                                    ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]"
-                                    : "border-[#E5E7EB] bg-white text-[#111827] hover:bg-[#F3F4F6]"
-                                }`}
-                              >
-                                {option}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                        <div className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-5 text-sm text-[#6B7280]">
-                          <p className="font-semibold text-[#111827]">Note</p>
-                          <p className="mt-2">
-                            These settings keep your assistant sounding professional and helpful while maintaining a consistent business tone.
-                          </p>
+                      <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                        <p className="text-sm font-semibold text-[#111827]">Tone</p>
+                        <p className="mt-1 text-sm text-[#6B7280]">Select how your assistant communicates with customers.</p>
+                        <div className="mt-4 space-y-3">
+                          {TONES.map((option) => (
+                            <label key={option} className="flex items-center gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
+                              <input
+                                type="radio"
+                                name="tone"
+                                value={option}
+                                checked={tone === option}
+                                onChange={() => setTone(option)}
+                                className="w-4 h-4"
+                              />
+                              <span className="text-sm font-semibold text-[#111827]">{option}</span>
+                            </label>
+                          ))}
                         </div>
                       </section>
+
+                      <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                        <p className="text-sm font-semibold text-[#111827]">Sales Behavior</p>
+                        <p className="mt-1 text-sm text-[#6B7280]">Configure how your assistant handles sales interactions.</p>
+                        <div className="mt-4 space-y-3">
+                          <label className="flex items-center gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
+                            <input
+                              type="checkbox"
+                              checked={upsellProducts}
+                              onChange={() => setUpsellProducts((value) => !value)}
+                              className="w-4 h-4"
+                            />
+                            <span className="text-sm font-semibold text-[#111827]">Upsell Products</span>
+                          </label>
+                          <label className="flex items-center gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
+                            <input
+                              type="checkbox"
+                              checked={recommendAlternatives}
+                              onChange={() => setRecommendAlternatives((value) => !value)}
+                              className="w-4 h-4"
+                            />
+                            <span className="text-sm font-semibold text-[#111827]">Recommend Alternatives</span>
+                          </label>
+                          <label className="flex items-center gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
+                            <input
+                              type="checkbox"
+                              checked={closeSalesAutomatically}
+                              onChange={() => setCloseSalesAutomatically((value) => !value)}
+                              className="w-4 h-4"
+                            />
+                            <span className="text-sm font-semibold text-[#111827]">Close Sales Automatically</span>
+                          </label>
+                        </div>
+                      </section>
+
+                      <div className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-5 text-sm text-[#6B7280]">
+                        <p className="font-semibold text-[#111827]">Note</p>
+                        <p className="mt-2">
+                          These settings control how your assistant represents your business and interacts with customers. All changes are saved automatically.
+                        </p>
+                      </div>
                     </div>
                   )}
 
