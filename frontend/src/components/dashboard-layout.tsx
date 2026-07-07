@@ -952,100 +952,57 @@ export default function DashboardLayout() {
                         <button
                           key={conversation.id}
                           onClick={() => setActiveConversation(conversation.id)}
-                          className={`w-full overflow-hidden rounded-[20px] border px-6 py-6 text-left transition ${
-                              active
-                                ? "border-[#22C55E] bg-[#ECFDF5]"
-                                : "border-transparent bg-[#FFFFFF] hover:border-[#E5E7EB]/10 hover:bg-[#F9FAFB]"
-                            }`}
+                          className={`w-full overflow-hidden rounded-[20px] p-6 text-left transition-colors duration-150 flex flex-col justify-between min-h-[92px] ${
+                            active
+                              ? "bg-[#ECFDF5] ring-1 ring-[#22C55E]/30 shadow-[0_8px_24px_rgba(34,197,94,0.06)]"
+                              : "bg-white hover:bg-[#F7FBF7]"
+                          }`}
                         >
+                          {/* Top row: avatar, name, timestamp */}
                           <div className="flex items-start justify-between gap-3">
-                            <div className="flex min-w-0 gap-3">
-                              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-sm font-semibold text-white">
-                                {conversation.avatar}
-                              </div>
+                            <div className="flex items-start gap-3 min-w-0">
+                              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-sm font-semibold text-white">{conversation.avatar}</div>
                               <div className="min-w-0">
                                 {conversation.isSaved && conversation.name ? (
-                                  <div className="flex flex-wrap items-center gap-2">
-                                        <p
-                                          className={`min-w-0 ${CUSTOMER_NAME} truncate`}
-                                          title={conversation.name}
-                                        >
-                                          {conversation.name.length > 22 ? `${conversation.name.slice(0, 22)}…` : conversation.name}
-                                        </p>
-                                    {effectiveSource === "needs_attention" ? (
-                                      <span className="inline-flex items-center gap-1 rounded-full bg-[#fee2e2] px-2 py-1 text-xs font-semibold text-[#b91c1c]">
-                                        <span className="inline-block h-2 w-2 rounded-full bg-[#b91c1c]" aria-hidden />
-                                        Attention
-                                      </span>
-                                    ) : null}
-                                  </div>
+                                  <p className={`truncate ${CUSTOMER_NAME}`} title={conversation.name}>
+                                    {conversation.name.length > 28 ? `${conversation.name.slice(0, 28)}…` : conversation.name}
+                                  </p>
                                 ) : (
-                                  <div className="space-y-0.5">
-                                    <p
-                                      className={`min-w-0 ${CUSTOMER_NAME} truncate`}
-                                      title={conversation.phone ?? "Unknown Customer"}
-                                    >
-                                      {conversation.phone ?? "Unknown Customer"}
-                                    </p>
-                                  </div>
+                                  <p className={`truncate ${CUSTOMER_NAME}`} title={conversation.phone ?? "Unknown Customer"}>{conversation.phone ?? "Unknown Customer"}</p>
                                 )}
-                                {effectiveSource === "personal" ? (
-                                  <span className="inline-flex mt-1 items-center gap-1 rounded-full bg-[#E5E7EB] px-2 py-1 text-xs font-semibold text-[#6B7280]">
-                                    <span aria-hidden>👤</span>
-                                    Personal
-                                  </span>
-                                ) : effectiveSource === "ai_handling" ? (
-                                  <span className="inline-flex mt-1 items-center gap-1 rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#166534]">
-                                    <span aria-hidden>🤖</span>
-                                    AI Handling
-                                  </span>
-                                ) : effectiveSource === "ai_handled" ? (
-                                  <span className="inline-flex mt-1 items-center gap-1 rounded-full bg-[#F0FDF4] px-2 py-1 text-xs font-semibold text-[#14532d]">
-                                    <span aria-hidden>🤖</span>
-                                    AI Handled
-                                  </span>
-                                ) : effectiveSource === "owner" ? (
-                                  <span className="inline-flex mt-1 items-center gap-1 rounded-full bg-[#EFF6FF] px-2 py-1 text-xs font-semibold text-[#1E3A8A]">
-                                    <span aria-hidden>👤</span>
-                                    You
-                                  </span>
-                                ) : effectiveSource !== "needs_attention" ? (
-                                  <span
-                                    className="inline-block mt-1 h-2 w-2 rounded-full bg-[#6B7280]"
-                                    aria-hidden
-                                  />
-                                ) : null}
+                                {/* second row inside left column for compact badges */}
+                                <div className="mt-2 flex items-center gap-2">
+                                  {effectiveSource === "needs_attention" && (
+                                    <span className="inline-flex items-center gap-1 rounded-full bg-[#FEF2F2] px-2 py-0.5 text-xs font-semibold text-[#B91C1C]"><span className="inline-block h-2 w-2 rounded-full bg-[#B91C1C]" aria-hidden /> Attention</span>
+                                  )}
+                                  {effectiveSource === "personal" && (
+                                    <span className="inline-flex items-center gap-1 rounded-full bg-[#F1F5F9] px-2 py-0.5 text-xs font-semibold text-[#6B7280]">👤 Personal</span>
+                                  )}
+                                  {effectiveSource === "ai_handling" && (
+                                    <span className="inline-flex items-center gap-1 rounded-full bg-[#ECFDF5] px-2 py-0.5 text-xs font-semibold text-[#166534]">🤖 AI Handling</span>
+                                  )}
+                                  {effectiveSource === "ai_handled" && (
+                                    <span className="inline-flex items-center gap-1 rounded-full bg-[#F0FDF4] px-2 py-0.5 text-xs font-semibold text-[#14532d]">🤖 AI Handled</span>
+                                  )}
+                                  {effectiveSource === "owner" && (
+                                    <span className="inline-flex items-center gap-1 rounded-full bg-[#EFF6FF] px-2 py-0.5 text-xs font-semibold text-[#1E3A8A]">👤 You</span>
+                                  )}
+                                </div>
                               </div>
                             </div>
-                            <span className={`shrink-0 ${TIME_LABEL}`}>{formatConversationTime(conversation.time)}</span>
+                            <div className="flex-shrink-0">
+                              <span className={`${TIME_LABEL}`}>{formatConversationTime(conversation.time)}</span>
+                            </div>
                           </div>
-                          <div className="mt-3 flex items-center justify-between gap-2">
+
+                          {/* Third row: message preview and optional badge */}
+                          <div className="mt-4 flex items-center justify-between gap-3">
                             <p className={`min-w-0 ${MESSAGE_PREVIEW} truncate`}>{conversation.message}</p>
-                            {conversation.badge > 0 ? (
-                              <span className="rounded-full bg-[#22C55E] px-2 py-0.5 text-[10px] font-semibold text-white">
-                                {conversation.badge}
-                              </span>
-                            ) : effectiveSource === "personal" ? (
-                              <span className="inline-flex rounded-full bg-[#E5E7EB] px-2 py-1 text-xs font-semibold text-[#6B7280]">
-                                👤 Personal
-                              </span>
-                            ) : effectiveSource === "ai_handling" ? (
-                              <span className="inline-flex rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#166534]">
-                                🤖 AI Handling
-                              </span>
-                            ) : effectiveSource === "ai_handled" ? (
-                              <span className="inline-flex rounded-full bg-[#F0FDF4] px-2 py-1 text-xs font-semibold text-[#14532d]">
-                                🤖 AI Handled
-                              </span>
-                            ) : effectiveSource === "needs_attention" ? (
-                              <span className="inline-flex rounded-full bg-[#FEF2F2] px-2 py-1 text-xs font-semibold text-[#B91C1C]">
-                                🔴 Needs You
-                              </span>
-                            ) : effectiveSource === "owner" ? (
-                              <span className="inline-flex rounded-full bg-[#EFF6FF] px-2 py-1 text-xs font-semibold text-[#1E3A8A]">
-                                👤 You
-                              </span>
-                            ) : null}
+                            <div className="flex-shrink-0">
+                              {conversation.badge > 0 ? (
+                                <span className="inline-flex items-center justify-center rounded-full bg-[#22C55E] px-2 py-0.5 text-[10px] font-semibold text-white">{conversation.badge}</span>
+                              ) : null}
+                            </div>
                           </div>
                         </button>
                       );
