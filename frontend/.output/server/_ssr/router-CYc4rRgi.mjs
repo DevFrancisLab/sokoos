@@ -3,10 +3,10 @@ import { n as require_jsx_runtime, r as require_react, t as QueryClientProvider 
 import { c as HeadContent, d as Outlet, f as lazyRouteComponent, g as useRouter, h as Link, m as createRootRouteWithContext, p as createFileRoute, s as Scripts, u as createRouter } from "../_libs/@tanstack/react-router+[...].mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
 import { A as Calendar, D as ChevronLeft, E as ChevronRight, I as Activity, N as Box, P as Bot, _ as Megaphone, a as Settings, b as Image, d as Plus, g as Menu, n as Users, o as Send, s as Search, t as X, w as Cpu, x as House, y as Inbox } from "../_libs/lucide-react.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-rmxk8wXw.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router-CYc4rRgi.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
-var styles_default = "/assets/styles-Dau0SYsY.css";
+var styles_default = "/assets/styles-Dvezvqfh.css";
 function reportLovableError(error, context = {}) {
 	if (typeof window === "undefined") return;
 	window.__lovableEvents?.captureException?.(error, {
@@ -335,13 +335,21 @@ var STAT_CARDS = [
 		delta: "+11%"
 	}
 ];
-var CARD = "rounded-[22px] bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)] transition duration-200 ease-out hover:shadow-[0_12px_36px_rgba(15,23,42,0.07)]";
+var TRANSITION = "transition duration-200 ease-in-out";
+var TRANSITION_FAST = "transition duration-150 ease-out";
+var CARD = "rounded-[22px] border border-[#E5E7EB]/10 bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)] transform transition duration-200 ease-in-out hover:shadow-[0_12px_36px_rgba(15,23,42,0.07)] hover:-translate-y-1";
+var LIST_ITEM = "rounded-[22px] bg-[#F9FAFB] p-6 transform transition duration-200 ease-in-out hover:bg-[#F1F5F9] hover:-translate-y-1";
+var BUTTON_PRIMARY = "inline-flex items-center justify-center rounded-2xl bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition duration-200 ease-in-out transform active:scale-95 active:translate-y-px hover:bg-[#16A34A]";
+var BUTTON_SECONDARY = "inline-flex items-center justify-center rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm font-semibold text-[#111827] transition duration-200 ease-in-out transform active:scale-95 active:translate-y-px hover:bg-[#F3F4F6]";
+var QUICK_ACTION_BUTTON = "w-full rounded-[22px] border border-[#E5E7EB]/10 bg-[#F9FAFB] p-6 text-left text-sm font-semibold text-[#111827] transform transition duration-200 ease-in-out hover:border-[#CBD5E1] hover:bg-[#F1F5F9] hover:-translate-y-1";
+var INPUT_FIELD = "mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5] transition duration-150 ease-out focus:shadow-sm";
+var INPUT_FIELD_WHITE = "mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none transition duration-150 ease-out focus:shadow-sm";
 var SECTION_HEADING = "text-[11px] font-semibold uppercase tracking-[0.22em] text-[#64748B]";
 var CARD_TITLE = "text-[30px] font-semibold mb-6 text-[#0F172A]";
 var SECONDARY = "text-sm text-[#64748B]";
 var MESSAGE_PREVIEW = "text-sm text-[#475569]";
 var TIME_LABEL = "text-xs text-[#64748B]";
-var BADGE = "inline-flex h-7 items-center gap-1.5 rounded-full px-3 text-[12px] font-semibold tracking-[0.02em]";
+var BADGE = "inline-flex h-7 items-center gap-1.5 rounded-full px-3 text-[12px] font-semibold tracking-[0.02em] transition-colors duration-200 ease-in-out";
 var RECENT_ACTIVITY = [
 	{
 		title: "New customer inquiry",
@@ -1261,7 +1269,7 @@ function DashboardLayout() {
 										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 											className: "mt-6 space-y-4",
 											children: RECENT_ACTIVITY.map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "rounded-[22px] bg-[#F9FAFB] p-6 transition duration-200 ease-out hover:bg-[#F1F5F9] hover:-translate-y-0.5",
+												className: LIST_ITEM,
 												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 													className: "flex items-center justify-between gap-4",
 													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
@@ -1289,7 +1297,7 @@ function DashboardLayout() {
 											className: "mt-6 grid gap-4",
 											children: QUICK_ACTIONS.map((action) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 												type: "button",
-												className: "w-full rounded-[22px] border border-[#E5E7EB]/10 bg-[#F9FAFB] p-6 text-left text-sm font-semibold text-[#111827] transition duration-200 ease-out hover:border-[#CBD5E1] hover:bg-[#F1F5F9] hover:-translate-y-0.5",
+												className: QUICK_ACTION_BUTTON,
 												children: action
 											}, action))
 										})]
@@ -1320,7 +1328,7 @@ function DashboardLayout() {
 											className: "flex flex-wrap items-center gap-4 px-5 pb-4",
 											children: INBOX_TAB_ITEMS.map((tab) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 												onClick: () => setActiveTab(tab),
-												className: `whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-semibold transition duration-200 ease-in-out ${activeTab === tab ? "bg-[#22C55E] text-white shadow-sm" : "bg-[#F3F4F6] text-[#111827] hover:bg-[#ECFDF5] hover:-translate-y-0.5"}`,
+												className: `whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-semibold ${TRANSITION} ${activeTab === tab ? "bg-[#22C55E] text-white shadow-sm" : "bg-[#F3F4F6] text-[#111827] hover:bg-[#ECFDF5] hover:-translate-y-1"}`,
 												children: tab
 											}, tab))
 										}),
@@ -1335,7 +1343,7 @@ function DashboardLayout() {
 														placeholder: "Search conversations",
 														value: searchQuery,
 														onChange: (event) => setSearchQuery(event.target.value),
-														className: "w-full bg-transparent px-2 py-2 text-sm text-[#111827] placeholder:text-[#94A3B8] placeholder:font-medium outline-none"
+														className: `w-full bg-transparent px-2 py-2 text-sm text-[#111827] placeholder:text-[#94A3B8] placeholder:font-medium outline-none ${TRANSITION_FAST}`
 													})]
 												})
 											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
@@ -1353,7 +1361,7 @@ function DashboardLayout() {
 													const effectiveSource = isPersonal ? "personal" : effectiveSourceRaw;
 													return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 														onClick: () => setActiveConversation(conversation.id),
-														className: `w-full overflow-hidden rounded-[22px] border-l-4 p-6 text-left transition duration-200 ease-out transform-gpu flex flex-col justify-between min-h-[92px] ${active ? "bg-[#ECFDF5] border-[#22C55E] ring-1 ring-[#22C55E]/20 shadow-sm" : "bg-white border-transparent hover:bg-[#F8FAFC] hover:shadow-sm"}`,
+														className: `w-full overflow-hidden rounded-[22px] border-l-4 p-6 text-left ${TRANSITION} transform-gpu flex flex-col justify-between min-h-[92px] ${active ? "bg-[#ECFDF5] border-[#22C55E] ring-1 ring-[#22C55E]/20 shadow-sm" : "bg-white border-transparent hover:bg-[#F8FAFC] hover:shadow-sm hover:-translate-y-1"}`,
 														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 															className: "flex items-center justify-between gap-3",
 															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -1470,7 +1478,7 @@ function DashboardLayout() {
 												const isAi = isAgent && String(effectiveActiveSource).startsWith("ai");
 												const senderLabel = isAi ? "Sokoos AI" : activeAgentName;
 												return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "space-y-4",
+													className: `space-y-4 ${TRANSITION_FAST} transition-opacity`,
 													children: [isAgent ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 														className: "flex items-center gap-2 text-xs font-semibold text-[#6B7280]",
 														children: isAi ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
@@ -1487,7 +1495,7 @@ function DashboardLayout() {
 													}) : null, /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 														className: `flex ${isAgent ? "justify-start" : "justify-end"}`,
 														children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: `rounded-[16px] px-6 py-4 text-sm max-w-[78%] break-words ${isAgent ? isAi ? "bg-[#ECFDF5] text-[#064E3B]" : "bg-[#F3F4F6] text-[#111827]" : "bg-white text-[#111827] border border-[#E5E7EB]/20 shadow-[0_6px_18px_rgba(2,6,23,0.03)]"}`,
+															className: `rounded-[16px] px-6 py-4 text-sm max-w-[78%] break-words ${isAgent ? isAi ? "bg-[#ECFDF5] text-[#064E3B]" : "bg-[#F3F4F6] text-[#111827]" : "bg-white text-[#111827] border border-[#E5E7EB]/20 shadow-[0_6px_18px_rgba(2,6,23,0.03)]"} ${TRANSITION_FAST} transform-gpu`,
 															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 																className: "mb-2 leading-relaxed",
 																children: message.text
@@ -1510,7 +1518,7 @@ function DashboardLayout() {
 														value: messageInput,
 														onChange: (event) => setMessageInput(event.target.value),
 														placeholder: `Type a message to ${activeCustomerProfile.name}...`,
-														className: "min-w-0 flex-1 resize-none overflow-y-auto overflow-x-hidden custom-scrollbar rounded-[18px] border border-[#D1D5DB]/30 bg-white/95 px-6 py-4 text-sm leading-6 text-[#111827] outline-none placeholder:text-[#94A3B8] placeholder:font-medium focus:border-[#94A3B8] focus:ring-2 focus:ring-slate-200",
+														className: `min-w-0 flex-1 resize-none overflow-y-auto overflow-x-hidden custom-scrollbar rounded-[18px] border border-[#D1D5DB]/30 bg-white/95 px-6 py-4 text-sm leading-6 text-[#111827] outline-none placeholder:text-[#94A3B8] placeholder:font-medium focus:border-[#94A3B8] focus:ring-2 focus:ring-slate-200 ${TRANSITION_FAST}`,
 														rows: 2,
 														style: {
 															minHeight: 72,
@@ -1518,7 +1526,7 @@ function DashboardLayout() {
 														}
 													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 														type: "button",
-														className: "inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white shadow-sm transition hover:bg-[#16A34A]",
+														className: "inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white shadow-sm transition duration-200 ease-in-out transform active:scale-95 active:translate-y-px hover:bg-[#16A34A]",
 														children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Send, { className: "h-5 w-5" })
 													})]
 												})
@@ -1548,7 +1556,7 @@ function DashboardLayout() {
 											] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 												type: "button",
 												onClick: () => setCustomerCollapsed(true),
-												className: "inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#111827] transition hover:bg-[#F3F4F6] shrink-0",
+												className: `inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#111827] transition-all duration-200 ease-in-out hover:bg-[#F3F4F6] shrink-0`,
 												"aria-label": "Collapse customer panel",
 												title: "Collapse customer panel",
 												children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronRight, { className: "h-4 w-4 rotate-180" })
@@ -1836,7 +1844,7 @@ function DashboardLayout() {
 															...prev,
 															date: event.target.value
 														})),
-														className: "mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
+														className: INPUT_FIELD
 													})]
 												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
 													className: "block text-sm font-medium text-[#111827]",
@@ -1847,7 +1855,7 @@ function DashboardLayout() {
 															...prev,
 															time: event.target.value
 														})),
-														className: "mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
+														className: INPUT_FIELD
 													})]
 												})]
 											}),
@@ -1855,11 +1863,11 @@ function DashboardLayout() {
 												className: "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between",
 												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 													type: "button",
-													className: "inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6] sm:w-auto",
+													className: `${BUTTON_SECONDARY} gap-2 sm:w-auto`,
 													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Image, { className: "h-4 w-4" }), "Generate With AI"]
 												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 													type: "button",
-													className: "inline-flex w-full items-center justify-center rounded-2xl bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A] sm:w-auto",
+													className: `${BUTTON_PRIMARY} sm:w-auto`,
 													children: "Schedule Post"
 												})]
 											})
@@ -2109,7 +2117,7 @@ function DashboardLayout() {
 																			...prev,
 																			name: event.target.value
 																		})),
-																		className: "mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+																		className: INPUT_FIELD_WHITE
 																	})] }),
 																	/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
 																		className: "text-sm font-semibold text-[#111827]",
@@ -2120,7 +2128,7 @@ function DashboardLayout() {
 																			...prev,
 																			type: event.target.value
 																		})),
-																		className: "mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+																		className: INPUT_FIELD_WHITE
 																	})] }),
 																	/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
 																		className: "text-sm font-semibold text-[#111827]",
@@ -2131,7 +2139,7 @@ function DashboardLayout() {
 																			...prev,
 																			hours: event.target.value
 																		})),
-																		className: "mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+																		className: INPUT_FIELD_WHITE
 																	})] })
 																]
 															}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -2157,7 +2165,7 @@ function DashboardLayout() {
 																			...prev,
 																			serviceAreas: event.target.value
 																		})),
-																		className: "mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+																		className: INPUT_FIELD_WHITE
 																	})] }),
 																	/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
 																		className: "text-sm font-semibold text-[#111827]",
@@ -2168,7 +2176,7 @@ function DashboardLayout() {
 																			...prev,
 																			paymentMethods: event.target.value
 																		})),
-																		className: "mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+																		className: INPUT_FIELD_WHITE
 																	})] })
 																]
 															})]
