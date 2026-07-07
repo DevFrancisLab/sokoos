@@ -1188,17 +1188,15 @@ export default function DashboardLayout() {
                   </div>
                     <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar">
                       <div className="space-y-6 rounded-[22px] border border-[#E5E7EB]/10 bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
-                        {/* 1. Contact */}
+                        {/* AI-first Customer Summary */}
                         <div className="space-y-2">
-                          <p className="text-sm font-medium text-[#334155]">Contact</p>
-                          <div className="grid grid-cols-2 gap-3 text-sm">
-                            <div className="text-[#64748B]">Customer name</div>
-                            <div className="text-[#0F172A] font-semibold truncate">{activeCustomerProfile.name}</div>
-                            <div className="text-[#64748B]">Business name</div>
-                            <div className="text-[#0F172A] truncate">{activeCustomerProfile.company}</div>
-                            <div className="text-[#64748B]">Phone</div>
-                            <div className="text-[#0F172A] truncate">{activeCustomerProfile.phone}</div>
-                            <div className="text-[#64748B]">Contact type</div>
+                          <p className="text-sm font-medium text-[#334155]">Customer</p>
+                          <div className="flex items-center justify-between gap-4">
+                            <div className="min-w-0">
+                              <div className="text-sm text-[#64748B]">{activeCustomerProfile.company}</div>
+                              <div className="text-lg font-semibold text-[#0F172A] truncate">{activeCustomerProfile.name}</div>
+                              <div className="text-sm text-[#64748B] truncate">{activeCustomerProfile.phone}</div>
+                            </div>
                             <div>
                               {isPersonalActive ? (
                                 <span className={`${BADGE} bg-[#F1F5F9] text-[#334155]`}><span aria-hidden>{activePersonalIcon}</span> Personal</span>
@@ -1209,67 +1207,100 @@ export default function DashboardLayout() {
                           </div>
                         </div>
 
-                        {/* 2. AI Conversation Summary */}
-                        <div>
-                          {/* Replace with reusable AI Summary Card component */}
-                          {/* @ts-ignore - component is UI only for now */}
-                          <AiSummaryCard />
-                        </div>
+                        {/* AI-generated mock summaries and recommendations */}
+                        <div className="grid gap-4 sm:grid-cols-2">
+                          {/* What happened? */}
+                          <div className="rounded-lg border border-[#E5E7EB]/20 bg-[#F9FAFB] p-4">
+                            <p className="text-sm font-semibold text-[#334155]">What happened?</p>
+                            <p className="mt-2 text-sm text-[#475569]">
+                              {(() => {
+                                const recent = activeMessages.slice(-3).map((m) => `${m.from === 'customer' ? activeCustomerProfile.name : 'Agent'}: ${m.text}`);
+                                return recent.length ? recent.join(' — ') : 'No recent activity.';
+                              })()}
+                            </p>
+                          </div>
 
-                        {/* 3. AI Insights */}
-                        <div>
-                          <p className="text-sm font-medium text-[#334155]">AI Insights</p>
-                          <div className="mt-2 grid grid-cols-2 gap-3 text-sm text-[#111827]">
-                            <div className="flex items-center justify-between">
-                              <span className="text-[#64748B]">Sentiment</span>
-                              <span className="font-semibold">Neutral</span>
+                          {/* What does the customer want? */}
+                          <div className="rounded-lg border border-[#E5E7EB]/20 bg-[#F9FAFB] p-4">
+                            <p className="text-sm font-semibold text-[#334155]">What does the customer want?</p>
+                            <p className="mt-2 text-sm text-[#475569]">
+                              {(() => {
+                                const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
+                                if (text.includes('price') || text.includes('pricing') || text.includes('cost')) return 'Pricing information / quote';
+                                if (text.includes('install') || text.includes('installation') || text.includes('setup')) return 'Schedule installation';
+                                if (text.includes('cancel') || text.includes('stop service')) return 'Cancel or pause service';
+                                if (text.includes('upgrade') || text.includes('higher')) return 'Upgrade plan / upsell';
+                                return 'General inquiry — needs clarification';
+                              })()}
+                            </p>
+                          </div>
+
+                          {/* What did the AI already do? */}
+                          <div className="rounded-lg border border-[#E5E7EB]/20 bg-[#F9FAFB] p-4">
+                            <p className="text-sm font-semibold text-[#334155]">What did the AI already do?</p>
+                            <div className="mt-2 text-sm text-[#475569] space-y-1">
+                              {(() => {
+                                const aiReplies = activeMessages.filter((m) => m.from === 'agent').slice(-3);
+                                if (!aiReplies.length) return <div>No AI replies recorded.</div>;
+                                return aiReplies.map((r, i) => (
+                                  <div key={i} className="">{r.text}</div>
+                                ));
+                              })()}
                             </div>
-                            <div className="flex items-center justify-between">
-                              <span className="text-[#64748B]">Buying Intent</span>
-                              <span className="font-semibold">Consider</span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <span className="text-[#64748B]">Lead Score</span>
-                              <span className="font-semibold">42</span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <span className="text-[#64748B]">Likelihood to Convert</span>
-                              <span className="font-semibold">20%</span>
-                            </div>
-                            <div className="flex items-center justify-between col-span-2">
-                              <span className="text-[#64748B]">Conversation Status</span>
-                              <span>{(() => { const b = getConversationStatusBadge(effectiveActiveSource, isPersonalActive); return <span className={`${BADGE} ${b.bg} ${b.text}`}>{b.emoji} {b.label}</span>; })()}</span>
-                            </div>
+                          </div>
+
+                          {/* What should I do next? */}
+                          <div className="rounded-lg border border-[#E5E7EB]/20 bg-[#F9FAFB] p-4">
+                            <p className="text-sm font-semibold text-[#334155]">What should I do next?</p>
+                            <ul className="mt-2 list-disc list-inside text-sm text-[#475569] space-y-1">
+                              {(() => {
+                                const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
+                                if (text.includes('price') || text.includes('pricing')) return (
+                                  <>
+                                    <li>Confirm exact product and send a price list.</li>
+                                    <li>Offer a limited-time discount to close the sale.</li>
+                                  </>
+                                );
+                                if (text.includes('install') || text.includes('installation')) return (
+                                  <>
+                                    <li>Propose two installation time slots.</li>
+                                    <li>Confirm any preparatory requirements.</li>
+                                  </>
+                                );
+                                if (text.includes('cancel')) return (
+                                  <>
+                                    <li>Confirm cancellation reason and retention offer.</li>
+                                    <li>Escalate to human support if needed.</li>
+                                  </>
+                                );
+                                return (
+                                  <>
+                                    <li>Ask a clarifying question to confirm the customer's intent.</li>
+                                    <li>Summarize the customer's request and propose next steps.</li>
+                                  </>
+                                );
+                              })()}
+                            </ul>
                           </div>
                         </div>
 
-                        {/* 4. Suggested Next Action */}
-                        <div>
-                          <p className="text-sm font-medium text-[#334155]">Suggested Next Action</p>
-                          <ul className="mt-2 list-disc list-inside text-sm text-[#475569] space-y-1">
-                            <li>Offer installation discount.</li>
-                            <li>Follow up tomorrow morning.</li>
-                            <li>Customer requested pricing.</li>
-                          </ul>
-                        </div>
-
-                        {/* 5. Tags */}
-                        <div>
-                          <p className="text-sm font-medium text-[#334155]">Tags</p>
-                          <div className="mt-2 flex flex-wrap gap-2">
-                            {activeCustomerProfile.tags.map((tag) => (
-                              <span key={tag} className={`${BADGE} bg-[#F8FAFC] text-[#334155]`}>{tag}</span>
-                            ))}
+                        {/* Tags & Interested Products (retained) */}
+                        <div className="grid gap-3">
+                          <div>
+                            <p className="text-sm font-medium text-[#334155]">Tags</p>
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              {activeCustomerProfile.tags.map((tag) => (
+                                <span key={tag} className={`${BADGE} bg-[#F8FAFC] text-[#334155]`}>{tag}</span>
+                              ))}
+                            </div>
                           </div>
-                        </div>
-
-                        {/* 6. Interested Products (mock) */}
-                        <div>
-                          <p className="text-sm font-medium text-[#334155]">Interested Products</p>
-                          <div className="mt-2 flex flex-wrap gap-2">
-                            {activeCustomerProfile.interestedProducts.map((product) => (
-                              <span key={product} className={`${BADGE} bg-[#F8FAFC] text-[#334155]`}>{product}</span>
-                            ))}
+                          <div>
+                            <p className="text-sm font-medium text-[#334155]">Interested Products</p>
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              {activeCustomerProfile.interestedProducts.map((product) => (
+                                <span key={product} className={`${BADGE} bg-[#F8FAFC] text-[#334155]`}>{product}</span>
+                              ))}
+                            </div>
                           </div>
                         </div>
                       </div>
