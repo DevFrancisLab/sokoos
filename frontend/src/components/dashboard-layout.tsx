@@ -55,6 +55,8 @@ const CUSTOMER_NAME = "text-lg font-semibold text-[#111827]"; // larger semibold
 const SECONDARY = "text-sm text-[#6B7280]"; // muted secondary info
 const MESSAGE_PREVIEW = "text-sm text-[#374151]"; // slightly darker than secondary
 const TIME_LABEL = "text-xs text-[#6B7280]"; // small consistent time label
+const BADGE = "inline-flex h-6 items-center gap-1 rounded-full px-2.5 text-[12px] font-semibold";
+const BADGE_ICON = "h-2.5 w-2.5 rounded-full";
 
 const RECENT_ACTIVITY = [
   { title: "New customer inquiry", subtitle: "Received in WhatsApp inbox", time: "5m ago" },
@@ -973,19 +975,19 @@ export default function DashboardLayout() {
                                 {/* second row inside left column for compact badges */}
                                 <div className="mt-2 flex items-center gap-2">
                                   {effectiveSource === "needs_attention" && (
-                                    <span className="inline-flex items-center gap-1 rounded-full bg-[#FEF2F2] px-2 py-0.5 text-xs font-semibold text-[#B91C1C]"><span className="inline-block h-2 w-2 rounded-full bg-[#B91C1C]" aria-hidden /> Attention</span>
+                                    <span className={`${BADGE} bg-[#FEF2F2] text-[#B91C1C]`}><span className={`${BADGE_ICON} bg-[#B91C1C]`} aria-hidden /> Attention</span>
                                   )}
                                   {effectiveSource === "personal" && (
-                                    <span className="inline-flex items-center gap-1 rounded-full bg-[#F1F5F9] px-2 py-0.5 text-xs font-semibold text-[#6B7280]">👤 Personal</span>
+                                    <span className={`${BADGE} bg-[#F1F5F9] text-[#334155]`}>👤 Personal</span>
                                   )}
                                   {effectiveSource === "ai_handling" && (
-                                    <span className="inline-flex items-center gap-1 rounded-full bg-[#ECFDF5] px-2 py-0.5 text-xs font-semibold text-[#166534]">🤖 AI Handling</span>
+                                    <span className={`${BADGE} bg-[#ECFDF5] text-[#166534]`}>🤖 AI Handling</span>
                                   )}
                                   {effectiveSource === "ai_handled" && (
-                                    <span className="inline-flex items-center gap-1 rounded-full bg-[#F0FDF4] px-2 py-0.5 text-xs font-semibold text-[#14532d]">🤖 AI Handled</span>
+                                    <span className={`${BADGE} bg-[#F0FDF4] text-[#14532d]`}>🤖 AI Handled</span>
                                   )}
                                   {effectiveSource === "owner" && (
-                                    <span className="inline-flex items-center gap-1 rounded-full bg-[#EFF6FF] px-2 py-0.5 text-xs font-semibold text-[#1E3A8A]">👤 You</span>
+                                    <span className={`${BADGE} bg-[#EFF6FF] text-[#1E3A8A]`}>👤 You</span>
                                   )}
                                 </div>
                               </div>
@@ -1000,7 +1002,7 @@ export default function DashboardLayout() {
                             <p className={`min-w-0 ${MESSAGE_PREVIEW} truncate`}>{conversation.message}</p>
                             <div className="flex-shrink-0">
                               {conversation.badge > 0 ? (
-                                <span className="inline-flex items-center justify-center rounded-full bg-[#22C55E] px-2 py-0.5 text-[10px] font-semibold text-white">{conversation.badge}</span>
+                                <span className={`${BADGE} min-w-[24px] justify-center bg-[#22C55E] text-white`}>{conversation.badge}</span>
                               ) : null}
                             </div>
                           </div>
@@ -1167,7 +1169,7 @@ export default function DashboardLayout() {
                             <>
                               <div className="flex items-center justify-between gap-4 text-sm text-[#111827]">
                                 <span className="font-medium text-[#334155]">Contact type</span>
-                                <span className="inline-flex items-center gap-2 rounded-full bg-[#EFF6FF] px-3 py-1 text-xs font-semibold text-[#1E40AF]">
+                                <span className={`${BADGE} bg-[#EFF6FF] text-[#1E40AF]`}>
                                   <span aria-hidden>{activePersonalIcon}</span>
                                   {activePersonalEntry?.relationship ?? "Personal"}
                                 </span>
@@ -1179,15 +1181,13 @@ export default function DashboardLayout() {
                               <div className="flex flex-col gap-4">
                                 <div className="flex items-center justify-between gap-4 text-sm text-[#111827]">
                                   <span className="font-medium text-[#334155]">Lead status</span>
-                                  <span className="rounded-full bg-[#ECFDF5] px-2.5 py-1 text-xs font-semibold text-[#16A34A]">{activeCustomerProfile.leadStatus}</span>
+                                  <span className={`${BADGE} bg-[#ECFDF5] text-[#166534]`}>{activeCustomerProfile.leadStatus}</span>
                                 </div>
                                 <div className="space-y-3">
                                   <span className="font-medium text-sm text-[#111827]">Tags</span>
                                   <div className="flex flex-wrap gap-2">
                                     {activeCustomerProfile.tags.map((tag) => (
-                                      <span key={tag} className="inline-flex items-center rounded-full bg-[#F1F5F9] px-2.5 py-1 text-xs font-medium text-[#334155]">
-                                        {tag}
-                                      </span>
+                                      <span key={tag} className={`${BADGE} bg-[#F8FAFC] text-[#334155]`}>{tag}</span>
                                     ))}
                                   </div>
                                 </div>
@@ -1199,9 +1199,7 @@ export default function DashboardLayout() {
                           <p className="text-sm font-semibold text-[#111827]">Interested products</p>
                           <div className="grid gap-2">
                             {activeCustomerProfile.interestedProducts.map((product) => (
-                              <div key={product} className="rounded-xl bg-[#F8FAFC] px-3 py-2 text-sm text-[#111827]">
-                                {product}
-                              </div>
+                              <span key={product} className={`${BADGE} bg-[#F8FAFC] text-[#334155]`}>{product}</span>
                             ))}
                           </div>
                         </div>
@@ -1239,27 +1237,27 @@ export default function DashboardLayout() {
                     </div>
                     <span className="rounded-full bg-[#F3F4F6] px-3 py-1 text-xs font-semibold text-[#6B7280]">Mock data</span>
                   </div>
-                  <div className="mt-6 space-y-4">
-                    {scheduledPosts.map((post) => (
-                      <div key={post.id} className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-4">
-                        <div className="flex items-start justify-between gap-4">
-                          <div>
-                            <p className="text-sm font-semibold text-[#111827]">{post.caption}</p>
-                            <p className="mt-2 text-sm text-[#6B7280]">{post.image}</p>
-                          </div>
-                          <div className="text-right">
-                            <p className="text-sm font-semibold text-[#111827]">{post.date}</p>
-                            <p className="text-sm text-[#6B7280]">{post.time}</p>
-                          </div>
-                        </div>
-                        <div className="mt-4 flex flex-wrap items-center gap-2 text-[13px] text-[#6B7280]">
-                          <span className="rounded-full bg-white px-3 py-1 border border-[#E5E7EB]">Scheduled</span>
-                          <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-[#16A34A]">Status</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </section>
+                   <div className="mt-6 space-y-4">
+                     {scheduledPosts.map((post) => (
+                       <div key={post.id} className="rounded-[20px] border border-[#E5E7EB]/70 bg-[#F8FAFC]/70 p-4">
+                         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                           <div className="min-w-0">
+                             <p className="text-sm font-semibold text-[#111827]">{post.caption}</p>
+                             <p className="mt-2 text-sm text-[#6B7280]">{post.image}</p>
+                           </div>
+                           <div className="text-right text-sm text-[#6B7280]">
+                             <p className="font-semibold text-[#111827]">{post.date}</p>
+                             <p>{post.time}</p>
+                           </div>
+                         </div>
+                         <div className="mt-4 flex flex-wrap items-center gap-2 text-[13px] text-[#6B7280]">
+                           <span className="rounded-full bg-white px-3 py-1 border border-[#E5E7EB]">Scheduled</span>
+                           <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-[#16A34A]">Status</span>
+                         </div>
+                       </div>
+                     ))}
+                   </div>
+                 </section>
 
                 <section className={CARD}>
                   <div className="mb-6">
