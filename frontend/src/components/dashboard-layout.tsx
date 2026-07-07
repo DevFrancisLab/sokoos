@@ -1139,12 +1139,12 @@ export default function DashboardLayout() {
 
               {!customerCollapsed && (
                 <section className={`${CARD} h-full min-h-0 flex flex-col self-stretch overflow-hidden transition-opacity duration-300 ease-out opacity-100`}>
-                <div className="flex flex-col gap-3 min-h-0 flex-1">
+                <div className="flex flex-col gap-6 min-h-0 flex-1">
                   <div className="flex items-start justify-between gap-3 shrink-0">
                     <div>
-                      <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">Customer</p>
-                      <h2 className="mt-2 text-xl font-semibold text-[#111827]">{activeCustomerProfile.name}</h2>
-                      <p className="text-sm text-[#6B7280]">{activeCustomerProfile.company}</p>
+                      <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#6B7280]">Customer</p>
+                      <h2 className="mt-3 text-[28px] font-semibold text-[#111827]">{activeCustomerProfile.name}</h2>
+                      <p className="mt-1 text-sm text-[#6B7280]">{activeCustomerProfile.company}</p>
                     </div>
                     <button
                       type="button"
@@ -1156,52 +1156,56 @@ export default function DashboardLayout() {
                       <ChevronRight className="h-4 w-4 rotate-180" />
                     </button>
                   </div>
-                  <div className="space-y-4 rounded-3xl bg-[#F9FAFB] p-4 overflow-y-auto flex-1 min-h-0 custom-scrollbar">
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between text-sm text-[#111827]">
-                        <span className="font-medium">Phone</span>
-                        <span>{activeCustomerProfile.phone}</span>
-                      </div>
-                      {isPersonalActive ? (
-                        <>
-                          <div className="flex items-center justify-between text-sm text-[#111827]">
-                            <span className="font-medium">Contact type</span>
-                            <span className="inline-flex items-center gap-2 rounded-full bg-[#E5E7EB] px-3 py-1 text-xs font-semibold text-[#6B7280]">
-                              <span aria-hidden>{activePersonalIcon}</span>
-                              {activePersonalEntry?.relationship ?? "Personal"}
-                            </span>
+                    <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar">
+                      <div className="space-y-6 rounded-[20px] border border-[#E5E7EB]/10 bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between gap-4 text-sm text-[#111827]">
+                            <span className="font-medium text-[#334155]">Phone</span>
+                            <span className="text-[#0F172A]">{activeCustomerProfile.phone}</span>
                           </div>
-                          <p className="text-sm text-[#6B7280]">This is a personal contact. AI, analytics, and lead tracking are disabled for this conversation.</p>
-                        </>
-                      ) : (
-                        <>
-                          <div className="flex items-center justify-between text-sm text-[#111827]">
-                            <span className="font-medium">Lead status</span>
-                            <span className="rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#16A34A]">{activeCustomerProfile.leadStatus}</span>
-                          </div>
-                          <div className="flex flex-col gap-2">
-                            <span className="font-medium text-sm text-[#111827]">Tags</span>
-                            <div className="flex flex-wrap gap-2">
-                              {activeCustomerProfile.tags.map((tag) => (
-                                <span key={tag} className="inline-flex items-center rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#16A34A]">
-                                  {tag}
+                          {isPersonalActive ? (
+                            <>
+                              <div className="flex items-center justify-between gap-4 text-sm text-[#111827]">
+                                <span className="font-medium text-[#334155]">Contact type</span>
+                                <span className="inline-flex items-center gap-2 rounded-full bg-[#EFF6FF] px-3 py-1 text-xs font-semibold text-[#1E40AF]">
+                                  <span aria-hidden>{activePersonalIcon}</span>
+                                  {activePersonalEntry?.relationship ?? "Personal"}
                                 </span>
-                              ))}
-                            </div>
+                              </div>
+                              <p className="text-sm text-[#475569]">This is a personal contact. AI, analytics, and lead tracking are disabled for this conversation.</p>
+                            </>
+                          ) : (
+                            <>
+                              <div className="flex flex-col gap-4">
+                                <div className="flex items-center justify-between gap-4 text-sm text-[#111827]">
+                                  <span className="font-medium text-[#334155]">Lead status</span>
+                                  <span className="rounded-full bg-[#ECFDF5] px-2.5 py-1 text-xs font-semibold text-[#16A34A]">{activeCustomerProfile.leadStatus}</span>
+                                </div>
+                                <div className="space-y-3">
+                                  <span className="font-medium text-sm text-[#111827]">Tags</span>
+                                  <div className="flex flex-wrap gap-2">
+                                    {activeCustomerProfile.tags.map((tag) => (
+                                      <span key={tag} className="inline-flex items-center rounded-full bg-[#F1F5F9] px-2.5 py-1 text-xs font-medium text-[#334155]">
+                                        {tag}
+                                      </span>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                        <div className="space-y-4 pt-4 border-t border-[#E5E7EB]/15">
+                          <p className="text-sm font-semibold text-[#111827]">Interested products</p>
+                          <div className="grid gap-2">
+                            {activeCustomerProfile.interestedProducts.map((product) => (
+                              <div key={product} className="rounded-xl bg-[#F8FAFC] px-3 py-2 text-sm text-[#111827]">
+                                {product}
+                              </div>
+                            ))}
                           </div>
-                        </>
-                      )}
-                    </div>
-                    <div className="rounded-3xl border border-[#E5E7EB] bg-white p-4 space-y-4">
-                      <p className="text-sm font-semibold text-[#111827]">Interested products</p>
-                      <div className="mt-3 space-y-2">
-                        {activeCustomerProfile.interestedProducts.map((product) => (
-                          <div key={product} className="rounded-2xl bg-[#F9FAFB] px-3 py-2 text-sm text-[#111827]">
-                            {product}
-                          </div>
-                        ))}
+                        </div>
                       </div>
-                    </div>
                   </div>
                 </div>
 
