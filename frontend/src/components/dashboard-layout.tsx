@@ -46,17 +46,22 @@ const STAT_CARDS = [
   { label: "New Leads", value: "38", delta: "+11%" },
 ];
 
+// Micro-interaction tokens
+const TRANSITION = "transition duration-200 ease-in-out"; // default subtle timing
+const TRANSITION_FAST = "transition duration-150 ease-out"; // slightly faster
+const INTERACTION = "transition duration-200 ease-in-out transform active:scale-95 active:translate-y-px";
+
 // Visual style: larger radius, softer shadows, consistent internal padding (24-28px)
-const CARD = "rounded-[22px] border border-[#E5E7EB]/10 bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)] transition duration-200 ease-out hover:shadow-[0_12px_36px_rgba(15,23,42,0.07)]";
-const CARD_SOFT = "rounded-[22px] border border-[#E5E7EB]/10 bg-[#F8FAFB] p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)] transition duration-200 ease-out hover:shadow-[0_12px_36px_rgba(15,23,42,0.07)]";
-const CARD_FLAT = "rounded-[22px] border border-[#E5E7EB]/10 bg-[#F9FAFB] p-6 shadow-sm";
-const LIST_ITEM = "rounded-[22px] bg-[#F9FAFB] p-6 transition duration-200 ease-out hover:bg-[#F1F5F9] hover:-translate-y-0.5";
-const BUTTON_PRIMARY = "inline-flex items-center justify-center rounded-2xl bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]";
-const BUTTON_SECONDARY = "inline-flex items-center justify-center rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6]";
-const BUTTON_TERTIARY = "inline-flex items-center justify-center rounded-2xl bg-[#F3F4F6] px-4 py-3 text-sm font-semibold text-[#374151] transition hover:bg-[#E5E7EB]";
-const QUICK_ACTION_BUTTON = "w-full rounded-[22px] border border-[#E5E7EB]/10 bg-[#F9FAFB] p-6 text-left text-sm font-semibold text-[#111827] transition duration-200 ease-out hover:border-[#CBD5E1] hover:bg-[#F1F5F9] hover:-translate-y-0.5";
-const INPUT_FIELD = "mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]";
-const INPUT_FIELD_WHITE = "mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none";
+const CARD = "rounded-[22px] border border-[#E5E7EB]/10 bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)] transform " + TRANSITION + " hover:shadow-[0_12px_36px_rgba(15,23,42,0.07)] hover:-translate-y-1";
+const CARD_SOFT = "rounded-[22px] border border-[#E5E7EB]/10 bg-[#F8FAFB] p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)] transform " + TRANSITION + " hover:shadow-[0_12px_36px_rgba(15,23,42,0.07)] hover:-translate-y-1";
+const CARD_FLAT = "rounded-[22px] border border-[#E5E7EB]/10 bg-[#F9FAFB] p-6 shadow-sm transform " + TRANSITION;
+const LIST_ITEM = "rounded-[22px] bg-[#F9FAFB] p-6 transform " + TRANSITION + " hover:bg-[#F1F5F9] hover:-translate-y-1";
+const BUTTON_PRIMARY = "inline-flex items-center justify-center rounded-2xl bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm " + INTERACTION + " hover:bg-[#16A34A]";
+const BUTTON_SECONDARY = "inline-flex items-center justify-center rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm font-semibold text-[#111827] " + INTERACTION + " hover:bg-[#F3F4F6]";
+const BUTTON_TERTIARY = "inline-flex items-center justify-center rounded-2xl bg-[#F3F4F6] px-4 py-3 text-sm font-semibold text-[#374151] " + INTERACTION + " hover:bg-[#E5E7EB]";
+const QUICK_ACTION_BUTTON = "w-full rounded-[22px] border border-[#E5E7EB]/10 bg-[#F9FAFB] p-6 text-left text-sm font-semibold text-[#111827] transform " + TRANSITION + " hover:border-[#CBD5E1] hover:bg-[#F1F5F9] hover:-translate-y-1";
+const INPUT_FIELD = "mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5] " + TRANSITION_FAST + " focus:shadow-sm";
+const INPUT_FIELD_WHITE = "mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none " + TRANSITION_FAST + " focus:shadow-sm";
 // Typography tokens for consistent hierarchy
 const SECTION_HEADING = "text-[11px] font-semibold uppercase tracking-[0.22em] text-[#64748B]";
 const CARD_TITLE = "text-[30px] font-semibold mb-6 text-[#0F172A]"; // premium heading weight + spacing
@@ -64,7 +69,7 @@ const CUSTOMER_NAME = "text-lg font-semibold text-[#111827]"; // larger semibold
 const SECONDARY = "text-sm text-[#64748B]"; // muted secondary info
 const MESSAGE_PREVIEW = "text-sm text-[#475569]"; // slightly darker than secondary
 const TIME_LABEL = "text-xs text-[#64748B]"; // small consistent time label
-const BADGE = "inline-flex h-7 items-center gap-1.5 rounded-full px-3 text-[12px] font-semibold tracking-[0.02em]";
+const BADGE = "inline-flex h-7 items-center gap-1.5 rounded-full px-3 text-[12px] font-semibold tracking-[0.02em] transition-colors duration-200 ease-in-out";
 const BADGE_ICON = "h-2.5 w-2.5 rounded-full";
 
 const RECENT_ACTIVITY = [
@@ -930,10 +935,10 @@ export default function DashboardLayout() {
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab)}
-                      className={`whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-semibold transition duration-200 ease-in-out ${
+                      className={`whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-semibold ${TRANSITION} ${
                         activeTab === tab
                           ? "bg-[#22C55E] text-white shadow-sm"
-                          : "bg-[#F3F4F6] text-[#111827] hover:bg-[#ECFDF5] hover:-translate-y-0.5"
+                          : "bg-[#F3F4F6] text-[#111827] hover:bg-[#ECFDF5] hover:-translate-y-1"
                       }`}
                     >
                       {tab}
@@ -949,7 +954,7 @@ export default function DashboardLayout() {
                         placeholder="Search conversations"
                         value={searchQuery}
                         onChange={(event) => setSearchQuery(event.target.value)}
-                        className="w-full bg-transparent px-2 py-2 text-sm text-[#111827] placeholder:text-[#94A3B8] placeholder:font-medium outline-none"
+                        className={`w-full bg-transparent px-2 py-2 text-sm text-[#111827] placeholder:text-[#94A3B8] placeholder:font-medium outline-none ${TRANSITION_FAST}`}
                       />
                     </div>
                   </div>
@@ -981,10 +986,10 @@ export default function DashboardLayout() {
                         <button
                           key={conversation.id}
                           onClick={() => setActiveConversation(conversation.id)}
-                          className={`w-full overflow-hidden rounded-[22px] border-l-4 p-6 text-left transition duration-200 ease-out transform-gpu flex flex-col justify-between min-h-[92px] ${
+                          className={`w-full overflow-hidden rounded-[22px] border-l-4 p-6 text-left ${TRANSITION} transform-gpu flex flex-col justify-between min-h-[92px] ${
                               active
                                 ? "bg-[#ECFDF5] border-[#22C55E] ring-1 ring-[#22C55E]/20 shadow-sm"
-                                : "bg-white border-transparent hover:bg-[#F8FAFC] hover:shadow-sm"
+                                : "bg-white border-transparent hover:bg-[#F8FAFC] hover:shadow-sm hover:-translate-y-1"
                           }`}
                         >
                           {/* Top row: avatar, name, timestamp */}
@@ -1104,7 +1109,7 @@ export default function DashboardLayout() {
                       const senderLabel = isAi ? "Sokoos AI" : activeAgentName;
 
                       return (
-                        <div key={`${message.time}-${index}`} className="space-y-4">
+                        <div key={`${message.time}-${index}`} className={`space-y-4 ${TRANSITION_FAST} transition-opacity`}> 
                           {isAgent ? (
                             <div className="flex items-center gap-2 text-xs font-semibold text-[#6B7280]">
                               {isAi ? (
@@ -1129,7 +1134,7 @@ export default function DashboardLayout() {
                                   ? "bg-[#ECFDF5] text-[#064E3B]"
                                   : "bg-[#F3F4F6] text-[#111827]"
                                 : "bg-white text-[#111827] border border-[#E5E7EB]/20 shadow-[0_6px_18px_rgba(2,6,23,0.03)]"
-                            }`}>
+                            } ${TRANSITION_FAST} transform-gpu`}> 
                               <p className="mb-2 leading-relaxed">{message.text}</p>
                               <div className={`${TIME_LABEL} text-right`}>{message.time}</div>
                             </div>
@@ -1146,13 +1151,13 @@ export default function DashboardLayout() {
                           value={messageInput}
                           onChange={(event) => setMessageInput(event.target.value)}
                           placeholder={`Type a message to ${activeCustomerProfile.name}...`}
-                          className="min-w-0 flex-1 resize-none overflow-y-auto overflow-x-hidden custom-scrollbar rounded-[18px] border border-[#D1D5DB]/30 bg-white/95 px-6 py-4 text-sm leading-6 text-[#111827] outline-none placeholder:text-[#94A3B8] placeholder:font-medium focus:border-[#94A3B8] focus:ring-2 focus:ring-slate-200"
+                              className={`min-w-0 flex-1 resize-none overflow-y-auto overflow-x-hidden custom-scrollbar rounded-[18px] border border-[#D1D5DB]/30 bg-white/95 px-6 py-4 text-sm leading-6 text-[#111827] outline-none placeholder:text-[#94A3B8] placeholder:font-medium focus:border-[#94A3B8] focus:ring-2 focus:ring-slate-200 ${TRANSITION_FAST}`}
                           rows={2}
                           style={{ minHeight: 72, maxHeight: 180 }}
                         />
                         <button
                           type="button"
-                          className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white shadow-sm transition hover:bg-[#16A34A]"
+                          className={"inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white shadow-sm " + INTERACTION + " hover:bg-[#16A34A]"}
                         >
                           <Send className="h-5 w-5" />
                         </button>
@@ -1174,7 +1179,7 @@ export default function DashboardLayout() {
                     <button
                       type="button"
                       onClick={() => setCustomerCollapsed(true)}
-                      className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#111827] transition hover:bg-[#F3F4F6] shrink-0"
+                      className={`inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#111827] transition-all duration-200 ease-in-out hover:bg-[#F3F4F6] shrink-0`}
                       aria-label="Collapse customer panel"
                       title="Collapse customer panel"
                     >
