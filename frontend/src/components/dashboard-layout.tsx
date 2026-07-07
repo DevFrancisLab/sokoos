@@ -714,15 +714,15 @@ export default function DashboardLayout() {
               onClick={() => setSidebarCollapsed((value) => !value)}
               title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
               aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#111827] transition hover:bg-[#F3F4F6]"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#111827] shadow-sm transition duration-200 hover:bg-[#F3F4F6]"
             >
               {sidebarCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
             </button>
           </div>
         </div>
 
-        <nav className={`flex-1 overflow-y-auto transition-all duration-300 ${sidebarCollapsed ? "px-1" : "px-2"}`}>
-          <ul className="space-y-1">
+        <nav className={`flex-1 overflow-y-auto transition-all duration-300 ${sidebarCollapsed ? "px-1" : "px-3"}`}>
+          <ul className="space-y-2">
             {NAV_ITEMS.map(({ label, href, Icon }) => {
               const active = selected === label;
               return (
@@ -731,15 +731,15 @@ export default function DashboardLayout() {
                     onClick={() => setSelected(label)}
                     title={label}
                     aria-label={label}
-                    className={`w-full flex items-center gap-3 rounded-md py-2 text-sm font-medium transition-colors ${
+                    className={`w-full flex items-center gap-3 rounded-2xl py-2 text-sm font-medium transition duration-200 ${
                       sidebarCollapsed ? "justify-center" : "justify-start px-3"
                     } ${
                       active
-                        ? "bg-[#22C55E] text-white"
-                        : "text-[#111827] hover:bg-[#F3F4F6] hover:text-[#111827]"
+                        ? "bg-[#ECFDF5] text-[#065F46] shadow-sm ring-1 ring-[#D1FAE5]"
+                        : "text-[#475569] hover:bg-[#F8FAFC] hover:text-[#111827]"
                     }`}
                   >
-                    <Icon className={`h-4 w-4 ${active ? "opacity-100" : "opacity-80"}`} />
+                    <Icon className={`h-4 w-4 ${active ? "text-[#059669] opacity-100" : "text-[#6B7280] opacity-90"}`} />
                     {!sidebarCollapsed && <span>{label}</span>}
                   </button>
                 </li>
@@ -790,10 +790,10 @@ export default function DashboardLayout() {
                           setSelected(label);
                           setMobileOpen(false);
                         }}
-                        className={`w-full text-left flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                        className={`w-full text-left flex items-center gap-3 rounded-2xl px-3 py-2 text-sm font-medium transition duration-200 ${
                           active
-                            ? "bg-[#22C55E] text-white"
-                            : "text-[#111827] hover:bg-[#F3F4F6] hover:text-[#111827]"
+                            ? "bg-[#ECFDF5] text-[#065F46] shadow-sm ring-1 ring-[#D1FAE5]"
+                            : "text-[#475569] hover:bg-[#F8FAFC] hover:text-[#111827]"
                         }`}
                       >
                         <Icon className="h-4 w-4" />
