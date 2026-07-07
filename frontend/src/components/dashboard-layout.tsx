@@ -817,7 +817,7 @@ export default function DashboardLayout() {
               <div className={CARD}>
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                   <div>
-                    <p className="text-sm font-medium text-[#22C55E]">Good Afternoon, Frank 👋</p>
+                    <p className="text-sm font-medium text-[#475569]">Good Afternoon, Frank 👋</p>
                     <h1 className={CARD_TITLE}>Welcome back to Sokoos</h1>
                     <p className={`mt-6 ${SECONDARY}`}>Here’s what’s happening with your business today.</p>
                   </div>
@@ -835,7 +835,7 @@ export default function DashboardLayout() {
                       <div>
                         <p className="text-3xl font-semibold text-[#111827]">{stat.value}</p>
                       </div>
-                      <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#16A34A]">
+                      <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#166534]">
                         {stat.delta}
                       </span>
                     </div>
@@ -853,7 +853,7 @@ export default function DashboardLayout() {
                   </div>
                   <div className="mt-6 space-y-4">
                     {RECENT_ACTIVITY.map((item) => (
-                      <div key={item.title} className="rounded-[20px] bg-[#F9FAFB] p-7 transition hover:bg-[#ECFDF5]">
+                      <div key={item.title} className="rounded-[20px] bg-[#F9FAFB] p-7 transition hover:bg-[#F1F5F9]">
                         <div className="flex items-center justify-between gap-4">
                           <p className="font-semibold text-[#111827]">{item.title}</p>
                           <span className="text-xs text-[#6B7280]">{item.time}</span>
@@ -871,10 +871,10 @@ export default function DashboardLayout() {
                   </div>
                   <div className="mt-6 grid gap-3">
                     {QUICK_ACTIONS.map((action) => (
-                      <button
+                    <button
                         key={action}
                         type="button"
-                        className="w-full rounded-[20px] border border-[#E5E7EB]/10 bg-[#F9FAFB] p-6 text-left text-sm font-semibold text-[#111827] transition hover:border-[#22C55E] hover:bg-[#ECFDF5]"
+                        className="w-full rounded-[20px] border border-[#E5E7EB]/10 bg-[#F9FAFB] p-6 text-left text-sm font-semibold text-[#111827] transition hover:border-[#CBD5E1] hover:bg-[#F1F5F9]"
                       >
                         {action}
                       </button>
@@ -914,7 +914,7 @@ export default function DashboardLayout() {
                   ))}
                 </div>
                 <div className="flex min-h-0 flex-1 flex-col p-4">
-                  <div className="mb-4 rounded-[20px] bg-[#F3F4F6] px-5 py-3 shadow-sm shadow-slate-200/60 ring-1 ring-[#D1D5DB]/40 transition duration-200 ease-out focus-within:ring-2 focus-within:ring-[#22C55E]/30">
+                  <div className="mb-4 rounded-[20px] bg-[#F3F4F6] px-5 py-3 shadow-sm shadow-slate-200/60 ring-1 ring-[#D1D5DB]/40 transition duration-200 ease-out focus-within:ring-2 focus-within:ring-slate-200">
                     <div className="flex items-center gap-3 text-[#64748B]">
                       <Search className="h-4 w-4" />
                       <input
@@ -957,13 +957,13 @@ export default function DashboardLayout() {
                           className={`w-full overflow-hidden rounded-[20px] p-6 text-left transition-colors duration-150 flex flex-col justify-between min-h-[92px] ${
                             active
                               ? "bg-[#ECFDF5] ring-1 ring-[#22C55E]/30 shadow-[0_8px_24px_rgba(34,197,94,0.06)]"
-                              : "bg-white hover:bg-[#F7FBF7]"
+                              : "bg-white hover:bg-[#F8FAFC]"
                           }`}
                         >
                           {/* Top row: avatar, name, timestamp */}
                           <div className="flex items-start justify-between gap-3">
                             <div className="flex items-start gap-3 min-w-0">
-                              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-sm font-semibold text-white">{conversation.avatar}</div>
+                              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#CBD5E1] text-sm font-semibold text-slate-700">{conversation.avatar}</div>
                               <div className="min-w-0">
                                 {conversation.isSaved && conversation.name ? (
                                   <p className={`truncate ${CUSTOMER_NAME}`} title={conversation.name}>
@@ -1123,7 +1123,7 @@ export default function DashboardLayout() {
                           value={messageInput}
                           onChange={(event) => setMessageInput(event.target.value)}
                           placeholder={`Type a message to ${activeCustomerProfile.name}...`}
-                          className="min-w-0 flex-1 resize-none overflow-y-auto overflow-x-hidden custom-scrollbar rounded-[18px] border border-[#D1D5DB]/30 bg-white/95 px-5 py-4 text-sm leading-6 text-[#111827] outline-none placeholder:text-[#94A3B8] placeholder:font-medium focus:border-[#22C55E]/60 focus:ring-2 focus:ring-[#ECFDF5]/70"
+                          className="min-w-0 flex-1 resize-none overflow-y-auto overflow-x-hidden custom-scrollbar rounded-[18px] border border-[#D1D5DB]/30 bg-white/95 px-5 py-4 text-sm leading-6 text-[#111827] outline-none placeholder:text-[#94A3B8] placeholder:font-medium focus:border-[#94A3B8] focus:ring-2 focus:ring-slate-200"
                           rows={2}
                           style={{ minHeight: 72, maxHeight: 180 }}
                         />
