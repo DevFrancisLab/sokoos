@@ -1116,20 +1116,20 @@ export default function DashboardLayout() {
                     })}
                   </div>
                   <div className="sticky bottom-0 z-10 mt-6 bg-white/95 pt-6 pb-6 backdrop-blur-sm">
-                    <div className="rounded-[20px] bg-white p-6 shadow-[0_6px_18px_rgba(16,24,40,0.04)] border border-[#E5E7EB]/10">
-                      <div className="flex items-center gap-4">
+                    <div className="rounded-[20px] bg-[#F8FAFB]/85 p-4 border border-[#E5E7EB]/10 shadow-[0_4px_12px_rgba(15,23,42,0.04)]">
+                      <div className="flex items-center gap-3">
                         <textarea
                           ref={textareaRef}
                           value={messageInput}
                           onChange={(event) => setMessageInput(event.target.value)}
                           placeholder={`Type a message to ${activeCustomerProfile.name}...`}
-                          className="min-w-0 flex-1 resize-none overflow-y-auto custom-scrollbar rounded-[16px] border border-[#E5E7EB]/20 bg-white px-6 py-4 text-sm text-[#111827] outline-none placeholder:text-[#9CA3AF] focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
-                          rows={1}
-                          style={{ minHeight: 56, maxHeight: 160 }}
+                          className="min-w-0 flex-1 resize-none overflow-y-auto overflow-x-hidden custom-scrollbar rounded-[18px] border border-[#D1D5DB]/30 bg-white/95 px-5 py-4 text-sm leading-6 text-[#111827] outline-none placeholder:text-[#94A3B8] placeholder:font-medium focus:border-[#22C55E]/60 focus:ring-2 focus:ring-[#ECFDF5]/70"
+                          rows={2}
+                          style={{ minHeight: 72, maxHeight: 180 }}
                         />
                         <button
                           type="button"
-                          className="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white shadow-lg transition hover:bg-[#16A34A]"
+                          className="inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white shadow-sm transition hover:bg-[#16A34A]"
                         >
                           <Send className="h-5 w-5" />
                         </button>
