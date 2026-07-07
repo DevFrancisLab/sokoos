@@ -48,7 +48,13 @@ const STAT_CARDS = [
 // Visual style: softer borders, slightly larger internal padding (24-28px), and gentler shadows
 const CARD = "rounded-3xl border border-[#E5E7EB]/30 bg-white p-7 shadow-[0_6px_18px_rgba(16,24,40,0.04)] transition-shadow duration-200 hover:shadow-[0_8px_24px_rgba(16,24,40,0.06)]";
 const CARD_SOFT = "rounded-3xl border border-[#E5E7EB]/30 bg-[#F9FAFB] p-7 shadow-[0_6px_18px_rgba(16,24,40,0.04)] transition-shadow duration-200 hover:shadow-[0_8px_24px_rgba(16,24,40,0.06)]";
-const SECTION_HEADING = "text-sm font-semibold uppercase tracking-[0.2em] text-[#6B7280]";
+// Typography tokens for consistent hierarchy
+const SECTION_HEADING = "text-xs font-medium uppercase tracking-[0.12em] text-[#6B7280]";
+const CARD_TITLE = "text-[28px] font-bold mb-6 text-[#111827]"; // 28px, weight 700, 24px spacing below
+const CUSTOMER_NAME = "text-lg font-semibold text-[#111827]"; // larger semibold customer name
+const SECONDARY = "text-sm text-[#6B7280]"; // muted secondary info
+const MESSAGE_PREVIEW = "text-sm text-[#374151]"; // slightly darker than secondary
+const TIME_LABEL = "text-xs text-[#6B7280]"; // small consistent time label
 
 const RECENT_ACTIVITY = [
   { title: "New customer inquiry", subtitle: "Received in WhatsApp inbox", time: "5m ago" },
@@ -810,8 +816,8 @@ export default function DashboardLayout() {
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                   <div>
                     <p className="text-sm font-medium text-[#22C55E]">Good Afternoon, Frank 👋</p>
-                    <h1 className="mt-2 text-3xl font-semibold text-[#111827]">Welcome back to Sokoos</h1>
-                    <p className="mt-2 text-sm text-[#6B7280]">Here’s what’s happening with your business today.</p>
+                    <h1 className={CARD_TITLE}>Welcome back to Sokoos</h1>
+                    <p className={`mt-6 ${SECONDARY}`}>Here’s what’s happening with your business today.</p>
                   </div>
                   <div className="rounded-2xl bg-[#F9FAFB] px-4 py-2 text-sm text-[#111827]">
                     Updated just now
@@ -821,9 +827,9 @@ export default function DashboardLayout() {
 
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 {STAT_CARDS.map((stat) => (
-                  <div key={stat.label} className={`${CARD} p-5`}> 
-                    <p className="text-sm font-medium text-[#6B7280]">{stat.label}</p>
-                    <div className="mt-4 flex items-end justify-between gap-4">
+                  <div key={stat.label} className={CARD}>
+                    <p className={SECTION_HEADING}>{stat.label}</p>
+                    <div className="mt-5 flex items-end justify-between gap-4">
                       <div>
                         <p className="text-3xl font-semibold text-[#111827]">{stat.value}</p>
                       </div>
@@ -960,12 +966,12 @@ export default function DashboardLayout() {
                               <div className="min-w-0">
                                 {conversation.isSaved && conversation.name ? (
                                   <div className="flex flex-wrap items-center gap-2">
-                                    <p
-                                      className="min-w-0 text-base font-medium text-[#111827] truncate"
-                                      title={conversation.name}
-                                    >
-                                      {conversation.name.length > 22 ? `${conversation.name.slice(0, 22)}…` : conversation.name}
-                                    </p>
+                                        <p
+                                          className={`min-w-0 ${CUSTOMER_NAME} truncate`}
+                                          title={conversation.name}
+                                        >
+                                          {conversation.name.length > 22 ? `${conversation.name.slice(0, 22)}…` : conversation.name}
+                                        </p>
                                     {effectiveSource === "needs_attention" ? (
                                       <span className="inline-flex items-center gap-1 rounded-full bg-[#fee2e2] px-2 py-1 text-xs font-semibold text-[#b91c1c]">
                                         <span className="inline-block h-2 w-2 rounded-full bg-[#b91c1c]" aria-hidden />
@@ -976,7 +982,7 @@ export default function DashboardLayout() {
                                 ) : (
                                   <div className="space-y-0.5">
                                     <p
-                                      className="text-base font-medium text-[#111827] truncate"
+                                      className={`min-w-0 ${CUSTOMER_NAME} truncate`}
                                       title={conversation.phone ?? "Unknown Customer"}
                                     >
                                       {conversation.phone ?? "Unknown Customer"}
@@ -1011,10 +1017,10 @@ export default function DashboardLayout() {
                                 ) : null}
                               </div>
                             </div>
-                            <span className="shrink-0 text-xs text-[#6B7280]">{formatConversationTime(conversation.time)}</span>
+                            <span className={`shrink-0 ${TIME_LABEL}`}>{formatConversationTime(conversation.time)}</span>
                           </div>
-                          <div className="mt-2 flex items-center justify-between gap-2 text-sm text-[#6B7280]">
-                            <p className="min-w-0 truncate">{conversation.message}</p>
+                          <div className="mt-3 flex items-center justify-between gap-2">
+                            <p className={`min-w-0 ${MESSAGE_PREVIEW} truncate`}>{conversation.message}</p>
                             {conversation.badge > 0 ? (
                               <span className="rounded-full bg-[#22C55E] px-2 py-0.5 text-[10px] font-semibold text-white">
                                 {conversation.badge}
