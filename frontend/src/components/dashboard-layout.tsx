@@ -1017,8 +1017,8 @@ export default function DashboardLayout() {
                     <div>
                       <p className="text-sm font-medium text-[#6B7280]">Live chat</p>
                       <div className="flex flex-col">
-                        <h2 className="text-xl font-semibold text-[#111827]">{INBOX_CONVERSATIONS.find((item) => item.id === activeConversation)?.name}</h2>
-                        <p className="mt-1 text-sm text-[#6B7280]">
+                        <h2 className="text-[20px] font-semibold text-[#111827]">{INBOX_CONVERSATIONS.find((item) => item.id === activeConversation)?.name}</h2>
+                        <p className="mt-3 text-sm text-[#6B7280]">
                           {isPersonalActive ? (
                             "Personal contact — AI disabled for this conversation"
                           ) : activeConversationData?.message ? (
@@ -1065,8 +1065,8 @@ export default function DashboardLayout() {
                     </div>
                   </div>
                 </div>
-                <div className="flex min-h-0 flex-1 flex-col p-4">
-                  <div className="flex-1 min-h-0 space-y-4 overflow-y-auto pr-2 pb-4 custom-scrollbar">
+                <div className="flex min-h-0 flex-1 flex-col p-6">
+                  <div className="flex-1 min-h-0 space-y-6 overflow-y-auto pr-4 pb-6 custom-scrollbar">
                     {activeMessages.map((message, index) => {
                       const originalWasAi = String(activeConversationData?.source).startsWith("ai");
                       // If the AI originally handled messages but AI is toggled off, hide AI-generated agent messages (mock behavior)
@@ -1079,7 +1079,7 @@ export default function DashboardLayout() {
                       const senderLabel = isAi ? "Sokoos AI" : activeAgentName;
 
                       return (
-                        <div key={`${message.time}-${index}`} className="space-y-2">
+                        <div key={`${message.time}-${index}`} className="space-y-4">
                           {isAgent ? (
                             <div className="flex items-center gap-2 text-xs font-semibold text-[#6B7280]">
                               {isAi ? (
@@ -1098,30 +1098,32 @@ export default function DashboardLayout() {
                             </div>
                           ) : null}
                           <div className={`flex ${isAgent ? "justify-start" : "justify-end"}`}>
-                            <div className={`rounded-3xl px-4 py-3 text-sm ${
+                            <div className={`rounded-[16px] px-5 py-4 text-sm max-w-[78%] break-words ${
                               isAgent
-                                ? "bg-[#F3F4F6] text-[#111827]"
-                                : "bg-[#22C55E] text-white"
+                                ? isAi
+                                  ? "bg-[#ECFDF5] text-[#064E3B]"
+                                  : "bg-[#F3F4F6] text-[#111827]"
+                                : "bg-white text-[#111827] border border-[#E5E7EB]/20 shadow-[0_6px_18px_rgba(2,6,23,0.03)]"
                             }`}>
-                              <p>{message.text}</p>
-                              <div className="mt-1 text-[11px] text-[#6B7280] text-right">{message.time}</div>
+                              <p className="mb-2 leading-relaxed">{message.text}</p>
+                              <div className={`${TIME_LABEL} text-right`}>{message.time}</div>
                             </div>
                           </div>
                         </div>
                       );
                     })}
                   </div>
-                  <div className="sticky bottom-0 z-10 mt-4 bg-white/95 pt-4 pb-4 backdrop-blur-sm">
-                    <div className="rounded-[20px] border border-[#E5E7EB]/30 bg-white p-6 shadow-[0_6px_18px_rgba(16,24,40,0.04)]">
+                  <div className="sticky bottom-0 z-10 mt-6 bg-white/95 pt-6 pb-6 backdrop-blur-sm">
+                    <div className="rounded-[20px] bg-white p-6 shadow-[0_6px_18px_rgba(16,24,40,0.04)] border border-[#E5E7EB]/10">
                       <div className="flex items-center gap-4">
                         <textarea
                           ref={textareaRef}
                           value={messageInput}
                           onChange={(event) => setMessageInput(event.target.value)}
                           placeholder={`Type a message to ${activeCustomerProfile.name}...`}
-                          className="min-w-0 flex-1 resize-none overflow-y-auto custom-scrollbar rounded-[20px] border border-[#E5E7EB] bg-white px-5 py-3.5 text-sm text-[#111827] outline-none placeholder:text-[#9CA3AF] focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
+                          className="min-w-0 flex-1 resize-none overflow-y-auto custom-scrollbar rounded-[16px] border border-[#E5E7EB]/20 bg-white px-6 py-4 text-sm text-[#111827] outline-none placeholder:text-[#9CA3AF] focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
                           rows={1}
-                          style={{ minHeight: 48, maxHeight: 120 }}
+                          style={{ minHeight: 56, maxHeight: 160 }}
                         />
                         <button
                           type="button"
