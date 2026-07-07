@@ -914,7 +914,7 @@ export default function DashboardLayout() {
                   ))}
                 </div>
                 <div className="flex min-h-0 flex-1 flex-col p-4">
-                  <div className="mb-4 rounded-[20px] bg-[#F3F4F6] px-5 py-3 shadow-sm shadow-slate-200/60 ring-1 ring-[#D1D5DB]/40 transition duration-200 ease-out focus-within:ring-2 focus-within:ring-slate-200">
+                  <div className="mb-4 rounded-[20px] bg-[#F3F4F6] px-6 py-4 shadow-sm shadow-slate-200/60 ring-1 ring-[#D1D5DB]/40 transition duration-200 ease-out focus-within:ring-2 focus-within:ring-slate-200">
                     <div className="flex items-center gap-3 text-[#64748B]">
                       <Search className="h-4 w-4" />
                       <input
@@ -1100,7 +1100,7 @@ export default function DashboardLayout() {
                             </div>
                           ) : null}
                           <div className={`flex ${isAgent ? "justify-start" : "justify-end"}`}>
-                            <div className={`rounded-[16px] px-5 py-4 text-sm max-w-[78%] break-words ${
+                            <div className={`rounded-[16px] px-6 py-4 text-sm max-w-[78%] break-words ${
                               isAgent
                                 ? isAi
                                   ? "bg-[#ECFDF5] text-[#064E3B]"
@@ -1123,7 +1123,7 @@ export default function DashboardLayout() {
                           value={messageInput}
                           onChange={(event) => setMessageInput(event.target.value)}
                           placeholder={`Type a message to ${activeCustomerProfile.name}...`}
-                          className="min-w-0 flex-1 resize-none overflow-y-auto overflow-x-hidden custom-scrollbar rounded-[18px] border border-[#D1D5DB]/30 bg-white/95 px-5 py-4 text-sm leading-6 text-[#111827] outline-none placeholder:text-[#94A3B8] placeholder:font-medium focus:border-[#94A3B8] focus:ring-2 focus:ring-slate-200"
+                          className="min-w-0 flex-1 resize-none overflow-y-auto overflow-x-hidden custom-scrollbar rounded-[18px] border border-[#D1D5DB]/30 bg-white/95 px-6 py-4 text-sm leading-6 text-[#111827] outline-none placeholder:text-[#94A3B8] placeholder:font-medium focus:border-[#94A3B8] focus:ring-2 focus:ring-slate-200"
                           rows={2}
                           style={{ minHeight: 72, maxHeight: 180 }}
                         />
