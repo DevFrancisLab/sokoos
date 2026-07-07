@@ -1015,44 +1015,64 @@ export default function DashboardLayout() {
 
               <section className={`${CARD} flex h-full min-h-0 flex-col overflow-hidden self-stretch`}>
                 <div className="border-b border-[#E5E7EB]/20 p-4">
-                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-[#6B7280]">Live chat</p>
-                      <div className="flex flex-col">
-                        <h2 className="text-[20px] font-semibold text-[#111827]">{INBOX_CONVERSATIONS.find((item) => item.id === activeConversation)?.name}</h2>
-                        <p className="mt-3 text-sm text-[#6B7280]">
-                          {isPersonalActive ? (
-                            "Personal contact — AI disabled for this conversation"
-                          ) : activeConversationData?.message ? (
-                            `Last customer message • ${formatConversationTime(activeConversationData?.time)}`
-                          ) : (
-                            "Waiting for customer response"
-                          )}
-                        </p>
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex-1 min-w-0">
+                      {/* Customer Name - Primary */}
+                      <h2 className="text-xl font-semibold text-[#111827] truncate">{INBOX_CONVERSATIONS.find((item) => item.id === activeConversation)?.name}</h2>
+                      
+                      {/* Conversation Status - Secondary */}
+                      <div className="mt-2 flex items-center gap-2">
+                        {isPersonalActive ? (
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#F1F5F9] px-3 py-1 text-xs font-semibold text-[#334155]">
+                            👤 Personal
+                          </span>
+                        ) : effectiveActiveSource === "ai_handling" ? (
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#059669]">
+                            🤖 AI Handling
+                          </span>
+                        ) : effectiveActiveSource === "ai_handled" ? (
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#F0FDF4] px-3 py-1 text-xs font-semibold text-[#166534]">
+                            ✓ AI Resolved
+                          </span>
+                        ) : effectiveActiveSource === "needs_attention" ? (
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FEF2F2] px-3 py-1 text-xs font-semibold text-[#B91C1C]">
+                            🔴 Needs You
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#EFF6FF] px-3 py-1 text-xs font-semibold text-[#1E3A8A]">
+                            👤 Human Mode
+                          </span>
+                        )}
                       </div>
+                      
+                      {/* Last Activity - Tertiary */}
+                      <p className="mt-2 text-xs text-[#64748B]">
+                        {isPersonalActive ? (
+                          "AI disabled for this contact"
+                        ) : activeConversationData?.message ? (
+                          `Last activity • ${formatConversationTime(activeConversationData?.time)}`
+                        ) : (
+                          "Waiting for activity"
+                        )}
+                      </p>
                     </div>
-                    <div className="flex items-center gap-2">
-                      {isPersonalActive ? (
-                        <span className="inline-flex items-center gap-2 rounded-full bg-[#E5E7EB] px-3 py-1 text-xs font-semibold text-[#6B7280]">
-                          <span aria-hidden>👤</span>
-                          Personal
-                        </span>
-                      ) : (
-                        <button
-                          type="button"
-                          onClick={toggleAiForActive}
-                          aria-label="Toggle AI/Human mode"
-                          className={`inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold transition ${effectiveActiveSource.startsWith("ai") ? "bg-[#ECFDF5] text-[#166534]" : effectiveActiveSource === "needs_attention" ? "bg-[#FEF2F2] text-[#B91C1C]" : "bg-[#EFF6FF] text-[#1E3A8A]"}`}
-                        >
-                          {effectiveActiveSource.startsWith("ai") ? (
-                            effectiveActiveSource === "ai_handling" ? "🤖 AI Mode" : "🤖 AI Handled"
-                          ) : effectiveActiveSource === "needs_attention" ? (
-                            "🔴 Needs You"
-                          ) : (
-                            "👤 Human Mode"
-                          )}
-                        </button>
-                      )}
+                    
+                    {/* Action Buttons */}
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      <button
+                        type="button"
+                        onClick={toggleAiForActive}
+                        disabled={isPersonalActive}
+                        aria-label="Toggle conversation mode"
+                        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
+                          isPersonalActive
+                            ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                            : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                        }`}
+                        title={isPersonalActive ? "Cannot toggle mode for personal contacts" : "Toggle conversation mode"}
+                      >
+                        {effectiveActiveSource.startsWith("ai") ? "Switch to Human" : "Switch to AI"}
+                      </button>
                       {customerCollapsed && (
                         <button
                           type="button"
