@@ -46,16 +46,16 @@ const STAT_CARDS = [
 ];
 
 // Visual style: larger radius, softer shadows, consistent internal padding (24-28px)
-const CARD = "rounded-[20px] bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,0.05)] transition-shadow duration-200 hover:shadow-[0_12px_36px_rgba(15,23,42,0.08)]";
-const CARD_SOFT = "rounded-[20px] bg-[#F8FAFB] p-6 shadow-[0_10px_30px_rgba(15,23,42,0.05)] transition-shadow duration-200 hover:shadow-[0_12px_36px_rgba(15,23,42,0.08)]";
+const CARD = "rounded-[22px] bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)] transition duration-200 ease-out hover:shadow-[0_12px_36px_rgba(15,23,42,0.07)]";
+const CARD_SOFT = "rounded-[22px] bg-[#F8FAFB] p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)] transition duration-200 ease-out hover:shadow-[0_12px_36px_rgba(15,23,42,0.07)]";
 // Typography tokens for consistent hierarchy
-const SECTION_HEADING = "text-xs font-semibold uppercase tracking-[0.16em] text-[#64748B]";
-const CARD_TITLE = "text-[28px] font-semibold mb-6 text-[#0F172A]"; // premium heading weight + spacing
+const SECTION_HEADING = "text-[11px] font-semibold uppercase tracking-[0.22em] text-[#64748B]";
+const CARD_TITLE = "text-[30px] font-semibold mb-6 text-[#0F172A]"; // premium heading weight + spacing
 const CUSTOMER_NAME = "text-lg font-semibold text-[#111827]"; // larger semibold customer name
 const SECONDARY = "text-sm text-[#64748B]"; // muted secondary info
 const MESSAGE_PREVIEW = "text-sm text-[#475569]"; // slightly darker than secondary
 const TIME_LABEL = "text-xs text-[#64748B]"; // small consistent time label
-const BADGE = "inline-flex h-7 items-center gap-1.5 rounded-full px-3 text-[12px] font-semibold";
+const BADGE = "inline-flex h-7 items-center gap-1.5 rounded-full px-3 text-[12px] font-semibold tracking-[0.02em]";
 const BADGE_ICON = "h-2.5 w-2.5 rounded-full";
 
 const RECENT_ACTIVITY = [
@@ -827,7 +827,7 @@ export default function DashboardLayout() {
                 </div>
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
                 {STAT_CARDS.map((stat) => (
                   <div key={stat.label} className={CARD}>
                     <p className={SECTION_HEADING}>{stat.label}</p>
@@ -843,7 +843,7 @@ export default function DashboardLayout() {
                 ))}
               </div>
 
-              <div className="grid gap-4 lg:grid-cols-[1.5fr_1fr]">
+              <div className="grid gap-5 lg:grid-cols-[1.5fr_1fr]">
                 <section className={CARD}>
                   <div className="flex items-center justify-between">
                     <div>
@@ -853,7 +853,7 @@ export default function DashboardLayout() {
                   </div>
                   <div className="mt-6 space-y-4">
                     {RECENT_ACTIVITY.map((item) => (
-                      <div key={item.title} className="rounded-[20px] bg-[#F9FAFB] p-7 transition hover:bg-[#F1F5F9]">
+                      <div key={item.title} className="rounded-[22px] bg-[#F9FAFB] p-6 transition duration-200 ease-out hover:bg-[#F1F5F9] hover:-translate-y-0.5">
                         <div className="flex items-center justify-between gap-4">
                           <p className="font-semibold text-[#111827]">{item.title}</p>
                           <span className="text-xs text-[#6B7280]">{item.time}</span>
@@ -869,12 +869,12 @@ export default function DashboardLayout() {
                     <p className={SECTION_HEADING}>Quick Actions</p>
                     <h2 className={CARD_TITLE}>Jump into work</h2>
                   </div>
-                  <div className="mt-6 grid gap-3">
+                  <div className="mt-6 grid gap-4">
                     {QUICK_ACTIONS.map((action) => (
                     <button
                         key={action}
                         type="button"
-                        className="w-full rounded-[20px] border border-[#E5E7EB]/10 bg-[#F9FAFB] p-6 text-left text-sm font-semibold text-[#111827] transition hover:border-[#CBD5E1] hover:bg-[#F1F5F9]"
+                        className="w-full rounded-[22px] border border-[#E5E7EB]/10 bg-[#F9FAFB] p-6 text-left text-sm font-semibold text-[#111827] transition duration-200 ease-out hover:border-[#CBD5E1] hover:bg-[#F1F5F9] hover:-translate-y-0.5"
                       >
                         {action}
                       </button>
@@ -889,7 +889,7 @@ export default function DashboardLayout() {
               customerCollapsed ? "xl:grid-cols-[280px_minmax(0,1fr)]" : "xl:grid-cols-[280px_minmax(0,1fr)_320px]"
             }`}>
               <section className={`${CARD} h-full min-h-0 flex flex-col self-stretch overflow-hidden`}>
-                <div className="border-b border-[#E5E7EB]/20 p-4">
+                <div className="border-b border-[#E5E7EB]/20 px-5 py-4">
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <h2 className={CARD_TITLE}>Conversations</h2>
@@ -898,7 +898,7 @@ export default function DashboardLayout() {
                     {/* Removed 'New' button to simplify header per design request */}
                   </div>
                 </div>
-                <div className="flex flex-wrap items-center gap-3 px-4 pb-4">
+                <div className="flex flex-wrap items-center gap-4 px-5 pb-4">
                   {INBOX_TAB_ITEMS.map((tab) => (
                     <button
                       key={tab}
@@ -913,8 +913,8 @@ export default function DashboardLayout() {
                     </button>
                   ))}
                 </div>
-                <div className="flex min-h-0 flex-1 flex-col p-4">
-                  <div className="mb-4 rounded-[20px] bg-[#F3F4F6] px-6 py-4 shadow-sm shadow-slate-200/60 ring-1 ring-[#D1D5DB]/40 transition duration-200 ease-out focus-within:ring-2 focus-within:ring-slate-200">
+                <div className="flex min-h-0 flex-1 flex-col p-5">
+                  <div className="mb-5 rounded-[22px] bg-[#F3F4F6] px-6 py-4 shadow-sm shadow-slate-200/60 ring-1 ring-[#D1D5DB]/40 transition duration-200 ease-out focus-within:ring-2 focus-within:ring-slate-200">
                     <div className="flex items-center gap-3 text-[#64748B]">
                       <Search className="h-4 w-4" />
                       <input
@@ -954,7 +954,7 @@ export default function DashboardLayout() {
                         <button
                           key={conversation.id}
                           onClick={() => setActiveConversation(conversation.id)}
-                          className={`w-full overflow-hidden rounded-[20px] p-6 text-left transition-colors duration-150 flex flex-col justify-between min-h-[92px] ${
+                          className={`w-full overflow-hidden rounded-[22px] p-6 text-left transition duration-200 ease-out transform-gpu flex flex-col justify-between min-h-[92px] ${
                               active
                                 ? "bg-[#ECFDF5] ring-1 ring-[#22C55E]/25 shadow-[0_10px_30px_rgba(15,23,42,0.08)]"
                                 : "bg-white hover:bg-[#F8FAFC]"
@@ -1116,7 +1116,7 @@ export default function DashboardLayout() {
                     })}
                   </div>
                   <div className="sticky bottom-0 z-10 mt-6 bg-white/95 pt-6 pb-6 backdrop-blur-sm">
-                    <div className="rounded-[20px] bg-[#F8FAFB]/85 p-4 border border-[#E5E7EB]/10 shadow-[0_4px_12px_rgba(15,23,42,0.04)]">
+                    <div className="rounded-[22px] bg-[#F8FAFB]/85 p-4 border border-[#E5E7EB]/10 shadow-[0_4px_12px_rgba(15,23,42,0.04)]">
                       <div className="flex items-center gap-3">
                         <textarea
                           ref={textareaRef}
@@ -1159,7 +1159,7 @@ export default function DashboardLayout() {
                     </button>
                   </div>
                     <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar">
-                      <div className="space-y-6 rounded-[20px] border border-[#E5E7EB]/10 bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
+                      <div className="space-y-6 rounded-[22px] border border-[#E5E7EB]/10 bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
                         <div className="space-y-4">
                           <div className="flex items-center justify-between gap-4 text-sm text-[#111827]">
                             <span className="font-medium text-[#334155]">Phone</span>
@@ -1239,7 +1239,7 @@ export default function DashboardLayout() {
                   </div>
                    <div className="mt-6 space-y-4">
                      {scheduledPosts.map((post) => (
-                       <div key={post.id} className="rounded-[20px] border border-[#E5E7EB]/70 bg-[#F8FAFC]/70 p-4">
+                       <div key={post.id} className="rounded-[22px] border border-[#E5E7EB]/70 bg-[#F8FAFC]/70 p-4">
                          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                            <div className="min-w-0">
                              <p className="text-sm font-semibold text-[#111827]">{post.caption}</p>
@@ -1329,7 +1329,7 @@ export default function DashboardLayout() {
             </div>
           )}
           {selected === "Broadcasts" && (
-              <div className="p-7 bg-white rounded-md border border-[#E5E7EB]/30 shadow-[0_6px_18px_rgba(16,24,40,0.04)]">Sokoos Broadcasts</div>
+              <div className="p-6 bg-white rounded-[22px] border border-[#E5E7EB]/30 shadow-[0_6px_18px_rgba(16,24,40,0.04)]">Sokoos Broadcasts</div>
           )}
           {selected === "Customers" && (
             <div className={`space-y-6 ${CARD}`}>
