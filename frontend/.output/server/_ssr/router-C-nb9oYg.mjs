@@ -3,10 +3,10 @@ import { n as require_jsx_runtime, r as require_react, t as QueryClientProvider 
 import { c as HeadContent, d as Outlet, f as lazyRouteComponent, g as useRouter, h as Link, m as createRootRouteWithContext, p as createFileRoute, s as Scripts, u as createRouter } from "../_libs/@tanstack/react-router+[...].mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
 import { A as Calendar, D as ChevronLeft, E as ChevronRight, I as Activity, N as Box, P as Bot, _ as Megaphone, a as Settings, b as Image, d as Plus, g as Menu, n as Users, o as Send, s as Search, t as X, w as Cpu, x as House, y as Inbox } from "../_libs/lucide-react.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-CpjRObqf.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router-C-nb9oYg.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
-var styles_default = "/assets/styles-B4KuQcNz.css";
+var styles_default = "/assets/styles-BOwN6hal.css";
 function reportLovableError(error, context = {}) {
 	if (typeof window === "undefined") return;
 	window.__lovableEvents?.captureException?.(error, {
@@ -1328,33 +1328,48 @@ function DashboardLayout() {
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 										className: "border-b border-[#E5E7EB]/20 p-4",
 										children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-												className: "text-sm font-medium text-[#6B7280]",
-												children: "Live chat"
+											className: "flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex-1 min-w-0",
+												children: [
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+														className: "text-xl font-semibold text-[#111827] truncate",
+														children: INBOX_CONVERSATIONS.find((item) => item.id === activeConversation)?.name
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+														className: "mt-2 flex items-center gap-2",
+														children: isPersonalActive ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "inline-flex items-center gap-1.5 rounded-full bg-[#F1F5F9] px-3 py-1 text-xs font-semibold text-[#334155]",
+															children: "👤 Personal"
+														}) : effectiveActiveSource === "ai_handling" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "inline-flex items-center gap-1.5 rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#059669]",
+															children: "🤖 AI Handling"
+														}) : effectiveActiveSource === "ai_handled" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "inline-flex items-center gap-1.5 rounded-full bg-[#F0FDF4] px-3 py-1 text-xs font-semibold text-[#166534]",
+															children: "✓ AI Resolved"
+														}) : effectiveActiveSource === "needs_attention" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "inline-flex items-center gap-1.5 rounded-full bg-[#FEF2F2] px-3 py-1 text-xs font-semibold text-[#B91C1C]",
+															children: "🔴 Needs You"
+														}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "inline-flex items-center gap-1.5 rounded-full bg-[#EFF6FF] px-3 py-1 text-xs font-semibold text-[#1E3A8A]",
+															children: "👤 Human Mode"
+														})
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: "mt-2 text-xs text-[#64748B]",
+														children: isPersonalActive ? "AI disabled for this contact" : activeConversationData?.message ? `Last activity • ${formatConversationTime(activeConversationData?.time)}` : "Waiting for activity"
+													})
+												]
 											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "flex flex-col",
-												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-													className: "text-[20px] font-semibold text-[#111827]",
-													children: INBOX_CONVERSATIONS.find((item) => item.id === activeConversation)?.name
-												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-													className: "mt-3 text-sm text-[#6B7280]",
-													children: isPersonalActive ? "Personal contact — AI disabled for this conversation" : activeConversationData?.message ? `Last customer message • ${formatConversationTime(activeConversationData?.time)}` : "Waiting for customer response"
-												})]
-											})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "flex items-center gap-2",
-												children: [isPersonalActive ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-													className: "inline-flex items-center gap-2 rounded-full bg-[#E5E7EB] px-3 py-1 text-xs font-semibold text-[#6B7280]",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-														"aria-hidden": true,
-														children: "👤"
-													}), "Personal"]
-												}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+												className: "flex items-center gap-2 flex-shrink-0",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 													type: "button",
 													onClick: toggleAiForActive,
-													"aria-label": "Toggle AI/Human mode",
-													className: `inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold transition ${effectiveActiveSource.startsWith("ai") ? "bg-[#ECFDF5] text-[#166534]" : effectiveActiveSource === "needs_attention" ? "bg-[#FEF2F2] text-[#B91C1C]" : "bg-[#EFF6FF] text-[#1E3A8A]"}`,
-													children: effectiveActiveSource.startsWith("ai") ? effectiveActiveSource === "ai_handling" ? "🤖 AI Mode" : "🤖 AI Handled" : effectiveActiveSource === "needs_attention" ? "🔴 Needs You" : "👤 Human Mode"
+													disabled: isPersonalActive,
+													"aria-label": "Toggle conversation mode",
+													className: `inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition ${isPersonalActive ? "bg-gray-100 text-gray-400 cursor-not-allowed" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`,
+													title: isPersonalActive ? "Cannot toggle mode for personal contacts" : "Toggle conversation mode",
+													children: effectiveActiveSource.startsWith("ai") ? "Switch to Human" : "Switch to AI"
 												}), customerCollapsed && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 													type: "button",
 													onClick: () => setCustomerCollapsed(false),

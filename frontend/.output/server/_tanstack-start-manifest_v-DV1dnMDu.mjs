@@ -1,4 +1,4 @@
-//#region \0tanstack-start-manifest:v
+//#region node_modules/.nitro/vite/services/ssr/assets/_tanstack-start-manifest_v-DV1dnMDu.js
 var tsrStartManifest = () => ({ routes: {
 	__root__: {
 		filePath: "/home/frank/sokoos/frontend/src/routes/__root.tsx",
@@ -7,17 +7,17 @@ var tsrStartManifest = () => ({ routes: {
 			"/dashboard",
 			"/sign-in"
 		],
-		preloads: ["/assets/index-Dfxmn2K2.js"],
+		preloads: ["/assets/index-CGYLzHkz.js"],
 		scripts: [{ attrs: {
 			type: "module",
 			async: !0,
-			src: "/assets/index-Dfxmn2K2.js"
+			src: "/assets/index-CGYLzHkz.js"
 		} }]
 	},
 	"/": {
 		filePath: "/home/frank/sokoos/frontend/src/routes/index.tsx",
 		children: void 0,
-		preloads: ["/assets/routes-DhTHLoZ0.js"]
+		preloads: ["/assets/routes-dV7rwJaB.js"]
 	}
 } });
 //#endregion
