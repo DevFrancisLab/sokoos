@@ -46,16 +46,16 @@ const STAT_CARDS = [
 ];
 
 // Visual style: larger radius, softer shadows, consistent internal padding (24-28px)
-const CARD = "rounded-[20px] bg-white p-7 shadow-[0_10px_30px_rgba(2,6,23,0.04)] transition-shadow duration-200 hover:shadow-[0_12px_36px_rgba(2,6,23,0.05)]";
-const CARD_SOFT = "rounded-[20px] bg-[#F9FAFB] p-7 shadow-[0_10px_30px_rgba(2,6,23,0.04)] transition-shadow duration-200 hover:shadow-[0_12px_36px_rgba(2,6,23,0.05)]";
+const CARD = "rounded-[20px] bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,0.05)] transition-shadow duration-200 hover:shadow-[0_12px_36px_rgba(15,23,42,0.08)]";
+const CARD_SOFT = "rounded-[20px] bg-[#F8FAFB] p-6 shadow-[0_10px_30px_rgba(15,23,42,0.05)] transition-shadow duration-200 hover:shadow-[0_12px_36px_rgba(15,23,42,0.08)]";
 // Typography tokens for consistent hierarchy
-const SECTION_HEADING = "text-xs font-medium uppercase tracking-[0.12em] text-[#6B7280]";
-const CARD_TITLE = "text-[28px] font-bold mb-6 text-[#111827]"; // 28px, weight 700, 24px spacing below
+const SECTION_HEADING = "text-xs font-semibold uppercase tracking-[0.16em] text-[#64748B]";
+const CARD_TITLE = "text-[28px] font-semibold mb-6 text-[#0F172A]"; // premium heading weight + spacing
 const CUSTOMER_NAME = "text-lg font-semibold text-[#111827]"; // larger semibold customer name
-const SECONDARY = "text-sm text-[#6B7280]"; // muted secondary info
-const MESSAGE_PREVIEW = "text-sm text-[#374151]"; // slightly darker than secondary
-const TIME_LABEL = "text-xs text-[#6B7280]"; // small consistent time label
-const BADGE = "inline-flex h-6 items-center gap-1 rounded-full px-2.5 text-[12px] font-semibold";
+const SECONDARY = "text-sm text-[#64748B]"; // muted secondary info
+const MESSAGE_PREVIEW = "text-sm text-[#475569]"; // slightly darker than secondary
+const TIME_LABEL = "text-xs text-[#64748B]"; // small consistent time label
+const BADGE = "inline-flex h-7 items-center gap-1.5 rounded-full px-3 text-[12px] font-semibold";
 const BADGE_ICON = "h-2.5 w-2.5 rounded-full";
 
 const RECENT_ACTIVITY = [
@@ -898,7 +898,7 @@ export default function DashboardLayout() {
                     {/* Removed 'New' button to simplify header per design request */}
                   </div>
                 </div>
-                <div className="flex flex-wrap items-center gap-2 px-4 pb-4">
+                <div className="flex flex-wrap items-center gap-3 px-4 pb-4">
                   {INBOX_TAB_ITEMS.map((tab) => (
                     <button
                       key={tab}
@@ -955,9 +955,9 @@ export default function DashboardLayout() {
                           key={conversation.id}
                           onClick={() => setActiveConversation(conversation.id)}
                           className={`w-full overflow-hidden rounded-[20px] p-6 text-left transition-colors duration-150 flex flex-col justify-between min-h-[92px] ${
-                            active
-                              ? "bg-[#ECFDF5] ring-1 ring-[#22C55E]/30 shadow-[0_8px_24px_rgba(34,197,94,0.06)]"
-                              : "bg-white hover:bg-[#F8FAFC]"
+                              active
+                                ? "bg-[#ECFDF5] ring-1 ring-[#22C55E]/25 shadow-[0_10px_30px_rgba(15,23,42,0.08)]"
+                                : "bg-white hover:bg-[#F8FAFC]"
                           }`}
                         >
                           {/* Top row: avatar, name, timestamp */}
