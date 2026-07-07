@@ -657,6 +657,24 @@ export default function DashboardLayout() {
   const activePersonalIcon = activePersonalEntry && ["wife", "husband", "spouse", "family"].some((k) => activePersonalEntry.relationship.toLowerCase().includes(k)) ? "🏠" : "👤";
   const effectiveActiveSource = isPersonalActive ? "personal" : getEffectiveSource(activeConversation, activeConversationData?.source);
   const activeAgentName = isPersonalActive ? "Personal" : String(effectiveActiveSource).startsWith("ai") ? "Sokoos AI" : OWNER_NAMES[activeConversation] ?? "You";
+  // Helper: Generate single conversation status badge
+  const getConversationStatusBadge = (source: string, isPersonal: boolean) => {
+    if (isPersonal) {
+      return { emoji: "🏠", label: "Personal", bg: "bg-[#F1F5F9]", text: "text-[#334155]" };
+    }
+    switch (source) {
+      case "ai_handling":
+        return { emoji: "🤖", label: "AI Handling", bg: "bg-[#ECFDF5]", text: "text-[#059669]" };
+      case "ai_handled":
+        return { emoji: "✓", label: "AI Resolved", bg: "bg-[#F0FDF4]", text: "text-[#166534]" };
+      case "needs_attention":
+        return { emoji: "🔴", label: "Needs You", bg: "bg-[#FEF2F2]", text: "text-[#B91C1C]" };
+      case "owner":
+      default:
+        return { emoji: "👤", label: "You", bg: "bg-[#EFF6FF]", text: "text-[#1E3A8A]" };
+    }
+  };
+
   const toggleAiForActive = () => {
     // Do not allow toggling AI for personal contacts (mock behavior).
     if (isPersonalActive) return;
@@ -972,24 +990,15 @@ export default function DashboardLayout() {
                                 ) : (
                                   <p className="truncate text-base font-semibold text-slate-900" title={conversation.phone ?? "Unknown Customer"}>{conversation.phone ?? "Unknown Customer"}</p>
                                 )}
-                                {/* second row inside left column for compact badges */}
-                                <div className="mt-2 flex items-center gap-2">
-                                  {effectiveSource === "needs_attention" && (
-                                    <span className={`${BADGE} bg-[#FEF2F2] text-[#B91C1C]`}><span className={`${BADGE_ICON} bg-[#B91C1C]`} aria-hidden /> Attention</span>
-                                  )}
-                                  {effectiveSource === "personal" && (
-                                    <span className={`${BADGE} bg-[#F1F5F9] text-[#334155]`}>👤 Personal</span>
-                                  )}
-                                  {effectiveSource === "ai_handling" && (
-                                    <span className={`${BADGE} bg-[#ECFDF5] text-[#166534]`}>🤖 AI Handling</span>
-                                  )}
-                                  {effectiveSource === "ai_handled" && (
-                                    <span className={`${BADGE} bg-[#F0FDF4] text-[#14532d]`}>🤖 AI Handled</span>
-                                  )}
-                                  {effectiveSource === "owner" && (
-                                    <span className={`${BADGE} bg-[#EFF6FF] text-[#1E3A8A]`}>👤 You</span>
-                                  )}
-                                </div>
+                                {/* Single conversation status badge */}
+                                {(() => {
+                                  const badge = getConversationStatusBadge(effectiveSource, isPersonal);
+                                  return (
+                                    <span className={`${BADGE} mt-2 ${badge.bg} ${badge.text}`}>
+                                      {badge.emoji} {badge.label}
+                                    </span>
+                                  );
+                                })()}
                               </div>
                             </div>
                             <div className="flex-shrink-0">
@@ -1021,29 +1030,14 @@ export default function DashboardLayout() {
                       <h2 className="text-xl font-semibold text-[#111827] truncate">{INBOX_CONVERSATIONS.find((item) => item.id === activeConversation)?.name}</h2>
                       
                       {/* Conversation Status - Secondary */}
-                      <div className="mt-2 flex items-center gap-2">
-                        {isPersonalActive ? (
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#F1F5F9] px-3 py-1 text-xs font-semibold text-[#334155]">
-                            👤 Personal
+                      {(() => {
+                        const badge = getConversationStatusBadge(effectiveActiveSource, isPersonalActive);
+                        return (
+                          <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold mt-2 ${badge.bg} ${badge.text}`}>
+                            {badge.emoji} {badge.label}
                           </span>
-                        ) : effectiveActiveSource === "ai_handling" ? (
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#059669]">
-                            🤖 AI Handling
-                          </span>
-                        ) : effectiveActiveSource === "ai_handled" ? (
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#F0FDF4] px-3 py-1 text-xs font-semibold text-[#166534]">
-                            ✓ AI Resolved
-                          </span>
-                        ) : effectiveActiveSource === "needs_attention" ? (
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FEF2F2] px-3 py-1 text-xs font-semibold text-[#B91C1C]">
-                            🔴 Needs You
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#EFF6FF] px-3 py-1 text-xs font-semibold text-[#1E3A8A]">
-                            👤 Human Mode
-                          </span>
-                        )}
-                      </div>
+                        );
+                      })()}
                       
                       {/* Last Activity - Tertiary */}
                       <p className="mt-2 text-xs text-[#64748B]">
