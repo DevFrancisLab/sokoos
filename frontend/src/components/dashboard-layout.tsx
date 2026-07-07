@@ -914,15 +914,15 @@ export default function DashboardLayout() {
                   ))}
                 </div>
                 <div className="flex min-h-0 flex-1 flex-col p-4">
-                  <div className="mb-4 rounded-[20px] bg-[#F9FAFB] px-6 py-3">
-                    <div className="flex items-center gap-2 text-[#6B7280]">
+                  <div className="mb-4 rounded-[20px] bg-[#F3F4F6] px-5 py-3 shadow-sm shadow-slate-200/60 ring-1 ring-[#D1D5DB]/40 transition duration-200 ease-out focus-within:ring-2 focus-within:ring-[#22C55E]/30">
+                    <div className="flex items-center gap-3 text-[#64748B]">
                       <Search className="h-4 w-4" />
                       <input
                         type="search"
                         placeholder="Search conversations"
                         value={searchQuery}
                         onChange={(event) => setSearchQuery(event.target.value)}
-                        className="w-full bg-transparent text-sm text-[#111827] outline-none"
+                        className="w-full bg-transparent px-2 py-2 text-sm text-[#111827] placeholder:text-[#94A3B8] placeholder:font-medium outline-none"
                       />
                     </div>
                   </div>
