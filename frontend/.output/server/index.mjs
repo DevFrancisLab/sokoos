@@ -15,40 +15,40 @@ globalThis.__nitro_vite_envs__ = services;
 //#endregion
 //#region #nitro/virtual/public-assets-data
 var public_assets_data_default = {
-	"/assets/routes-D3gwRFyX.js": {
+	"/assets/index-C_Bz6fSd.js": {
 		"type": "text/javascript; charset=utf-8",
-		"etag": "\"69f3-gO6QhaxT2zHSTQq+n0lz5JdzPos\"",
-		"mtime": "2026-07-07T15:46:34.470Z",
+		"etag": "\"698d6-CR8hDefNeJfe5IffyKdUO4OLaOI\"",
+		"mtime": "2026-07-07T15:53:59.302Z",
+		"size": 432342,
+		"path": "../public/assets/index-C_Bz6fSd.js"
+	},
+	"/assets/routes-DHBOsD1Y.js": {
+		"type": "text/javascript; charset=utf-8",
+		"etag": "\"69f3-c67G4ZFiIfm6xQp8L99g6yBBIOc\"",
+		"mtime": "2026-07-07T15:53:59.302Z",
 		"size": 27123,
-		"path": "../public/assets/routes-D3gwRFyX.js"
+		"path": "../public/assets/routes-DHBOsD1Y.js"
 	},
-	"/assets/index-iJrneXkB.js": {
-		"type": "text/javascript; charset=utf-8",
-		"etag": "\"698cc-hm7z/O7QcnTloEOM/9Khul6lJyQ\"",
-		"mtime": "2026-07-07T15:46:34.469Z",
-		"size": 432332,
-		"path": "../public/assets/index-iJrneXkB.js"
-	},
-	"/assets/styles-BkWno_Do.css": {
+	"/assets/styles-BvkmjR2h.css": {
 		"type": "text/css; charset=utf-8",
-		"etag": "\"16f65-0xj7oQ8DUHNZgZ0zz8+zVLePulk\"",
-		"mtime": "2026-07-07T15:46:34.471Z",
-		"size": 94053,
-		"path": "../public/assets/styles-BkWno_Do.css"
-	},
-	"/assets/solution-dashboard-BITB5GZi.png": {
-		"type": "image/png",
-		"etag": "\"135e39-8KXujycB59ycXDtOjw6MRyzLXZs\"",
-		"mtime": "2026-07-07T15:46:34.471Z",
-		"size": 1269305,
-		"path": "../public/assets/solution-dashboard-BITB5GZi.png"
+		"etag": "\"16fd4-d4/BncNN3pJqKKW9NQruLJIyAHk\"",
+		"mtime": "2026-07-07T15:53:59.308Z",
+		"size": 94164,
+		"path": "../public/assets/styles-BvkmjR2h.css"
 	},
 	"/assets/hero-dashboard-D-CXLQyc.png": {
 		"type": "image/png",
 		"etag": "\"147362-41kBF9Vn5e/eKUEVeST+cDUDypM\"",
-		"mtime": "2026-07-07T15:46:34.470Z",
+		"mtime": "2026-07-07T15:53:59.303Z",
 		"size": 1340258,
 		"path": "../public/assets/hero-dashboard-D-CXLQyc.png"
+	},
+	"/assets/solution-dashboard-BITB5GZi.png": {
+		"type": "image/png",
+		"etag": "\"135e39-8KXujycB59ycXDtOjw6MRyzLXZs\"",
+		"mtime": "2026-07-07T15:53:59.304Z",
+		"size": 1269305,
+		"path": "../public/assets/solution-dashboard-BITB5GZi.png"
 	}
 };
 //#endregion
