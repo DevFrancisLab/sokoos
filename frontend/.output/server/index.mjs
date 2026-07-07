@@ -15,38 +15,38 @@ globalThis.__nitro_vite_envs__ = services;
 //#endregion
 //#region #nitro/virtual/public-assets-data
 var public_assets_data_default = {
-	"/assets/index-C_Bz6fSd.js": {
+	"/assets/routes-mcArICmS.js": {
 		"type": "text/javascript; charset=utf-8",
-		"etag": "\"698d6-CR8hDefNeJfe5IffyKdUO4OLaOI\"",
-		"mtime": "2026-07-07T15:53:59.302Z",
-		"size": 432342,
-		"path": "../public/assets/index-C_Bz6fSd.js"
-	},
-	"/assets/routes-DHBOsD1Y.js": {
-		"type": "text/javascript; charset=utf-8",
-		"etag": "\"69f3-c67G4ZFiIfm6xQp8L99g6yBBIOc\"",
-		"mtime": "2026-07-07T15:53:59.302Z",
+		"etag": "\"69f3-eR4F5QWIVlF9pDkXpcaMQrsoFOg\"",
+		"mtime": "2026-07-07T16:42:13.411Z",
 		"size": 27123,
-		"path": "../public/assets/routes-DHBOsD1Y.js"
+		"path": "../public/assets/routes-mcArICmS.js"
 	},
-	"/assets/styles-BvkmjR2h.css": {
+	"/assets/styles-CgLydXEx.css": {
 		"type": "text/css; charset=utf-8",
-		"etag": "\"16fd4-d4/BncNN3pJqKKW9NQruLJIyAHk\"",
-		"mtime": "2026-07-07T15:53:59.308Z",
-		"size": 94164,
-		"path": "../public/assets/styles-BvkmjR2h.css"
+		"etag": "\"16f57-GIFegktSI0uNGjE+/Bbeb0TiBdg\"",
+		"mtime": "2026-07-07T16:42:13.415Z",
+		"size": 94039,
+		"path": "../public/assets/styles-CgLydXEx.css"
+	},
+	"/assets/index-B8sg35Tg.js": {
+		"type": "text/javascript; charset=utf-8",
+		"etag": "\"699ec-Qq+StgL1383ChEbeIBjHZ+1kppw\"",
+		"mtime": "2026-07-07T16:42:13.410Z",
+		"size": 432620,
+		"path": "../public/assets/index-B8sg35Tg.js"
 	},
 	"/assets/hero-dashboard-D-CXLQyc.png": {
 		"type": "image/png",
 		"etag": "\"147362-41kBF9Vn5e/eKUEVeST+cDUDypM\"",
-		"mtime": "2026-07-07T15:53:59.303Z",
+		"mtime": "2026-07-07T16:42:13.411Z",
 		"size": 1340258,
 		"path": "../public/assets/hero-dashboard-D-CXLQyc.png"
 	},
 	"/assets/solution-dashboard-BITB5GZi.png": {
 		"type": "image/png",
 		"etag": "\"135e39-8KXujycB59ycXDtOjw6MRyzLXZs\"",
-		"mtime": "2026-07-07T15:53:59.304Z",
+		"mtime": "2026-07-07T16:42:13.414Z",
 		"size": 1269305,
 		"path": "../public/assets/solution-dashboard-BITB5GZi.png"
 	}
