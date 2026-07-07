@@ -845,8 +845,8 @@ export default function DashboardLayout() {
                 <section className={CARD}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">Recent Activity</p>
-                      <h2 className="mt-2 text-xl font-semibold text-[#111827]">What happened recently</h2>
+                      <p className={SECTION_HEADING}>Recent Activity</p>
+                      <h2 className={CARD_TITLE}>What happened recently</h2>
                     </div>
                   </div>
                   <div className="mt-6 space-y-4">
@@ -864,8 +864,8 @@ export default function DashboardLayout() {
 
                 <section className={CARD}>
                   <div>
-                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">Quick Actions</p>
-                    <h2 className="mt-2 text-xl font-semibold text-[#111827]">Jump into work</h2>
+                    <p className={SECTION_HEADING}>Quick Actions</p>
+                    <h2 className={CARD_TITLE}>Jump into work</h2>
                   </div>
                   <div className="mt-6 grid gap-3">
                     {QUICK_ACTIONS.map((action) => (
@@ -890,8 +890,8 @@ export default function DashboardLayout() {
                 <div className="border-b border-[#E5E7EB]/20 p-4">
                   <div className="flex items-center justify-between gap-3">
                     <div>
-                      <h2 className="text-lg font-semibold text-[#111827]">Conversations</h2>
-                      <p className="text-sm text-[#6B7280]">Recent messages and active chats</p>
+                      <h2 className={CARD_TITLE}>Conversations</h2>
+                      <p className={SECONDARY}>Recent messages and active chats</p>
                     </div>
                     {/* Removed 'New' button to simplify header per design request */}
                   </div>
