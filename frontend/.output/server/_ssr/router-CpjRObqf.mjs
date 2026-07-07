@@ -3,10 +3,10 @@ import { n as require_jsx_runtime, r as require_react, t as QueryClientProvider 
 import { c as HeadContent, d as Outlet, f as lazyRouteComponent, g as useRouter, h as Link, m as createRootRouteWithContext, p as createFileRoute, s as Scripts, u as createRouter } from "../_libs/@tanstack/react-router+[...].mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
 import { A as Calendar, D as ChevronLeft, E as ChevronRight, I as Activity, N as Box, P as Bot, _ as Megaphone, a as Settings, b as Image, d as Plus, g as Menu, n as Users, o as Send, s as Search, t as X, w as Cpu, x as House, y as Inbox } from "../_libs/lucide-react.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-BkPbqhj9.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router-CpjRObqf.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
-var styles_default = "/assets/styles-CgLydXEx.css";
+var styles_default = "/assets/styles-B4KuQcNz.css";
 function reportLovableError(error, context = {}) {
 	if (typeof window === "undefined") return;
 	window.__lovableEvents?.captureException?.(error, {
@@ -269,7 +269,6 @@ var STAT_CARDS = [
 var CARD = "rounded-[22px] bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)] transition duration-200 ease-out hover:shadow-[0_12px_36px_rgba(15,23,42,0.07)]";
 var SECTION_HEADING = "text-[11px] font-semibold uppercase tracking-[0.22em] text-[#64748B]";
 var CARD_TITLE = "text-[30px] font-semibold mb-6 text-[#0F172A]";
-var CUSTOMER_NAME = "text-lg font-semibold text-[#111827]";
 var SECONDARY = "text-sm text-[#64748B]";
 var MESSAGE_PREVIEW = "text-sm text-[#475569]";
 var TIME_LABEL = "text-xs text-[#64748B]";
@@ -1238,7 +1237,7 @@ function DashboardLayout() {
 													})]
 												})
 											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-												className: "flex-1 space-y-3 overflow-y-auto overflow-x-hidden pr-2 scroll-smooth custom-scrollbar",
+												className: "flex-1 space-y-2 overflow-y-auto overflow-x-hidden pr-2 scroll-smooth custom-scrollbar",
 												children: INBOX_CONVERSATIONS.filter((conversation) => {
 													const src = sourceOverrides[conversation.id] ?? conversation.source;
 													if (activeTab === "Needs Attention") return src === "needs_attention";
@@ -1251,22 +1250,22 @@ function DashboardLayout() {
 													const effectiveSource = personalContacts.some((pc) => pc.phone === conversation.phone) ? "personal" : effectiveSourceRaw;
 													return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 														onClick: () => setActiveConversation(conversation.id),
-														className: `w-full overflow-hidden rounded-[22px] p-6 text-left transition duration-200 ease-out transform-gpu flex flex-col justify-between min-h-[92px] ${active ? "bg-[#ECFDF5] ring-1 ring-[#22C55E]/25 shadow-[0_10px_30px_rgba(15,23,42,0.08)]" : "bg-white hover:bg-[#F8FAFC]"}`,
+														className: `w-full overflow-hidden rounded-[22px] border-l-4 p-6 text-left transition duration-200 ease-out transform-gpu flex flex-col justify-between min-h-[92px] ${active ? "bg-[#ECFDF5] border-[#22C55E] ring-1 ring-[#22C55E]/20 shadow-sm" : "bg-white border-transparent hover:bg-[#F8FAFC] hover:shadow-sm"}`,
 														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "flex items-start justify-between gap-3",
+															className: "flex items-center justify-between gap-3",
 															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-																className: "flex items-start gap-3 min-w-0",
+																className: "flex items-center gap-3 min-w-0",
 																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 																	className: "flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#CBD5E1] text-sm font-semibold text-slate-700",
 																	children: conversation.avatar
 																}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 																	className: "min-w-0",
 																	children: [conversation.isSaved && conversation.name ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																		className: `truncate ${CUSTOMER_NAME}`,
+																		className: "truncate text-base font-semibold text-slate-900",
 																		title: conversation.name,
-																		children: conversation.name.length > 28 ? `${conversation.name.slice(0, 28)}…` : conversation.name
+																		children: conversation.name
 																	}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																		className: `truncate ${CUSTOMER_NAME}`,
+																		className: "truncate text-base font-semibold text-slate-900",
 																		title: conversation.phone ?? "Unknown Customer",
 																		children: conversation.phone ?? "Unknown Customer"
 																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -1301,7 +1300,7 @@ function DashboardLayout() {
 															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 																className: "flex-shrink-0",
 																children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-																	className: `${TIME_LABEL}`,
+																	className: `${TIME_LABEL} whitespace-nowrap text-right text-slate-500`,
 																	children: formatConversationTime(conversation.time)
 																})
 															})]
