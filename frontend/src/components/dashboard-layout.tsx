@@ -926,7 +926,7 @@ export default function DashboardLayout() {
                       />
                     </div>
                   </div>
-                  <div className="flex-1 space-y-3 overflow-y-auto overflow-x-hidden pr-2 scroll-smooth custom-scrollbar">
+                  <div className="flex-1 space-y-2 overflow-y-auto overflow-x-hidden pr-2 scroll-smooth custom-scrollbar">
                     {INBOX_CONVERSATIONS.filter((conversation) => {
                       const src = sourceOverrides[conversation.id] ?? conversation.source;
                       if (activeTab === "Needs Attention") {
@@ -954,23 +954,23 @@ export default function DashboardLayout() {
                         <button
                           key={conversation.id}
                           onClick={() => setActiveConversation(conversation.id)}
-                          className={`w-full overflow-hidden rounded-[22px] p-6 text-left transition duration-200 ease-out transform-gpu flex flex-col justify-between min-h-[92px] ${
+                          className={`w-full overflow-hidden rounded-[22px] border-l-4 p-6 text-left transition duration-200 ease-out transform-gpu flex flex-col justify-between min-h-[92px] ${
                               active
-                                ? "bg-[#ECFDF5] ring-1 ring-[#22C55E]/25 shadow-[0_10px_30px_rgba(15,23,42,0.08)]"
-                                : "bg-white hover:bg-[#F8FAFC]"
+                                ? "bg-[#ECFDF5] border-[#22C55E] ring-1 ring-[#22C55E]/20 shadow-sm"
+                                : "bg-white border-transparent hover:bg-[#F8FAFC] hover:shadow-sm"
                           }`}
                         >
                           {/* Top row: avatar, name, timestamp */}
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="flex items-start gap-3 min-w-0">
+                          <div className="flex items-center justify-between gap-3">
+                            <div className="flex items-center gap-3 min-w-0">
                               <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#CBD5E1] text-sm font-semibold text-slate-700">{conversation.avatar}</div>
                               <div className="min-w-0">
                                 {conversation.isSaved && conversation.name ? (
-                                  <p className={`truncate ${CUSTOMER_NAME}`} title={conversation.name}>
-                                    {conversation.name.length > 28 ? `${conversation.name.slice(0, 28)}…` : conversation.name}
+                                  <p className="truncate text-base font-semibold text-slate-900" title={conversation.name}>
+                                    {conversation.name}
                                   </p>
                                 ) : (
-                                  <p className={`truncate ${CUSTOMER_NAME}`} title={conversation.phone ?? "Unknown Customer"}>{conversation.phone ?? "Unknown Customer"}</p>
+                                  <p className="truncate text-base font-semibold text-slate-900" title={conversation.phone ?? "Unknown Customer"}>{conversation.phone ?? "Unknown Customer"}</p>
                                 )}
                                 {/* second row inside left column for compact badges */}
                                 <div className="mt-2 flex items-center gap-2">
@@ -993,7 +993,7 @@ export default function DashboardLayout() {
                               </div>
                             </div>
                             <div className="flex-shrink-0">
-                              <span className={`${TIME_LABEL}`}>{formatConversationTime(conversation.time)}</span>
+                              <span className={`${TIME_LABEL} whitespace-nowrap text-right text-slate-500`}>{formatConversationTime(conversation.time)}</span>
                             </div>
                           </div>
 
