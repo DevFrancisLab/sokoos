@@ -45,9 +45,9 @@ const STAT_CARDS = [
   { label: "New Leads", value: "38", delta: "+11%" },
 ];
 
-// Visual style: softer borders, slightly larger internal padding (24-28px), and gentler shadows
-const CARD = "rounded-3xl border border-[#E5E7EB]/30 bg-white p-7 shadow-[0_6px_18px_rgba(16,24,40,0.04)] transition-shadow duration-200 hover:shadow-[0_8px_24px_rgba(16,24,40,0.06)]";
-const CARD_SOFT = "rounded-3xl border border-[#E5E7EB]/30 bg-[#F9FAFB] p-7 shadow-[0_6px_18px_rgba(16,24,40,0.04)] transition-shadow duration-200 hover:shadow-[0_8px_24px_rgba(16,24,40,0.06)]";
+// Visual style: larger radius, softer shadows, consistent internal padding (24-28px)
+const CARD = "rounded-[20px] bg-white p-7 shadow-[0_10px_30px_rgba(2,6,23,0.04)] transition-shadow duration-200 hover:shadow-[0_12px_36px_rgba(2,6,23,0.05)]";
+const CARD_SOFT = "rounded-[20px] bg-[#F9FAFB] p-7 shadow-[0_10px_30px_rgba(2,6,23,0.04)] transition-shadow duration-200 hover:shadow-[0_12px_36px_rgba(2,6,23,0.05)]";
 // Typography tokens for consistent hierarchy
 const SECTION_HEADING = "text-xs font-medium uppercase tracking-[0.12em] text-[#6B7280]";
 const CARD_TITLE = "text-[28px] font-bold mb-6 text-[#111827]"; // 28px, weight 700, 24px spacing below
@@ -851,7 +851,7 @@ export default function DashboardLayout() {
                   </div>
                   <div className="mt-6 space-y-4">
                     {RECENT_ACTIVITY.map((item) => (
-                      <div key={item.title} className="rounded-3xl bg-[#F9FAFB] p-4 transition hover:bg-[#ECFDF5]">
+                      <div key={item.title} className="rounded-[20px] bg-[#F9FAFB] p-7 transition hover:bg-[#ECFDF5]">
                         <div className="flex items-center justify-between gap-4">
                           <p className="font-semibold text-[#111827]">{item.title}</p>
                           <span className="text-xs text-[#6B7280]">{item.time}</span>
@@ -872,7 +872,7 @@ export default function DashboardLayout() {
                       <button
                         key={action}
                         type="button"
-                        className="w-full rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-left text-sm font-semibold text-[#111827] transition hover:border-[#22C55E] hover:bg-[#ECFDF5]"
+                        className="w-full rounded-[20px] border border-[#E5E7EB]/10 bg-[#F9FAFB] p-6 text-left text-sm font-semibold text-[#111827] transition hover:border-[#22C55E] hover:bg-[#ECFDF5]"
                       >
                         {action}
                       </button>
@@ -912,7 +912,7 @@ export default function DashboardLayout() {
                   ))}
                 </div>
                 <div className="flex min-h-0 flex-1 flex-col p-4">
-                  <div className="mb-4 rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2">
+                  <div className="mb-4 rounded-[20px] bg-[#F9FAFB] px-6 py-3">
                     <div className="flex items-center gap-2 text-[#6B7280]">
                       <Search className="h-4 w-4" />
                       <input
@@ -952,11 +952,11 @@ export default function DashboardLayout() {
                         <button
                           key={conversation.id}
                           onClick={() => setActiveConversation(conversation.id)}
-                          className={`w-full overflow-hidden rounded-3xl border px-3 py-3 text-left transition ${
-                            active
-                              ? "border-[#22C55E] bg-[#ECFDF5]"
-                              : "border-transparent bg-[#FFFFFF] hover:border-[#E5E7EB] hover:bg-[#F9FAFB]"
-                          }`}
+                          className={`w-full overflow-hidden rounded-[20px] border px-6 py-6 text-left transition ${
+                              active
+                                ? "border-[#22C55E] bg-[#ECFDF5]"
+                                : "border-transparent bg-[#FFFFFF] hover:border-[#E5E7EB]/10 hover:bg-[#F9FAFB]"
+                            }`}
                         >
                           <div className="flex items-start justify-between gap-3">
                             <div className="flex min-w-0 gap-3">
