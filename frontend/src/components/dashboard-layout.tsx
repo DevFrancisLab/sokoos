@@ -47,8 +47,16 @@ const STAT_CARDS = [
 ];
 
 // Visual style: larger radius, softer shadows, consistent internal padding (24-28px)
-const CARD = "rounded-[22px] bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)] transition duration-200 ease-out hover:shadow-[0_12px_36px_rgba(15,23,42,0.07)]";
-const CARD_SOFT = "rounded-[22px] bg-[#F8FAFB] p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)] transition duration-200 ease-out hover:shadow-[0_12px_36px_rgba(15,23,42,0.07)]";
+const CARD = "rounded-[22px] border border-[#E5E7EB]/10 bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)] transition duration-200 ease-out hover:shadow-[0_12px_36px_rgba(15,23,42,0.07)]";
+const CARD_SOFT = "rounded-[22px] border border-[#E5E7EB]/10 bg-[#F8FAFB] p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)] transition duration-200 ease-out hover:shadow-[0_12px_36px_rgba(15,23,42,0.07)]";
+const CARD_FLAT = "rounded-[22px] border border-[#E5E7EB]/10 bg-[#F9FAFB] p-6 shadow-sm";
+const LIST_ITEM = "rounded-[22px] bg-[#F9FAFB] p-6 transition duration-200 ease-out hover:bg-[#F1F5F9] hover:-translate-y-0.5";
+const BUTTON_PRIMARY = "inline-flex items-center justify-center rounded-2xl bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]";
+const BUTTON_SECONDARY = "inline-flex items-center justify-center rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6]";
+const BUTTON_TERTIARY = "inline-flex items-center justify-center rounded-2xl bg-[#F3F4F6] px-4 py-3 text-sm font-semibold text-[#374151] transition hover:bg-[#E5E7EB]";
+const QUICK_ACTION_BUTTON = "w-full rounded-[22px] border border-[#E5E7EB]/10 bg-[#F9FAFB] p-6 text-left text-sm font-semibold text-[#111827] transition duration-200 ease-out hover:border-[#CBD5E1] hover:bg-[#F1F5F9] hover:-translate-y-0.5";
+const INPUT_FIELD = "mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]";
+const INPUT_FIELD_WHITE = "mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none";
 // Typography tokens for consistent hierarchy
 const SECTION_HEADING = "text-[11px] font-semibold uppercase tracking-[0.22em] text-[#64748B]";
 const CARD_TITLE = "text-[30px] font-semibold mb-6 text-[#0F172A]"; // premium heading weight + spacing
@@ -872,7 +880,7 @@ export default function DashboardLayout() {
                   </div>
                   <div className="mt-6 space-y-4">
                     {RECENT_ACTIVITY.map((item) => (
-                      <div key={item.title} className="rounded-[22px] bg-[#F9FAFB] p-6 transition duration-200 ease-out hover:bg-[#F1F5F9] hover:-translate-y-0.5">
+                      <div key={item.title} className={LIST_ITEM}>
                         <div className="flex items-center justify-between gap-4">
                           <p className="font-semibold text-[#111827]">{item.title}</p>
                           <span className="text-xs text-[#6B7280]">{item.time}</span>
@@ -893,7 +901,7 @@ export default function DashboardLayout() {
                     <button
                         key={action}
                         type="button"
-                        className="w-full rounded-[22px] border border-[#E5E7EB]/10 bg-[#F9FAFB] p-6 text-left text-sm font-semibold text-[#111827] transition duration-200 ease-out hover:border-[#CBD5E1] hover:bg-[#F1F5F9] hover:-translate-y-0.5"
+                        className={QUICK_ACTION_BUTTON}
                       >
                         {action}
                       </button>
@@ -1351,7 +1359,7 @@ export default function DashboardLayout() {
                           type="date"
                           value={newPost.date}
                           onChange={(event) => setNewPost((prev) => ({ ...prev, date: event.target.value }))}
-                          className="mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
+                          className={INPUT_FIELD}
                         />
                       </label>
                       <label className="block text-sm font-medium text-[#111827]">
@@ -1360,21 +1368,21 @@ export default function DashboardLayout() {
                           type="time"
                           value={newPost.time}
                           onChange={(event) => setNewPost((prev) => ({ ...prev, time: event.target.value }))}
-                          className="mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
+                          className={INPUT_FIELD}
                         />
                       </label>
                     </div>
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                       <button
                         type="button"
-                        className="inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6] sm:w-auto"
+                        className={`${BUTTON_SECONDARY} gap-2 sm:w-auto`}
                       >
                         <Image className="h-4 w-4" />
                         Generate With AI
                       </button>
                       <button
                         type="button"
-                        className="inline-flex w-full items-center justify-center rounded-2xl bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A] sm:w-auto"
+                        className={`${BUTTON_PRIMARY} sm:w-auto`}
                       >
                         Schedule Post
                       </button>
@@ -1584,7 +1592,7 @@ export default function DashboardLayout() {
                               <input
                                 value={businessInfo.name}
                                 onChange={(event) => setBusinessInfo((prev) => ({ ...prev, name: event.target.value }))}
-                                className="mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                                className={INPUT_FIELD_WHITE}
                               />
                             </div>
                             <div>
@@ -1592,7 +1600,7 @@ export default function DashboardLayout() {
                               <input
                                 value={businessInfo.type}
                                 onChange={(event) => setBusinessInfo((prev) => ({ ...prev, type: event.target.value }))}
-                                className="mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                                className={INPUT_FIELD_WHITE}
                               />
                             </div>
                             <div>
@@ -1600,7 +1608,7 @@ export default function DashboardLayout() {
                               <input
                                 value={businessInfo.hours}
                                 onChange={(event) => setBusinessInfo((prev) => ({ ...prev, hours: event.target.value }))}
-                                className="mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                                className={INPUT_FIELD_WHITE}
                               />
                             </div>
                           </div>
@@ -1618,7 +1626,7 @@ export default function DashboardLayout() {
                               <input
                                 value={businessInfo.serviceAreas}
                                 onChange={(event) => setBusinessInfo((prev) => ({ ...prev, serviceAreas: event.target.value }))}
-                                className="mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                                className={INPUT_FIELD_WHITE}
                               />
                             </div>
                             <div>
@@ -1626,7 +1634,7 @@ export default function DashboardLayout() {
                               <input
                                 value={businessInfo.paymentMethods}
                                 onChange={(event) => setBusinessInfo((prev) => ({ ...prev, paymentMethods: event.target.value }))}
-                                className="mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                                className={INPUT_FIELD_WHITE}
                               />
                             </div>
                           </div>
