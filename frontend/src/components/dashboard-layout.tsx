@@ -927,19 +927,14 @@ export default function DashboardLayout() {
             </div>
           )}
           {selected === "Inbox" && (
-            <div className={`grid h-[calc(100vh-48px)] min-h-[calc(100vh-48px)] gap-4 px-6 py-6 transition-all duration-300 ease-out items-stretch auto-rows-fr ${
-              customerCollapsed
-                ? "xl:grid-cols-[minmax(300px,30%)_minmax(0,70%)]"
-                : "xl:grid-cols-[minmax(300px,30%)_minmax(0,40%)_minmax(300px,30%)]"
-            }`}>
-              <section className={`${CARD} h-full min-h-0 flex flex-col self-stretch overflow-hidden`}>
+            <div className="flex flex-col md:flex-row gap-4 px-6 py-6 transition-all duration-300 ease-out items-stretch h-full">
+              <section className={`${CARD} w-full md:w-[320px] flex-shrink-0 h-full min-h-0 flex flex-col`}>
                 <div className="border-b border-[#ECECEC] px-5 py-2">
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <h2 className="text-sm font-semibold text-[#111827]">Conversations</h2>
                       <p className="text-xs text-[#64748B] font-medium mt-0">Recent messages and active chats</p>
                     </div>
-                    {/* Removed 'New' button to simplify header per design request */}
                   </div>
                 </div>
                 <div className="flex items-center gap-2 overflow-x-hidden px-5 py-2 flex-nowrap">
@@ -970,7 +965,7 @@ export default function DashboardLayout() {
                       />
                     </div>
                   </div>
-                  <div className="flex-1 min-h-0 space-y-1.5 overflow-y-auto overflow-x-hidden pr-2 scroll-smooth custom-scrollbar">
+                  <div className="flex-1 min-h-0 space-y-1.5 overflow-y-auto pr-2 scroll-smooth custom-scrollbar">
                     {INBOX_CONVERSATIONS.filter((conversation) => {
                       const src = sourceOverrides[conversation.id] ?? conversation.source;
                       if (activeTab === "Needs Attention") {
@@ -998,7 +993,7 @@ export default function DashboardLayout() {
                         <button
                           key={conversation.id}
                           onClick={() => setActiveConversation(conversation.id)}
-                          className={`w-full overflow-hidden rounded-[16px] px-3 py-2 min-h-[86px] text-left ${TRANSITION} transform-gpu flex flex-col gap-2 ${
+                          className={`w-full overflow-hidden rounded-[16px] px-3 py-2 min-h-[92px] text-left ${TRANSITION} transform-gpu flex flex-col gap-2 ${
                               active
                                 ? "bg-white border-[#D1EECF] ring-1 ring-[#22C55E]/20"
                                 : "bg-white border-transparent hover:shadow-sm"
@@ -1047,7 +1042,7 @@ export default function DashboardLayout() {
                 </div>
               </section>
 
-              <section className={`${CARD} flex h-full min-h-0 flex-col overflow-hidden self-stretch`}>
+              <section className={`${CARD} w-full md:flex-1 md:min-w-[500px] h-full min-h-0 flex flex-col`}>
                 <div className="border-b border-[#ECECEC] px-6 py-4 flex-shrink-0 min-h-[78px] sm:min-h-[84px]">
                   <div className="flex flex-col gap-3">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -1170,155 +1165,151 @@ export default function DashboardLayout() {
               </section>
 
               {!customerCollapsed && (
-                <section className={`${CARD} h-full min-h-0 flex flex-col self-stretch overflow-hidden transition-opacity duration-300 ease-out opacity-100`}>
-                <div className="flex flex-col gap-4 min-h-0 flex-1">
-                  <div className="flex items-start justify-between gap-3 shrink-0 px-5 py-2.5 border-b border-[#ECECEC]">
-                    <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#94A3B8]">Customer</p>
-                      <h2 className="mt-1 text-base font-semibold text-[#111827]">{activeCustomerProfile.name}</h2>
-                      <p className="mt-0.5 text-xs text-[#64748B]">{activeCustomerProfile.company}</p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setCustomerCollapsed(true)}
-                      className={`inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#ECECEC] bg-white text-[#64748B] ${TRANSITION} hover:bg-[#F9FAFB] hover:text-[#111827] shrink-0`}
-                      aria-label="Collapse customer panel"
-                      title="Collapse customer panel"
-                    >
-                      <ChevronRight className="h-4 w-4 rotate-180" />
-                    </button>
+                <section className={`${CARD} w-full md:w-[360px] flex-shrink-0 h-full min-h-0 flex flex-col transition-opacity duration-300 ease-out opacity-100`}>
+                <div className="flex items-start justify-between gap-3 shrink-0 px-5 py-2.5 border-b border-[#ECECEC]">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#94A3B8]">Customer</p>
+                    <h2 className="mt-1 text-base font-semibold text-[#111827]">{activeCustomerProfile.name}</h2>
+                    <p className="mt-0.5 text-xs text-[#64748B]">{activeCustomerProfile.company}</p>
                   </div>
-                    <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar">
-                      <div className="flex min-h-full flex-col">
-                        <div className="space-y-6 px-6 py-6">
-                          <section className="space-y-3">
-                            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">Insights</p>
-                            <div className="rounded-[16px] bg-white p-4 shadow-none border border-transparent text-sm text-[#475569] space-y-4">
-                              {/* Customer wants */}
-                              <div className="flex items-start justify-between gap-4">
-                                <div className="flex items-start gap-3 min-w-0">
-                                  <span className="text-2xl">💰</span>
-                                  <div className="min-w-0">
-                                    <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">Customer wants</p>
-                                    <p className="mt-1 text-lg font-semibold text-[#111827] truncate">{(() => {
-                                      const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
-                                      if (/\b(price|pricing|quote|cost)\b/.test(text)) return 'Pricing';
-                                      if (/\b(install|installation|setup|set up)\b/.test(text)) return 'Installation';
-                                      if (/\b(cancel|stop service|pause service|refund|complain|complaint)\b/.test(text)) return 'Cancellation';
-                                      if (/\b(upgrade|higher|upsell)\b/.test(text)) return 'Upgrade / upsell';
-                                      return 'General inquiry';
-                                    })()}</p>
-                                    <p className="text-sm text-[#64748B]">Based on recent messages</p>
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* AI summary + Actions */}
-                              <div className="grid gap-3 sm:grid-cols-2">
-                                <div className="rounded-[12px] bg-transparent p-3">
-                                  <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">AI summary</p>
-                                  <div className="mt-2 text-sm text-[#475569]">
-                                    {(() => {
-                                      if (isPersonalActive) {
-                                        return <p className="text-sm text-[#64748B]">Personal contacts remain in manual mode.</p>;
-                                      }
-                                      const text = activeMessages.filter((m) => m.from === 'agent').map((m) => m.text).join(' ').toLowerCase();
-                                      const summary: string[] = [];
-                                      if (/\b(pricing|price|quote|cost)\b/.test(text)) summary.push('Shared pricing');
-                                      if (/\b(install|installation|setup|schedule)\b/.test(text)) summary.push('Explained installation');
-                                      if (/\b(faq|question|help|answer|answered)\b/.test(text)) summary.push('Answered FAQs');
-                                      if (!summary.length) summary.push(effectiveActiveSource.startsWith('ai') ? 'AI is assisting the conversation.' : 'Human agent is handling the conversation.');
-                                      return (
-                                        <ul className="space-y-1 pl-4 list-disc">
-                                          {summary.map((item) => <li key={item}>{item}</li>)}
-                                        </ul>
-                                      );
-                                    })()}
-                                  </div>
-                                </div>
-
-                                <div className="rounded-[12px] bg-transparent p-3">
-                                  <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">AI already did</p>
-                                  <div className="mt-2 text-sm text-[#475569]">
-                                    <p className="text-lg font-semibold text-[#111827] truncate">{(() => {
-                                      const text = activeMessages.filter((m) => m.from === 'agent').map((m) => m.text).join(' ').toLowerCase();
-                                      const summary: string[] = [];
-                                      if (/\b(price|pricing|quote|cost)\b/.test(text)) summary.push('Shared pricing');
-                                      if (/\b(install|installation|setup|schedule)\b/.test(text)) summary.push('Explained installation');
-                                      if (/\b(faq|question|help|answer|answered)\b/.test(text)) summary.push('Answered FAQs');
-                                      if (!summary.length) summary.push('Assisted in conversation');
-                                      return summary.slice(0, 2).join(' • ');
-                                    })()}</p>
-                                    <p className="text-sm text-[#64748B]">Key assistant actions</p>
-                                  </div>
-                                </div>
-                              </div>
-
-                              {/* Needs attention + Intent */}
-                              <div className="grid gap-3 sm:grid-cols-2">
-                                <div className="rounded-[12px] p-3">
-                                  <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">Needs attention</p>
-                                  <p className="mt-2 text-sm text-[#111827]">{(() => {
-                                    const hit = activeMessages.find((m) => /discount|urgent|price drop|complain|complaint|refund/i.test(m.text));
-                                    return hit ? hit.text : 'None';
-                                  })()}</p>
-                                  <p className="text-sm text-[#64748B] mt-1">Checked for urgency and risk signals.</p>
-                                </div>
-
-                                <div className="rounded-[12px] p-3">
-                                  <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">Intent</p>
-                                  <p className="mt-2 text-xl font-semibold text-[#111827]">{(() => {
-                                    const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
-                                    const buyKeywords = (text.match(/buy|purchase|order|subscribe|sign up|proceed/g) || []).length;
-                                    const infoKeywords = (text.match(/price|pricing|cost|quote/g) || []).length;
-                                    const score = Math.min(95, 40 + buyKeywords * 20 + infoKeywords * 10);
-                                    return `${score}%`;
-                                  })()}</p>
-                                  <p className="text-sm text-[#64748B]">{(() => {
-                                    const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
-                                    const buyKeywords = (text.match(/buy|purchase|order|subscribe|sign up|proceed/g) || []).length;
-                                    const infoKeywords = (text.match(/price|pricing|cost|quote/g) || []).length;
-                                    return buyKeywords > infoKeywords ? 'High purchase intent' : infoKeywords > 0 ? 'Consideration' : 'Inquiry';
-                                  })()}</p>
-                                </div>
-                              </div>
-
-                              {/* Recommended next step */}
-                              <div className="rounded-[12px] p-3 bg-white">
-                                <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">Recommended next step</p>
-                                <p className="mt-2 text-lg font-semibold text-[#111827]">{(() => {
-                                  const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
-                                  if (/\b(price|pricing|quote|cost)\b/.test(text)) return 'Offer Business Package brochure.';
-                                  if (/\b(install|installation|setup|schedule)\b/.test(text)) return 'Propose installation slots.';
-                                  if (/\b(cancel|stop service|refund|complain|complaint)\b/.test(text)) return 'Confirm reason and offer retention.';
-                                  return 'Ask a clarifying question.';
-                                })()}</p>
-                                <p className="text-sm text-[#64748B] mt-1">Action recommendation based on recent messages.</p>
-                              </div>
+                  <button
+                    type="button"
+                    onClick={() => setCustomerCollapsed(true)}
+                    className={`inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#ECECEC] bg-white text-[#64748B] ${TRANSITION} hover:bg-[#F9FAFB] hover:text-[#111827] shrink-0`}
+                    aria-label="Collapse customer panel"
+                    title="Collapse customer panel"
+                  >
+                    <ChevronRight className="h-4 w-4 rotate-180" />
+                  </button>
+                </div>
+                <div className="flex-1 min-h-0 overflow-y-auto px-6 py-6 custom-scrollbar">
+                  <div className="space-y-6">
+                    <section className="space-y-3">
+                      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">Insights</p>
+                      <div className="rounded-[16px] bg-white p-4 shadow-none border border-transparent text-sm text-[#475569] space-y-4">
+                        {/* Customer wants */}
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex items-start gap-3 min-w-0">
+                            <span className="text-2xl">💰</span>
+                            <div className="min-w-0">
+                              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">Customer wants</p>
+                              <p className="mt-1 text-lg font-semibold text-[#111827] truncate">{(() => {
+                                const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
+                                if (/\b(price|pricing|quote|cost)\b/.test(text)) return 'Pricing';
+                                if (/\b(install|installation|setup|set up)\b/.test(text)) return 'Installation';
+                                if (/\b(cancel|stop service|pause service|refund|complain|complaint)\b/.test(text)) return 'Cancellation';
+                                if (/\b(upgrade|higher|upsell)\b/.test(text)) return 'Upgrade / upsell';
+                                return 'General inquiry';
+                              })()}</p>
+                              <p className="text-sm text-[#64748B]">Based on recent messages</p>
                             </div>
-                          </section>
+                          </div>
+                        </div>
 
-                          <section className="space-y-3 border-b border-[#E5E7EB] pb-4">
-                            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#94A3B8]">Tags</p>
-                            <div className="flex flex-wrap gap-2">
-                              {activeCustomerProfile.tags.map((tag) => (
-                                <span key={tag} className={`${BADGE} bg-[#F8FAFC] text-[#334155]`}>{tag}</span>
-                              ))}
+                        {/* AI summary + Actions */}
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <div className="rounded-[12px] bg-transparent p-3">
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">AI summary</p>
+                            <div className="mt-2 text-sm text-[#475569]">
+                              {(() => {
+                                if (isPersonalActive) {
+                                  return <p className="text-sm text-[#64748B]">Personal contacts remain in manual mode.</p>;
+                                }
+                                const text = activeMessages.filter((m) => m.from === 'agent').map((m) => m.text).join(' ').toLowerCase();
+                                const summary: string[] = [];
+                                if (/\b(pricing|price|quote|cost)\b/.test(text)) summary.push('Shared pricing');
+                                if (/\b(install|installation|setup|schedule)\b/.test(text)) summary.push('Explained installation');
+                                if (/\b(faq|question|help|answer|answered)\b/.test(text)) summary.push('Answered FAQs');
+                                if (!summary.length) summary.push(effectiveActiveSource.startsWith('ai') ? 'AI is assisting the conversation.' : 'Human agent is handling the conversation.');
+                                return (
+                                  <ul className="space-y-1 pl-4 list-disc">
+                                    {summary.map((item) => <li key={item}>{item}</li>)}
+                                  </ul>
+                                );
+                              })()}
                             </div>
-                          </section>
+                          </div>
 
-                          <section className="space-y-3 pb-4">
-                            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#94A3B8]">Interested products</p>
-                            <div className="flex flex-wrap gap-2">
-                              {activeCustomerProfile.interestedProducts.map((product) => (
-                                <span key={product} className={`${BADGE} bg-[#F8FAFC] text-[#334155]`}>{product}</span>
-                              ))}
+                          <div className="rounded-[12px] bg-transparent p-3">
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">AI already did</p>
+                            <div className="mt-2 text-sm text-[#475569]">
+                              <p className="text-lg font-semibold text-[#111827] truncate">{(() => {
+                                const text = activeMessages.filter((m) => m.from === 'agent').map((m) => m.text).join(' ').toLowerCase();
+                                const summary: string[] = [];
+                                if (/\b(price|pricing|quote|cost)\b/.test(text)) summary.push('Shared pricing');
+                                if (/\b(install|installation|setup|schedule)\b/.test(text)) summary.push('Explained installation');
+                                if (/\b(faq|question|help|answer|answered)\b/.test(text)) summary.push('Answered FAQs');
+                                if (!summary.length) summary.push('Assisted in conversation');
+                                return summary.slice(0, 2).join(' • ');
+                              })()}</p>
+                              <p className="text-sm text-[#64748B]">Key assistant actions</p>
                             </div>
-                          </section>
+                          </div>
+                        </div>
+
+                        {/* Needs attention + Intent */}
+                        <div className="grid gap-3 sm:grid-cols-2">
+                          <div className="rounded-[12px] p-3">
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">Needs attention</p>
+                            <p className="mt-2 text-sm text-[#111827]">{(() => {
+                              const hit = activeMessages.find((m) => /discount|urgent|price drop|complain|complaint|refund/i.test(m.text));
+                              return hit ? hit.text : 'None';
+                            })()}</p>
+                            <p className="text-sm text-[#64748B] mt-1">Checked for urgency and risk signals.</p>
+                          </div>
+
+                          <div className="rounded-[12px] p-3">
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">Intent</p>
+                            <p className="mt-2 text-xl font-semibold text-[#111827]">{(() => {
+                              const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
+                              const buyKeywords = (text.match(/buy|purchase|order|subscribe|sign up|proceed/g) || []).length;
+                              const infoKeywords = (text.match(/price|pricing|cost|quote/g) || []).length;
+                              const score = Math.min(95, 40 + buyKeywords * 20 + infoKeywords * 10);
+                              return `${score}%`;
+                            })()}</p>
+                            <p className="text-sm text-[#64748B]">{(() => {
+                              const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
+                              const buyKeywords = (text.match(/buy|purchase|order|subscribe|sign up|proceed/g) || []).length;
+                              const infoKeywords = (text.match(/price|pricing|cost|quote/g) || []).length;
+                              return buyKeywords > infoKeywords ? 'High purchase intent' : infoKeywords > 0 ? 'Consideration' : 'Inquiry';
+                            })()}</p>
+                          </div>
+                        </div>
+
+                        {/* Recommended next step */}
+                        <div className="rounded-[12px] p-3 bg-white">
+                          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">Recommended next step</p>
+                          <p className="mt-2 text-lg font-semibold text-[#111827]">{(() => {
+                            const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
+                            if (/\b(price|pricing|quote|cost)\b/.test(text)) return 'Offer Business Package brochure.';
+                            if (/\b(install|installation|setup|schedule)\b/.test(text)) return 'Propose installation slots.';
+                            if (/\b(cancel|stop service|refund|complain|complaint)\b/.test(text)) return 'Confirm reason and offer retention.';
+                            return 'Ask a clarifying question.';
+                          })()}</p>
+                          <p className="text-sm text-[#64748B] mt-1">Action recommendation based on recent messages.</p>
                         </div>
                       </div>
-                    </div>
+                    </section>
+
+                    <section className="space-y-3 border-b border-[#E5E7EB] pb-4">
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#94A3B8]">Tags</p>
+                      <div className="flex flex-wrap gap-2">
+                        {activeCustomerProfile.tags.map((tag) => (
+                          <span key={tag} className={`${BADGE} bg-[#F8FAFC] text-[#334155]`}>{tag}</span>
+                        ))}
+                      </div>
+                    </section>
+
+                    <section className="space-y-3 pb-4">
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#94A3B8]">Interested products</p>
+                      <div className="flex flex-wrap gap-2">
+                        {activeCustomerProfile.interestedProducts.map((product) => (
+                          <span key={product} className={`${BADGE} bg-[#F8FAFC] text-[#334155]`}>{product}</span>
+                        ))}
+                      </div>
+                    </section>
                   </div>
+                </div>
 
                 {/* AI Assistant and Quick Products removed from Customer card per request */}
                 </section>
