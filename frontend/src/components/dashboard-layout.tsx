@@ -928,7 +928,9 @@ export default function DashboardLayout() {
           )}
           {selected === "Inbox" && (
             <div className={`grid h-[calc(100vh-48px)] min-h-[calc(100vh-48px)] gap-4 px-6 py-6 transition-all duration-300 ease-out items-stretch auto-rows-fr ${
-              customerCollapsed ? "xl:grid-cols-[336px_minmax(0,1fr)]" : "xl:grid-cols-[336px_minmax(0,1fr)_352px]"
+              customerCollapsed
+                ? "xl:grid-cols-[minmax(300px,30%)_minmax(0,70%)]"
+                : "xl:grid-cols-[minmax(300px,30%)_minmax(0,40%)_minmax(300px,30%)]"
             }`}>
               <section className={`${CARD} h-full min-h-0 flex flex-col self-stretch overflow-hidden`}>
                 <div className="border-b border-[#ECECEC] px-5 py-2">
@@ -1046,51 +1048,51 @@ export default function DashboardLayout() {
               </section>
 
               <section className={`${CARD} flex h-full min-h-0 flex-col overflow-hidden self-stretch`}>
-                <div className="border-b border-[#ECECEC] px-5 py-2.5 flex-shrink-0 min-h-[60px] sm:min-h-[68px]">
-                  <div className="shrink-0 px-5 py-2 border-b border-[#E5E7EB]">
-                    <h2 className="text-base font-semibold text-[#111827] truncate">{INBOX_CONVERSATIONS.find((item) => item.id === activeConversation)?.name}</h2>
-                    
-                    {/* AI Status + Mode Switch on one row */}
-                    <div className="flex items-center justify-between gap-3 mt-2">
-                      <div className="flex items-center gap-2 flex-1 min-w-0">
-                        {(() => {
-                          const badge = getConversationStatusBadge(effectiveActiveSource, isPersonalActive);
-                          return (
-                            <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold flex-shrink-0 ${badge.bg} ${badge.text}`}>
-                              {badge.emoji} {badge.label}
-                            </span>
-                          );
-                        })()}
+                <div className="border-b border-[#ECECEC] px-6 py-4 flex-shrink-0 min-h-[78px] sm:min-h-[84px]">
+                  <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                      <div className="min-w-0">
+                        <h2 className="text-lg font-semibold text-[#111827] truncate">{INBOX_CONVERSATIONS.find((item) => item.id === activeConversation)?.name}</h2>
+                        <div className="mt-2 flex flex-wrap items-center gap-2">
+                          {(() => {
+                            const badge = getConversationStatusBadge(effectiveActiveSource, isPersonalActive);
+                            return (
+                              <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold flex-shrink-0 ${badge.bg} ${badge.text}`}>
+                                {badge.emoji} {badge.label}
+                              </span>
+                            );
+                          })()}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3 flex-shrink-0">
                         <button
                           type="button"
                           onClick={toggleAiForActive}
                           disabled={isPersonalActive}
                           aria-label="Toggle conversation mode"
-                          className={`text-[11px] font-semibold transition ${TRANSITION_FAST} flex-shrink-0 ${
+                          className={`inline-flex h-10 rounded-full border px-4 text-[11px] font-semibold transition ${TRANSITION_FAST} items-center justify-center ${
                             isPersonalActive
-                              ? "text-[#9CA3AF] cursor-not-allowed"
-                              : "text-[#22C55E] hover:text-[#16A34A]"
+                              ? "border-[#E5E7EB] bg-[#F9FAFB] text-[#9CA3AF] cursor-not-allowed"
+                              : "border-[#22C55E] bg-[#ECFDF5] text-[#166534] hover:bg-[#DCFCE7]"
                           }`}
                           title={isPersonalActive ? "Cannot toggle mode for personal contacts" : "Toggle conversation mode"}
                         >
                           {effectiveActiveSource.startsWith("ai") ? "Switch to Human" : "Switch to AI"}
                         </button>
+                        {customerCollapsed && (
+                          <button
+                            type="button"
+                            onClick={() => setCustomerCollapsed(false)}
+                            className={`inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#ECECEC] bg-white text-[#64748B] ${TRANSITION} hover:bg-[#F9FAFB] hover:text-[#111827] flex-shrink-0`}
+                            aria-label="Expand customer panel"
+                            title="Expand customer panel"
+                          >
+                            <ChevronRight className="h-4 w-4" />
+                          </button>
+                        )}
                       </div>
-                      {customerCollapsed && (
-                        <button
-                          type="button"
-                          onClick={() => setCustomerCollapsed(false)}
-                          className={`inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#ECECEC] bg-white text-[#64748B] ${TRANSITION} hover:bg-[#F9FAFB] hover:text-[#111827] flex-shrink-0`}
-                          aria-label="Expand customer panel"
-                          title="Expand customer panel"
-                        >
-                          <ChevronRight className="h-4 w-4" />
-                        </button>
-                      )}
                     </div>
-                    
-                    {/* Last Activity */}
-                    <p className="mt-1.5 text-xs text-[#94A3B8] font-medium">
+                    <p className="text-xs text-[#94A3B8]/90">
                       {isPersonalActive ? (
                         "AI disabled for this contact"
                       ) : activeConversationData?.message ? (
@@ -1102,7 +1104,7 @@ export default function DashboardLayout() {
                   </div>
                 </div>
                 <div className="flex min-h-0 flex-1 flex-col">
-                  <div className="flex-1 min-h-0 space-y-3 overflow-y-auto px-5 py-4 custom-scrollbar">
+                  <div className="flex-1 min-h-0 space-y-4 overflow-y-auto px-6 py-5 custom-scrollbar">
                     {activeMessages.map((message, index) => {
                       const originalWasAi = String(activeConversationData?.source).startsWith("ai");
                       if (message.from === "agent" && originalWasAi && !String(effectiveActiveSource).startsWith("ai")) {
@@ -1129,15 +1131,15 @@ export default function DashboardLayout() {
                               )}
                             </div>
                           ) : null}
-                          <div className={`flex mt-1 ${isAgent ? "justify-start" : "justify-end"}`}>
-                            <div className={`rounded-[12px] px-3 py-2 text-sm break-words ${
+                          <div className={`flex ${isAgent ? "justify-start" : "justify-end"}`}>
+                            <div className={`rounded-[20px] px-4 py-3 text-sm break-words ${
                               isAgent
-                                ? "bg-[#F0FDF4] text-[#166534] border border-[#DCFCE7] shadow-[0_1px_2px_rgba(34,197,94,0.06)] max-w-md"
-                                : "bg-white text-[#111827] border border-[#E5E7EB] shadow-[0_1px_2px_rgba(0,0,0,0.03)]"
+                                ? "bg-[#F0FDF4] text-[#166534] border border-[#DCFCE7] shadow-[0_1px_2px_rgba(34,197,94,0.04)] max-w-[80%]"
+                                : "bg-white text-[#111827] border border-[#E5E7EB] shadow-[0_1px_2px_rgba(0,0,0,0.04)] max-w-[80%]"
                             } ${TRANSITION_FAST} transition-shadow transform-gpu`}> 
-                              <div className="flex flex-col">
+                              <div className="flex flex-col gap-2">
                                 <p className="leading-relaxed text-sm">{message.text}</p>
-                                <div className={`self-end mt-0.5 text-[8px] ${isAgent ? 'text-[#16A34A]/50' : 'text-[#64748B]/50'} font-medium`}>{message.time}</div>
+                                <div className={`self-end mt-0.5 text-[10px] ${isAgent ? 'text-[#16A34A]/60' : 'text-[#64748B]/60'} font-medium`}>{message.time}</div>
                               </div>
                             </div>
                           </div>
@@ -1145,8 +1147,8 @@ export default function DashboardLayout() {
                       );
                     })}
                   </div>
-                  <div className="shrink-0 border-t border-[#E5E7EB] bg-white/50 backdrop-blur-sm px-5 py-3">
-                    <div className={`rounded-[16px] bg-white border border-[#E5E7EB] shadow-[0_2px_4px_rgba(0,0,0,0.02)] flex items-end gap-2 min-h-[56px] p-2.5 ${TRANSITION}`}>
+                  <div className="shrink-0 border-t border-[#E5E7EB] bg-white/70 backdrop-blur-sm px-6 py-4">
+                    <div className={`rounded-[24px] bg-white border border-[#E5E7EB] shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex items-center gap-3 min-h-[66px] px-3 py-3 ${TRANSITION}`}>
                       <textarea
                         ref={textareaRef}
                         value={messageInput}
@@ -1158,7 +1160,7 @@ export default function DashboardLayout() {
                       />
                       <button
                         type="button"
-                        className={`inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white ${INTERACTION} hover:bg-[#16A34A] hover:shadow-[0_2px_6px_rgba(34,197,94,0.25)]`}
+                        className={`inline-flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white ${INTERACTION} hover:bg-[#16A34A] hover:shadow-[0_2px_6px_rgba(34,197,94,0.18)]`}
                       >
                         <Send className="h-4 w-4" />
                       </button>
