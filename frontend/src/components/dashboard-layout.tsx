@@ -993,16 +993,16 @@ export default function DashboardLayout() {
                         <button
                           key={conversation.id}
                           onClick={() => setActiveConversation(conversation.id)}
-                          className={`w-full overflow-hidden rounded-[16px] px-3 py-2 min-h-[92px] text-left ${TRANSITION} transform-gpu flex flex-col gap-2 ${
+                          className={`w-full overflow-hidden rounded-[16px] px-3 py-1.5 min-h-[76px] text-left ${TRANSITION} transform-gpu flex flex-col gap-1.5 ${
                               active
-                                ? "bg-white border-[#D1EECF] ring-1 ring-[#22C55E]/20"
-                                : "bg-white border-transparent hover:shadow-sm"
+                                ? "bg-[#F6FFFA] border border-[#D1EECF] ring-1 ring-[#22C55E]/20 shadow-sm"
+                                : "bg-white border border-transparent hover:bg-[#FBFFF8] hover:shadow-sm"
                           }`}
                         >
                           {/* Header: Avatar + Name + Time */}
                           <div className="flex items-center justify-between gap-3">
-                            <div className="flex items-center gap-2.5 min-w-0 flex-1">
-                              <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#E5E7EB] to-[#D1D5DB] text-sm font-semibold text-[#64748B]">{conversation.avatar}</div>
+                            <div className="flex items-center gap-2 min-w-0 flex-1">
+                              <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#E5E7EB] to-[#D1D5DB] text-sm font-semibold text-[#64748B]">{conversation.avatar}</div>
                               <div className="min-w-0 flex-1">
                                 {conversation.isSaved && conversation.name ? (
                                   <p className="truncate text-sm font-medium text-[#111827]" title={conversation.name}>
@@ -1019,22 +1019,22 @@ export default function DashboardLayout() {
                           </div>
 
                           {/* Badge Row: Status badge + Unread badge */}
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1.5 min-w-0">
                             {(() => {
                               const badge = getConversationStatusBadge(effectiveSource, isPersonal);
                               return (
-                                <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium flex-shrink-0 ${badge.bg} ${badge.text}`}>
+                                <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium flex-shrink-0 ${badge.bg} ${badge.text}`}>
                                   {badge.emoji} {badge.label}
                                 </span>
                               );
                             })()}
                             <div className="ml-auto flex-shrink-0">
                               {conversation.badge > 0 ? (
-                                <span className={`inline-flex min-w-[20px] h-5 items-center justify-center rounded-full bg-[#22C55E] text-white text-[10px] font-bold`}>{conversation.badge}</span>
+                                <span className={`inline-flex min-w-[18px] h-4 items-center justify-center rounded-full bg-[#22C55E] text-white text-[10px] font-bold`}>{conversation.badge}</span>
                               ) : null}
                             </div>
                           </div>
-                          <p className={`min-w-0 truncate text-sm text-[#64748B] leading-5 ${MESSAGE_PREVIEW}`}>{conversation.message}</p>
+                          <p className={`min-w-0 truncate text-xs text-[#64748B] ${MESSAGE_PREVIEW}`}>{conversation.message}</p>
                         </button>
                       );
                     })}
