@@ -949,7 +949,7 @@ export default function DashboardLayout() {
                       onClick={() => setActiveTab(tab)}
                       className={`whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold transition duration-200 flex-shrink-0 ${TRANSITION} ${
                         activeTab === tab
-                          ? "bg-[#22C55E] text-white shadow-[0_2px_4px_rgba(34,197,94,0.2)]"
+                          ? "bg-[#22C55E] text-white"
                           : "bg-[#F3F4F6] text-[#64748B] hover:bg-[#ECFDF5] hover:text-[#065F46] hover:-translate-y-0.5"
                       }`}
                     >
@@ -958,7 +958,7 @@ export default function DashboardLayout() {
                   ))}
                 </div>
                 <div className="flex min-h-0 flex-1 flex-col px-5 py-2 gap-2">
-                  <div className="h-[42px] rounded-[12px] bg-[#F9FAFB] px-3 shadow-[0_1px_2px_rgba(0,0,0,0.02)] ring-1 ring-[#ECECEC] transition duration-150 ease-out focus-within:ring-2 focus-within:ring-[#22C55E] focus-within:shadow-[0_2px_4px_rgba(0,0,0,0.03)] flex items-center">
+                  <div className="h-[42px] rounded-[12px] bg-[#F9FAFB] px-3 shadow-none ring-1 ring-[#ECECEC] transition duration-150 ease-out focus-within:ring-2 focus-within:ring-[#22C55E] flex items-center">
                     <div className="flex items-center gap-3 w-full text-[#94A3B8]">
                       <Search className="h-4 w-4 flex-shrink-0" />
                       <input
@@ -998,10 +998,10 @@ export default function DashboardLayout() {
                         <button
                           key={conversation.id}
                           onClick={() => setActiveConversation(conversation.id)}
-                          className={`w-full overflow-hidden rounded-[16px] border px-3 py-3 min-h-[96px] text-left ${TRANSITION} transform-gpu flex flex-col gap-3 ${
+                          className={`w-full overflow-hidden rounded-[16px] px-3 py-2 min-h-[86px] text-left ${TRANSITION} transform-gpu flex flex-col gap-2 ${
                               active
                                 ? "bg-white border-[#D1EECF] ring-1 ring-[#22C55E]/20"
-                                : "bg-white border-[#E5E7EB] hover:bg-[#FAFBFC] hover:border-[#D1D5DB]"
+                                : "bg-white border-transparent hover:shadow-sm"
                           }`}
                         >
                           {/* Header: Avatar + Name + Time */}
@@ -1010,11 +1010,11 @@ export default function DashboardLayout() {
                               <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#E5E7EB] to-[#D1D5DB] text-sm font-semibold text-[#64748B]">{conversation.avatar}</div>
                               <div className="min-w-0 flex-1">
                                 {conversation.isSaved && conversation.name ? (
-                                  <p className="truncate text-base font-semibold text-[#111827]" title={conversation.name}>
+                                  <p className="truncate text-sm font-medium text-[#111827]" title={conversation.name}>
                                     {conversation.name}
                                   </p>
                                 ) : (
-                                  <p className="truncate text-base font-semibold text-[#111827]" title={conversation.phone ?? "Unknown Customer"}>{conversation.phone ?? "Unknown Customer"}</p>
+                                  <p className="truncate text-sm font-medium text-[#111827]" title={conversation.phone ?? "Unknown Customer"}>{conversation.phone ?? "Unknown Customer"}</p>
                                 )}
                               </div>
                             </div>
@@ -1134,8 +1134,8 @@ export default function DashboardLayout() {
                           <div className={`flex ${isAgent ? "justify-start" : "justify-end"}`}>
                             <div className={`rounded-[20px] px-4 py-3 text-sm break-words ${
                               isAgent
-                                ? "bg-[#F0FDF4] text-[#166534] border border-[#DCFCE7] shadow-[0_1px_2px_rgba(34,197,94,0.04)] max-w-[80%]"
-                                : "bg-white text-[#111827] border border-[#E5E7EB] shadow-[0_1px_2px_rgba(0,0,0,0.04)] max-w-[80%]"
+                                ? "bg-[#F0FDF4] text-[#166534] border border-[#DCFCE7] shadow-none max-w-[80%]"
+                                : "bg-white text-[#111827] border border-[#E5E7EB] shadow-none max-w-[80%]"
                             } ${TRANSITION_FAST} transition-shadow transform-gpu`}> 
                               <div className="flex flex-col gap-2">
                                 <p className="leading-relaxed text-sm">{message.text}</p>
@@ -1148,7 +1148,7 @@ export default function DashboardLayout() {
                     })}
                   </div>
                   <div className="shrink-0 border-t border-[#E5E7EB] bg-white/70 backdrop-blur-sm px-6 py-4">
-                    <div className={`rounded-[24px] bg-white border border-[#E5E7EB] shadow-[0_1px_2px_rgba(0,0,0,0.05)] flex items-center gap-3 min-h-[66px] px-3 py-3 ${TRANSITION}`}>
+                    <div className={`rounded-[24px] bg-white border border-[#E5E7EB] shadow-none flex items-center gap-3 min-h-[66px] px-3 py-3 ${TRANSITION}`}>
                       <textarea
                         ref={textareaRef}
                         value={messageInput}
@@ -1160,7 +1160,7 @@ export default function DashboardLayout() {
                       />
                       <button
                         type="button"
-                        className={`inline-flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white ${INTERACTION} hover:bg-[#16A34A] hover:shadow-[0_2px_6px_rgba(34,197,94,0.18)]`}
+                        className={`inline-flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white ${INTERACTION} hover:bg-[#16A34A]`}
                       >
                         <Send className="h-4 w-4" />
                       </button>
@@ -1193,7 +1193,7 @@ export default function DashboardLayout() {
                         <div className="space-y-6 px-6 py-6">
                           <section className="space-y-3">
                             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">Insights</p>
-                            <div className="rounded-[16px] bg-white p-4 shadow-sm text-sm text-[#475569] space-y-4">
+                            <div className="rounded-[16px] bg-white p-4 shadow-none border border-transparent text-sm text-[#475569] space-y-4">
                               {/* Customer wants */}
                               <div className="flex items-start justify-between gap-4">
                                 <div className="flex items-start gap-3 min-w-0">
@@ -1215,7 +1215,7 @@ export default function DashboardLayout() {
 
                               {/* AI summary + Actions */}
                               <div className="grid gap-3 sm:grid-cols-2">
-                                <div className="rounded-[12px] bg-[#F8FAFC] p-3">
+                                <div className="rounded-[12px] bg-transparent p-3">
                                   <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">AI summary</p>
                                   <div className="mt-2 text-sm text-[#475569]">
                                     {(() => {
@@ -1237,7 +1237,7 @@ export default function DashboardLayout() {
                                   </div>
                                 </div>
 
-                                <div className="rounded-[12px] bg-[#F8FAFC] p-3">
+                                <div className="rounded-[12px] bg-transparent p-3">
                                   <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">AI already did</p>
                                   <div className="mt-2 text-sm text-[#475569]">
                                     <p className="text-lg font-semibold text-[#111827] truncate">{(() => {
@@ -1442,7 +1442,7 @@ export default function DashboardLayout() {
             </div>
           )}
             {selected === "Broadcasts" && (
-              <div className="p-6 bg-white rounded-[24px] border border-[#E5E7EB]/30 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">Sokoos Broadcasts</div>
+              <div className="p-6 bg-white rounded-[24px] border border-[#E5E7EB]/30 shadow-none">Sokoos Broadcasts</div>
             )}
           {selected === "Customers" && (
             <div className={`space-y-6 ${CARD}`}>
@@ -1466,7 +1466,7 @@ export default function DashboardLayout() {
                 </div>
               </div>
 
-              <div className="overflow-hidden rounded-[24px] border border-[#E5E7EB]/20 bg-[#FFFFFF] shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
+              <div className="overflow-hidden rounded-[24px] border border-[#E5E7EB]/20 bg-[#FFFFFF] shadow-none">
                 <table className="min-w-full divide-y divide-[#E5E7EB]/20 text-left">
                   <thead className="bg-[#F9FAFB]">
                     <tr>
