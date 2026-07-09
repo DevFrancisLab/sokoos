@@ -47,29 +47,39 @@ const STAT_CARDS = [
 ];
 
 // Micro-interaction tokens
-const TRANSITION = "transition duration-200 ease-in-out"; // default subtle timing
-const TRANSITION_FAST = "transition duration-150 ease-out"; // slightly faster
-const INTERACTION = "transition duration-200 ease-in-out transform active:scale-95 active:translate-y-px";
+const TRANSITION = "transition duration-200 ease";
+const TRANSITION_FAST = "transition duration-150 ease";
+const INTERACTION = "transition duration-200 ease transform hover:-translate-y-1 active:translate-y-0";
 
-// Visual style: larger radius, softer shadows, consistent internal padding (24-28px)
-const CARD = "rounded-[22px] border border-[#E5E7EB]/10 bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)] transform " + TRANSITION + " hover:shadow-[0_12px_36px_rgba(15,23,42,0.07)] hover:-translate-y-1";
-const CARD_SOFT = "rounded-[22px] border border-[#E5E7EB]/10 bg-[#F8FAFB] p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)] transform " + TRANSITION + " hover:shadow-[0_12px_36px_rgba(15,23,42,0.07)] hover:-translate-y-1";
-const CARD_FLAT = "rounded-[22px] border border-[#E5E7EB]/10 bg-[#F9FAFB] p-6 shadow-sm transform " + TRANSITION;
-const LIST_ITEM = "rounded-[22px] bg-[#F9FAFB] p-6 transform " + TRANSITION + " hover:bg-[#F1F5F9] hover:-translate-y-1";
-const BUTTON_PRIMARY = "inline-flex items-center justify-center rounded-2xl bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm " + INTERACTION + " hover:bg-[#16A34A]";
-const BUTTON_SECONDARY = "inline-flex items-center justify-center rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm font-semibold text-[#111827] " + INTERACTION + " hover:bg-[#F3F4F6]";
-const BUTTON_TERTIARY = "inline-flex items-center justify-center rounded-2xl bg-[#F3F4F6] px-4 py-3 text-sm font-semibold text-[#374151] " + INTERACTION + " hover:bg-[#E5E7EB]";
-const QUICK_ACTION_BUTTON = "w-full rounded-[22px] border border-[#E5E7EB]/10 bg-[#F9FAFB] p-6 text-left text-sm font-semibold text-[#111827] transform " + TRANSITION + " hover:border-[#CBD5E1] hover:bg-[#F1F5F9] hover:-translate-y-1";
-const INPUT_FIELD = "mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5] " + TRANSITION_FAST + " focus:shadow-sm";
-const INPUT_FIELD_WHITE = "mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none " + TRANSITION_FAST + " focus:shadow-sm";
+// Unified dashboard design system (global tokens)
+// - Radius: 20px for cards/inputs/buttons
+// - Subtle border: #EEF2F6
+// - Consistent shadow across cards
+const GLOBAL_RADIUS = "rounded-[20px]";
+const SUBTLE_BORDER = "border-[#EEF2F6]";
+const CARD_SHADOW = "shadow-[0_4px_12px_rgba(15,23,42,0.03)]";
+
+const CARD = `${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-white p-6 ${CARD_SHADOW} transform ` + TRANSITION + " hover:-translate-y-1";
+const CARD_SOFT = `${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-[#F8FAFB] p-6 ${CARD_SHADOW} transform ` + TRANSITION + " hover:-translate-y-1";
+const CARD_FLAT = `${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-[#F9FAFB] p-6 shadow-none transform ` + TRANSITION;
+const LIST_ITEM = `${GLOBAL_RADIUS} bg-[#F9FAFB] p-6 transform ` + TRANSITION + " hover:bg-[#EFF6FF] hover:-translate-y-1";
+const BUTTON_PRIMARY = "inline-flex items-center justify-center rounded-[20px] bg-[#22C55E] px-4 py-3 text-[15px] font-semibold text-white shadow-none " + INTERACTION + " hover:bg-[#16A34A]";
+const BUTTON_SECONDARY = `inline-flex items-center justify-center rounded-[20px] border ${SUBTLE_BORDER} bg-white px-4 py-3 text-[15px] font-semibold text-[#111827] ` + INTERACTION + " hover:bg-[#F3F4F6]";
+const BUTTON_TERTIARY = "inline-flex items-center justify-center rounded-[20px] bg-[#F3F4F6] px-4 py-3 text-[15px] font-semibold text-[#374151] " + INTERACTION + " hover:bg-[#E5E7EB]";
+const QUICK_ACTION_BUTTON = `w-full ${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-[#F9FAFB] p-6 text-left text-[15px] font-semibold text-[#111827] transform ` + TRANSITION + " hover:border-[#CBD5E1] hover:bg-[#EFF6FF] hover:-translate-y-1";
+const INPUT_FIELD = `mt-3 w-full ${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-[#F9FAFB] px-4 py-3 text-[15px] text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7] ` + TRANSITION + " focus:shadow-none";
+const INPUT_FIELD_WHITE = `mt-3 w-full ${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-white px-4 py-3 text-[15px] text-[#111827] shadow-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7] ` + TRANSITION + " focus:shadow-none";
 // Typography tokens for consistent hierarchy
-const SECTION_HEADING = "text-[11px] font-semibold uppercase tracking-[0.22em] text-[#64748B]";
-const CARD_TITLE = "text-[30px] font-semibold mb-6 text-[#0F172A]"; // premium heading weight + spacing
-const CUSTOMER_NAME = "text-lg font-semibold text-[#111827]"; // larger semibold customer name
-const SECONDARY = "text-sm text-[#64748B]"; // muted secondary info
-const MESSAGE_PREVIEW = "text-sm text-[#475569]"; // slightly darker than secondary
-const TIME_LABEL = "text-xs text-[#64748B]"; // small consistent time label
-const BADGE = "inline-flex h-7 items-center gap-1.5 rounded-full px-3 text-[12px] font-semibold tracking-[0.02em] transition-colors duration-200 ease-in-out";
+const SECTION_HEADING = "text-[12px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]";
+const CARD_TITLE = "text-[20px] font-semibold mb-6 text-[#0F172A]";
+const PAGE_TITLE = "text-[28px] font-bold text-[#0F172A]";
+const CUSTOMER_NAME = "text-[16px] font-semibold text-[#111827]";
+const BODY_TEXT = "text-[15px] text-[#475569]";
+const SECONDARY = "text-[13px] text-[#64748B]";
+const MESSAGE_PREVIEW = "text-[15px] text-[#475569]";
+const TIME_LABEL = "text-[13px] text-[#64748B]";
+const CAPTION = "text-[13px] text-[#64748B]";
+const BADGE = "inline-flex h-7 items-center gap-1.5 rounded-full px-3 text-[13px] font-semibold tracking-[0.02em] transition-colors duration-200 ease";
 const BADGE_ICON = "h-2.5 w-2.5 rounded-full";
 
 const RECENT_ACTIVITY = [
@@ -732,13 +742,13 @@ export default function DashboardLayout() {
   return (
     <div className="h-screen min-h-screen bg-[#FFFFFF] text-[#111827]">
       {/* Desktop fixed left sidebar */}
-      <aside className={`hidden md:fixed md:inset-y-0 md:left-0 md:flex md:flex-col md:pt-6 bg-[#FFFFFF] border-r border-[#E5E7EB]/20 transition-all duration-300 ease-out ${
+      <aside className={`hidden md:fixed md:inset-y-0 md:left-0 md:flex md:flex-col md:pt-4 bg-[#FFFFFF] border-r border-[#E5E7EB]/10 transition-all duration-300 ease-out ${
         sidebarCollapsed ? "md:w-[80px]" : "md:w-[240px]"
       }`}>
         <div className="px-4 pb-4">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-md bg-[#22C55E] flex items-center justify-center text-white font-bold">S</div>
+              <div className="h-8 w-8 rounded-md bg-[#22C55E] flex items-center justify-center text-white font-bold">S</div>
               {!sidebarCollapsed && <span className="text-lg font-bold">Sokoos</span>}
             </div>
             <button
@@ -753,7 +763,7 @@ export default function DashboardLayout() {
           </div>
         </div>
 
-        <nav className={`flex-1 overflow-y-auto transition-all duration-300 ${sidebarCollapsed ? "px-1" : "px-3"}`}>
+        <nav className={`flex-1 overflow-y-auto transition-all duration-300 ${sidebarCollapsed ? "px-1.5" : "px-2.5"}`}>
           <ul className="space-y-2">
             {NAV_ITEMS.map(({ label, href, Icon }) => {
               const active = selected === label;
@@ -763,12 +773,12 @@ export default function DashboardLayout() {
                     onClick={() => setSelected(label)}
                     title={label}
                     aria-label={label}
-                    className={`w-full flex items-center gap-3 rounded-2xl py-2 text-sm font-medium transition duration-200 ${
+                    className={`w-full flex items-center gap-2.5 rounded-[16px] py-2 text-sm font-medium transition duration-200 ${
                       sidebarCollapsed ? "justify-center" : "justify-start px-3"
                     } ${
                       active
-                        ? "bg-[#ECFDF5] text-[#065F46] shadow-sm ring-1 ring-[#D1FAE5]"
-                        : "text-[#475569] hover:bg-[#F8FAFC] hover:text-[#111827]"
+                        ? "bg-[#F0FDF4] text-[#065F46] shadow-sm ring-1 ring-[#D1FAE5]/40"
+                        : "text-[#475569] hover:bg-[#EFF6FF] hover:text-[#111827]"
                     }`}
                   >
                     <Icon className={`h-4 w-4 ${active ? "text-[#059669] opacity-100" : "text-[#6B7280] opacity-90"}`} />
@@ -800,7 +810,7 @@ export default function DashboardLayout() {
       {mobileOpen && (
         <div className="fixed inset-0 z-40 md:hidden">
           <div className="absolute inset-0 bg-black/40" onClick={() => setMobileOpen(false)} />
-          <div className="absolute left-0 top-0 bottom-0 w-72 bg-[#FFFFFF] border-r border-[#E5E7EB]/20 p-4 overflow-y-auto">
+          <div className="absolute left-0 top-0 bottom-0 w-72 bg-[#FFFFFF] border-r border-[#E5E7EB]/10 p-4 overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <div className="h-8 w-8 rounded-md bg-[#22C55E] flex items-center justify-center text-white font-bold">S</div>
@@ -822,10 +832,10 @@ export default function DashboardLayout() {
                           setSelected(label);
                           setMobileOpen(false);
                         }}
-                        className={`w-full text-left flex items-center gap-3 rounded-2xl px-3 py-2 text-sm font-medium transition duration-200 ${
-                          active
-                            ? "bg-[#ECFDF5] text-[#065F46] shadow-sm ring-1 ring-[#D1FAE5]"
-                            : "text-[#475569] hover:bg-[#F8FAFC] hover:text-[#111827]"
+                        className={`w-full text-left flex items-center gap-2.5 rounded-[16px] px-3 py-2 text-sm font-medium transition duration-200 ${
+                           active
+                            ? "bg-[#F0FDF4] text-[#065F46] shadow-sm ring-1 ring-[#D1FAE5]/40"
+                            : "text-[#475569] hover:bg-[#EFF6FF] hover:text-[#111827]"
                         }`}
                       >
                         <Icon className="h-4 w-4" />
@@ -853,7 +863,7 @@ export default function DashboardLayout() {
                     <h1 className={CARD_TITLE}>Welcome back to Sokoos</h1>
                     <p className={`mt-6 ${SECONDARY}`}>Here’s what’s happening with your business today.</p>
                   </div>
-                  <div className="rounded-2xl bg-[#F9FAFB] px-4 py-2 text-sm text-[#111827]">
+                  <div className="rounded-[16px] bg-[#F9FAFB] px-4 py-2 text-sm text-[#111827]">
                     Updated just now
                   </div>
                 </div>
@@ -917,48 +927,48 @@ export default function DashboardLayout() {
             </div>
           )}
           {selected === "Inbox" && (
-            <div className={`grid h-[calc(100vh-4.5rem)] min-h-[calc(100vh-4.5rem)] gap-4 transition-all duration-300 ease-out items-stretch auto-rows-fr ${
-              customerCollapsed ? "xl:grid-cols-[280px_minmax(0,1fr)]" : "xl:grid-cols-[280px_minmax(0,1fr)_320px]"
+            <div className={`grid h-[calc(100vh-48px)] min-h-[calc(100vh-48px)] gap-4 px-6 py-6 transition-all duration-300 ease-out items-stretch auto-rows-fr ${
+              customerCollapsed ? "xl:grid-cols-[336px_minmax(0,1fr)]" : "xl:grid-cols-[336px_minmax(0,1fr)_352px]"
             }`}>
               <section className={`${CARD} h-full min-h-0 flex flex-col self-stretch overflow-hidden`}>
-                <div className="border-b border-[#E5E7EB]/20 px-5 py-4">
+                <div className="border-b border-[#ECECEC] px-5 py-2">
                   <div className="flex items-center justify-between gap-3">
                     <div>
-                      <h2 className={CARD_TITLE}>Conversations</h2>
-                      <p className={SECONDARY}>Recent messages and active chats</p>
+                      <h2 className="text-sm font-semibold text-[#111827]">Conversations</h2>
+                      <p className="text-xs text-[#64748B] font-medium mt-0">Recent messages and active chats</p>
                     </div>
                     {/* Removed 'New' button to simplify header per design request */}
                   </div>
                 </div>
-                <div className="flex flex-wrap items-center gap-4 px-5 pb-4">
+                <div className="flex items-center gap-2 overflow-x-hidden px-5 py-2 flex-nowrap">
                   {INBOX_TAB_ITEMS.map((tab) => (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab)}
-                      className={`whitespace-nowrap rounded-full px-3 py-1.5 text-sm font-semibold ${TRANSITION} ${
+                      className={`whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold transition duration-200 flex-shrink-0 ${TRANSITION} ${
                         activeTab === tab
-                          ? "bg-[#22C55E] text-white shadow-sm"
-                          : "bg-[#F3F4F6] text-[#111827] hover:bg-[#ECFDF5] hover:-translate-y-1"
+                          ? "bg-[#22C55E] text-white shadow-[0_2px_4px_rgba(34,197,94,0.2)]"
+                          : "bg-[#F3F4F6] text-[#64748B] hover:bg-[#ECFDF5] hover:text-[#065F46] hover:-translate-y-0.5"
                       }`}
                     >
                       {tab}
                     </button>
                   ))}
                 </div>
-                <div className="flex min-h-0 flex-1 flex-col p-5">
-                  <div className="mb-5 rounded-[22px] bg-[#F3F4F6] px-6 py-4 shadow-sm shadow-slate-200/60 ring-1 ring-[#D1D5DB]/40 transition duration-200 ease-out focus-within:ring-2 focus-within:ring-slate-200">
-                    <div className="flex items-center gap-3 text-[#64748B]">
-                      <Search className="h-4 w-4" />
+                <div className="flex min-h-0 flex-1 flex-col px-5 py-2 gap-2">
+                  <div className="h-[42px] rounded-[12px] bg-[#F9FAFB] px-3 shadow-[0_1px_2px_rgba(0,0,0,0.02)] ring-1 ring-[#ECECEC] transition duration-150 ease-out focus-within:ring-2 focus-within:ring-[#22C55E] focus-within:shadow-[0_2px_4px_rgba(0,0,0,0.03)] flex items-center">
+                    <div className="flex items-center gap-3 w-full text-[#94A3B8]">
+                      <Search className="h-4 w-4 flex-shrink-0" />
                       <input
                         type="search"
                         placeholder="Search conversations"
                         value={searchQuery}
                         onChange={(event) => setSearchQuery(event.target.value)}
-                        className={`w-full bg-transparent px-2 py-2 text-sm text-[#111827] placeholder:text-[#94A3B8] placeholder:font-medium outline-none ${TRANSITION_FAST}`}
+                        className={`w-full bg-transparent text-sm text-[#111827] placeholder:text-[#CBD5E1] placeholder:font-regular outline-none ${TRANSITION_FAST}`}
                       />
                     </div>
                   </div>
-                  <div className="flex-1 space-y-2 overflow-y-auto overflow-x-hidden pr-2 scroll-smooth custom-scrollbar">
+                  <div className="flex-1 min-h-0 space-y-1.5 overflow-y-auto overflow-x-hidden pr-2 scroll-smooth custom-scrollbar">
                     {INBOX_CONVERSATIONS.filter((conversation) => {
                       const src = sourceOverrides[conversation.id] ?? conversation.source;
                       if (activeTab === "Needs Attention") {
@@ -986,46 +996,45 @@ export default function DashboardLayout() {
                         <button
                           key={conversation.id}
                           onClick={() => setActiveConversation(conversation.id)}
-                          className={`w-full overflow-hidden rounded-[22px] border-l-4 p-6 text-left ${TRANSITION} transform-gpu flex flex-col justify-between min-h-[92px] ${
+                          className={`w-full overflow-hidden rounded-[16px] border px-3 py-2 h-[86px] text-left ${TRANSITION} transform-gpu flex flex-col gap-1.5 justify-between ${
                               active
-                                ? "bg-[#ECFDF5] border-[#22C55E] ring-1 ring-[#22C55E]/20 shadow-sm"
-                                : "bg-white border-transparent hover:bg-[#F8FAFC] hover:shadow-sm hover:-translate-y-1"
+                                ? "bg-[#F0FDF4] border-[#22C55E] ring-1 ring-[#22C55E]/30 shadow-[0_2px_8px_rgba(34,197,94,0.12)]"
+                                : "bg-white border-[#E5E7EB] hover:bg-[#FAFBFC] hover:border-[#D1D5DB]"
                           }`}
                         >
-                          {/* Top row: avatar, name, timestamp */}
+                          {/* Header: Avatar + Name + Time */}
                           <div className="flex items-center justify-between gap-3">
-                            <div className="flex items-center gap-3 min-w-0">
-                              <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#CBD5E1] text-sm font-semibold text-slate-700">{conversation.avatar}</div>
-                              <div className="min-w-0">
+                            <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                              <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#E5E7EB] to-[#D1D5DB] text-sm font-semibold text-[#64748B]">{conversation.avatar}</div>
+                              <div className="min-w-0 flex-1">
                                 {conversation.isSaved && conversation.name ? (
-                                  <p className="truncate text-base font-semibold text-slate-900" title={conversation.name}>
+                                  <p className="truncate text-base font-semibold text-[#111827]" title={conversation.name}>
                                     {conversation.name}
                                   </p>
                                 ) : (
-                                  <p className="truncate text-base font-semibold text-slate-900" title={conversation.phone ?? "Unknown Customer"}>{conversation.phone ?? "Unknown Customer"}</p>
+                                  <p className="truncate text-base font-semibold text-[#111827]" title={conversation.phone ?? "Unknown Customer"}>{conversation.phone ?? "Unknown Customer"}</p>
                                 )}
-                                {/* Single conversation status badge */}
-                                {(() => {
-                                  const badge = getConversationStatusBadge(effectiveSource, isPersonal);
-                                  return (
-                                    <span className={`${BADGE} mt-2 ${badge.bg} ${badge.text}`}>
-                                      {badge.emoji} {badge.label}
-                                    </span>
-                                  );
-                                })()}
                               </div>
                             </div>
                             <div className="flex-shrink-0">
-                              <span className={`${TIME_LABEL} whitespace-nowrap text-right text-slate-500`}>{formatConversationTime(conversation.time)}</span>
+                              <span className={`${TIME_LABEL} whitespace-nowrap text-xs text-[#94A3B8]`}>{formatConversationTime(conversation.time)}</span>
                             </div>
                           </div>
 
-                          {/* Third row: message preview and optional badge */}
-                          <div className="mt-4 flex items-center justify-between gap-3">
-                            <p className={`min-w-0 ${MESSAGE_PREVIEW} truncate`}>{conversation.message}</p>
+                          {/* Badge Row: Status badge + Message preview */}
+                          <div className="flex items-center gap-2">
+                            {(() => {
+                              const badge = getConversationStatusBadge(effectiveSource, isPersonal);
+                              return (
+                                <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium flex-shrink-0 ${badge.bg} ${badge.text}`}>
+                                  {badge.emoji} {badge.label}
+                                </span>
+                              );
+                            })()}
+                            <p className={`min-w-0 flex-1 ${MESSAGE_PREVIEW} truncate text-sm text-[#64748B] leading-tight`}>{conversation.message}</p>
                             <div className="flex-shrink-0">
                               {conversation.badge > 0 ? (
-                                <span className={`${BADGE} min-w-[24px] justify-center bg-[#22C55E] text-white`}>{conversation.badge}</span>
+                                <span className={`inline-flex min-w-[20px] h-5 items-center justify-center rounded-full bg-[#22C55E] text-white text-[10px] font-bold`}>{conversation.badge}</span>
                               ) : null}
                             </div>
                           </div>
@@ -1037,55 +1046,41 @@ export default function DashboardLayout() {
               </section>
 
               <section className={`${CARD} flex h-full min-h-0 flex-col overflow-hidden self-stretch`}>
-                <div className="border-b border-[#E5E7EB]/20 p-4">
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="flex-1 min-w-0">
-                      {/* Customer Name - Primary */}
-                      <h2 className="text-xl font-semibold text-[#111827] truncate">{INBOX_CONVERSATIONS.find((item) => item.id === activeConversation)?.name}</h2>
-                      
-                      {/* Conversation Status - Secondary */}
-                      {(() => {
-                        const badge = getConversationStatusBadge(effectiveActiveSource, isPersonalActive);
-                        return (
-                          <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold mt-2 ${badge.bg} ${badge.text}`}>
-                            {badge.emoji} {badge.label}
-                          </span>
-                        );
-                      })()}
-                      
-                      {/* Last Activity - Tertiary */}
-                      <p className="mt-2 text-xs text-[#64748B]">
-                        {isPersonalActive ? (
-                          "AI disabled for this contact"
-                        ) : activeConversationData?.message ? (
-                          `Last activity • ${formatConversationTime(activeConversationData?.time)}`
-                        ) : (
-                          "Waiting for activity"
-                        )}
-                      </p>
-                    </div>
+                <div className="border-b border-[#ECECEC] px-5 py-2.5 flex-shrink-0 min-h-[60px] sm:min-h-[68px]">
+                  <div className="shrink-0 px-5 py-2 border-b border-[#E5E7EB]">
+                    <h2 className="text-base font-semibold text-[#111827] truncate">{INBOX_CONVERSATIONS.find((item) => item.id === activeConversation)?.name}</h2>
                     
-                    {/* Action Buttons */}
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <button
-                        type="button"
-                        onClick={toggleAiForActive}
-                        disabled={isPersonalActive}
-                        aria-label="Toggle conversation mode"
-                        className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold transition ${
-                          isPersonalActive
-                            ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                            : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                        }`}
-                        title={isPersonalActive ? "Cannot toggle mode for personal contacts" : "Toggle conversation mode"}
-                      >
-                        {effectiveActiveSource.startsWith("ai") ? "Switch to Human" : "Switch to AI"}
-                      </button>
+                    {/* AI Status + Mode Switch on one row */}
+                    <div className="flex items-center justify-between gap-3 mt-2">
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        {(() => {
+                          const badge = getConversationStatusBadge(effectiveActiveSource, isPersonalActive);
+                          return (
+                            <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold flex-shrink-0 ${badge.bg} ${badge.text}`}>
+                              {badge.emoji} {badge.label}
+                            </span>
+                          );
+                        })()}
+                        <button
+                          type="button"
+                          onClick={toggleAiForActive}
+                          disabled={isPersonalActive}
+                          aria-label="Toggle conversation mode"
+                          className={`text-[11px] font-semibold transition ${TRANSITION_FAST} flex-shrink-0 ${
+                            isPersonalActive
+                              ? "text-[#9CA3AF] cursor-not-allowed"
+                              : "text-[#22C55E] hover:text-[#16A34A]"
+                          }`}
+                          title={isPersonalActive ? "Cannot toggle mode for personal contacts" : "Toggle conversation mode"}
+                        >
+                          {effectiveActiveSource.startsWith("ai") ? "Switch to Human" : "Switch to AI"}
+                        </button>
+                      </div>
                       {customerCollapsed && (
                         <button
                           type="button"
                           onClick={() => setCustomerCollapsed(false)}
-                          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#111827] transition hover:bg-[#F3F4F6]"
+                          className={`inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#ECECEC] bg-white text-[#64748B] ${TRANSITION} hover:bg-[#F9FAFB] hover:text-[#111827] flex-shrink-0`}
                           aria-label="Expand customer panel"
                           title="Expand customer panel"
                         >
@@ -1093,13 +1088,23 @@ export default function DashboardLayout() {
                         </button>
                       )}
                     </div>
+                    
+                    {/* Last Activity */}
+                    <p className="mt-1.5 text-xs text-[#94A3B8] font-medium">
+                      {isPersonalActive ? (
+                        "AI disabled for this contact"
+                      ) : activeConversationData?.message ? (
+                        `Last activity • ${formatConversationTime(activeConversationData?.time)}`
+                      ) : (
+                        "Waiting for activity"
+                      )}
+                    </p>
                   </div>
                 </div>
-                <div className="flex min-h-0 flex-1 flex-col p-6">
-                  <div className="flex-1 min-h-0 space-y-6 overflow-y-auto pr-4 pb-6 custom-scrollbar">
+                <div className="flex min-h-0 flex-1 flex-col">
+                  <div className="flex-1 min-h-0 space-y-3 overflow-y-auto px-5 py-4 custom-scrollbar">
                     {activeMessages.map((message, index) => {
                       const originalWasAi = String(activeConversationData?.source).startsWith("ai");
-                      // If the AI originally handled messages but AI is toggled off, hide AI-generated agent messages (mock behavior)
                       if (message.from === "agent" && originalWasAi && !String(effectiveActiveSource).startsWith("ai")) {
                         return null;
                       }
@@ -1109,59 +1114,54 @@ export default function DashboardLayout() {
                       const senderLabel = isAi ? "Sokoos AI" : activeAgentName;
 
                       return (
-                        <div key={`${message.time}-${index}`} className={`space-y-4 ${TRANSITION_FAST} transition-opacity`}> 
+                        <div key={`${message.time}-${index}`} className={`${TRANSITION_FAST} transition-opacity`}> 
                           {isAgent ? (
-                            <div className="flex items-center gap-2 text-xs font-semibold text-[#6B7280]">
+                            <div className="flex items-center gap-1 text-xs font-semibold text-[#94A3B8]">
                               {isAi ? (
                                 <>
-                                  <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#ECFDF5] text-[#0C4A6E]">
-                                    <Bot className="h-4 w-4" />
+                                  <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-[#ECFDF5] text-[#0C7A4D]">
+                                    <Bot className="h-2.5 w-2.5" />
                                   </span>
                                   <span>{senderLabel}</span>
-                                  <span className="rounded-full bg-[#E0F2FE] px-2 py-0.5 text-[11px] font-semibold text-[#0C4A6E]">
-                                    AI
-                                  </span>
                                 </>
                               ) : (
                                 <span>{senderLabel}</span>
                               )}
                             </div>
                           ) : null}
-                          <div className={`flex ${isAgent ? "justify-start" : "justify-end"}`}>
-                            <div className={`rounded-[16px] px-6 py-4 text-sm max-w-[78%] break-words ${
+                          <div className={`flex mt-1 ${isAgent ? "justify-start" : "justify-end"}`}>
+                            <div className={`rounded-[12px] px-3 py-2 text-sm break-words ${
                               isAgent
-                                ? isAi
-                                  ? "bg-[#ECFDF5] text-[#064E3B]"
-                                  : "bg-[#F3F4F6] text-[#111827]"
-                                : "bg-white text-[#111827] border border-[#E5E7EB]/20 shadow-[0_6px_18px_rgba(2,6,23,0.03)]"
-                            } ${TRANSITION_FAST} transform-gpu`}> 
-                              <p className="mb-2 leading-relaxed">{message.text}</p>
-                              <div className={`${TIME_LABEL} text-right`}>{message.time}</div>
+                                ? "bg-[#F0FDF4] text-[#166534] border border-[#DCFCE7] shadow-[0_1px_2px_rgba(34,197,94,0.06)] max-w-md"
+                                : "bg-white text-[#111827] border border-[#E5E7EB] shadow-[0_1px_2px_rgba(0,0,0,0.03)]"
+                            } ${TRANSITION_FAST} transition-shadow transform-gpu`}> 
+                              <div className="flex flex-col">
+                                <p className="leading-relaxed text-sm">{message.text}</p>
+                                <div className={`self-end mt-0.5 text-[8px] ${isAgent ? 'text-[#16A34A]/50' : 'text-[#64748B]/50'} font-medium`}>{message.time}</div>
+                              </div>
                             </div>
                           </div>
                         </div>
                       );
                     })}
                   </div>
-                  <div className="sticky bottom-0 z-10 mt-6 bg-white/95 pt-6 pb-6 backdrop-blur-sm">
-                    <div className="rounded-[22px] bg-[#F8FAFB]/85 p-4 border border-[#E5E7EB]/10 shadow-[0_4px_12px_rgba(15,23,42,0.04)]">
-                      <div className="flex items-center gap-3">
-                        <textarea
-                          ref={textareaRef}
-                          value={messageInput}
-                          onChange={(event) => setMessageInput(event.target.value)}
-                          placeholder={`Type a message to ${activeCustomerProfile.name}...`}
-                              className={`min-w-0 flex-1 resize-none overflow-y-auto overflow-x-hidden custom-scrollbar rounded-[18px] border border-[#D1D5DB]/30 bg-white/95 px-6 py-4 text-sm leading-6 text-[#111827] outline-none placeholder:text-[#94A3B8] placeholder:font-medium focus:border-[#94A3B8] focus:ring-2 focus:ring-slate-200 ${TRANSITION_FAST}`}
-                          rows={2}
-                          style={{ minHeight: 72, maxHeight: 180 }}
-                        />
-                        <button
-                          type="button"
-                          className={"inline-flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white shadow-sm " + INTERACTION + " hover:bg-[#16A34A]"}
-                        >
-                          <Send className="h-5 w-5" />
-                        </button>
-                      </div>
+                  <div className="shrink-0 border-t border-[#E5E7EB] bg-white/50 backdrop-blur-sm px-5 py-3">
+                    <div className={`rounded-[16px] bg-white border border-[#E5E7EB] shadow-[0_2px_4px_rgba(0,0,0,0.02)] flex items-end gap-2 min-h-[56px] p-2.5 ${TRANSITION}`}>
+                      <textarea
+                        ref={textareaRef}
+                        value={messageInput}
+                        onChange={(event) => setMessageInput(event.target.value)}
+                        placeholder={`Type a message...`}
+                        className={`min-w-0 flex-1 resize-none overflow-y-auto overflow-x-hidden custom-scrollbar bg-transparent text-sm leading-5 text-[#111827] outline-none placeholder:text-[#CBD5E1] placeholder:font-regular ${TRANSITION_FAST}`}
+                        rows={1}
+                        style={{ minHeight: 36, maxHeight: 100 }}
+                      />
+                      <button
+                        type="button"
+                        className={`inline-flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white ${INTERACTION} hover:bg-[#16A34A] hover:shadow-[0_2px_6px_rgba(34,197,94,0.25)]`}
+                      >
+                        <Send className="h-4 w-4" />
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -1169,17 +1169,17 @@ export default function DashboardLayout() {
 
               {!customerCollapsed && (
                 <section className={`${CARD} h-full min-h-0 flex flex-col self-stretch overflow-hidden transition-opacity duration-300 ease-out opacity-100`}>
-                <div className="flex flex-col gap-6 min-h-0 flex-1">
-                  <div className="flex items-start justify-between gap-3 shrink-0">
+                <div className="flex flex-col gap-4 min-h-0 flex-1">
+                  <div className="flex items-start justify-between gap-3 shrink-0 px-5 py-2.5 border-b border-[#ECECEC]">
                     <div>
-                      <p className="text-[11px] font-medium uppercase tracking-[0.12em] text-[#6B7280]">Customer</p>
-                      <h2 className="mt-3 text-[28px] font-semibold text-[#111827]">{activeCustomerProfile.name}</h2>
-                      <p className="mt-1 text-sm text-[#6B7280]">{activeCustomerProfile.company}</p>
+                      <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#94A3B8]">Customer</p>
+                      <h2 className="mt-1 text-base font-semibold text-[#111827]">{activeCustomerProfile.name}</h2>
+                      <p className="mt-0.5 text-xs text-[#64748B]">{activeCustomerProfile.company}</p>
                     </div>
                     <button
                       type="button"
                       onClick={() => setCustomerCollapsed(true)}
-                      className={`inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#111827] transition-all duration-200 ease-in-out hover:bg-[#F3F4F6] shrink-0`}
+                      className={`inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#ECECEC] bg-white text-[#64748B] ${TRANSITION} hover:bg-[#F9FAFB] hover:text-[#111827] shrink-0`}
                       aria-label="Collapse customer panel"
                       title="Collapse customer panel"
                     >
@@ -1187,125 +1187,210 @@ export default function DashboardLayout() {
                     </button>
                   </div>
                     <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar">
-                      <div className="space-y-6 rounded-[22px] border border-[#E5E7EB]/10 bg-white p-6 shadow-[0_8px_24px_rgba(15,23,42,0.04)]">
-                        {/* AI-first Customer Summary */}
-                        <div className="space-y-2">
-                          <p className="text-sm font-medium text-[#334155]">Customer</p>
-                          <div className="flex items-center justify-between gap-4">
-                            <div className="min-w-0">
-                              <div className="text-sm text-[#64748B]">{activeCustomerProfile.company}</div>
-                              <div className="text-lg font-semibold text-[#0F172A] truncate">{activeCustomerProfile.name}</div>
-                              <div className="text-sm text-[#64748B] truncate">{activeCustomerProfile.phone}</div>
+                      <div className="flex min-h-full flex-col">
+                        <div className="space-y-4 px-5 py-4">
+                          <section className="space-y-4 border-b border-[#E5E7EB] pb-4">
+                            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#94A3B8]">Customer</p>
+                            <div className="grid gap-3 text-sm text-[#475569] sm:grid-cols-2">
+                              <div>
+                                <p className="text-[11px] uppercase tracking-[0.18em] text-[#94A3B8]">Name</p>
+                                <p className="mt-1 text-sm font-semibold text-[#111827] truncate">{activeCustomerProfile.name}</p>
+                              </div>
+                              <div>
+                                <p className="text-[11px] uppercase tracking-[0.18em] text-[#94A3B8]">Company</p>
+                                <p className="mt-1 text-sm text-[#64748B]">{activeCustomerProfile.company}</p>
+                              </div>
+                              <div>
+                                <p className="text-[11px] uppercase tracking-[0.18em] text-[#94A3B8]">Phone</p>
+                                <p className="mt-1 text-sm text-[#64748B] font-mono">{activeCustomerProfile.phone}</p>
+                              </div>
+                              <div>
+                                <p className="text-[11px] uppercase tracking-[0.18em] text-[#94A3B8]">Type</p>
+                                <p className="mt-1 text-sm text-[#64748B]">{isPersonalActive ? 'Personal' : 'Business'}</p>
+                              </div>
+                              <div className="sm:col-span-2">
+                                <p className="text-[11px] uppercase tracking-[0.18em] text-[#94A3B8]">Status</p>
+                                <p className="mt-1 text-sm text-[#64748B]">{activeCustomerProfile.leadStatus ?? 'Unknown'}</p>
+                              </div>
                             </div>
-                            <div>
-                              {isPersonalActive ? (
-                                <span className={`${BADGE} bg-[#F1F5F9] text-[#334155]`}><span aria-hidden>{activePersonalIcon}</span> Personal</span>
-                              ) : (
-                                <span className={`${BADGE} bg-[#F8FAFC] text-[#334155]`}>Business</span>
-                              )}
+                          </section>
+
+                          <section className="space-y-3 border-b border-[#E5E7EB] pb-4">
+                            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#94A3B8]">Status</p>
+                            <div className="space-y-3 text-sm text-[#475569]">
+                              <div className="flex flex-wrap items-center gap-2 text-sm text-[#111827]">
+                                <span className="font-semibold">Mode</span>
+                                <span className="text-[#64748B]">{isPersonalActive ? 'Personal contact' : effectiveActiveSource.startsWith('ai') ? 'AI' : 'Human agent'}</span>
+                              </div>
+                              <div className="flex flex-wrap items-center gap-2 text-sm text-[#111827]">
+                                <span className="font-semibold">Last activity</span>
+                                <span className="text-[#64748B]">{activeConversationData?.message ? formatConversationTime(activeConversationData.time) : 'No activity yet'}</span>
+                              </div>
+                              <div className="flex flex-wrap items-center gap-2 text-sm text-[#111827]">
+                                <span className="font-semibold">Needs attention</span>
+                                <span className="text-[#64748B]">{(() => {
+                                  const hit = activeMessages.find((m) => /discount|urgent|price drop|complain|complaint|refund/i.test(m.text));
+                                  return hit ? `Yes — ${hit.text}` : 'No';
+                                })()}</span>
+                              </div>
                             </div>
-                          </div>
-                        </div>
+                          </section>
 
-                        {/* AI-generated mock summaries and recommendations */}
-                        <div className="grid gap-4 sm:grid-cols-2">
-                          {/* What happened? */}
-                          <div className="rounded-lg border border-[#E5E7EB]/20 bg-[#F9FAFB] p-4">
-                            <p className="text-sm font-semibold text-[#334155]">What happened?</p>
-                            <p className="mt-2 text-sm text-[#475569]">
-                              {(() => {
-                                const recent = activeMessages.slice(-3).map((m) => `${m.from === 'customer' ? activeCustomerProfile.name : 'Agent'}: ${m.text}`);
-                                return recent.length ? recent.join(' — ') : 'No recent activity.';
-                              })()}
-                            </p>
-                          </div>
-
-                          {/* What does the customer want? */}
-                          <div className="rounded-lg border border-[#E5E7EB]/20 bg-[#F9FAFB] p-4">
-                            <p className="text-sm font-semibold text-[#334155]">What does the customer want?</p>
-                            <p className="mt-2 text-sm text-[#475569]">
-                              {(() => {
-                                const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
-                                if (text.includes('price') || text.includes('pricing') || text.includes('cost')) return 'Pricing information / quote';
-                                if (text.includes('install') || text.includes('installation') || text.includes('setup')) return 'Schedule installation';
-                                if (text.includes('cancel') || text.includes('stop service')) return 'Cancel or pause service';
-                                if (text.includes('upgrade') || text.includes('higher')) return 'Upgrade plan / upsell';
-                                return 'General inquiry — needs clarification';
-                              })()}
-                            </p>
-                          </div>
-
-                          {/* What did the AI already do? */}
-                          <div className="rounded-lg border border-[#E5E7EB]/20 bg-[#F9FAFB] p-4">
-                            <p className="text-sm font-semibold text-[#334155]">What did the AI already do?</p>
-                            <div className="mt-2 text-sm text-[#475569] space-y-1">
-                              {(() => {
-                                const aiReplies = activeMessages.filter((m) => m.from === 'agent').slice(-3);
-                                if (!aiReplies.length) return <div>No AI replies recorded.</div>;
-                                return aiReplies.map((r, i) => (
-                                  <div key={i} className="">{r.text}</div>
-                                ));
-                              })()}
+                          <section className="space-y-3 border-b border-[#E5E7EB] pb-4">
+                            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#94A3B8]">Conversation summary</p>
+                            <div className="space-y-2 rounded-[16px] bg-[#F8FAFC] p-4 text-sm text-[#475569]">
+                              <p className="text-sm text-[#111827]">Customer asked about:</p>
+                              <ul className="space-y-1 pl-4 text-sm text-[#475569] list-disc">
+                                {(() => {
+                                  const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
+                                  const topics: string[] = [];
+                                  if (/\b(business package|business|package)\b/.test(text)) topics.push('Business Package');
+                                  if (/\b(pricing|price|quote|cost)\b/.test(text)) topics.push('Pricing');
+                                  if (/\b(install|installation|setup|set up)\b/.test(text)) topics.push('Installation');
+                                  if (/\b(cancel|stop service|pause service|refund|complain|complaint)\b/.test(text)) topics.push('Cancellation');
+                                  if (/\b(upgrade|higher|more expensive|upsell)\b/.test(text)) topics.push('Upgrade / upsell');
+                                  if (!topics.length) topics.push('General inquiry');
+                                  return topics.map((topic) => <li key={topic}>{topic}</li>);
+                                })()}
+                              </ul>
                             </div>
-                          </div>
+                          </section>
 
-                          {/* What should I do next? */}
-                          <div className="rounded-lg border border-[#E5E7EB]/20 bg-[#F9FAFB] p-4">
-                            <p className="text-sm font-semibold text-[#334155]">What should I do next?</p>
-                            <ul className="mt-2 list-disc list-inside text-sm text-[#475569] space-y-1">
+                          <section className="space-y-3 border-b border-[#E5E7EB] pb-4">
+                            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#94A3B8]">AI summary</p>
+                            <div className="space-y-2 text-sm text-[#475569]">
                               {(() => {
-                                const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
-                                if (text.includes('price') || text.includes('pricing')) return (
-                                  <>
-                                    <li>Confirm exact product and send a price list.</li>
-                                    <li>Offer a limited-time discount to close the sale.</li>
-                                  </>
-                                );
-                                if (text.includes('install') || text.includes('installation')) return (
-                                  <>
-                                    <li>Propose two installation time slots.</li>
-                                    <li>Confirm any preparatory requirements.</li>
-                                  </>
-                                );
-                                if (text.includes('cancel')) return (
-                                  <>
-                                    <li>Confirm cancellation reason and retention offer.</li>
-                                    <li>Escalate to human support if needed.</li>
-                                  </>
-                                );
+                                if (isPersonalActive) {
+                                  return <p className="text-sm text-[#64748B]">Personal contacts remain in manual mode.</p>;
+                                }
+                                const text = activeMessages.filter((m) => m.from === 'agent').map((m) => m.text).join(' ').toLowerCase();
+                                const summary: string[] = [];
+                                if (/\b(pricing|price|quote|cost)\b/.test(text)) summary.push('Shared pricing');
+                                if (/\b(install|installation|setup|schedule)\b/.test(text)) summary.push('Explained installation');
+                                if (/\b(faq|question|help|answer|answered)\b/.test(text)) summary.push('Answered FAQs');
+                                if (!summary.length) summary.push(effectiveActiveSource.startsWith('ai') ? 'AI is assisting the conversation.' : 'Human agent is handling the conversation.');
                                 return (
-                                  <>
-                                    <li>Ask a clarifying question to confirm the customer's intent.</li>
-                                    <li>Summarize the customer's request and propose next steps.</li>
-                                  </>
+                                  <ul className="space-y-1 pl-4 list-disc">
+                                    {summary.map((item) => <li key={item}>{item}</li>)}
+                                  </ul>
                                 );
                               })()}
-                            </ul>
-                          </div>
-                        </div>
+                            </div>
+                          </section>
 
-                        {/* Tags & Interested Products (retained) */}
-                        <div className="grid gap-3">
-                          <div>
-                            <p className="text-sm font-medium text-[#334155]">Tags</p>
-                            <div className="mt-2 flex flex-wrap gap-2">
+                          <section className="grid gap-4 sm:grid-cols-2">
+                            <article className="flex min-h-[140px] flex-col justify-between rounded-[20px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
+                              <div className="flex items-center justify-between gap-3">
+                                <span className="text-2xl">💰</span>
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#94A3B8]">Customer wants</p>
+                              </div>
+                              <div className="mt-4 space-y-2">
+                                <p className="text-lg font-semibold text-[#111827] truncate">{(() => {
+                                  const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
+                                  if (/\b(price|pricing|quote|cost)\b/.test(text)) return 'Pricing';
+                                  if (/\b(install|installation|setup|set up)\b/.test(text)) return 'Installation';
+                                  if (/\b(cancel|stop service|pause service|refund|complain|complaint)\b/.test(text)) return 'Cancellation';
+                                  if (/\b(upgrade|higher|upsell)\b/.test(text)) return 'Upgrade / upsell';
+                                  return 'General inquiry';
+                                })()}</p>
+                                <p className="text-sm text-[#64748B]">Based on the latest conversation.</p>
+                              </div>
+                            </article>
+
+                            <article className="flex min-h-[140px] flex-col justify-between rounded-[20px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
+                              <div className="flex items-center justify-between gap-3">
+                                <span className="text-2xl">✔️</span>
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#94A3B8]">AI already did</p>
+                              </div>
+                              <div className="mt-4 space-y-2">
+                                <p className="text-lg font-semibold text-[#111827] truncate">{(() => {
+                                  const text = activeMessages.filter((m) => m.from === 'agent').map((m) => m.text).join(' ').toLowerCase();
+                                  const summary: string[] = [];
+                                  if (/\b(price|pricing|quote|cost)\b/.test(text)) summary.push('Shared pricing');
+                                  if (/\b(install|installation|setup|schedule)\b/.test(text)) summary.push('Explained installation');
+                                  if (/\b(faq|question|help|answer|answered)\b/.test(text)) summary.push('Answered FAQs');
+                                  if (!summary.length) summary.push('Assisted in conversation');
+                                  return summary.slice(0, 2).join(' • ');
+                                })()}</p>
+                                <p className="text-sm text-[#64748B]">Key actions completed by the assistant.</p>
+                              </div>
+                            </article>
+
+                            <article className="flex min-h-[140px] flex-col justify-between rounded-[20px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
+                              <div className="flex items-center justify-between gap-3">
+                                <span className="text-2xl">⚠️</span>
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#94A3B8]">Needs attention</p>
+                              </div>
+                              <div className="mt-4 space-y-2">
+                                <p className="text-lg font-semibold text-[#111827] truncate">{(() => {
+                                  const hit = activeMessages.find((m) => /discount|urgent|price drop|complain|complaint|refund/i.test(m.text));
+                                  return hit ? hit.text : 'None';
+                                })()}</p>
+                                <p className="text-sm text-[#64748B]">Checked for urgency and risk signals.</p>
+                              </div>
+                            </article>
+
+                            <article className="flex min-h-[140px] flex-col justify-between rounded-[20px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
+                              <div className="flex items-center justify-between gap-3">
+                                <span className="text-2xl">📈</span>
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#94A3B8]">Intent</p>
+                              </div>
+                              <div className="mt-4 space-y-2">
+                                <p className="text-xl font-semibold text-[#111827] truncate">{(() => {
+                                  const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
+                                  const buyKeywords = (text.match(/buy|purchase|order|subscribe|sign up|proceed/g) || []).length;
+                                  const infoKeywords = (text.match(/price|pricing|cost|quote/g) || []).length;
+                                  const score = Math.min(95, 40 + buyKeywords * 20 + infoKeywords * 10);
+                                  return `${score}%`;
+                                })()}</p>
+                                <p className="text-sm text-[#64748B]">{(() => {
+                                  const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
+                                  const buyKeywords = (text.match(/buy|purchase|order|subscribe|sign up|proceed/g) || []).length;
+                                  const infoKeywords = (text.match(/price|pricing|cost|quote/g) || []).length;
+                                  return buyKeywords > infoKeywords ? 'High purchase intent' : infoKeywords > 0 ? 'Consideration' : 'Inquiry';
+                                })()}</p>
+                              </div>
+                            </article>
+
+                            <article className="flex min-h-[140px] flex-col justify-between rounded-[20px] border border-[#E5E7EB] bg-white p-4 shadow-sm sm:col-span-2">
+                              <div className="flex items-center justify-between gap-3">
+                                <span className="text-2xl">➡️</span>
+                                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#94A3B8]">Recommended next step</p>
+                              </div>
+                              <div className="mt-4 space-y-2">
+                                <p className="text-lg font-semibold text-[#111827] truncate">{(() => {
+                                  const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
+                                  if (/\b(price|pricing|quote|cost)\b/.test(text)) return 'Offer Business Package brochure.';
+                                  if (/\b(install|installation|setup|schedule)\b/.test(text)) return 'Propose installation slots.';
+                                  if (/\b(cancel|stop service|refund|complain|complaint)\b/.test(text)) return 'Confirm reason and offer retention.';
+                                  return 'Ask a clarifying question.';
+                                })()}</p>
+                                <p className="text-sm text-[#64748B]">Action recommendation based on recent messages.</p>
+                              </div>
+                            </article>
+                          </section>
+
+                          <section className="space-y-3 border-b border-[#E5E7EB] pb-4">
+                            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#94A3B8]">Tags</p>
+                            <div className="flex flex-wrap gap-2">
                               {activeCustomerProfile.tags.map((tag) => (
                                 <span key={tag} className={`${BADGE} bg-[#F8FAFC] text-[#334155]`}>{tag}</span>
                               ))}
                             </div>
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-[#334155]">Interested Products</p>
-                            <div className="mt-2 flex flex-wrap gap-2">
+                          </section>
+
+                          <section className="space-y-3 pb-4">
+                            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#94A3B8]">Interested products</p>
+                            <div className="flex flex-wrap gap-2">
                               {activeCustomerProfile.interestedProducts.map((product) => (
                                 <span key={product} className={`${BADGE} bg-[#F8FAFC] text-[#334155]`}>{product}</span>
                               ))}
                             </div>
-                          </div>
+                          </section>
                         </div>
                       </div>
                     </div>
-                </div>
+                  </div>
 
                 {/* AI Assistant and Quick Products removed from Customer card per request */}
                 </section>
@@ -1321,7 +1406,7 @@ export default function DashboardLayout() {
                 </div>
                 <button
                   type="button"
-                  className="inline-flex items-center gap-2 rounded-2xl bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"
+                  className="inline-flex items-center gap-2 rounded-[16px] bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"
                 >
                   <Plus className="h-4 w-4" />
                   Create Status Post
@@ -1339,7 +1424,7 @@ export default function DashboardLayout() {
                   </div>
                    <div className="mt-6 space-y-4">
                      {scheduledPosts.map((post) => (
-                       <div key={post.id} className="rounded-[22px] border border-[#E5E7EB]/70 bg-[#F8FAFC]/70 p-4">
+                       <div key={post.id} className="rounded-[24px] border border-[#E5E7EB]/70 bg-[#F8FAFC]/70 p-4">
                          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                            <div className="min-w-0">
                              <p className="text-sm font-semibold text-[#111827]">{post.caption}</p>
@@ -1370,7 +1455,7 @@ export default function DashboardLayout() {
                       <input
                         type="file"
                         accept="image/*"
-                        className="mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] file:mr-4 file:rounded-full file:border-0 file:bg-[#22C55E] file:px-4 file:py-2 file:text-sm file:text-white"
+                        className="mt-2 w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] file:mr-4 file:rounded-full file:border-0 file:bg-[#22C55E] file:px-4 file:py-2 file:text-sm file:text-white"
                         onChange={(event) => {
                           const fileName = event.target.files?.[0]?.name;
                           setNewPost((prev) => ({ ...prev, image: fileName ?? "" }));
@@ -1385,7 +1470,7 @@ export default function DashboardLayout() {
                           value={newPost.caption}
                           onChange={(event) => setNewPost((prev) => ({ ...prev, caption: event.target.value }))}
                           placeholder="Write a short caption for this status post"
-                          className="mt-2 h-32 w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
+                          className="mt-2 h-32 w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
                         />
                     </label>
                     <div className="grid gap-4 sm:grid-cols-2">
@@ -1428,9 +1513,9 @@ export default function DashboardLayout() {
               </div>
             </div>
           )}
-          {selected === "Broadcasts" && (
-              <div className="p-6 bg-white rounded-[22px] border border-[#E5E7EB]/30 shadow-[0_6px_18px_rgba(16,24,40,0.04)]">Sokoos Broadcasts</div>
-          )}
+            {selected === "Broadcasts" && (
+              <div className="p-6 bg-white rounded-[24px] border border-[#E5E7EB]/30 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">Sokoos Broadcasts</div>
+            )}
           {selected === "Customers" && (
             <div className={`space-y-6 ${CARD}`}>
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -1446,14 +1531,14 @@ export default function DashboardLayout() {
                   <input
                     type="text"
                     value={customerSearch}
-                    onChange={(event) => setCustomerSearch(event.target.value)}
+                                       onChange={(event) => setCustomerSearch(event.target.value)}
                     placeholder="Search customers by name, phone, product or status"
-                    className="w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] py-3 pl-11 pr-4 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5] sm:w-85"
+                    className="w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] py-3 pl-11 pr-4 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5] sm:w-85"
                   />
                 </div>
               </div>
 
-              <div className="overflow-hidden rounded-3xl border border-[#E5E7EB]/20 bg-[#FFFFFF] shadow-[0_6px_18px_rgba(16,24,40,0.04)]">
+              <div className="overflow-hidden rounded-[24px] border border-[#E5E7EB]/20 bg-[#FFFFFF] shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
                 <table className="min-w-full divide-y divide-[#E5E7EB]/20 text-left">
                   <thead className="bg-[#F9FAFB]">
                     <tr>
@@ -1469,7 +1554,7 @@ export default function DashboardLayout() {
                     {filteredCustomers.filter((customer) => !isPersonalByPhone(customer.phone)).map((customer) => (
                       <tr key={customer.id} className="hover:bg-[#F3F4F6] transition-colors">
                         <td className="px-6 py-4">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ECFDF5] text-sm font-semibold text-[#16A34A]">
+                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ECFCE7] text-sm font-semibold text-[#166534]">
                             {customer.avatar}
                           </div>
                         </td>
@@ -1516,7 +1601,7 @@ export default function DashboardLayout() {
                 </div>
                 <button
                   type="button"
-                  className="inline-flex items-center justify-center rounded-2xl bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"
+                  className="inline-flex items-center justify-center rounded-[16px] bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"
                 >
                   Add Product
                 </button>
@@ -1524,7 +1609,7 @@ export default function DashboardLayout() {
 
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 {products.map((product) => (
-                  <div key={product.id} className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
+                  <div key={product.id} className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
                     <div className="flex items-start justify-between gap-4">
                       <div>
                         <p className="text-sm font-medium text-[#6B7280]">{product.name}</p>
@@ -1614,7 +1699,7 @@ export default function DashboardLayout() {
                 <div className="space-y-6 pt-4">
                   {assistantTab === "Business Knowledge" && (
                     <div className="space-y-6">
-                      <section className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
+                      <section className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
                         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                           <div>
                             <p className="text-sm font-semibold text-[#111827]">Business Information</p>
@@ -1654,7 +1739,7 @@ export default function DashboardLayout() {
                               <textarea
                                 value={businessInfo.about}
                                 onChange={(event) => setBusinessInfo((prev) => ({ ...prev, about: event.target.value }))}
-                                className="mt-2 min-h-[130px] w-full rounded-3xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                                className="mt-2 min-h-[130px] w-full rounded-[24px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                               />
                             </div>
                             <div>
@@ -1677,7 +1762,7 @@ export default function DashboardLayout() {
                         </div>
                       </section>
 
-                      <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                      <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                           <div>
                             <p className="text-sm font-semibold text-[#111827]">Products & Services</p>
@@ -1709,7 +1794,7 @@ export default function DashboardLayout() {
                                   )
                                 }
                                 placeholder="Product name"
-                                className="w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                                className="w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                               />
                               <input
                                 value={product.price}
@@ -1721,14 +1806,14 @@ export default function DashboardLayout() {
                                   )
                                 }
                                 placeholder="Price"
-                                className="w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                                className="w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                               />
                             </div>
                           ))}
                         </div>
                       </section>
 
-                      <section className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
+                      <section className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                           <div>
                             <p className="text-sm font-semibold text-[#111827]">FAQs</p>
@@ -1749,7 +1834,7 @@ export default function DashboardLayout() {
                         </div>
                         <div className="mt-6 space-y-4">
                           {faqItems.map((faq) => (
-                            <div key={faq.id} className="space-y-3 rounded-3xl bg-white p-5 shadow-sm">
+                            <div key={faq.id} className="space-y-3 rounded-[24px] bg-white p-5 shadow-sm">
                               <div>
                                 <label className="text-sm font-semibold text-[#111827]">Question</label>
                                 <input
@@ -1761,7 +1846,7 @@ export default function DashboardLayout() {
                                       )
                                     )
                                   }
-                                  className="mt-2 w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                                  className="mt-2 w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                                 />
                               </div>
                               <div>
@@ -1775,7 +1860,7 @@ export default function DashboardLayout() {
                                       )
                                     )
                                   }
-                                  className="mt-2 min-h-[100px] w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                                  className="mt-2 min-h-[100px] w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                                 />
                               </div>
                             </div>
@@ -1783,7 +1868,7 @@ export default function DashboardLayout() {
                         </div>
                       </section>
 
-                      <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                      <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
                         <div className="space-y-4">
                           <div>
                             <p className="text-sm font-semibold text-[#111827]">Policies</p>
@@ -1797,7 +1882,7 @@ export default function DashboardLayout() {
                               <textarea
                                 value={policies.returnPolicy}
                                 onChange={(event) => setPolicies((prev) => ({ ...prev, returnPolicy: event.target.value }))}
-                                className="mt-2 min-h-[100px] w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                                className="mt-2 min-h-[100px] w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                               />
                             </div>
                             <div>
@@ -1805,7 +1890,7 @@ export default function DashboardLayout() {
                               <textarea
                                 value={policies.deliveryPolicy}
                                 onChange={(event) => setPolicies((prev) => ({ ...prev, deliveryPolicy: event.target.value }))}
-                                className="mt-2 min-h-[100px] w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                                className="mt-2 min-h-[100px] w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                               />
                             </div>
                             <div>
@@ -1813,7 +1898,7 @@ export default function DashboardLayout() {
                               <textarea
                                 value={policies.cancellationPolicy}
                                 onChange={(event) => setPolicies((prev) => ({ ...prev, cancellationPolicy: event.target.value }))}
-                                className="mt-2 min-h-[100px] w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                                className="mt-2 min-h-[100px] w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                               />
                             </div>
                           </div>
@@ -1824,7 +1909,7 @@ export default function DashboardLayout() {
 
                   {assistantTab === "AI Settings" && (
                     <div className="space-y-6">
-                      <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                      <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
                         <p className="text-sm font-semibold text-[#111827]">AI Identity</p>
                         <p className="mt-1 text-sm text-[#6B7280]">Give your assistant a name and personality.</p>
                         <div className="mt-4 space-y-4">
@@ -1837,14 +1922,14 @@ export default function DashboardLayout() {
                               type="text"
                               value={assistantName}
                               onChange={(event) => setAssistantName(event.target.value)}
-                              className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                              className="mt-2 w-full rounded-[18px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                               placeholder="e.g., Nuru"
                             />
                           </div>
                         </div>
                       </section>
 
-                      <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                      <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
                         <p className="text-sm font-semibold text-[#111827]">Languages</p>
                         <p className="mt-1 text-sm text-[#6B7280]">Choose which languages your assistant uses.</p>
                         <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -1893,7 +1978,7 @@ export default function DashboardLayout() {
                         </div>
                       </section>
 
-                      <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                      <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
                         <p className="text-sm font-semibold text-[#111827]">Tone</p>
                         <p className="mt-1 text-sm text-[#6B7280]">Select how your assistant communicates with customers.</p>
                         <div className="mt-4 space-y-3">
@@ -1913,7 +1998,7 @@ export default function DashboardLayout() {
                         </div>
                       </section>
 
-                      <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                      <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
                         <p className="text-sm font-semibold text-[#111827]">Sales Behavior</p>
                         <p className="mt-1 text-sm text-[#6B7280]">Configure how your assistant handles sales interactions.</p>
                         <div className="mt-4 space-y-3">
@@ -1947,7 +2032,7 @@ export default function DashboardLayout() {
                         </div>
                       </section>
 
-                      <div className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-5 text-sm text-[#6B7280]">
+                      <div className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-5 text-sm text-[#6B7280]">
                         <p className="font-semibold text-[#111827]">Note</p>
                         <p className="mt-2">
                           These settings control how your assistant represents your business and interacts with customers. All changes are saved automatically.
@@ -1958,7 +2043,7 @@ export default function DashboardLayout() {
 
                   {assistantTab === "Test AI" && (
                     <div className="grid gap-6 lg:grid-cols-[1.4fr_0.8fr]">
-                      <section className="rounded-3xl border border-[#E5E7EB] bg-white shadow-sm">
+                      <section className="rounded-[24px] border border-[#E5E7EB] bg-white shadow-sm">
                         <div className="flex h-full min-h-[620px] flex-col">
                           <div className="border-b border-[#E5E7EB] p-6">
                             <p className="text-sm font-semibold text-[#111827]">Test your assistant</p>
@@ -1967,7 +2052,7 @@ export default function DashboardLayout() {
                           <div ref={testAiScrollRef} className="flex-1 overflow-y-auto px-6 py-5 space-y-4 bg-[#F9FAFB]">
                             {testAiMessages.map((message) => (
                               <div key={message.id} className={`max-w-[90%] ${message.role === "user" ? "ml-auto text-right" : "mr-auto text-left"}`}>
-                                <div className={`inline-block rounded-3xl px-5 py-4 text-sm shadow-sm ${
+                                <div className={`inline-block rounded-[24px] px-5 py-4 text-sm shadow-sm ${
                                   message.role === "user"
                                     ? "bg-[#22C55E] text-white"
                                     : "bg-white text-[#111827]"
@@ -1997,7 +2082,7 @@ export default function DashboardLayout() {
                                     sendTestAiMessage();
                                   }
                                 }}
-                                className="min-h-[110px] w-full rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                                className="min-h-[110px] w-full rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                                 placeholder="Type a message to the assistant..."
                               />
                               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -2015,7 +2100,7 @@ export default function DashboardLayout() {
                         </div>
                       </section>
 
-                      <section className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
+                      <section className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
                         <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#6B7280]">Quick prompts</p>
                         <div className="mt-4 space-y-3">
                           {TEST_AI_PROMPTS.map((prompt) => (
@@ -2035,7 +2120,7 @@ export default function DashboardLayout() {
 
                   {assistantTab === "Escalation Rules" && (
                     <div className="space-y-6">
-                      <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                      <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
                         <p className="text-sm font-semibold text-[#111827]">Escalation Rules</p>
                         <p className="mt-2 text-sm text-[#6B7280]">Choose which situations trigger handoff to a human representative.</p>
                         <div className="mt-6 space-y-3">
@@ -2114,7 +2199,7 @@ export default function DashboardLayout() {
                         </div>
                       </section>
 
-                      <div className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-5 text-sm text-[#6B7280]">
+                      <div className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-5 text-sm text-[#6B7280]">
                         <p className="font-semibold text-[#111827]">How escalation works</p>
                         <p className="mt-2">
                           When these situations occur, the AI stops responding and requests owner intervention. You'll receive a notification and can take over the conversation.
@@ -2125,7 +2210,7 @@ export default function DashboardLayout() {
 
                   {assistantTab === "Conversation Policies" && (
                     <div className="space-y-6">
-                      <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                      <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
                         <p className="text-sm font-semibold text-[#111827]">Business Hours</p>
                         <p className="mt-2 text-sm text-[#6B7280]">Set the hours when your business operates.</p>
                         <div className="mt-4">
@@ -2137,14 +2222,14 @@ export default function DashboardLayout() {
                             type="text"
                             value={businessHours}
                             onChange={(event) => setBusinessHours(event.target.value)}
-                            className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                            className="mt-2 w-full rounded-[18px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                             placeholder="e.g., 8:00 AM - 6:00 PM"
                           />
                           <p className="mt-2 text-xs text-[#6B7280]">Example: Mon–Fri 8:00 AM - 6:00 PM, Sat 9:00 AM - 2:00 PM</p>
                         </div>
                       </section>
 
-                      <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                      <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
                         <p className="text-sm font-semibold text-[#111827]">Outside Business Hours</p>
                         <p className="mt-2 text-sm text-[#6B7280]">Choose how the AI behaves when customers message outside operating hours.</p>
                         <div className="mt-4 space-y-3">
@@ -2193,7 +2278,7 @@ export default function DashboardLayout() {
                         </div>
                       </section>
 
-                      <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                      <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
                         <p className="text-sm font-semibold text-[#111827]">Maximum AI Messages</p>
                         <p className="mt-2 text-sm text-[#6B7280]">Limit how many consecutive messages the AI can send before escalating to a human.</p>
                         <div className="mt-4">
@@ -2212,7 +2297,7 @@ export default function DashboardLayout() {
                         </div>
                       </section>
 
-                      <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm space-y-4">
+                      <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm space-y-4">
                         <div>
                           <div className="flex items-center justify-between gap-4">
                             <div>
@@ -2253,7 +2338,7 @@ export default function DashboardLayout() {
                         </div>
                       </section>
 
-                      <div className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-5 text-sm text-[#6B7280]">
+                      <div className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-5 text-sm text-[#6B7280]">
                         <p className="font-semibold text-[#111827]">Note</p>
                         <p className="mt-2">
                           These policies guide how your AI assistant handles conversations across different scenarios. All changes are automatically saved and take effect immediately.
@@ -2279,11 +2364,13 @@ export default function DashboardLayout() {
 
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 {ANALYTICS_METRICS.map((metric) => (
-                  <div key={metric.label} className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-5 shadow-sm">
+                  <div key={metric.label} className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-5 shadow-sm">
                     <p className="text-sm font-medium text-[#6B7280]">{metric.label}</p>
                     <div className="mt-4 flex items-end justify-between gap-4">
                       <p className="text-3xl font-semibold text-[#111827]">{metric.value}</p>
-                      <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#166534]">{metric.delta}</span>
+                      <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#166534]">
+                        {metric.delta}
+                      </span>
                     </div>
                     <p className="mt-3 text-sm text-[#6B7280]">{metric.description}</p>
                   </div>
@@ -2291,10 +2378,10 @@ export default function DashboardLayout() {
               </div>
 
               <div className="grid gap-6 lg:grid-cols-[1.4fr_0.9fr]">
-                <section className="rounded-3xl border border-[#E5E7EB] bg-[#FFFFFF] p-6 shadow-sm">
+                <section className="rounded-[24px] border border-[#E5E7EB] bg-[#FFFFFF] p-6 shadow-sm">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-semibold text-[#111827]">Weekly messages</p>
+                      <p className="text-sm font-medium text-[#6B7280]">Weekly messages</p>
                       <p className="mt-2 text-sm text-[#6B7280]">Volume of incoming messages per day.</p>
                     </div>
                     <span className="rounded-full bg-[#F3F4F6] px-3 py-1 text-xs font-semibold text-[#6B7280]">Mock trends</span>
@@ -2313,18 +2400,18 @@ export default function DashboardLayout() {
                         );
                       })}
                     </div>
-                    <div className="rounded-3xl bg-[#F9FAFB] p-4 text-sm text-[#6B7280]">
+                    <div className="rounded-[24px] bg-[#F9FAFB] p-4 text-sm text-[#6B7280]">
                       This chart shows weekly engagement across your WhatsApp campaign messages.
                     </div>
                   </div>
                 </section>
 
-                <section className="space-y-6 rounded-3xl border border-[#E5E7EB] bg-[#FFFFFF] p-6 shadow-sm">
+                <section className="space-y-6 rounded-[24px] border border-[#E5E7EB] bg-[#FFFFFF] p-6 shadow-sm">
                   <div>
                     <p className="text-sm font-semibold text-[#111827]">Top Questions</p>
                     <div className="mt-4 space-y-3">
-                      {TOP_QUESTIONS.map((item) => (
-                        <div key={item.question} className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+                        {TOP_QUESTIONS.map((item) => (
+                        <div key={item.question} className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
                           <p className="font-medium text-[#111827]">{item.question}</p>
                           <p className="mt-2 text-sm text-[#6B7280]">{item.volume} requests</p>
                         </div>
@@ -2335,7 +2422,7 @@ export default function DashboardLayout() {
                     <p className="text-sm font-semibold text-[#111827]">Popular Products</p>
                     <div className="mt-4 space-y-3">
                       {POPULAR_PRODUCTS.map((product) => (
-                        <div key={product.name} className="flex items-center justify-between rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+                        <div key={product.name} className="flex items-center justify-between rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
                           <div>
                             <p className="font-medium text-[#111827]">{product.name}</p>
                             <p className="text-sm text-[#6B7280]">Top choice for new customers</p>
@@ -2362,7 +2449,7 @@ export default function DashboardLayout() {
               </div>
 
               <div className="grid gap-6 lg:grid-cols-2">
-                <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
                   <p className="text-sm font-semibold text-[#111827]">Business Details</p>
                   <div className="mt-4 space-y-4">
                     <div>
@@ -2371,7 +2458,7 @@ export default function DashboardLayout() {
                         type="text"
                         value={businessProfile.name}
                         onChange={(e) => setBusinessProfile((s) => ({ ...s, name: e.target.value }))}
-                        className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        className="mt-2 w-full rounded-[18px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="e.g., Sokoos Internet"
                       />
                     </div>
@@ -2381,7 +2468,7 @@ export default function DashboardLayout() {
                         type="text"
                         value={businessProfile.industry}
                         onChange={(e) => setBusinessProfile((s) => ({ ...s, industry: e.target.value }))}
-                        className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        className="mt-2 w-full rounded-[18px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="e.g., Telecom & Connectivity"
                       />
                     </div>
@@ -2390,7 +2477,7 @@ export default function DashboardLayout() {
                       <textarea
                         value={businessProfile.description}
                         onChange={(e) => setBusinessProfile((s) => ({ ...s, description: e.target.value }))}
-                        className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        className="mt-2 w-full rounded-[18px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="What does your business do?"
                         rows={4}
                       />
@@ -2398,7 +2485,7 @@ export default function DashboardLayout() {
                   </div>
                 </section>
 
-                <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
                   <p className="text-sm font-semibold text-[#111827]">Contact Information</p>
                   <div className="mt-4 space-y-4">
                     <div>
@@ -2407,7 +2494,7 @@ export default function DashboardLayout() {
                         type="tel"
                         value={businessProfile.phone}
                         onChange={(e) => setBusinessProfile((s) => ({ ...s, phone: e.target.value }))}
-                        className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        className="mt-2 w-full rounded-[18px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="e.g., +254 20 3949 0101"
                       />
                     </div>
@@ -2417,7 +2504,7 @@ export default function DashboardLayout() {
                         type="email"
                         value={businessProfile.email}
                         onChange={(e) => setBusinessProfile((s) => ({ ...s, email: e.target.value }))}
-                        className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        className="mt-2 w-full rounded-[18px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="e.g., support@sokoos.co.ke"
                       />
                     </div>
@@ -2427,7 +2514,7 @@ export default function DashboardLayout() {
                         type="text"
                         value={businessProfile.location}
                         onChange={(e) => setBusinessProfile((s) => ({ ...s, location: e.target.value }))}
-                        className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        className="mt-2 w-full rounded-[18px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="e.g., Nairobi, Kenya"
                       />
                     </div>
@@ -2436,7 +2523,7 @@ export default function DashboardLayout() {
               </div>
 
               <div className="grid gap-6 lg:grid-cols-2">
-                <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
                   <p className="text-sm font-semibold text-[#111827]">Operations</p>
                   <div className="mt-4 space-y-4">
                     <div>
@@ -2462,7 +2549,7 @@ export default function DashboardLayout() {
                   </div>
                 </section>
 
-                <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
                   <p className="text-sm font-semibold text-[#111827]">Payment Methods</p>
                   <div className="mt-4 space-y-3">
                     <label className="flex items-center gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
@@ -2516,7 +2603,7 @@ export default function DashboardLayout() {
               </div>
 
               <div className="grid gap-6 lg:grid-cols-[1.4fr_0.6fr]">
-                <section className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
                   <p className="text-sm font-semibold text-[#111827]">Contacts</p>
                   <p className="mt-1 text-sm text-[#6B7280]">Card view of personal contacts stored for quick reference.</p>
                   <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -2534,7 +2621,7 @@ export default function DashboardLayout() {
                   </div>
                 </section>
 
-                <aside className="rounded-3xl border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
+                <aside className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
                   <p className="text-sm font-semibold text-[#111827]">Add Contact</p>
                   <p className="mt-1 text-sm text-[#6B7280]">Add a personal contact for quick access.</p>
                   <div className="mt-4 space-y-3">
