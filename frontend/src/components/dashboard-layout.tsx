@@ -160,12 +160,12 @@ const CUSTOMERS = [
   {
     id: "u5",
     avatar: "SR",
-    name: "Susan Rono",
-    phone: "+254 714 555 777",
-    leadStatus: "Cold lead",
-    interestedProduct: "10 Mbps",
-    lastInteraction: "Jul 01, 2026",
-  },
+     name: "Susan Rono",
+     phone: "+254 714 555 777",
+     leadStatus: "Cold lead",
+     interestedProduct: "10 Mbps",
+     lastInteraction: "Jul 01, 2026",
+   },
 ];
 
 const PRODUCTS = [
@@ -996,9 +996,9 @@ export default function DashboardLayout() {
                         <button
                           key={conversation.id}
                           onClick={() => setActiveConversation(conversation.id)}
-                          className={`w-full overflow-hidden rounded-[16px] border px-3 py-2 h-[86px] text-left ${TRANSITION} transform-gpu flex flex-col gap-1.5 justify-between ${
+                          className={`w-full overflow-hidden rounded-[16px] border px-3 py-3 min-h-[96px] text-left ${TRANSITION} transform-gpu flex flex-col gap-3 ${
                               active
-                                ? "bg-[#F0FDF4] border-[#22C55E] ring-1 ring-[#22C55E]/30 shadow-[0_2px_8px_rgba(34,197,94,0.12)]"
+                                ? "bg-white border-[#D1EECF] ring-1 ring-[#22C55E]/20"
                                 : "bg-white border-[#E5E7EB] hover:bg-[#FAFBFC] hover:border-[#D1D5DB]"
                           }`}
                         >
@@ -1021,7 +1021,7 @@ export default function DashboardLayout() {
                             </div>
                           </div>
 
-                          {/* Badge Row: Status badge + Message preview */}
+                          {/* Badge Row: Status badge + Unread badge */}
                           <div className="flex items-center gap-2">
                             {(() => {
                               const badge = getConversationStatusBadge(effectiveSource, isPersonal);
@@ -1031,13 +1031,13 @@ export default function DashboardLayout() {
                                 </span>
                               );
                             })()}
-                            <p className={`min-w-0 flex-1 ${MESSAGE_PREVIEW} truncate text-sm text-[#64748B] leading-tight`}>{conversation.message}</p>
-                            <div className="flex-shrink-0">
+                            <div className="ml-auto flex-shrink-0">
                               {conversation.badge > 0 ? (
                                 <span className={`inline-flex min-w-[20px] h-5 items-center justify-center rounded-full bg-[#22C55E] text-white text-[10px] font-bold`}>{conversation.badge}</span>
                               ) : null}
                             </div>
                           </div>
+                          <p className={`min-w-0 truncate text-sm text-[#64748B] leading-5 ${MESSAGE_PREVIEW}`}>{conversation.message}</p>
                         </button>
                       );
                     })}
