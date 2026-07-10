@@ -69,17 +69,17 @@ const QUICK_ACTION_BUTTON = `w-full ${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-
 const INPUT_FIELD = `mt-3 w-full ${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-[#F9FAFB] px-4 py-3 text-[15px] text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7] ` + TRANSITION + " focus:shadow-none";
 const INPUT_FIELD_WHITE = `mt-3 w-full ${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-white px-4 py-3 text-[15px] text-[#111827] shadow-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7] ` + TRANSITION + " focus:shadow-none";
 // Typography tokens for consistent hierarchy
-const PANEL_TITLE = "text-[24px] font-bold text-[#111827]";
+const PANEL_TITLE = "text-[24px] font-semibold text-[#111827]";
 const SECTION_HEADING = "text-[12px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]";
-const CARD_TITLE = "text-[20px] font-semibold mb-6 text-[#0F172A]";
-const PAGE_TITLE = "text-[28px] font-bold text-[#0F172A]";
-const CUSTOMER_NAME = "text-[28px] font-bold text-[#111827]";
-const BODY_TEXT = "text-[14px] text-[#475569]";
-const BODY_MEDIUM = "text-[14px] font-semibold text-[#111827]";
+const CARD_TITLE = "text-[28px] font-semibold mb-6 text-[#0F172A]";
+const PAGE_TITLE = "text-[34px] font-semibold text-[#0F172A]";
+const CUSTOMER_NAME = "text-[28px] font-semibold text-[#111827]";
+const BODY_TEXT = "text-[15px] text-[#475569]";
+const BODY_MEDIUM = "text-[15px] font-semibold text-[#111827]";
 const SECONDARY = "text-[12px] text-[#64748B]";
-const MESSAGE_PREVIEW = "text-[14px] text-[#475569]";
+const MESSAGE_PREVIEW = "text-[15px] text-[#475569]";
 const TIME_LABEL = "text-[12px] text-[#64748B]";
-const CAPTION = "text-[12px] text-[#64748B]";
+const CAPTION = "text-[13px] text-[#64748B]";
 const BADGE = "inline-flex h-7 items-center gap-1.5 rounded-full px-3 text-[12px] font-medium tracking-[0.02em] transition-colors duration-200 ease";
 const BADGE_ICON = "h-2.5 w-2.5 rounded-full";
 
@@ -752,7 +752,7 @@ export default function DashboardLayout() {
         <div className="px-4 pb-4">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="h-8 w-8 rounded-md bg-[#22C55E] flex items-center justify-center text-white font-bold">S</div>
+              <div className="h-8 w-8 rounded-md bg-[#22C55E] flex items-center justify-center text-white font-semibold">S</div>
               <span className="sr-only">Sokoos</span>
             </div>
             <div className="h-10 w-10" />
@@ -788,8 +788,8 @@ export default function DashboardLayout() {
             <div className="h-full flex flex-col pt-4">
               <div className="px-4 pb-4">
                 <div className="flex items-center gap-3">
-                  <div className="h-8 w-8 rounded-md bg-[#22C55E] flex items-center justify-center text-white font-bold">S</div>
-                  <span className="text-lg font-bold">Sokoos</span>
+                  <div className="h-8 w-8 rounded-md bg-[#22C55E] flex items-center justify-center text-white font-semibold">S</div>
+                  <span className="text-lg font-semibold">Sokoos</span>
                 </div>
               </div>
               <nav className="flex-1 overflow-y-auto px-4">
@@ -832,7 +832,7 @@ export default function DashboardLayout() {
           <Menu className="h-5 w-5" />
         </button>
         <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-md bg-[#22C55E] flex items-center justify-center text-white font-bold">S</div>
+          <div className="h-8 w-8 rounded-md bg-[#22C55E] flex items-center justify-center text-white font-semibold">S</div>
           <span className="font-semibold">Sokoos</span>
         </div>
       </header>
@@ -844,7 +844,7 @@ export default function DashboardLayout() {
           <div className="absolute left-0 top-0 bottom-0 w-72 bg-[#FFFFFF] border-r border-[#E5E7EB]/10 p-4 overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-md bg-[#22C55E] flex items-center justify-center text-white font-bold">S</div>
+                <div className="h-8 w-8 rounded-md bg-[#22C55E] flex items-center justify-center text-white font-semibold">S</div>
                 <span className="font-semibold">Sokoos</span>
               </div>
               <button onClick={() => setMobileOpen(false)} className="p-2 rounded-md hover:bg-[#F3F4F6]">
@@ -1061,7 +1061,7 @@ export default function DashboardLayout() {
                             })()}
                             <div className="ml-auto flex-shrink-0">
                               {conversation.badge > 0 ? (
-                                <span className={`inline-flex min-w-[18px] h-4 items-center justify-center rounded-full bg-[#22C55E] text-white text-[10px] font-bold`}>{conversation.badge}</span>
+                                <span className={`inline-flex min-w-[18px] h-4 items-center justify-center rounded-full bg-[#22C55E] text-white text-[10px] font-semibold`}>{conversation.badge}</span>
                               ) : null}
                             </div>
                           </div>
