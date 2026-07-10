@@ -38,7 +38,6 @@ const NAV_ITEMS: { label: string; href: string; Icon: any }[] = [
   { label: "Analytics", href: "/dashboard/analytics", Icon: Activity },
   { label: "Settings", href: "/dashboard/settings", Icon: Settings },
 ];
-
 const STAT_CARDS = [
   { label: "Messages Today", value: "1,284", delta: "+18%" },
   { label: "AI Responses", value: "912", delta: "+24%" },
