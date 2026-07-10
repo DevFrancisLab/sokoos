@@ -1170,152 +1170,141 @@ export default function DashboardLayout() {
 
               {!customerCollapsed && (
                 <section className={`${CARD} w-full md:w-[360px] flex-shrink-0 h-full min-h-0 flex flex-col transition-opacity duration-300 ease-out opacity-100`}>
-                <div className="flex items-start justify-between gap-3 shrink-0 px-5 py-2.5 border-b border-[#ECECEC]">
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#94A3B8]">Customer</p>
-                    <h2 className="mt-1 text-base font-semibold text-[#111827]">{activeCustomerProfile.name}</h2>
-                    <p className="mt-0.5 text-xs text-[#64748B]">{activeCustomerProfile.company}</p>
+                  {/* Header */}
+                  <div className="flex items-start justify-between gap-3 shrink-0 px-5 py-3 border-b border-[#ECECEC]">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#94A3B8]">Customer</p>
+                      <h2 className="mt-1 text-base font-semibold text-[#111827]">{activeCustomerProfile.name}</h2>
+                      <p className="mt-1 text-xs text-[#64748B]">{activeCustomerProfile.company}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setCustomerCollapsed(true)}
+                      className={`inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#ECECEC] bg-white text-[#64748B] ${TRANSITION} hover:bg-[#F9FAFB] hover:text-[#111827] shrink-0`}
+                      aria-label="Collapse customer panel"
+                      title="Collapse customer panel"
+                    >
+                      <ChevronRight className="h-3 w-3 rotate-180" />
+                    </button>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => setCustomerCollapsed(true)}
-                    className={`inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#ECECEC] bg-white text-[#64748B] ${TRANSITION} hover:bg-[#F9FAFB] hover:text-[#111827] shrink-0`}
-                    aria-label="Collapse customer panel"
-                    title="Collapse customer panel"
-                  >
-                    <ChevronRight className="h-4 w-4 rotate-180" />
-                  </button>
-                </div>
-                <div className="flex-1 min-h-0 overflow-y-auto px-6 py-6 custom-scrollbar">
-                  <div className="space-y-6">
-                    <section className="space-y-3">
-                      <p className="text-xs font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">Insights</p>
-                      <div className="rounded-[16px] bg-white p-4 shadow-none border border-transparent text-sm text-[#475569] space-y-4">
-                        {/* Customer wants */}
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex items-start gap-3 min-w-0">
-                            <span className="text-2xl">💰</span>
-                            <div className="min-w-0">
-                              <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">Customer wants</p>
-                              <p className="mt-1 text-lg font-semibold text-[#111827] truncate">{(() => {
-                                const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
-                                if (/\b(price|pricing|quote|cost)\b/.test(text)) return 'Pricing';
-                                if (/\b(install|installation|setup|set up)\b/.test(text)) return 'Installation';
-                                if (/\b(cancel|stop service|pause service|refund|complain|complaint)\b/.test(text)) return 'Cancellation';
-                                if (/\b(upgrade|higher|upsell)\b/.test(text)) return 'Upgrade / upsell';
-                                return 'General inquiry';
-                              })()}</p>
-                              <p className="text-sm text-[#64748B]">Based on recent messages</p>
-                            </div>
-                          </div>
+
+                  {/* Scrollable content */}
+                  <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar px-5 py-4">
+                    <div className="space-y-5">
+                      {/* Conversation Summary */}
+                      <div className="space-y-2">
+                        <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#94A3B8]">Conversation Summary</p>
+                        <div className="space-y-1.5 text-sm text-[#475569]">
+                          <p>• {(() => {
+                            const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
+                            if (/\b(price|pricing|quote|cost)\b/.test(text)) return 'Asked about pricing';
+                            if (/\b(install|installation|setup|set up)\b/.test(text)) return 'Asked about installation';
+                            if (/\b(cancel|stop service|pause service|refund|complain|complaint)\b/.test(text)) return 'Discussed cancellation';
+                            return 'General inquiry';
+                          })()}</p>
+                          <p>• {(() => {
+                            const interestedIn = activeCustomerProfile.interestedProducts[0];
+                            return `Interested in ${interestedIn || 'your services'}`;
+                          })()}</p>
+                          <p>• {(() => {
+                            const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
+                            if (/\b(compare|competitor|alternative)\b/.test(text)) return 'Comparing options';
+                            return 'Evaluating fit';
+                          })()}</p>
                         </div>
+                        <div className="mt-2 h-px bg-[#E5E7EB]/60"></div>
+                      </div>
 
-                        {/* AI summary + Actions */}
-                        <div className="grid gap-3 sm:grid-cols-2">
-                          <div className="rounded-[12px] bg-transparent p-3">
-                            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">AI summary</p>
-                            <div className="mt-2 text-sm text-[#475569]">
-                              {(() => {
-                                if (isPersonalActive) {
-                                  return <p className="text-sm text-[#64748B]">Personal contacts remain in manual mode.</p>;
-                                }
-                                const text = activeMessages.filter((m) => m.from === 'agent').map((m) => m.text).join(' ').toLowerCase();
-                                const summary: string[] = [];
-                                if (/\b(pricing|price|quote|cost)\b/.test(text)) summary.push('Shared pricing');
-                                if (/\b(install|installation|setup|schedule)\b/.test(text)) summary.push('Explained installation');
-                                if (/\b(faq|question|help|answer|answered)\b/.test(text)) summary.push('Answered FAQs');
-                                if (!summary.length) summary.push(effectiveActiveSource.startsWith('ai') ? 'AI is assisting the conversation.' : 'Human agent is handling the conversation.');
-                                return (
-                                  <ul className="space-y-1 pl-4 list-disc">
-                                    {summary.map((item) => <li key={item}>{item}</li>)}
-                                  </ul>
-                                );
-                              })()}
-                            </div>
-                          </div>
-
-                          <div className="rounded-[12px] bg-transparent p-3">
-                            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">AI already did</p>
-                            <div className="mt-2 text-sm text-[#475569]">
-                              <p className="text-lg font-semibold text-[#111827] truncate">{(() => {
-                                const text = activeMessages.filter((m) => m.from === 'agent').map((m) => m.text).join(' ').toLowerCase();
-                                const summary: string[] = [];
-                                if (/\b(price|pricing|quote|cost)\b/.test(text)) summary.push('Shared pricing');
-                                if (/\b(install|installation|setup|schedule)\b/.test(text)) summary.push('Explained installation');
-                                if (/\b(faq|question|help|answer|answered)\b/.test(text)) summary.push('Answered FAQs');
-                                if (!summary.length) summary.push('Assisted in conversation');
-                                return summary.slice(0, 2).join(' • ');
-                              })()}</p>
-                              <p className="text-sm text-[#64748B]">Key assistant actions</p>
-                            </div>
-                          </div>
+                      {/* AI Summary */}
+                      <div className="space-y-2">
+                        <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#94A3B8]">AI Summary</p>
+                        <div className="space-y-1 text-sm text-[#475569]">
+                          {(() => {
+                            if (isPersonalActive) {
+                              return <p className="text-[#64748B]">Personal contact in manual mode</p>;
+                            }
+                            const text = activeMessages.filter((m) => m.from === 'agent').map((m) => m.text).join(' ').toLowerCase();
+                            const summary: string[] = [];
+                            if (/\b(pricing|price|quote|cost)\b/.test(text)) summary.push('Shared pricing');
+                            if (/\b(install|installation|setup|schedule)\b/.test(text)) summary.push('Explained installation');
+                            if (/\b(faq|question|help|answer|answered)\b/.test(text)) summary.push('Answered FAQs');
+                            if (!summary.length) summary.push(effectiveActiveSource.startsWith('ai') ? 'AI assisting conversation' : 'Human handling conversation');
+                            return summary.map((item) => (
+                              <p key={item}>• {item}</p>
+                            ));
+                          })()}
                         </div>
+                        <div className="mt-2 h-px bg-[#E5E7EB]/60"></div>
+                      </div>
 
-                        {/* Needs attention + Intent */}
-                        <div className="grid gap-3 sm:grid-cols-2">
-                          <div className="rounded-[12px] p-3">
-                            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">Needs attention</p>
-                            <p className="mt-2 text-sm text-[#111827]">{(() => {
-                              const hit = activeMessages.find((m) => /discount|urgent|price drop|complain|complaint|refund/i.test(m.text));
-                              return hit ? hit.text : 'None';
-                            })()}</p>
-                            <p className="text-sm text-[#64748B] mt-1">Checked for urgency and risk signals.</p>
-                          </div>
+                      {/* Recommended Next Step */}
+                      <div className="space-y-2">
+                        <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#94A3B8]">Recommended Next Step</p>
+                        <p className="text-sm font-semibold text-[#111827]">{(() => {
+                          const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
+                          if (/\b(price|pricing|quote|cost)\b/.test(text)) return '📩 Offer Business Package brochure';
+                          if (/\b(install|installation|setup|schedule)\b/.test(text)) return '📅 Propose installation slots';
+                          if (/\b(cancel|stop service|refund|complain|complaint)\b/.test(text)) return '💬 Discuss retention offer';
+                          return '❓ Ask clarifying question';
+                        })()}</p>
+                        <div className="mt-2 h-px bg-[#E5E7EB]/60"></div>
+                      </div>
 
-                          <div className="rounded-[12px] p-3">
-                            <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">Intent</p>
-                            <p className="mt-2 text-xl font-semibold text-[#111827]">{(() => {
+                      {/* Intent Score */}
+                      <div className="space-y-2">
+                        <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#94A3B8]">Intent</p>
+                        <div className="flex items-end gap-3">
+                          <div>
+                            <p className="text-2xl font-bold text-[#22C55E]">{(() => {
                               const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
                               const buyKeywords = (text.match(/buy|purchase|order|subscribe|sign up|proceed/g) || []).length;
                               const infoKeywords = (text.match(/price|pricing|cost|quote/g) || []).length;
                               const score = Math.min(95, 40 + buyKeywords * 20 + infoKeywords * 10);
                               return `${score}%`;
                             })()}</p>
-                            <p className="text-sm text-[#64748B]">{(() => {
+                            <p className="text-xs text-[#64748B] mt-0.5">{(() => {
                               const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
                               const buyKeywords = (text.match(/buy|purchase|order|subscribe|sign up|proceed/g) || []).length;
                               const infoKeywords = (text.match(/price|pricing|cost|quote/g) || []).length;
-                              return buyKeywords > infoKeywords ? 'High purchase intent' : infoKeywords > 0 ? 'Consideration' : 'Inquiry';
+                              return buyKeywords > infoKeywords ? '🟢 High likelihood' : infoKeywords > 0 ? '🟡 Considering' : '⚪ Exploring';
                             })()}</p>
                           </div>
                         </div>
+                        <div className="mt-2 h-px bg-[#E5E7EB]/60"></div>
+                      </div>
 
-                        {/* Recommended next step */}
-                        <div className="rounded-[12px] p-3 bg-white">
-                          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">Recommended next step</p>
-                          <p className="mt-2 text-lg font-semibold text-[#111827]">{(() => {
-                            const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
-                            if (/\b(price|pricing|quote|cost)\b/.test(text)) return 'Offer Business Package brochure.';
-                            if (/\b(install|installation|setup|schedule)\b/.test(text)) return 'Propose installation slots.';
-                            if (/\b(cancel|stop service|refund|complain|complaint)\b/.test(text)) return 'Confirm reason and offer retention.';
-                            return 'Ask a clarifying question.';
-                          })()}</p>
-                          <p className="text-sm text-[#64748B] mt-1">Action recommendation based on recent messages.</p>
+                      {/* Needs Attention */}
+                      <div className="space-y-2">
+                        <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#94A3B8]">Needs Attention</p>
+                        <p className="text-sm text-[#111827]">{(() => {
+                          const hit = activeMessages.find((m) => /discount|urgent|price drop|complain|complaint|refund/i.test(m.text));
+                          return hit ? `⚠️ ${hit.text.substring(0, 50)}...` : '✓ None detected';
+                        })()}</p>
+                        <div className="mt-2 h-px bg-[#E5E7EB]/60"></div>
+                      </div>
+
+                      {/* Tags */}
+                      <div className="space-y-2">
+                        <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#94A3B8]">Tags</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {activeCustomerProfile.tags.map((tag) => (
+                            <span key={tag} className="inline-flex rounded-full bg-[#F0F9FF] text-[#0369A1] px-2.5 py-1 text-xs font-medium">{tag}</span>
+                          ))}
+                        </div>
+                        <div className="mt-2 h-px bg-[#E5E7EB]/60"></div>
+                      </div>
+
+                      {/* Interested Products */}
+                      <div className="space-y-2">
+                        <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#94A3B8]">Interested Products</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {activeCustomerProfile.interestedProducts.map((product) => (
+                            <span key={product} className="inline-flex rounded-full bg-[#F0FDF4] text-[#166534] px-2.5 py-1 text-xs font-medium">{product}</span>
+                          ))}
                         </div>
                       </div>
-                    </section>
-
-                    <section className="space-y-3 border-b border-[#E5E7EB] pb-4">
-                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#94A3B8]">Tags</p>
-                      <div className="flex flex-wrap gap-2">
-                        {activeCustomerProfile.tags.map((tag) => (
-                          <span key={tag} className={`${BADGE} bg-[#F8FAFC] text-[#334155]`}>{tag}</span>
-                        ))}
-                      </div>
-                    </section>
-
-                    <section className="space-y-3 pb-4">
-                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#94A3B8]">Interested products</p>
-                      <div className="flex flex-wrap gap-2">
-                        {activeCustomerProfile.interestedProducts.map((product) => (
-                          <span key={product} className={`${BADGE} bg-[#F8FAFC] text-[#334155]`}>{product}</span>
-                        ))}
-                      </div>
-                    </section>
+                    </div>
                   </div>
-                </div>
-
-                {/* AI Assistant and Quick Products removed from Customer card per request */}
                 </section>
               )}
             </div>
