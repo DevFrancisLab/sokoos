@@ -1042,52 +1042,53 @@ export default function DashboardLayout() {
                 </div>
               </section>
 
-              <section className={`${CARD} w-full md:flex-1 md:min-w-[500px] h-full min-h-0 flex flex-col`}>
-                <div className="border-b border-[#ECECEC] px-6 py-4 flex-shrink-0 min-h-[78px] sm:min-h-[84px]">
-                  <div className="flex flex-col gap-3">
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                      <div className="min-w-0">
-                        <h2 className="text-lg font-semibold text-[#111827] truncate">{INBOX_CONVERSATIONS.find((item) => item.id === activeConversation)?.name}</h2>
-                        <div className="mt-2 flex flex-wrap items-center gap-2">
+              <section className={`${CARD} w-full md:flex-1 md:min-w-[600px] h-full min-h-0 flex flex-col`}>
+                {/* Header - Fixed */}
+                <div className="border-b border-[#ECECEC] px-6 py-3 flex-shrink-0">
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0 flex-1">
+                        <h2 className="text-base font-semibold text-[#111827] truncate">{INBOX_CONVERSATIONS.find((item) => item.id === activeConversation)?.name}</h2>
+                        <div className="mt-1 flex items-center gap-2">
                           {(() => {
                             const badge = getConversationStatusBadge(effectiveActiveSource, isPersonalActive);
                             return (
-                              <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold flex-shrink-0 ${badge.bg} ${badge.text}`}>
+                              <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold flex-shrink-0 ${badge.bg} ${badge.text}`}>
                                 {badge.emoji} {badge.label}
                               </span>
                             );
                           })()}
                         </div>
                       </div>
-                      <div className="flex items-center gap-3 flex-shrink-0">
+                      <div className="flex items-center gap-2 flex-shrink-0">
                         <button
                           type="button"
                           onClick={toggleAiForActive}
                           disabled={isPersonalActive}
                           aria-label="Toggle conversation mode"
-                          className={`inline-flex h-10 rounded-full border px-4 text-[11px] font-semibold transition ${TRANSITION_FAST} items-center justify-center ${
+                          className={`inline-flex h-8 rounded-full border px-3 text-[10px] font-semibold transition ${TRANSITION_FAST} items-center justify-center ${
                             isPersonalActive
                               ? "border-[#E5E7EB] bg-[#F9FAFB] text-[#9CA3AF] cursor-not-allowed"
                               : "border-[#22C55E] bg-[#ECFDF5] text-[#166534] hover:bg-[#DCFCE7]"
                           }`}
                           title={isPersonalActive ? "Cannot toggle mode for personal contacts" : "Toggle conversation mode"}
                         >
-                          {effectiveActiveSource.startsWith("ai") ? "Switch to Human" : "Switch to AI"}
+                          {effectiveActiveSource.startsWith("ai") ? "Human" : "AI"}
                         </button>
                         {customerCollapsed && (
                           <button
                             type="button"
                             onClick={() => setCustomerCollapsed(false)}
-                            className={`inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#ECECEC] bg-white text-[#64748B] ${TRANSITION} hover:bg-[#F9FAFB] hover:text-[#111827] flex-shrink-0`}
+                            className={`inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#ECECEC] bg-white text-[#64748B] ${TRANSITION} hover:bg-[#F9FAFB] hover:text-[#111827] flex-shrink-0`}
                             aria-label="Expand customer panel"
                             title="Expand customer panel"
                           >
-                            <ChevronRight className="h-4 w-4" />
+                            <ChevronRight className="h-3 w-3" />
                           </button>
                         )}
                       </div>
                     </div>
-                    <p className="text-xs text-[#94A3B8]/90">
+                    <p className="text-[11px] text-[#94A3B8]">
                       {isPersonalActive ? (
                         "AI disabled for this contact"
                       ) : activeConversationData?.message ? (
@@ -1098,26 +1099,27 @@ export default function DashboardLayout() {
                     </p>
                   </div>
                 </div>
-                <div className="flex min-h-0 flex-1 flex-col">
-                  <div className="flex-1 min-h-0 space-y-4 overflow-y-auto px-6 py-5 custom-scrollbar">
+
+                {/* Messages Area - Scrollable, flex-end aligned */}
+                <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar px-6 py-3 flex flex-col justify-end">
+                  <div className="space-y-2 flex flex-col">
                     {activeMessages.map((message, index) => {
                       const originalWasAi = String(activeConversationData?.source).startsWith("ai");
                       if (message.from === "agent" && originalWasAi && !String(effectiveActiveSource).startsWith("ai")) {
                         return null;
                       }
-                      const isCustomer = message.from === "customer";
                       const isAgent = message.from === "agent";
                       const isAi = isAgent && String(effectiveActiveSource).startsWith("ai");
                       const senderLabel = isAi ? "Sokoos AI" : activeAgentName;
 
                       return (
-                        <div key={`${message.time}-${index}`} className={`${TRANSITION_FAST} transition-opacity`}> 
+                        <div key={`${message.time}-${index}`} className={`${TRANSITION_FAST} transition-opacity`}>
                           {isAgent ? (
-                            <div className="flex items-center gap-1 text-xs font-semibold text-[#94A3B8]">
+                            <div className="flex items-center gap-1 text-[10px] font-semibold text-[#94A3B8] mb-0.5">
                               {isAi ? (
                                 <>
-                                  <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-[#ECFDF5] text-[#0C7A4D]">
-                                    <Bot className="h-2.5 w-2.5" />
+                                  <span className="inline-flex h-3 w-3 items-center justify-center rounded-full bg-[#ECFDF5] text-[#0C7A4D]">
+                                    <Bot className="h-1.5 w-1.5" />
                                   </span>
                                   <span>{senderLabel}</span>
                                 </>
@@ -1127,14 +1129,14 @@ export default function DashboardLayout() {
                             </div>
                           ) : null}
                           <div className={`flex ${isAgent ? "justify-start" : "justify-end"}`}>
-                            <div className={`rounded-[20px] px-4 py-3 text-sm break-words ${
+                            <div className={`rounded-[16px] px-3 py-2 text-sm break-words max-w-[70%] ${
                               isAgent
-                                ? "bg-[#F0FDF4] text-[#166534] border border-[#DCFCE7] shadow-none max-w-[80%]"
-                                : "bg-white text-[#111827] border border-[#E5E7EB] shadow-none max-w-[80%]"
-                            } ${TRANSITION_FAST} transition-shadow transform-gpu`}> 
-                              <div className="flex flex-col gap-2">
+                                ? "bg-[#F0FDF4] text-[#166534] border border-[#DCFCE7]"
+                                : "bg-white text-[#111827] border border-[#E5E7EB]"
+                            } ${TRANSITION_FAST} transition-shadow transform-gpu`}>
+                              <div className="flex flex-col gap-1">
                                 <p className="leading-relaxed text-sm">{message.text}</p>
-                                <div className={`self-end mt-0.5 text-[10px] ${isAgent ? 'text-[#16A34A]/60' : 'text-[#64748B]/60'} font-medium`}>{message.time}</div>
+                                <div className={`self-end text-[9px] ${isAgent ? 'text-[#16A34A]/50' : 'text-[#64748B]/50'} font-medium`}>{message.time}</div>
                               </div>
                             </div>
                           </div>
@@ -1142,24 +1144,26 @@ export default function DashboardLayout() {
                       );
                     })}
                   </div>
-                  <div className="shrink-0 border-t border-[#E5E7EB] bg-white/70 backdrop-blur-sm px-6 py-4">
-                    <div className={`rounded-[24px] bg-white border border-[#E5E7EB] shadow-none flex items-center gap-3 min-h-[66px] px-3 py-3 ${TRANSITION}`}>
-                      <textarea
-                        ref={textareaRef}
-                        value={messageInput}
-                        onChange={(event) => setMessageInput(event.target.value)}
-                        placeholder={`Type a message...`}
-                        className={`min-w-0 flex-1 resize-none overflow-y-auto overflow-x-hidden custom-scrollbar bg-transparent text-sm leading-5 text-[#111827] outline-none placeholder:text-[#CBD5E1] placeholder:font-regular ${TRANSITION_FAST}`}
-                        rows={1}
-                        style={{ minHeight: 36, maxHeight: 100 }}
-                      />
-                      <button
-                        type="button"
-                        className={`inline-flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white ${INTERACTION} hover:bg-[#16A34A]`}
-                      >
-                        <Send className="h-4 w-4" />
-                      </button>
-                    </div>
+                </div>
+
+                {/* Input Area - Sticky at bottom */}
+                <div className="shrink-0 border-t border-[#E5E7EB] bg-white px-6 py-3">
+                  <div className={`rounded-[18px] bg-[#F9FAFB] border border-[#E5E7EB] flex items-center gap-2 min-h-[44px] px-3 py-2 ${TRANSITION}`}>
+                    <textarea
+                      ref={textareaRef}
+                      value={messageInput}
+                      onChange={(event) => setMessageInput(event.target.value)}
+                      placeholder={`Message...`}
+                      className={`min-w-0 flex-1 resize-none overflow-y-auto overflow-x-hidden custom-scrollbar bg-transparent text-sm leading-5 text-[#111827] outline-none placeholder:text-[#CBD5E1] placeholder:font-regular ${TRANSITION_FAST}`}
+                      rows={1}
+                      style={{ minHeight: 32, maxHeight: 80 }}
+                    />
+                    <button
+                      type="button"
+                      className={`inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white ${INTERACTION} hover:bg-[#16A34A] transition-colors`}
+                    >
+                      <Send className="h-3.5 w-3.5" />
+                    </button>
                   </div>
                 </div>
               </section>
