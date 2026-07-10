@@ -1202,11 +1202,11 @@ export default function DashboardLayout() {
               {!customerCollapsed && (
                 <section className={`${CARD} w-full h-full min-h-0 flex flex-col transition-opacity duration-300 ease-out opacity-100 min-w-[330px] max-w-[360px]`}>
                   {/* Header */}
-                  <div className="flex items-start justify-between gap-3 shrink-0 px-5 py-3 border-b border-[#ECECEC]">
+                  <div className="flex items-start justify-between gap-3 shrink-0 px-5 py-4 border-b border-[#ECECEC]">
                     <div>
                       <p className={SECTION_HEADING}>Customer</p>
-                      <h2 className="mt-1 ${CUSTOMER_NAME}">{activeCustomerProfile.name}</h2>
-                      <p className={`${SECONDARY} mt-1`}>{activeCustomerProfile.company}</p>
+                      <h2 className={`${CUSTOMER_NAME} mt-1`}>{activeCustomerProfile.name}</h2>
+                      <p className={`${SECONDARY} mt-2`}>{activeCustomerProfile.company}</p>
                     </div>
                     <button
                       type="button"
@@ -1219,13 +1219,11 @@ export default function DashboardLayout() {
                     </button>
                   </div>
 
-                  {/* Scrollable content */}
                   <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar px-5 py-4">
-                    <div className="space-y-5">
-                      {/* Conversation Summary */}
-                      <div className="space-y-2">
+                    <div className="space-y-6">
+                      <section className="space-y-3">
                         <p className={SECTION_HEADING}>Conversation Summary</p>
-                        <div className="space-y-1.5 text-sm text-[#475569]">
+                        <div className="space-y-2 text-sm text-[#475569]">
                           <p>• {(() => {
                             const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
                             if (/\b(price|pricing|quote|cost)\b/.test(text)) return 'Asked about pricing';
@@ -1234,106 +1232,117 @@ export default function DashboardLayout() {
                             return 'General inquiry';
                           })()}</p>
                           <p>• {(() => {
-                            const interestedIn = activeCustomerProfile.interestedProducts[0];
-                            return `Interested in ${interestedIn || 'your services'}`;
-                          })()}</p>
-                          <p>• {(() => {
                             const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
                             if (/\b(compare|competitor|alternative)\b/.test(text)) return 'Comparing options';
+                            if (/\b(buy|purchase|order|subscribe)\b/.test(text)) return 'Actively evaluating purchase';
                             return 'Evaluating fit';
                           })()}</p>
                         </div>
-                        <div className="mt-2 h-px bg-[#E5E7EB]/60"></div>
-                      </div>
+                        <div className="h-px bg-[#E5E7EB]/60" />
+                      </section>
 
-                      {/* AI Summary */}
-                      <div className="space-y-2">
+                      <section className="space-y-3">
+                        <p className={SECTION_HEADING}>Customer Wants</p>
+                        <p className="text-sm text-[#475569]">{(() => {
+                          const wants: string[] = [];
+                          const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
+                          if (/\b(pricing|price|quote|cost)\b/.test(text)) wants.push('Clear pricing details');
+                          if (/\b(install|installation|setup|schedule)\b/.test(text)) wants.push('Implementation timeline');
+                          if (/\b(trial|demo|free trial)\b/.test(text)) wants.push('Product trial option');
+                          if (/\b(cancel|stop service|refund)\b/.test(text)) wants.push('Retention options');
+                          if (!wants.length) wants.push('More information about the offer');
+                          return wants.join(', ');
+                        })()}</p>
+                        <div className="h-px bg-[#E5E7EB]/60" />
+                      </section>
+
+                      <section className="space-y-3">
                         <p className={SECTION_HEADING}>AI Summary</p>
-                        <div className="space-y-1 text-sm text-[#475569]">
+                        <div className="space-y-2 text-sm text-[#475569]">
                           {(() => {
                             if (isPersonalActive) {
                               return <p className="text-[#64748B]">Personal contact in manual mode</p>;
                             }
                             const text = activeMessages.filter((m) => m.from === 'agent').map((m) => m.text).join(' ').toLowerCase();
                             const summary: string[] = [];
-                            if (/\b(pricing|price|quote|cost)\b/.test(text)) summary.push('Shared pricing');
-                            if (/\b(install|installation|setup|schedule)\b/.test(text)) summary.push('Explained installation');
-                            if (/\b(faq|question|help|answer|answered)\b/.test(text)) summary.push('Answered FAQs');
-                            if (!summary.length) summary.push(effectiveActiveSource.startsWith('ai') ? 'AI assisting conversation' : 'Human handling conversation');
-                            return summary.map((item) => (
-                              <p key={item}>• {item}</p>
-                            ));
+                            if (/\b(pricing|price|quote|cost)\b/.test(text)) summary.push('Shared pricing details');
+                            if (/\b(install|installation|setup|schedule)\b/.test(text)) summary.push('Explained setup details');
+                            if (/\b(faq|question|help|answer|answered)\b/.test(text)) summary.push('Answered common questions');
+                            if (!summary.length) summary.push(effectiveActiveSource.startsWith('ai') ? 'AI assisting this conversation' : 'Human handling this conversation');
+                            return summary.map((item) => <p key={item}>• {item}</p>);
                           })()}
                         </div>
-                        <div className="mt-2 h-px bg-[#E5E7EB]/60"></div>
-                      </div>
+                        <div className="h-px bg-[#E5E7EB]/60" />
+                      </section>
 
-                      {/* Recommended Next Step */}
-                      <div className="space-y-2">
-                        <p className={SECTION_HEADING}>Recommended Next Step</p>
-                        <p className="text-sm font-semibold text-[#111827]">{(() => {
-                          const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
-                          if (/\b(price|pricing|quote|cost)\b/.test(text)) return '📩 Offer Business Package brochure';
-                          if (/\b(install|installation|setup|schedule)\b/.test(text)) return '📅 Propose installation slots';
-                          if (/\b(cancel|stop service|refund|complain|complaint)\b/.test(text)) return '💬 Discuss retention offer';
-                          return '❓ Ask clarifying question';
-                        })()}</p>
-                        <div className="mt-2 h-px bg-[#E5E7EB]/60"></div>
-                      </div>
-
-                      {/* Intent Score */}
-                      <div className="space-y-2">
-                        <p className={SECTION_HEADING}>Intent</p>
-                        <div className="flex items-end gap-3">
-                          <div>
-                            <p className="text-2xl font-bold text-[#22C55E]">{(() => {
-                              const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
-                              const buyKeywords = (text.match(/buy|purchase|order|subscribe|sign up|proceed/g) || []).length;
-                              const infoKeywords = (text.match(/price|pricing|cost|quote/g) || []).length;
-                              const score = Math.min(95, 40 + buyKeywords * 20 + infoKeywords * 10);
-                              return `${score}%`;
-                            })()}</p>
-                            <p className={`${SECONDARY} mt-0.5`}>{(() => {
-                              const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
-                              const buyKeywords = (text.match(/buy|purchase|order|subscribe|sign up|proceed/g) || []).length;
-                              const infoKeywords = (text.match(/price|pricing|cost|quote/g) || []).length;
-                              return buyKeywords > infoKeywords ? '🟢 High likelihood' : infoKeywords > 0 ? '🟡 Considering' : '⚪ Exploring';
-                            })()}</p>
-                          </div>
+                      <section className="space-y-4">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className={SECTION_HEADING}>Intent Score</p>
+                          <p className="text-sm font-semibold text-[#475569]">{(() => {
+                            const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
+                            const buyKeywords = (text.match(/buy|purchase|order|subscribe|sign up|proceed/g) || []).length;
+                            const infoKeywords = (text.match(/price|pricing|cost|quote/g) || []).length;
+                            return `${Math.min(95, 40 + buyKeywords * 20 + infoKeywords * 10)}%`;
+                          })()}</p>
                         </div>
-                        <div className="mt-2 h-px bg-[#E5E7EB]/60"></div>
-                      </div>
+                        <div className="h-3 rounded-full bg-[#E5E7EB] overflow-hidden">
+                          <div className="h-full rounded-full bg-gradient-to-r from-[#22C55E] via-[#EAB308] to-[#F97316]" style={{ width: `${(() => {
+                            const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
+                            const buyKeywords = (text.match(/buy|purchase|order|subscribe|sign up|proceed/g) || []).length;
+                            const infoKeywords = (text.match(/price|pricing|cost|quote/g) || []).length;
+                            return Math.min(95, 40 + buyKeywords * 20 + infoKeywords * 10);
+                          })()}%` }} />
+                        </div>
+                        <p className="text-sm text-[#475569]">{(() => {
+                          const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
+                          const buyKeywords = (text.match(/buy|purchase|order|subscribe|sign up|proceed/g) || []).length;
+                          const infoKeywords = (text.match(/price|pricing|cost|quote/g) || []).length;
+                          return buyKeywords > infoKeywords ? 'High likelihood of conversion' : infoKeywords > 0 ? 'Moderate interest' : 'Needs more nurturing';
+                        })()}</p>
+                        <div className="h-px bg-[#E5E7EB]/60" />
+                      </section>
 
-                      {/* Needs Attention */}
-                      <div className="space-y-2">
+                      <section className="space-y-3">
+                        <p className={SECTION_HEADING}>Recommended Next Step</p>
+                        <div className="rounded-[20px] border border-[#D1FAE5] bg-[#ECFDF5] p-4">
+                          <p className="text-sm font-semibold text-[#065F46]">{(() => {
+                            const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
+                            if (/\b(price|pricing|quote|cost)\b/.test(text)) return '📩 Offer Business Package brochure';
+                            if (/\b(install|installation|setup|schedule)\b/.test(text)) return '📅 Propose installation slots';
+                            if (/\b(cancel|stop service|refund|complain|complaint)\b/.test(text)) return '💬 Discuss retention offer';
+                            return '❓ Ask a clarifying question to move forward';
+                          })()}</p>
+                        </div>
+                        <div className="h-px bg-[#E5E7EB]/60" />
+                      </section>
+
+                      <section className="space-y-3">
                         <p className={SECTION_HEADING}>Needs Attention</p>
                         <p className="text-sm text-[#111827]">{(() => {
                           const hit = activeMessages.find((m) => /discount|urgent|price drop|complain|complaint|refund/i.test(m.text));
                           return hit ? `⚠️ ${hit.text.substring(0, 50)}...` : '✓ None detected';
                         })()}</p>
-                        <div className="mt-2 h-px bg-[#E5E7EB]/60"></div>
-                      </div>
+                        <div className="h-px bg-[#E5E7EB]/60" />
+                      </section>
 
-                      {/* Tags */}
-                      <div className="space-y-2">
+                      <section className="space-y-3">
                         <p className={SECTION_HEADING}>Tags</p>
-                        <div className="flex flex-wrap gap-1.5">
+                        <div className="flex flex-wrap gap-2">
                           {activeCustomerProfile.tags.map((tag) => (
                             <span key={tag} className="inline-flex rounded-full bg-[#F0F9FF] text-[#0369A1] px-2.5 py-1 text-xs font-medium">{tag}</span>
                           ))}
                         </div>
-                        <div className="mt-2 h-px bg-[#E5E7EB]/60"></div>
-                      </div>
+                        <div className="h-px bg-[#E5E7EB]/60" />
+                      </section>
 
-                      {/* Interested Products */}
-                      <div className="space-y-2">
+                      <section className="space-y-3">
                         <p className={SECTION_HEADING}>Interested Products</p>
-                        <div className="flex flex-wrap gap-1.5">
+                        <div className="flex flex-wrap gap-2">
                           {activeCustomerProfile.interestedProducts.map((product) => (
                             <span key={product} className="inline-flex rounded-full bg-[#F0FDF4] text-[#166534] px-2.5 py-1 text-xs font-medium">{product}</span>
                           ))}
                         </div>
-                      </div>
+                      </section>
                     </div>
                   </div>
                 </section>
