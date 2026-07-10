@@ -742,7 +742,7 @@ export default function DashboardLayout() {
   const currentMember = hasTeam ? MOCK_TEAM_MEMBERS.find((m) => m.id === currentUserId) : null;
 
   return (
-    <div className="h-screen min-h-screen bg-[#FFFFFF] text-[#111827]">
+    <div className="h-screen min-h-screen overflow-hidden bg-[#FFFFFF] text-[#111827]">
       {/* Desktop fixed left sidebar */}
       <div
         className="hidden md:block"
@@ -760,7 +760,7 @@ export default function DashboardLayout() {
           </div>
         </div>
 
-        <nav className="flex-1 overflow-y-auto px-1.5">
+        <nav className="flex-1 px-1.5 overflow-hidden">
           <ul className="space-y-2">
             {NAV_ITEMS.map(({ label, href, Icon }) => {
               const active = selected === label;
