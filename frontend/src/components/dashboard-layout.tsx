@@ -549,7 +549,7 @@ export default function DashboardLayout() {
   const getEffectiveSource = (id: string, original?: string) => sourceOverrides[id] ?? original ?? "owner";
   const [messageInput, setMessageInput] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarHovered, setSidebarHovered] = useState(false);
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -744,28 +744,23 @@ export default function DashboardLayout() {
   return (
     <div className="h-screen min-h-screen bg-[#FFFFFF] text-[#111827]">
       {/* Desktop fixed left sidebar */}
-      <aside className={`hidden md:fixed md:inset-y-0 md:left-0 md:flex md:flex-col md:pt-4 bg-[#FFFFFF] border-r border-[#E5E7EB]/10 transition-all duration-300 ease-out ${
-        sidebarCollapsed ? "md:w-[80px]" : "md:w-[240px]"
-      }`}>
+      <div
+        className="hidden md:block"
+        onMouseEnter={() => setSidebarHovered(true)}
+        onMouseLeave={() => setSidebarHovered(false)}
+      >
+        <aside className="md:fixed md:inset-y-0 md:left-0 md:flex md:flex-col md:pt-4 bg-[#FFFFFF] border-r border-[#E5E7EB]/10 w-[72px] z-20">
         <div className="px-4 pb-4">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="h-8 w-8 rounded-md bg-[#22C55E] flex items-center justify-center text-white font-bold">S</div>
-              {!sidebarCollapsed && <span className="text-lg font-bold">Sokoos</span>}
+              <span className="sr-only">Sokoos</span>
             </div>
-            <button
-              type="button"
-              onClick={() => setSidebarCollapsed((value) => !value)}
-              title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-              aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#111827] shadow-sm transition duration-200 hover:bg-[#F3F4F6]"
-            >
-              {sidebarCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-            </button>
+            <div className="h-10 w-10" />
           </div>
         </div>
 
-        <nav className={`flex-1 overflow-y-auto transition-all duration-300 ${sidebarCollapsed ? "px-1.5" : "px-2.5"}`}>
+        <nav className="flex-1 overflow-y-auto px-1.5">
           <ul className="space-y-2">
             {NAV_ITEMS.map(({ label, href, Icon }) => {
               const active = selected === label;
@@ -775,23 +770,58 @@ export default function DashboardLayout() {
                     onClick={() => setSelected(label)}
                     title={label}
                     aria-label={label}
-                    className={`w-full flex items-center gap-2.5 rounded-[16px] py-2 text-sm font-medium transition duration-200 ${
-                      sidebarCollapsed ? "justify-center" : "justify-start px-3"
-                    } ${
+                    className={`w-full flex items-center justify-center rounded-[16px] p-2 text-sm font-medium transition duration-200 ${
                       active
-                        ? "bg-[#F0FDF4] text-[#065F46] shadow-sm ring-1 ring-[#D1FAE5]/40"
-                        : "text-[#475569] hover:bg-[#EFF6FF] hover:text-[#111827]"
+                        ? "bg-[#ECFDF5] text-[#047857] shadow-sm"
+                        : "text-[#6B7280] hover:bg-[#EFF6FF]"
                     }`}
                   >
                     <Icon className={`h-4 w-4 ${active ? "text-[#059669] opacity-100" : "text-[#6B7280] opacity-90"}`} />
-                    {!sidebarCollapsed && <span>{label}</span>}
+                    <span className="sr-only">{label}</span>
                   </button>
                 </li>
               );
             })}
           </ul>
         </nav>
+        {sidebarHovered && (
+          <div className="fixed inset-y-0 left-0 z-50 w-64 min-w-[248px] bg-[#FFFFFF] border-r border-[#E5E7EB]/10 shadow-[0_18px_48px_rgba(15,23,42,0.12)] transition-all duration-200 ease-out">
+            <div className="h-full flex flex-col pt-4">
+              <div className="px-4 pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-md bg-[#22C55E] flex items-center justify-center text-white font-bold">S</div>
+                  <span className="text-lg font-bold">Sokoos</span>
+                </div>
+              </div>
+              <nav className="flex-1 overflow-y-auto px-4">
+                <ul className="space-y-2">
+                  {NAV_ITEMS.map(({ label, href, Icon }) => {
+                    const active = selected === label;
+                    return (
+                      <li key={href}>
+                        <button
+                          onClick={() => setSelected(label)}
+                          title={label}
+                          aria-label={label}
+                          className={`w-full text-left flex items-center gap-3 rounded-full px-3 py-2 text-sm font-medium transition duration-200 ${
+                            active
+                              ? "bg-[#ECFDF5] text-[#047857]"
+                              : "text-[#475569] hover:bg-[#EFF6FF]"
+                          }`}
+                        >
+                          <Icon className={`h-5 w-5 ${active ? "text-[#059669]" : "text-[#6B7280]"}`} />
+                          <span>{label}</span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </nav>
+            </div>
+          </div>
+        )}
       </aside>
+      </div>
 
       {/* Mobile top header with menu button */}
       <header className="md:hidden fixed top-0 left-0 right-0 h-14 bg-[#FFFFFF] border-b border-[#E5E7EB]/20 flex items-center px-4 z-30">
@@ -853,7 +883,7 @@ export default function DashboardLayout() {
       )}
 
       {/* Main content area. On desktop, add left padding to allow for fixed sidebar. On mobile, add top padding to account for the header. */}
-      <main className={`h-full pt-14 md:pt-0 transition-all duration-300 ${sidebarCollapsed ? "md:pl-[80px]" : "md:pl-[240px]"}`}>
+      <main className="h-full pt-14 md:pt-0 md:pl-[72px]">
         <div className="max-w-7xl mx-auto h-full p-4">
           {/* Render placeholder pages based on selected state */}
           {selected === "Home" && (
