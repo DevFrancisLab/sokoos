@@ -959,8 +959,8 @@ export default function DashboardLayout() {
             </div>
           )}
           {selected === "Inbox" && (
-            <div className="flex flex-col md:flex-row gap-4 px-6 py-6 transition-all duration-300 ease-out items-stretch h-full">
-              <section className={`${CARD} w-full md:w-[320px] flex-shrink-0 h-full min-h-0 flex flex-col`}>
+              <div className="grid grid-cols-1 md:grid-cols-[320px_1fr_minmax(330px,360px)] gap-6 px-6 py-6 transition-all duration-300 ease-out items-stretch h-full">
+                <section className={`${CARD} w-full h-full min-h-0 flex flex-col min-w-0`}>
                 <div className="border-b border-[#ECECEC] px-5 py-2">
                   <div className="flex items-center justify-between gap-3">
                     <div>
@@ -1074,7 +1074,7 @@ export default function DashboardLayout() {
                 </div>
               </section>
 
-              <section className={`${CARD} w-full md:flex-1 md:min-w-[600px] h-full min-h-0 flex flex-col`}>
+              <section className={`${CARD} w-full h-full min-h-0 flex flex-col min-w-0`}>
                 {/* Header - Fixed */}
                 <div className="border-b border-[#ECECEC] px-6 py-3 flex-shrink-0">
                   <div className="flex flex-col gap-2">
@@ -1201,7 +1201,7 @@ export default function DashboardLayout() {
               </section>
 
               {!customerCollapsed && (
-                <section className={`${CARD} w-full md:w-[360px] flex-shrink-0 h-full min-h-0 flex flex-col transition-opacity duration-300 ease-out opacity-100`}>
+                <section className={`${CARD} w-full h-full min-h-0 flex flex-col transition-opacity duration-300 ease-out opacity-100 min-w-[330px] max-w-[360px]`}>
                   {/* Header */}
                   <div className="flex items-start justify-between gap-3 shrink-0 px-5 py-3 border-b border-[#ECECEC]">
                     <div>
