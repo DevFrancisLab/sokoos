@@ -70,16 +70,18 @@ const QUICK_ACTION_BUTTON = `w-full ${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-
 const INPUT_FIELD = `mt-3 w-full ${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-[#F9FAFB] px-4 py-3 text-[15px] text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7] ` + TRANSITION + " focus:shadow-none";
 const INPUT_FIELD_WHITE = `mt-3 w-full ${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-white px-4 py-3 text-[15px] text-[#111827] shadow-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7] ` + TRANSITION + " focus:shadow-none";
 // Typography tokens for consistent hierarchy
+const PANEL_TITLE = "text-[24px] font-bold text-[#111827]";
 const SECTION_HEADING = "text-[12px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]";
 const CARD_TITLE = "text-[20px] font-semibold mb-6 text-[#0F172A]";
 const PAGE_TITLE = "text-[28px] font-bold text-[#0F172A]";
-const CUSTOMER_NAME = "text-[16px] font-semibold text-[#111827]";
-const BODY_TEXT = "text-[15px] text-[#475569]";
-const SECONDARY = "text-[13px] text-[#64748B]";
-const MESSAGE_PREVIEW = "text-[15px] text-[#475569]";
-const TIME_LABEL = "text-[13px] text-[#64748B]";
-const CAPTION = "text-[13px] text-[#64748B]";
-const BADGE = "inline-flex h-7 items-center gap-1.5 rounded-full px-3 text-[13px] font-semibold tracking-[0.02em] transition-colors duration-200 ease";
+const CUSTOMER_NAME = "text-[28px] font-bold text-[#111827]";
+const BODY_TEXT = "text-[14px] text-[#475569]";
+const BODY_MEDIUM = "text-[14px] font-semibold text-[#111827]";
+const SECONDARY = "text-[12px] text-[#64748B]";
+const MESSAGE_PREVIEW = "text-[14px] text-[#475569]";
+const TIME_LABEL = "text-[12px] text-[#64748B]";
+const CAPTION = "text-[12px] text-[#64748B]";
+const BADGE = "inline-flex h-7 items-center gap-1.5 rounded-full px-3 text-[12px] font-medium tracking-[0.02em] transition-colors duration-200 ease";
 const BADGE_ICON = "h-2.5 w-2.5 rounded-full";
 
 const RECENT_ACTIVITY = [
@@ -932,8 +934,8 @@ export default function DashboardLayout() {
                 <div className="border-b border-[#ECECEC] px-5 py-2">
                   <div className="flex items-center justify-between gap-3">
                     <div>
-                      <h2 className="text-sm font-semibold text-[#111827]">Conversations</h2>
-                      <p className="text-xs text-[#64748B] font-medium mt-0">Recent messages and active chats</p>
+                      <h2 className={PANEL_TITLE}>Conversations</h2>
+                      <p className={`${SECONDARY} mt-0`}>Recent messages and active chats</p>
                     </div>
                   </div>
                 </div>
@@ -1004,13 +1006,13 @@ export default function DashboardLayout() {
                             <div className="flex items-center gap-2 min-w-0 flex-1">
                               <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#E5E7EB] to-[#D1D5DB] text-sm font-semibold text-[#64748B]">{conversation.avatar}</div>
                               <div className="min-w-0 flex-1">
-                                {conversation.isSaved && conversation.name ? (
-                                  <p className="truncate text-sm font-medium text-[#111827]" title={conversation.name}>
-                                    {conversation.name}
-                                  </p>
-                                ) : (
-                                  <p className="truncate text-sm font-medium text-[#111827]" title={conversation.phone ?? "Unknown Customer"}>{conversation.phone ?? "Unknown Customer"}</p>
-                                )}
+                                  {conversation.isSaved && conversation.name ? (
+                                    <p className={`${BODY_MEDIUM} truncate`} title={conversation.name}>
+                                      {conversation.name}
+                                    </p>
+                                  ) : (
+                                    <p className={`${BODY_MEDIUM} truncate`} title={conversation.phone ?? "Unknown Customer"}>{conversation.phone ?? "Unknown Customer"}</p>
+                                  )}
                               </div>
                             </div>
                             <div className="flex-shrink-0">
@@ -1034,7 +1036,7 @@ export default function DashboardLayout() {
                               ) : null}
                             </div>
                           </div>
-                          <p className={`min-w-0 truncate text-xs text-[#64748B] ${MESSAGE_PREVIEW}`}>{conversation.message}</p>
+                          <p className={`min-w-0 truncate ${MESSAGE_PREVIEW} ${SECONDARY}`}>{conversation.message}</p>
                         </button>
                       );
                     })}
@@ -1048,7 +1050,7 @@ export default function DashboardLayout() {
                   <div className="flex flex-col gap-2">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0 flex-1">
-                        <h2 className="text-base font-semibold text-[#111827] truncate">{INBOX_CONVERSATIONS.find((item) => item.id === activeConversation)?.name}</h2>
+                        <h2 className={`${CUSTOMER_NAME} truncate`}>{INBOX_CONVERSATIONS.find((item) => item.id === activeConversation)?.name}</h2>
                         <div className="mt-1 flex items-center gap-2">
                           {(() => {
                             const badge = getConversationStatusBadge(effectiveActiveSource, isPersonalActive);
@@ -1173,9 +1175,9 @@ export default function DashboardLayout() {
                   {/* Header */}
                   <div className="flex items-start justify-between gap-3 shrink-0 px-5 py-3 border-b border-[#ECECEC]">
                     <div>
-                      <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#94A3B8]">Customer</p>
-                      <h2 className="mt-1 text-base font-semibold text-[#111827]">{activeCustomerProfile.name}</h2>
-                      <p className="mt-1 text-xs text-[#64748B]">{activeCustomerProfile.company}</p>
+                      <p className={SECTION_HEADING}>Customer</p>
+                      <h2 className="mt-1 ${CUSTOMER_NAME}">{activeCustomerProfile.name}</h2>
+                      <p className={`${SECONDARY} mt-1`}>{activeCustomerProfile.company}</p>
                     </div>
                     <button
                       type="button"
@@ -1193,7 +1195,7 @@ export default function DashboardLayout() {
                     <div className="space-y-5">
                       {/* Conversation Summary */}
                       <div className="space-y-2">
-                        <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#94A3B8]">Conversation Summary</p>
+                        <p className={SECTION_HEADING}>Conversation Summary</p>
                         <div className="space-y-1.5 text-sm text-[#475569]">
                           <p>• {(() => {
                             const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
@@ -1217,7 +1219,7 @@ export default function DashboardLayout() {
 
                       {/* AI Summary */}
                       <div className="space-y-2">
-                        <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#94A3B8]">AI Summary</p>
+                        <p className={SECTION_HEADING}>AI Summary</p>
                         <div className="space-y-1 text-sm text-[#475569]">
                           {(() => {
                             if (isPersonalActive) {
@@ -1239,7 +1241,7 @@ export default function DashboardLayout() {
 
                       {/* Recommended Next Step */}
                       <div className="space-y-2">
-                        <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#94A3B8]">Recommended Next Step</p>
+                        <p className={SECTION_HEADING}>Recommended Next Step</p>
                         <p className="text-sm font-semibold text-[#111827]">{(() => {
                           const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
                           if (/\b(price|pricing|quote|cost)\b/.test(text)) return '📩 Offer Business Package brochure';
@@ -1252,7 +1254,7 @@ export default function DashboardLayout() {
 
                       {/* Intent Score */}
                       <div className="space-y-2">
-                        <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#94A3B8]">Intent</p>
+                        <p className={SECTION_HEADING}>Intent</p>
                         <div className="flex items-end gap-3">
                           <div>
                             <p className="text-2xl font-bold text-[#22C55E]">{(() => {
@@ -1262,7 +1264,7 @@ export default function DashboardLayout() {
                               const score = Math.min(95, 40 + buyKeywords * 20 + infoKeywords * 10);
                               return `${score}%`;
                             })()}</p>
-                            <p className="text-xs text-[#64748B] mt-0.5">{(() => {
+                            <p className={`${SECONDARY} mt-0.5`}>{(() => {
                               const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
                               const buyKeywords = (text.match(/buy|purchase|order|subscribe|sign up|proceed/g) || []).length;
                               const infoKeywords = (text.match(/price|pricing|cost|quote/g) || []).length;
@@ -1275,7 +1277,7 @@ export default function DashboardLayout() {
 
                       {/* Needs Attention */}
                       <div className="space-y-2">
-                        <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#94A3B8]">Needs Attention</p>
+                        <p className={SECTION_HEADING}>Needs Attention</p>
                         <p className="text-sm text-[#111827]">{(() => {
                           const hit = activeMessages.find((m) => /discount|urgent|price drop|complain|complaint|refund/i.test(m.text));
                           return hit ? `⚠️ ${hit.text.substring(0, 50)}...` : '✓ None detected';
@@ -1285,7 +1287,7 @@ export default function DashboardLayout() {
 
                       {/* Tags */}
                       <div className="space-y-2">
-                        <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#94A3B8]">Tags</p>
+                        <p className={SECTION_HEADING}>Tags</p>
                         <div className="flex flex-wrap gap-1.5">
                           {activeCustomerProfile.tags.map((tag) => (
                             <span key={tag} className="inline-flex rounded-full bg-[#F0F9FF] text-[#0369A1] px-2.5 py-1 text-xs font-medium">{tag}</span>
@@ -1296,7 +1298,7 @@ export default function DashboardLayout() {
 
                       {/* Interested Products */}
                       <div className="space-y-2">
-                        <p className="text-xs font-semibold uppercase tracking-[0.1em] text-[#94A3B8]">Interested Products</p>
+                        <p className={SECTION_HEADING}>Interested Products</p>
                         <div className="flex flex-wrap gap-1.5">
                           {activeCustomerProfile.interestedProducts.map((product) => (
                             <span key={product} className="inline-flex rounded-full bg-[#F0FDF4] text-[#166534] px-2.5 py-1 text-xs font-medium">{product}</span>
