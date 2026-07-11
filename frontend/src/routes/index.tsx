@@ -323,12 +323,12 @@ function Solution() {
 
 function Features() {
   const features = [
-    { icon: Bot, title: "AI WhatsApp Assistant", desc: "Automatically responds to customers and helps close deals.", emoji: "🤖" },
-    { icon: Inbox, title: "Unified Inbox", desc: "Reply from your phone or directly from the Sokoos dashboard.", emoji: "💬" },
-    { icon: Users, title: "Human Takeover", desc: "Your team can instantly take over any conversation.", emoji: "👥" },
-    { icon: Calendar, title: "Status Scheduler", desc: "Create and schedule WhatsApp Status marketing campaigns.", emoji: "📅" },
-    { icon: Package, title: "Product Catalog", desc: "Manage products and services that power your AI assistant.", emoji: "📦" },
-    { icon: BarChart3, title: "Business Insights", desc: "Track conversations, leads, and sales performance.", emoji: "📊" },
+    { icon: Bot, title: "AI Employee", desc: "Responds instantly, qualifies leads, and helps customers make buying decisions.", emoji: "🤖" },
+    { icon: Inbox, title: "Unified Inbox", desc: "Manage every customer conversation from one shared workspace.", emoji: "💬" },
+    { icon: Users, title: "Human Takeover", desc: "Jump into any conversation whenever your team wants to assist.", emoji: "👥" },
+    { icon: Calendar, title: "Marketing Automation", desc: "Create and schedule WhatsApp marketing campaigns that keep customers engaged.", emoji: "📅" },
+    { icon: Package, title: "Product Catalog", desc: "Showcase products and services that your AI can recommend instantly.", emoji: "📦" },
+    { icon: BarChart3, title: "Business Insights", desc: "Track customer engagement, conversions, and business growth from one dashboard.", emoji: "📊" },
   ];
   return (
     <section id="features" className="py-20 sm:py-28">
@@ -336,8 +336,8 @@ function Features() {
         <Reveal>
           <SectionHeader
             eyebrow="Features"
-            title="Everything you need to run WhatsApp like a pro"
-            subtitle="Purpose-built for African SMEs who want to sell more without hiring more."
+            title="Everything You Need to Acquire, Convert & Retain Customers"
+            subtitle="Sokoos gives African businesses the tools to attract customers, automate conversations, close more sales, and build lasting customer relationships."
           />
         </Reveal>
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
