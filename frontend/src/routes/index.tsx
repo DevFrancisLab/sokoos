@@ -712,7 +712,7 @@ function Footer() {
           <div>
             <Logo />
             <p className="mt-4 max-w-xs text-sm text-muted-foreground">
-              The Operating System for African Businesses.
+              Helping African Businesses Acquire, Convert & Retain Customers.
             </p>
             <div className="mt-6 flex items-center gap-2">
               {[
