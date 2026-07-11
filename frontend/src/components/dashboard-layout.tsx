@@ -966,7 +966,7 @@ export default function DashboardLayout() {
             </div>
           )}
           {selected === "Inbox" && (
-              <div className="grid grid-cols-1 md:grid-cols-[320px_1fr_minmax(330px,360px)] gap-6 px-6 py-6 transition-all duration-300 ease-out items-stretch h-full">
+              <div className={`grid gap-6 px-6 py-6 transition-all duration-300 ease-out items-stretch h-full grid-cols-1 ${customerCollapsed ? "md:grid-cols-[320px_1fr]" : "md:grid-cols-[320px_1fr_minmax(330px,360px)]"}`}>
                 <section className={`${CARD} w-full h-full min-h-0 flex flex-col min-w-0`}>
                 <div className="border-b border-[#ECECEC] px-5 py-2">
                   <div className="flex items-center justify-between gap-3">
