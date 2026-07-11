@@ -363,10 +363,10 @@ function Features() {
 
 function HowItWorks() {
   const steps = [
-    { icon: Plug, title: "Connect Your WhatsApp", desc: "Link your business number in minutes." },
-    { icon: Boxes, title: "Add Products & Info", desc: "Upload your catalog, hours, and policies." },
-    { icon: Brain, title: "Sokoos Learns Your Business", desc: "The AI is trained on your data and tone." },
-    { icon: Rocket, title: "AI Serves Customers 24/7", desc: "Sit back — Sokoos handles conversations." },
+    { icon: Plug, title: "Connect Your Business", desc: "Connect your WhatsApp Business account and set up your workspace." },
+    { icon: Boxes, title: "Train Your AI Employee", desc: "Add products, services, FAQs, business hours and company information." },
+    { icon: Brain, title: "Launch Customer Automation", desc: "Your AI starts responding, qualifying leads, booking appointments and supporting customers." },
+    { icon: Rocket, title: "Grow With Insights", desc: "Track conversations, leads, sales performance and continuously improve your business." },
   ];
   return (
     <section id="how" className="bg-surface py-20 sm:py-28">
@@ -374,8 +374,8 @@ function HowItWorks() {
         <Reveal>
           <SectionHeader
             eyebrow="How it works"
-            title="Live in under 10 minutes"
-            subtitle="No code. No complex setup. Just plug in and start selling."
+            title="Start Growing in Minutes"
+            subtitle="Set up Sokoos in minutes and let AI start helping your business acquire, convert, and retain customers."
           />
         </Reveal>
         <div className="relative mt-16 grid gap-8 md:grid-cols-4">
