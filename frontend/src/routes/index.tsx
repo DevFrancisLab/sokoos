@@ -676,11 +676,10 @@ function FinalCTA() {
             <div className="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-primary/20 blur-3xl" />
             <div className="relative mx-auto max-w-2xl text-center">
               <h2 className="text-3xl font-extrabold tracking-tight sm:text-5xl">
-                Never Miss Another Customer Again
+                Start Growing Your Business with Sokoos
               </h2>
               <p className="mt-4 text-base leading-relaxed text-background/70 sm:text-lg">
-                Let Sokoos handle your WhatsApp conversations while you focus on growing your
-                business.
+                From attracting new customers to closing sales and building customer loyalty, Sokoos helps your business grow with AI-powered automation.
               </p>
               <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
                 <a
