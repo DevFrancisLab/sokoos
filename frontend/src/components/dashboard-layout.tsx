@@ -54,17 +54,17 @@ const INTERACTION = "transition duration-150 ease-out transform hover:-translate
 // - Radius: 20px for cards/inputs/buttons
 // - Subtle border: #EEF2F6
 // - Consistent shadow across cards
-const GLOBAL_RADIUS = "rounded-[20px]";
+const GLOBAL_RADIUS = "rounded-[24px]";
 const SUBTLE_BORDER = "border-[#EEF2F6]";
-const CARD_SHADOW = "shadow-[0_4px_12px_rgba(15,23,42,0.03)]";
+const CARD_SHADOW = "shadow-[0_10px_30px_rgba(15,23,42,0.06)]";
 
 const CARD = `${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-white p-6 ${CARD_SHADOW} transform ` + TRANSITION + " hover:-translate-y-1";
 const CARD_SOFT = `${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-[#F8FAFB] p-6 ${CARD_SHADOW} transform ` + TRANSITION + " hover:-translate-y-1";
 const CARD_FLAT = `${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-[#F9FAFB] p-6 shadow-none transform ` + TRANSITION;
 const LIST_ITEM = `${GLOBAL_RADIUS} bg-[#F9FAFB] p-6 transform ` + TRANSITION + " hover:bg-[#EFF6FF] hover:-translate-y-1";
-const BUTTON_PRIMARY = "inline-flex items-center justify-center rounded-[20px] bg-[#22C55E] px-4 py-3 text-[15px] font-semibold text-white shadow-none " + INTERACTION + " hover:bg-[#16A34A]";
-const BUTTON_SECONDARY = `inline-flex items-center justify-center rounded-[20px] border ${SUBTLE_BORDER} bg-white px-4 py-3 text-[15px] font-semibold text-[#111827] ` + INTERACTION + " hover:bg-[#F3F4F6]";
-const BUTTON_TERTIARY = "inline-flex items-center justify-center rounded-[20px] bg-[#F3F4F6] px-4 py-3 text-[15px] font-semibold text-[#374151] " + INTERACTION + " hover:bg-[#E5E7EB]";
+const BUTTON_PRIMARY = "inline-flex items-center justify-center rounded-[24px] bg-[#22C55E] px-4 py-3 text-[15px] font-semibold text-white shadow-none " + INTERACTION + " hover:bg-[#16A34A]";
+const BUTTON_SECONDARY = `inline-flex items-center justify-center rounded-[24px] border ${SUBTLE_BORDER} bg-white px-4 py-3 text-[15px] font-semibold text-[#111827] ` + INTERACTION + " hover:bg-[#F3F4F6]";
+const BUTTON_TERTIARY = "inline-flex items-center justify-center rounded-[24px] bg-[#F3F4F6] px-4 py-3 text-[15px] font-semibold text-[#374151] " + INTERACTION + " hover:bg-[#E5E7EB]";
 const QUICK_ACTION_BUTTON = `w-full ${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-[#F9FAFB] p-6 text-left text-[15px] font-semibold text-[#111827] transform ` + TRANSITION + " hover:border-[#CBD5E1] hover:bg-[#EFF6FF] hover:-translate-y-1";
 const INPUT_FIELD = `mt-3 w-full ${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-[#F9FAFB] px-4 py-3 text-[15px] text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7] ` + TRANSITION + " focus:shadow-none";
 const INPUT_FIELD_WHITE = `mt-3 w-full ${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-white px-4 py-3 text-[15px] text-[#111827] shadow-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7] ` + TRANSITION + " focus:shadow-none";
@@ -760,7 +760,7 @@ export default function DashboardLayout() {
         <div className="px-4 pb-4">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="h-8 w-8 rounded-md bg-[#22C55E] flex items-center justify-center text-white font-semibold">S</div>
+              <div className="h-8 w-8 rounded-[20px] bg-[#22C55E] flex items-center justify-center text-white font-semibold">S</div>
               <span className="sr-only">Sokoos</span>
             </div>
             <div className="h-10 w-10" />
@@ -777,7 +777,7 @@ export default function DashboardLayout() {
                     onClick={() => setSelected(label)}
                     title={label}
                     aria-label={label}
-                    className={`w-full flex items-center justify-center rounded-[16px] p-2 text-sm font-medium transition duration-200 ${
+                    className={`w-full flex items-center justify-center rounded-[20px] p-2 text-sm font-medium transition duration-200 ${
                       active
                         ? "bg-[#ECFDF5] text-[#047857] shadow-sm"
                         : "text-[#6B7280] hover:bg-[#EFF6FF]"
@@ -796,7 +796,7 @@ export default function DashboardLayout() {
             <div className="h-full flex flex-col pt-4">
               <div className="px-4 pb-4">
                 <div className="flex items-center gap-3">
-                  <div className="h-8 w-8 rounded-md bg-[#22C55E] flex items-center justify-center text-white font-semibold">S</div>
+                  <div className="h-8 w-8 rounded-[20px] bg-[#22C55E] flex items-center justify-center text-white font-semibold">S</div>
                   <span className="text-lg font-semibold">Sokoos</span>
                 </div>
               </div>
@@ -835,12 +835,12 @@ export default function DashboardLayout() {
         <button
           aria-label="Open menu"
           onClick={() => setMobileOpen(true)}
-          className="mr-3 inline-flex items-center justify-center rounded-md p-2 text-[#111827] hover:bg-[#F3F4F6]"
+          className="mr-3 inline-flex items-center justify-center rounded-[20px] p-2 text-[#111827] hover:bg-[#F3F4F6]"
         >
           <Menu className="h-5 w-5" />
         </button>
         <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-md bg-[#22C55E] flex items-center justify-center text-white font-semibold">S</div>
+          <div className="h-8 w-8 rounded-[20px] bg-[#22C55E] flex items-center justify-center text-white font-semibold">S</div>
           <span className="font-semibold">Sokoos</span>
         </div>
       </header>
@@ -852,10 +852,10 @@ export default function DashboardLayout() {
           <div className="absolute left-0 top-0 bottom-0 w-72 bg-[#FFFFFF] border-r border-[#E5E7EB]/10 p-4 overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-md bg-[#22C55E] flex items-center justify-center text-white font-semibold">S</div>
+                <div className="h-8 w-8 rounded-[20px] bg-[#22C55E] flex items-center justify-center text-white font-semibold">S</div>
                 <span className="font-semibold">Sokoos</span>
               </div>
-              <button onClick={() => setMobileOpen(false)} className="p-2 rounded-md hover:bg-[#F3F4F6]">
+              <button onClick={() => setMobileOpen(false)} className="p-2 rounded-[20px] hover:bg-[#F3F4F6]">
                 <X className="h-5 w-5" />
               </button>
             </div>
@@ -871,7 +871,7 @@ export default function DashboardLayout() {
                           setSelected(label);
                           setMobileOpen(false);
                         }}
-                        className={`w-full text-left flex items-center gap-2.5 rounded-[16px] px-3 py-2 text-sm font-medium transition duration-200 ${
+                        className={`w-full text-left flex items-center gap-2.5 rounded-[20px] px-3 py-2 text-sm font-medium transition duration-200 ${
                            active
                             ? "bg-[#F0FDF4] text-[#065F46] shadow-sm ring-1 ring-[#D1FAE5]/40"
                             : "text-[#475569] hover:bg-[#EFF6FF] hover:text-[#111827]"
@@ -902,7 +902,7 @@ export default function DashboardLayout() {
                     <h1 className={CARD_TITLE}>Welcome back to Sokoos</h1>
                     <p className={`mt-6 ${SECONDARY}`}>Here’s what’s happening with your business today.</p>
                   </div>
-                  <div className="rounded-[16px] bg-[#F9FAFB] px-4 py-2 text-sm text-[#111827]">
+                  <div className="rounded-[20px] bg-[#F9FAFB] px-4 py-2 text-sm text-[#111827]">
                     Updated just now
                   </div>
                 </div>
@@ -992,7 +992,7 @@ export default function DashboardLayout() {
                   ))}
                 </div>
                 <div className="flex min-h-0 flex-1 flex-col px-5 py-2 gap-2">
-                  <div className="h-[42px] rounded-[12px] bg-[#F9FAFB] px-3 shadow-none ring-1 ring-[#ECECEC] transition duration-150 ease-out focus-within:ring-2 focus-within:ring-[#22C55E] flex items-center">
+                  <div className="h-[42px] rounded-[20px] bg-[#F9FAFB] px-3 shadow-none ring-1 ring-[#ECECEC] transition duration-150 ease-out focus-within:ring-2 focus-within:ring-[#22C55E] flex items-center">
                     <div className="flex items-center gap-3 w-full text-[#94A3B8]">
                       <Search className="h-4 w-4 flex-shrink-0" />
                       <input
@@ -1032,7 +1032,7 @@ export default function DashboardLayout() {
                         <button
                           key={conversation.id}
                           onClick={() => setActiveConversation(conversation.id)}
-                          className={`w-full overflow-hidden rounded-[16px] px-3 py-1.5 min-h-[76px] text-left ${TRANSITION} transform-gpu flex flex-col gap-1.5 ${
+                          className={`w-full overflow-hidden rounded-[20px] px-3 py-1.5 min-h-[76px] text-left ${TRANSITION} transform-gpu flex flex-col gap-1.5 ${
                               active
                                 ? "bg-[#F6FFFA] border border-[#D1EECF] ring-1 ring-[#22C55E]/20 shadow-sm"
                                 : "bg-white border border-transparent hover:bg-[#FBFFF8] hover:shadow-[0_10px_30px_rgba(15,23,42,0.06)] hover:-translate-y-0.5"
@@ -1168,7 +1168,7 @@ export default function DashboardLayout() {
                             </div>
                           ) : null}
                           <div className={`flex ${isAgent ? "justify-start" : "justify-end"}`}>
-                            <div className={`rounded-[16px] px-3 py-2 text-sm break-words max-w-[70%] ${
+                            <div className={`rounded-[20px] px-3 py-2 text-sm break-words max-w-[70%] ${
                               isAgent
                                 ? "bg-[#F0FDF4] text-[#166534] border border-[#DCFCE7]"
                                 : "bg-white text-[#111827] border border-[#E5E7EB]"
@@ -1187,7 +1187,7 @@ export default function DashboardLayout() {
 
                 {/* Input Area - Sticky at bottom */}
                 <div className="shrink-0 border-t border-[#E5E7EB] bg-white px-6 py-3">
-                  <div className={`rounded-[18px] bg-[#F9FAFB] border border-[#E5E7EB] flex items-center gap-2 min-h-[44px] px-3 py-2 ${TRANSITION}`}>
+                  <div className={`rounded-[20px] bg-[#F9FAFB] border border-[#E5E7EB] flex items-center gap-2 min-h-[44px] px-3 py-2 ${TRANSITION}`}>
                     <textarea
                       ref={textareaRef}
                       value={messageInput}
@@ -1366,7 +1366,7 @@ export default function DashboardLayout() {
                 </div>
                 <button
                   type="button"
-                  className="inline-flex items-center gap-2 rounded-[16px] bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"
+                  className="inline-flex items-center gap-2 rounded-[20px] bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"
                 >
                   <Plus className="h-4 w-4" />
                   Create Status Post
@@ -1561,7 +1561,7 @@ export default function DashboardLayout() {
                 </div>
                 <button
                   type="button"
-                  className="inline-flex items-center justify-center rounded-[16px] bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"
+                  className="inline-flex items-center justify-center rounded-[20px] bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"
                 >
                   Add Product
                 </button>
@@ -1596,13 +1596,13 @@ export default function DashboardLayout() {
                     <div className="mt-6 flex flex-wrap items-center gap-3">
                       <button
                         type="button"
-                        className="rounded-2xl border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6]"
+                        className="rounded-[24px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6]"
                       >
                         Edit
                       </button>
                       <button
                         type="button"
-                        className="rounded-2xl border border-[#FCA5A5] bg-[#FEE2E2] px-4 py-2 text-sm font-semibold text-[#B91C1C] transition hover:bg-[#FECACA]"
+                        className="rounded-[24px] border border-[#FCA5A5] bg-[#FEE2E2] px-4 py-2 text-sm font-semibold text-[#B91C1C] transition hover:bg-[#FECACA]"
                       >
                         Delete
                       </button>
@@ -1626,7 +1626,7 @@ export default function DashboardLayout() {
                   <button
                     type="button"
                     onClick={() => setAiEnabled((value) => !value)}
-                    className={`inline-flex items-center rounded-2xl px-4 py-3 text-sm font-semibold transition ${
+                    className={`inline-flex items-center rounded-[24px] px-4 py-3 text-sm font-semibold transition ${
                       aiEnabled ? "bg-[#22C55E] text-white" : "bg-[#E5E7EB] text-[#6B7280]"
                     }`}
                   >
@@ -1643,7 +1643,7 @@ export default function DashboardLayout() {
                           key={tab}
                           type="button"
                           onClick={() => setAssistantTab(tab)}
-                          className={`rounded-2xl px-4 py-2 text-sm font-semibold transition ${
+                          className={`rounded-[24px] px-4 py-2 text-sm font-semibold transition ${
                             active
                               ? "bg-[#22C55E] text-white"
                               : "bg-[#F3F4F6] text-[#374151] hover:bg-[#E5E7EB]"
@@ -1736,7 +1736,7 @@ export default function DashboardLayout() {
                                 { id: `kp${current.length + 1}`, name: "", price: "" },
                               ])
                             }
-                            className="inline-flex items-center rounded-2xl bg-[#22C55E] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
+                            className="inline-flex items-center rounded-[24px] bg-[#22C55E] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
                           >
                             Add product
                           </button>
@@ -1787,7 +1787,7 @@ export default function DashboardLayout() {
                                 { id: `faq${current.length + 1}`, question: "", answer: "" },
                               ])
                             }
-                            className="inline-flex items-center rounded-2xl bg-[#22C55E] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
+                            className="inline-flex items-center rounded-[24px] bg-[#22C55E] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
                           >
                             Add FAQ
                           </button>
@@ -1882,7 +1882,7 @@ export default function DashboardLayout() {
                               type="text"
                               value={assistantName}
                               onChange={(event) => setAssistantName(event.target.value)}
-                              className="mt-2 w-full rounded-[18px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                              className="mt-2 w-full rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                               placeholder="e.g., Nuru"
                             />
                           </div>
@@ -1903,7 +1903,7 @@ export default function DashboardLayout() {
                                   key={option}
                                   type="button"
                                   onClick={() => setPrimaryLanguage(option)}
-                                  className={`rounded-2xl border px-3 py-2 text-sm font-semibold transition ${
+                                  className={`rounded-[24px] border px-3 py-2 text-sm font-semibold transition ${
                                     primaryLanguage === option
                                       ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]"
                                       : "border-[#E5E7EB] bg-[#F9FAFB] text-[#111827] hover:bg-white"
@@ -1924,7 +1924,7 @@ export default function DashboardLayout() {
                                   key={option}
                                   type="button"
                                   onClick={() => setSecondaryLanguage(option)}
-                                  className={`rounded-2xl border px-3 py-2 text-sm font-semibold transition ${
+                                  className={`rounded-[24px] border px-3 py-2 text-sm font-semibold transition ${
                                     secondaryLanguage === option
                                       ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]"
                                       : "border-[#E5E7EB] bg-[#F9FAFB] text-[#111827] hover:bg-white"
@@ -1943,7 +1943,7 @@ export default function DashboardLayout() {
                         <p className="mt-1 text-sm text-[#6B7280]">Select how your assistant communicates with customers.</p>
                         <div className="mt-4 space-y-3">
                           {TONES.map((option) => (
-                            <label key={option} className="flex items-center gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
+                            <label key={option} className="flex items-center gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
                               <input
                                 type="radio"
                                 name="tone"
@@ -1962,7 +1962,7 @@ export default function DashboardLayout() {
                         <p className="text-sm font-semibold text-[#111827]">Sales Behavior</p>
                         <p className="mt-1 text-sm text-[#6B7280]">Configure how your assistant handles sales interactions.</p>
                         <div className="mt-4 space-y-3">
-                          <label className="flex items-center gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
+                          <label className="flex items-center gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
                             <input
                               type="checkbox"
                               checked={upsellProducts}
@@ -1971,7 +1971,7 @@ export default function DashboardLayout() {
                             />
                             <span className="text-sm font-semibold text-[#111827]">Upsell Products</span>
                           </label>
-                          <label className="flex items-center gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
+                          <label className="flex items-center gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
                             <input
                               type="checkbox"
                               checked={recommendAlternatives}
@@ -1980,7 +1980,7 @@ export default function DashboardLayout() {
                             />
                             <span className="text-sm font-semibold text-[#111827]">Recommend Alternatives</span>
                           </label>
-                          <label className="flex items-center gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
+                          <label className="flex items-center gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
                             <input
                               type="checkbox"
                               checked={closeSalesAutomatically}
@@ -2042,7 +2042,7 @@ export default function DashboardLayout() {
                                     sendTestAiMessage();
                                   }
                                 }}
-                                className="min-h-[110px] w-full rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                                className="min-h-[110px] w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                                 placeholder="Type a message to the assistant..."
                               />
                               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -2050,7 +2050,7 @@ export default function DashboardLayout() {
                                 <button
                                   type="button"
                                   onClick={sendTestAiMessage}
-                                  className="inline-flex items-center justify-center rounded-2xl bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
+                                  className="inline-flex items-center justify-center rounded-[24px] bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
                                 >
                                   Send message
                                 </button>
@@ -2068,7 +2068,7 @@ export default function DashboardLayout() {
                               key={prompt}
                               type="button"
                               onClick={() => setTestAiInput(prompt)}
-                              className="w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-left text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6]"
+                              className="w-full rounded-[24px] border border-[#E5E7EB] bg-white px-4 py-3 text-left text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6]"
                             >
                               {prompt}
                             </button>
@@ -2084,7 +2084,7 @@ export default function DashboardLayout() {
                         <p className="text-sm font-semibold text-[#111827]">Escalation Rules</p>
                         <p className="mt-2 text-sm text-[#6B7280]">Choose which situations trigger handoff to a human representative.</p>
                         <div className="mt-6 space-y-3">
-                          <label className="flex items-start gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
+                          <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
                             <input
                               type="checkbox"
                               checked={escalateComplaints}
@@ -2096,7 +2096,7 @@ export default function DashboardLayout() {
                               <p className="mt-1 text-xs text-[#6B7280]">Detect negative sentiment and escalate immediately.</p>
                             </div>
                           </label>
-                          <label className="flex items-start gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
+                          <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
                             <input
                               type="checkbox"
                               checked={escalateRefunds}
@@ -2108,7 +2108,7 @@ export default function DashboardLayout() {
                               <p className="mt-1 text-xs text-[#6B7280]">Hand off all refund-related conversations to the owner.</p>
                             </div>
                           </label>
-                          <label className="flex items-start gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
+                          <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
                             <input
                               type="checkbox"
                               checked={escalateLegalQuestions}
@@ -2120,7 +2120,7 @@ export default function DashboardLayout() {
                               <p className="mt-1 text-xs text-[#6B7280]">Escalate any conversation involving legal matters or regulations.</p>
                             </div>
                           </label>
-                          <label className="flex items-start gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
+                          <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
                             <input
                               type="checkbox"
                               checked={escalateHumanRequested}
@@ -2132,7 +2132,7 @@ export default function DashboardLayout() {
                               <p className="mt-1 text-xs text-[#6B7280]">Stop responding when customers explicitly ask for a person.</p>
                             </div>
                           </label>
-                          <label className="flex items-start gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
+                          <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
                             <input
                               type="checkbox"
                               checked={escalateUnknownQuestions}
@@ -2144,7 +2144,7 @@ export default function DashboardLayout() {
                               <p className="mt-1 text-xs text-[#6B7280]">Hand off queries outside the AI's knowledge base.</p>
                             </div>
                           </label>
-                          <label className="flex items-start gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
+                          <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
                             <input
                               type="checkbox"
                               checked={escalateNegotiationsAbove10k}
@@ -2182,7 +2182,7 @@ export default function DashboardLayout() {
                             type="text"
                             value={businessHours}
                             onChange={(event) => setBusinessHours(event.target.value)}
-                            className="mt-2 w-full rounded-[18px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                            className="mt-2 w-full rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                             placeholder="e.g., 8:00 AM - 6:00 PM"
                           />
                           <p className="mt-2 text-xs text-[#6B7280]">Example: Mon–Fri 8:00 AM - 6:00 PM, Sat 9:00 AM - 2:00 PM</p>
@@ -2193,7 +2193,7 @@ export default function DashboardLayout() {
                         <p className="text-sm font-semibold text-[#111827]">Outside Business Hours</p>
                         <p className="mt-2 text-sm text-[#6B7280]">Choose how the AI behaves when customers message outside operating hours.</p>
                         <div className="mt-4 space-y-3">
-                          <label className="flex items-start gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
+                          <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
                             <input
                               type="radio"
                               name="outside-hours"
@@ -2207,7 +2207,7 @@ export default function DashboardLayout() {
                               <p className="mt-1 text-xs text-[#6B7280]">AI responds normally, treating it as in-hours.</p>
                             </div>
                           </label>
-                          <label className="flex items-start gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
+                          <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
                             <input
                               type="radio"
                               name="outside-hours"
@@ -2221,7 +2221,7 @@ export default function DashboardLayout() {
                               <p className="mt-1 text-xs text-[#6B7280]">AI gathers contact details and messages for follow-up.</p>
                             </div>
                           </label>
-                          <label className="flex items-start gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
+                          <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
                             <input
                               type="radio"
                               name="outside-hours"
@@ -2249,7 +2249,7 @@ export default function DashboardLayout() {
                               onChange={(event) => setMaxAiMessages(Math.max(1, parseInt(event.target.value) || 1))}
                               min="1"
                               max="50"
-                              className="w-20 rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                              className="w-20 rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                             />
                             <span className="text-sm text-[#6B7280]">messages per conversation</span>
                           </div>
@@ -2418,7 +2418,7 @@ export default function DashboardLayout() {
                         type="text"
                         value={businessProfile.name}
                         onChange={(e) => setBusinessProfile((s) => ({ ...s, name: e.target.value }))}
-                        className="mt-2 w-full rounded-[18px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        className="mt-2 w-full rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="e.g., Sokoos Internet"
                       />
                     </div>
@@ -2428,7 +2428,7 @@ export default function DashboardLayout() {
                         type="text"
                         value={businessProfile.industry}
                         onChange={(e) => setBusinessProfile((s) => ({ ...s, industry: e.target.value }))}
-                        className="mt-2 w-full rounded-[18px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        className="mt-2 w-full rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="e.g., Telecom & Connectivity"
                       />
                     </div>
@@ -2437,7 +2437,7 @@ export default function DashboardLayout() {
                       <textarea
                         value={businessProfile.description}
                         onChange={(e) => setBusinessProfile((s) => ({ ...s, description: e.target.value }))}
-                        className="mt-2 w-full rounded-[18px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        className="mt-2 w-full rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="What does your business do?"
                         rows={4}
                       />
@@ -2454,7 +2454,7 @@ export default function DashboardLayout() {
                         type="tel"
                         value={businessProfile.phone}
                         onChange={(e) => setBusinessProfile((s) => ({ ...s, phone: e.target.value }))}
-                        className="mt-2 w-full rounded-[18px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        className="mt-2 w-full rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="e.g., +254 20 3949 0101"
                       />
                     </div>
@@ -2464,7 +2464,7 @@ export default function DashboardLayout() {
                         type="email"
                         value={businessProfile.email}
                         onChange={(e) => setBusinessProfile((s) => ({ ...s, email: e.target.value }))}
-                        className="mt-2 w-full rounded-[18px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        className="mt-2 w-full rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="e.g., support@sokoos.co.ke"
                       />
                     </div>
@@ -2474,7 +2474,7 @@ export default function DashboardLayout() {
                         type="text"
                         value={businessProfile.location}
                         onChange={(e) => setBusinessProfile((s) => ({ ...s, location: e.target.value }))}
-                        className="mt-2 w-full rounded-[18px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        className="mt-2 w-full rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="e.g., Nairobi, Kenya"
                       />
                     </div>
@@ -2492,7 +2492,7 @@ export default function DashboardLayout() {
                         type="text"
                         value={businessProfile.businessHours}
                         onChange={(e) => setBusinessProfile((s) => ({ ...s, businessHours: e.target.value }))}
-                        className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        className="mt-2 w-full rounded-[24px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="e.g., Mon–Fri, 8:00 AM - 6:00 PM"
                       />
                     </div>
@@ -2502,7 +2502,7 @@ export default function DashboardLayout() {
                         type="text"
                         value={businessProfile.serviceAreas}
                         onChange={(e) => setBusinessProfile((s) => ({ ...s, serviceAreas: e.target.value }))}
-                        className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        className="mt-2 w-full rounded-[24px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="e.g., Nairobi, Kiambu, Thika"
                       />
                     </div>
@@ -2512,7 +2512,7 @@ export default function DashboardLayout() {
                 <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
                   <p className="text-sm font-semibold text-[#111827]">Payment Methods</p>
                   <div className="mt-4 space-y-3">
-                    <label className="flex items-center gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
+                    <label className="flex items-center gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
                       <input
                         type="checkbox"
                         checked={businessProfile.paymentMethods.mPesa}
@@ -2524,7 +2524,7 @@ export default function DashboardLayout() {
                       />
                       <span className="text-sm font-semibold text-[#111827]">M-Pesa</span>
                     </label>
-                    <label className="flex items-center gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
+                    <label className="flex items-center gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
                       <input
                         type="checkbox"
                         checked={businessProfile.paymentMethods.cash}
@@ -2536,7 +2536,7 @@ export default function DashboardLayout() {
                       />
                       <span className="text-sm font-semibold text-[#111827]">Cash</span>
                     </label>
-                    <label className="flex items-center gap-3 cursor-pointer rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
+                    <label className="flex items-center gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
                       <input
                         type="checkbox"
                         checked={businessProfile.paymentMethods.bankTransfer}
@@ -2568,7 +2568,7 @@ export default function DashboardLayout() {
                   <p className="mt-1 text-sm text-[#6B7280]">Card view of personal contacts stored for quick reference.</p>
                   <div className="mt-4 grid gap-4 sm:grid-cols-2">
                     {personalContacts.map((pc) => (
-                      <div key={pc.id} className="rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+                      <div key={pc.id} className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="text-lg font-semibold text-[#111827]">{pc.name}</p>
@@ -2591,7 +2591,7 @@ export default function DashboardLayout() {
                         type="text"
                         value={newContact.name}
                         onChange={(e) => setNewContact((s) => ({ ...s, name: e.target.value }))}
-                        className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        className="mt-2 w-full rounded-[24px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="e.g., Mary Wanjiku"
                       />
                     </div>
@@ -2601,7 +2601,7 @@ export default function DashboardLayout() {
                         type="text"
                         value={newContact.relationship}
                         onChange={(e) => setNewContact((s) => ({ ...s, relationship: e.target.value }))}
-                        className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        className="mt-2 w-full rounded-[24px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="e.g., Wife, Supplier"
                       />
                     </div>
@@ -2611,7 +2611,7 @@ export default function DashboardLayout() {
                         type="tel"
                         value={newContact.phone}
                         onChange={(e) => setNewContact((s) => ({ ...s, phone: e.target.value }))}
-                        className="mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
+                        className="mt-2 w-full rounded-[24px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="e.g., +254712345678"
                       />
                     </div>
@@ -2619,7 +2619,7 @@ export default function DashboardLayout() {
                       <button
                         type="button"
                         onClick={addPersonalContact}
-                        className="inline-flex items-center justify-center rounded-2xl bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
+                        className="inline-flex items-center justify-center rounded-[24px] bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
                       >
                         Add contact
                       </button>
