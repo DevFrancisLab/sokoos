@@ -23,6 +23,7 @@ import {
   Facebook,
   Linkedin,
   MessageCircle,
+  Heart,
 } from "lucide-react";
 import heroDashboard from "@/assets/hero-dashboard.png";
 import solutionDashboard from "@/assets/solution-dashboard.png";
@@ -138,17 +139,17 @@ function Hero() {
             </div>
             <div className="mt-4 flex flex-col items-center gap-2 text-sm text-muted-foreground sm:flex-row">
               <span className="inline-flex items-center gap-2 text-[#166534]">
-                <span>📈</span>
+                <BarChart3 className="h-4 w-4 text-[#16A34A]" />
                 Acquire Customers
               </span>
               <span className="hidden sm:inline">→</span>
               <span className="inline-flex items-center gap-2 text-[#166534]">
-                <span>💬</span>
+                <MessageCircle className="h-4 w-4 text-[#16A34A]" />
                 Convert Leads
               </span>
               <span className="hidden sm:inline">→</span>
               <span className="inline-flex items-center gap-2 text-[#166534]">
-                <span>❤️</span>
+                <Heart className="h-4 w-4 text-[#16A34A]" />
                 Retain Customers
               </span>
             </div>
