@@ -48,7 +48,7 @@ const STAT_CARDS = [
 // Micro-interaction tokens
 const TRANSITION = "transition duration-200 ease";
 const TRANSITION_FAST = "transition duration-150 ease";
-const INTERACTION = "transition duration-200 ease transform hover:-translate-y-1 active:translate-y-0";
+const INTERACTION = "transition duration-150 ease-out transform hover:-translate-y-0.5 active:scale-95";
 
 // Unified dashboard design system (global tokens)
 // - Radius: 20px for cards/inputs/buttons
@@ -82,6 +82,7 @@ const TIME_LABEL = "text-[12px] text-[#64748B]";
 const CAPTION = "text-[13px] text-[#64748B]";
 const BADGE = "inline-flex h-7 items-center gap-1.5 rounded-full px-3 text-[12px] font-medium tracking-[0.02em] transition-colors duration-200 ease";
 const BADGE_ICON = "h-2.5 w-2.5 rounded-full";
+const STATUS_CHIP = "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium flex-shrink-0 transition-all duration-150 ease-out transform hover:scale-[1.02]";
 
 const RECENT_ACTIVITY = [
   { title: "New customer inquiry", subtitle: "Received in WhatsApp inbox", time: "5m ago" },
@@ -549,6 +550,7 @@ export default function DashboardLayout() {
   const [messageInput, setMessageInput] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [sidebarHovered, setSidebarHovered] = useState(false);
+  const [customerPanelFading, setCustomerPanelFading] = useState(false);
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -559,6 +561,12 @@ export default function DashboardLayout() {
     textarea.style.height = `${height}px`;
     textarea.style.overflowY = textarea.scrollHeight > 120 ? "auto" : "hidden";
   }, [messageInput]);
+
+  useEffect(() => {
+    setCustomerPanelFading(true);
+    const timer = window.setTimeout(() => setCustomerPanelFading(false), 10);
+    return () => window.clearTimeout(timer);
+  }, [activeConversation]);
   const filteredCustomers = CUSTOMERS.filter((customer) => {
     const query = customerSearch.toLowerCase();
     return (
@@ -1027,7 +1035,7 @@ export default function DashboardLayout() {
                           className={`w-full overflow-hidden rounded-[16px] px-3 py-1.5 min-h-[76px] text-left ${TRANSITION} transform-gpu flex flex-col gap-1.5 ${
                               active
                                 ? "bg-[#F6FFFA] border border-[#D1EECF] ring-1 ring-[#22C55E]/20 shadow-sm"
-                                : "bg-white border border-transparent hover:bg-[#FBFFF8] hover:shadow-sm"
+                                : "bg-white border border-transparent hover:bg-[#FBFFF8] hover:shadow-[0_10px_30px_rgba(15,23,42,0.06)] hover:-translate-y-0.5"
                           }`}
                         >
                           {/* Header: Avatar + Name + Time */}
@@ -1054,14 +1062,14 @@ export default function DashboardLayout() {
                             {(() => {
                               const badge = getConversationStatusBadge(effectiveSource, isPersonal);
                               return (
-                                <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium flex-shrink-0 ${badge.bg} ${badge.text}`}>
+                                <span className={`${STATUS_CHIP} ${badge.bg} ${badge.text}`}>
                                   {badge.emoji} {badge.label}
                                 </span>
                               );
                             })()}
                             <div className="ml-auto flex-shrink-0">
                               {conversation.badge > 0 ? (
-                                <span className={`inline-flex min-w-[18px] h-4 items-center justify-center rounded-full bg-[#22C55E] text-white text-[10px] font-semibold`}>{conversation.badge}</span>
+                                <span className={`inline-flex min-w-[18px] h-4 items-center justify-center rounded-full bg-[#22C55E] text-white text-[10px] font-semibold transform-gpu transition duration-200 ease-out`}>{conversation.badge}</span>
                               ) : null}
                             </div>
                           </div>
@@ -1084,7 +1092,7 @@ export default function DashboardLayout() {
                           {(() => {
                             const badge = getConversationStatusBadge(effectiveActiveSource, isPersonalActive);
                             return (
-                              <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold flex-shrink-0 ${badge.bg} ${badge.text}`}>
+                              <span className={`${STATUS_CHIP} font-semibold ${badge.bg} ${badge.text}`}>
                                 {badge.emoji} {badge.label}
                               </span>
                             );
@@ -1191,7 +1199,7 @@ export default function DashboardLayout() {
                     />
                     <button
                       type="button"
-                      className={`inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white ${INTERACTION} hover:bg-[#16A34A] transition-colors`}
+                      className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white transition duration-150 ease-out transform hover:bg-[#16A34A] active:scale-95"
                     >
                       <Send className="h-3.5 w-3.5" />
                     </button>
@@ -1200,7 +1208,7 @@ export default function DashboardLayout() {
               </section>
 
               {!customerCollapsed && (
-                <section className={`${CARD} w-full h-full min-h-0 flex flex-col transition-opacity duration-300 ease-out opacity-100 min-w-[330px] max-w-[360px]`}>
+                <section className={`${CARD} w-full h-full min-h-0 flex flex-col transition-all duration-300 ease-out ${customerPanelFading ? "opacity-80 translate-y-1" : "opacity-100 translate-y-0"} min-w-[330px] max-w-[360px]`}>
                   {/* Header */}
                   <div className="flex items-start justify-between gap-3 shrink-0 px-5 py-4 border-b border-[#ECECEC]">
                     <div>
@@ -1211,7 +1219,7 @@ export default function DashboardLayout() {
                     <button
                       type="button"
                       onClick={() => setCustomerCollapsed(true)}
-                      className={`inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#ECECEC] bg-white text-[#64748B] ${TRANSITION} hover:bg-[#F9FAFB] hover:text-[#111827] shrink-0`}
+                      className={`inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#ECECEC] bg-white text-[#64748B] ${TRANSITION_FAST} hover:bg-[#F9FAFB] hover:text-[#111827] active:scale-95 shrink-0`}
                       aria-label="Collapse customer panel"
                       title="Collapse customer panel"
                     >
