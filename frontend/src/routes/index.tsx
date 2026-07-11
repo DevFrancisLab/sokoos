@@ -174,7 +174,7 @@ function Hero() {
         <Reveal delay={250}>
           <div className="mx-auto mt-16 max-w-4xl">
             <p className="text-center text-xs font-medium uppercase tracking-wider text-muted-foreground">
-              Trusted across industries
+              Helping Businesses Grow Across Industries
             </p>
             <div className="mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm font-medium text-muted-foreground/80">
               {[
