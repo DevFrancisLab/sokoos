@@ -229,21 +229,21 @@ function SectionHeader({
 
 function Problem() {
   const items = [
-    { icon: MessageSquareOff, title: "Missed sales when you're offline", desc: "Customers move on if no one replies within minutes." },
-    { icon: Clock, title: "Delayed responses", desc: "Slow replies mean lost trust and lost revenue." },
-    { icon: Repeat, title: "Repetitive questions", desc: "Your team answers the same things a hundred times a day." },
-    { icon: RefreshCw, title: "Difficult follow-ups", desc: "Leads slip through the cracks without a system." },
-    { icon: Database, title: "No customer management", desc: "Conversations scattered across phones and staff." },
-    { icon: Users, title: "Understaffed support", desc: "Growth stalls because you can't hire fast enough." },
+    { icon: MessageSquareOff, title: "Missed Sales", desc: "Potential customers move on when they don't receive a quick response." },
+    { icon: Clock, title: "Slow Response Times", desc: "Delayed replies reduce trust and lower your chances of closing sales." },
+    { icon: Repeat, title: "Repetitive Customer Questions", desc: "Your team spends valuable time answering the same questions instead of growing the business." },
+    { icon: RefreshCw, title: "Missed Follow-ups", desc: "Without consistent follow-ups, qualified leads are easily forgotten." },
+    { icon: Database, title: "No Customer Visibility", desc: "Customer conversations and information are scattered across different devices and team members." },
+    { icon: Users, title: "Limited Capacity", desc: "Your business can only grow as fast as your team can respond to customers." },
   ];
   return (
     <section className="py-20 sm:py-28">
       <div className="container-page">
         <Reveal>
           <SectionHeader
-            eyebrow="The problem"
-            title="Your Customers Should Never Wait"
-            subtitle="Every unanswered message is a lost sale. Sokoos fixes the gaps that quietly cost you money."
+            eyebrow="Why businesses struggle to grow"
+            title="Why Growing Businesses Lose Customers"
+            subtitle="Growing a business shouldn't mean losing customers. Slow responses, missed follow-ups, scattered conversations, and limited customer engagement quietly reduce sales every day."
           />
         </Reveal>
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -266,12 +266,12 @@ function Problem() {
 
 function Solution() {
   const bullets = [
-    "Answers customers instantly",
-    "Closes sales automatically",
-    "Humans can take over anytime",
-    "Works directly with WhatsApp",
-    "Supports multiple team members",
-    "Operates 24/7 — even offline",
+    "Acquire new customers through your digital channels",
+    "Respond instantly on WhatsApp with AI",
+    "Qualify leads and close more sales",
+    "Book appointments automatically",
+    "Follow up with customers without manual work",
+    "Retain customers with ongoing engagement and insights",
   ];
   return (
     <section className="bg-surface py-20 sm:py-28">
@@ -280,14 +280,13 @@ function Solution() {
           <Reveal>
             <div>
               <span className="text-xs font-semibold uppercase tracking-wider text-primary">
-                The solution
+                How Sokoos helps you grow
               </span>
               <h2 className="mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl">
-                Meet <span className="text-primary">Sokoos Chat</span>
+                How <span className="text-primary">Sokoos Helps You Acquire, Convert & Retain Customers</span>
               </h2>
               <p className="mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
-                A smart WhatsApp assistant trained on your business. It talks to customers like
-                your best salesperson would — and your team stays in full control.
+                Sokoos brings together AI, WhatsApp, automation, and customer engagement tools to help your business attract new customers, convert more leads into sales, and build long-term customer relationships.
               </p>
               <ul className="mt-8 grid gap-3 sm:grid-cols-2">
                 {bullets.map((b) => (
