@@ -118,14 +118,14 @@ function Hero() {
       <div className="container-page relative pt-16 pb-10 sm:pt-24 sm:pb-16">
         <Reveal>
           <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
+            <div className="inline-flex items-center rounded-full bg-[#ECFDF5] px-4 py-2 text-sm font-semibold text-[#166534] shadow-sm shadow-[#ECFDF5]/60">
+              ✨ Acquire • Convert • Retain
+            </div>
             <h1 className="mt-6 text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl">
-              Your AI Employee
-              <br />
-              on <span className="text-primary">WhatsApp</span>
+              Acquire, Convert & Retain <span className="text-[#16A34A]">More Customers</span> with AI
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Sokoos helps businesses answer customers, close sales, schedule WhatsApp Status
-              posts, and stay available 24/7—even when you're offline.
+              Sokoos helps businesses attract new customers, respond instantly on WhatsApp, close more sales, automate follow-ups, and turn one-time buyers into loyal customers—all from one platform.
             </p>
             <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
               <a
@@ -135,6 +135,22 @@ function Hero() {
                 Start Free Trial
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </a>
+            </div>
+            <div className="mt-4 flex flex-col items-center gap-2 text-sm text-muted-foreground sm:flex-row">
+              <span className="inline-flex items-center gap-2 text-[#166534]">
+                <span>📈</span>
+                Acquire Customers
+              </span>
+              <span className="hidden sm:inline">→</span>
+              <span className="inline-flex items-center gap-2 text-[#166534]">
+                <span>💬</span>
+                Convert Leads
+              </span>
+              <span className="hidden sm:inline">→</span>
+              <span className="inline-flex items-center gap-2 text-[#166534]">
+                <span>❤️</span>
+                Retain Customers
+              </span>
             </div>
           </div>
         </Reveal>
