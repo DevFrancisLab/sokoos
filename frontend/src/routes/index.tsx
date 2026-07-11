@@ -488,19 +488,19 @@ function Testimonials() {
       name: "James",
       role: "Internet Provider",
       quote:
-        "Sokoos responds to customers even when I'm asleep. We've closed more sales without hiring extra staff.",
+        "We went from losing leads to closing them. Instant responses mean more customers stay with us, and our sales doubled without hiring a team.",
     },
     {
       name: "Grace",
       role: "Boutique Owner",
       quote:
-        "The status scheduler alone saves me hours every week. My WhatsApp finally feels like a real storefront.",
+        "I save 10 hours a week on customer responses. More time to grow the business, and customers love getting answers instantly. My revenue is up 40%.",
     },
     {
       name: "David",
       role: "Hardware Store Manager",
       quote:
-        "Customers get instant quotes and product info. Our conversion rate has nearly doubled.",
+        "Customers get instant answers 24/7. Our close rate jumped by 60%, and I'm not spending my evenings answering the same questions.",
     },
   ];
   return (
