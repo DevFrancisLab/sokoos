@@ -594,8 +594,8 @@ function Pricing() {
         <Reveal>
           <SectionHeader
             eyebrow="Pricing"
-            title="Simple pricing. Serious ROI."
-            subtitle="Start free for 14 days. No card required. Cancel anytime."
+            title="Simple Pricing for Growing Businesses"
+            subtitle="Choose a plan that grows with your business. Start free for 14 days."
           />
         </Reveal>
         <div className="mt-14 grid gap-5 md:grid-cols-3">
