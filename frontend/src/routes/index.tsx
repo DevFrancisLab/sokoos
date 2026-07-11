@@ -404,21 +404,21 @@ function HowItWorks() {
 
 function Ecosystem() {
   const modules = [
-    { name: "Chat", status: "Available Now", icon: MessageCircle },
-    { name: "Marketing", status: "Coming Soon", icon: Sparkles },
-    { name: "POS", status: "Coming Soon", icon: Package },
-    { name: "Inventory", status: "Coming Soon", icon: Boxes },
-    { name: "Payments", status: "Coming Soon", icon: Repeat },
-    { name: "Analytics", status: "Coming Soon", icon: BarChart3 },
+    { name: "AI Employee", status: "Available Today", desc: "Respond instantly and qualify leads 24/7.", icon: Bot },
+    { name: "Landing Pages", status: "Coming Soon", desc: "Generate beautiful business websites in minutes.", icon: Sparkles },
+    { name: "Marketing", status: "Coming Soon", desc: "Launch campaigns across WhatsApp and social media.", icon: MessageCircle },
+    { name: "CRM", status: "Coming Soon", desc: "Manage customer relationships in one place.", icon: Users },
+    { name: "Payments", status: "Coming Soon", desc: "Collect payments seamlessly from customers.", icon: Package },
+    { name: "Analytics", status: "Coming Soon", desc: "Understand customer behaviour and business performance.", icon: BarChart3 },
   ];
   return (
     <section id="ecosystem" className="py-20 sm:py-28">
       <div className="container-page">
         <Reveal>
           <SectionHeader
-            eyebrow="The ecosystem"
-            title="More Than Just a Chatbot"
-            subtitle="Sokoos is becoming the operating system for African businesses — one module at a time."
+            eyebrow="The Sokoos Growth Platform"
+            title="One Platform. Every Stage of Customer Growth."
+            subtitle="Sokoos helps businesses acquire customers, convert leads into sales, and retain loyal customers through AI-powered automation."
           />
         </Reveal>
 
@@ -439,7 +439,7 @@ function Ecosystem() {
           {/* Connectors + modules */}
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {modules.map((m, i) => {
-              const available = m.status === "Available Now";
+              const available = m.status === "Available Today";
               return (
                 <Reveal key={m.name} delay={i * 60}>
                   <div
@@ -469,7 +469,8 @@ function Ecosystem() {
                         {m.status}
                       </span>
                     </div>
-                    <h3 className="mt-4 text-lg font-semibold">Sokoos {m.name}</h3>
+                    <h3 className="mt-4 text-lg font-semibold">{m.name}</h3>
+                    <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{m.desc}</p>
                   </div>
                 </Reveal>
               );
