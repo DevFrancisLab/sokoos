@@ -909,16 +909,90 @@ export default function DashboardLayout() {
               </div>
 
               <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-                {STAT_CARDS.map((stat) => (
+                {STAT_CARDS.map((stat, i) => (
                   <div key={stat.label} className={CARD}>
-                    <p className={SECTION_HEADING}>{stat.label}</p>
-                    <div className="mt-5 flex items-end justify-between gap-4">
-                      <div>
-                        <p className="text-3xl font-semibold text-[#111827]">{stat.value}</p>
-                      </div>
-                      <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#166534]">
-                        {stat.delta}
-                      </span>
+                    <p className={SECTION_HEADING}>{i === 0 ? "AI Status" : i === 2 ? "Business Knowledge" : stat.label}</p>
+                    <div className="mt-5">
+                      {i === 0 ? (
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <p className="text-sm text-[#6B7280]">AI Assistant</p>
+                            <p className="text-sm font-semibold text-[#111827]">Active</p>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <p className="text-sm text-[#6B7280]">Confidence</p>
+                            <p className="text-lg font-semibold text-[#111827]">94%</p>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <p className="text-sm text-[#6B7280]">Last automated reply</p>
+                            <p className="text-sm text-[#6B7280]">2 minutes ago</p>
+                          </div>
+                          <div className="mt-2">
+                            <span className="inline-flex items-center rounded-full bg-[#ECFDF5] px-3 py-1 text-sm font-semibold text-[#047857]">Online</span>
+                          </div>
+                        </div>
+                      ) : i === 1 ? (
+                        <div className="space-y-2">
+                          <div className="flex items-center justify-between">
+                            <p className="text-sm text-[#6B7280]">Connected Number</p>
+                            <p className="text-sm font-semibold text-[#111827]">+254 712 345 678</p>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <p className="text-sm text-[#6B7280]">Status</p>
+                            <p className="text-sm font-semibold text-[#047857]">Connected</p>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <p className="text-sm text-[#6B7280]">Last Sync</p>
+                            <p className="text-sm text-[#6B7280]">1 minute ago</p>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <p className="text-sm text-[#6B7280]">AI Listening</p>
+                            <p className="text-sm text-[#111827]">Enabled</p>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <p className="text-sm text-[#6B7280]">Messages Today</p>
+                            <p className="text-sm font-semibold text-[#111827]">48</p>
+                          </div>
+                          <div className="mt-2">
+                            <span className="inline-flex items-center rounded-full bg-[#ECFDF5] px-3 py-1 text-sm font-semibold text-[#047857]">Connected</span>
+                          </div>
+                        </div>
+                      ) : i === 2 ? (
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <p className="text-sm font-semibold text-[#111827]">Business Profile</p>
+                            <p className="text-sm text-[#047857]">✓ Complete</p>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <p className="text-sm text-[#6B7280]">Products</p>
+                            <p className="text-sm font-semibold text-[#111827]">12 configured</p>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <p className="text-sm text-[#6B7280]">FAQs</p>
+                            <p className="text-sm font-semibold text-[#111827]">18 configured</p>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <p className="text-sm text-[#6B7280]">Business Hours</p>
+                            <p className="text-sm font-semibold text-[#111827]">Configured</p>
+                          </div>
+                          <div>
+                            <p className="text-sm text-[#6B7280] mb-2">Knowledge Score</p>
+                            <div className="w-full h-2 rounded-full bg-[#EEF2F6]">
+                              <div className="h-2 rounded-full bg-[#22C55E]" style={{ width: '92%' }} />
+                            </div>
+                            <div className="mt-2 flex items-center justify-between">
+                              <span className="text-sm font-semibold text-[#111827]">92%</span>
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="mt-5 flex items-end justify-between gap-4">
+                          <div>
+                            <p className="text-3xl font-semibold text-[#111827]">{stat.value}</p>
+                          </div>
+                          <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#166534]">{stat.delta}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}

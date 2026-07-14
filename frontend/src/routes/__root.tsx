@@ -77,17 +77,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Sokoos — The Operating System for African Businesses" },
+      { title: "Sokoos — The Operating System for Growing Businesses" },
       {
         name: "description",
         content:
-          "Sokoos is an AI-powered WhatsApp assistant that answers customers, closes sales, and schedules Status posts 24/7 for African SMEs.",
+          "Sokoos is an AI-powered WhatsApp assistant that answers customers, closes sales, and schedules Status posts 24/7 for modern businesses.",
       },
       { property: "og:title", content: "Sokoos — Your AI Employee on WhatsApp" },
       {
         property: "og:description",
         content:
-          "AI-powered WhatsApp assistant for African businesses. Never miss another customer again.",
+          "AI-powered WhatsApp assistant for growing businesses. Never miss another customer again.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

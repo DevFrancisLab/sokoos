@@ -101,7 +101,7 @@ function Nav() {
             href="#cta"
             className="inline-flex items-center gap-1.5 rounded-lg bg-foreground px-3.5 py-2 text-sm font-semibold text-background transition-transform hover:-translate-y-0.5"
           >
-            Start free
+            Get Started
             <ArrowRight className="h-3.5 w-3.5" />
           </a>
         </div>
@@ -123,17 +123,17 @@ function Hero() {
               ✨ Acquire • Convert • Retain
             </div>
             <h1 className="mt-6 text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl">
-              Acquire, Convert & Retain <span className="text-[#16A34A]">More Customers</span> with AI
+              Your AI Employee for <span className="text-[#16A34A]">Customer Growth</span>
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Sokoos helps businesses attract new customers, respond instantly on WhatsApp, close more sales, automate follow-ups, and turn one-time buyers into loyal customers—all from one platform.
+              Sokoos helps businesses attract new customers, respond instantly on WhatsApp, close more sales, automate follow-ups, and turn one-time buyers into loyal customers, all from one platform.
             </p>
             <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
               <a
                 href="#cta"
                 className="group inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition-transform hover:-translate-y-0.5"
               >
-                Start Free Trial
+                Get Started
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </a>
             </div>
@@ -337,7 +337,7 @@ function Features() {
           <SectionHeader
             eyebrow="Features"
             title="Everything You Need to Acquire, Convert & Retain Customers"
-            subtitle="Sokoos gives African businesses the tools to attract customers, automate conversations, close more sales, and build lasting customer relationships."
+            subtitle="Sokoos gives growing businesses the tools to attract customers, automate conversations, close more sales, and build lasting customer relationships."
           />
         </Reveal>
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -553,7 +553,7 @@ function Pricing() {
         "Product catalog",
         "Email support",
       ],
-      cta: "Start Free Trial",
+      cta: "Get Started",
       highlight: false,
     },
     {
@@ -569,7 +569,7 @@ function Pricing() {
         "Business insights dashboard",
         "Priority support",
       ],
-      cta: "Start Free Trial",
+      cta: "Get Started",
       highlight: true,
     },
     {
@@ -595,7 +595,7 @@ function Pricing() {
           <SectionHeader
             eyebrow="Pricing"
             title="Simple Pricing for Growing Businesses"
-            subtitle="Choose a plan that grows with your business. Start free for 14 days."
+            subtitle="Choose a plan that grows with your business."
           />
         </Reveal>
         <div className="mt-14 grid gap-5 md:grid-cols-3">
@@ -686,14 +686,8 @@ function FinalCTA() {
                   href="#"
                   className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition-transform hover:-translate-y-0.5"
                 >
-                  Start Free Trial
+                  Get Started
                   <ArrowRight className="h-4 w-4" />
-                </a>
-                <a
-                  href="#"
-                  className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/5 px-6 py-3.5 text-sm font-semibold text-background transition-colors hover:bg-white/10"
-                >
-                  Book Demo
                 </a>
               </div>
             </div>
@@ -712,7 +706,7 @@ function Footer() {
           <div>
             <Logo />
             <p className="mt-4 max-w-xs text-sm text-muted-foreground">
-              Helping African Businesses Acquire, Convert & Retain Customers.
+              Helping businesses acquire, convert, and retain customers.
             </p>
             <div className="mt-6 flex items-center gap-2">
               {[
@@ -755,7 +749,7 @@ function Footer() {
         </div>
         <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row">
           <span>© {new Date().getFullYear()} Sokoos. All rights reserved.</span>
-          <span>Made for African SMEs.</span>
+          <span>Made for modern businesses.</span>
         </div>
       </div>
     </footer>
