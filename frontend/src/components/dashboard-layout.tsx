@@ -1171,129 +1171,134 @@ export default function DashboardLayout() {
                 <div className="absolute bottom-[-80px] left-[-80px] h-72 w-72 rounded-full bg-[#16A34A]/10 blur-3xl" />
 
                 <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-                  <div className="max-w-3xl">
-                    <div className="inline-flex items-center gap-2 rounded-full border border-[#BBF7D0] bg-white px-4 py-2 text-sm font-medium text-[#15803D]">
-                      <Bot className="h-4 w-4" />
-                      AI Assistant Online
-                    </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#16A34A]">
+                      Business Overview
+                    </p>
 
-                    <h1 className="mt-6 text-4xl font-bold tracking-tight text-[#111827]">
-                      Grow your business with AI that never sleeps.
+                    <h1 className="mt-3 text-4xl font-bold text-[#111827]">
+                      Good morning, Francis 👋
                     </h1>
 
-                    <p className="mt-4 max-w-2xl text-lg leading-8 text-[#64748B]">
-                      Your AI is answering customers, qualifying leads, booking
-                      appointments, and helping you close more sales
-                      automatically.
+                    <p className="mt-3 max-w-3xl text-lg text-[#64748B] leading-8">
+                      Your AI is actively handling customers across WhatsApp.
+                      Here's what's happening in your business right now.
                     </p>
 
                     <div className="mt-8 flex flex-wrap gap-3">
-                      <button className="rounded-xl bg-[#16A34A] px-5 py-3 font-semibold text-white transition hover:bg-[#15803D]">
-                        View Inbox
+                      <button className="rounded-xl bg-[#16A34A] px-5 py-3 font-semibold text-white hover:bg-[#15803D] transition">
+                        Open Inbox
                       </button>
 
-                      <button className="rounded-xl border border-[#D1D5DB] bg-white px-5 py-3 font-semibold text-[#111827] transition hover:bg-[#F9FAFB]">
-                        Configure AI
+                      <button className="rounded-xl border border-[#E5E7EB] bg-white px-5 py-3 font-semibold text-[#111827] hover:bg-[#F9FAFB] transition">
+                        Train AI
+                      </button>
+
+                      <button className="rounded-xl border border-[#E5E7EB] bg-white px-5 py-3 font-semibold text-[#111827] hover:bg-[#F9FAFB] transition">
+                        View Analytics
                       </button>
                     </div>
                   </div>
 
-                  <div className="grid w-full max-w-sm grid-cols-2 gap-4">
-                    <div className="rounded-2xl bg-white p-5 shadow-sm">
-                      <p className="text-sm text-[#64748B]">AI Replies</p>
-                      <p className="mt-2 text-3xl font-bold">124</p>
-                      <p className="mt-1 text-sm text-[#16A34A]">+18% today</p>
+                  <div className="grid w-full max-w-md grid-cols-2 gap-4">
+                    <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm">
+                      <p className="text-sm text-[#64748B]">Revenue Today</p>
+
+                      <p className="mt-2 text-3xl font-bold text-[#111827]">
+                        KSh 18,400
+                      </p>
+
+                      <p className="mt-1 text-sm text-[#16A34A]">↑ 14%</p>
                     </div>
 
-                    <div className="rounded-2xl bg-white p-5 shadow-sm">
-                      <p className="text-sm text-[#64748B]">Customers</p>
-                      <p className="mt-2 text-3xl font-bold">38</p>
-                      <p className="mt-1 text-sm text-[#16A34A]">Active now</p>
+                    <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm">
+                      <p className="text-sm text-[#64748B]">Active Chats</p>
+
+                      <p className="mt-2 text-3xl font-bold text-[#111827]">
+                        21
+                      </p>
+
+                      <p className="mt-1 text-sm text-[#16A34A]">17 AI</p>
                     </div>
 
-                    <div className="rounded-2xl bg-white p-5 shadow-sm">
-                      <p className="text-sm text-[#64748B]">Conversion</p>
-                      <p className="mt-2 text-3xl font-bold">41%</p>
-                      <p className="mt-1 text-sm text-[#16A34A]">+6%</p>
+                    <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm">
+                      <p className="text-sm text-[#64748B]">New Leads</p>
+
+                      <p className="mt-2 text-3xl font-bold text-[#111827]">
+                        9
+                      </p>
+
+                      <p className="mt-1 text-sm text-[#16A34A]">Today</p>
                     </div>
 
-                    <div className="rounded-2xl bg-white p-5 shadow-sm">
-                      <p className="text-sm text-[#64748B]">AI Confidence</p>
-                      <p className="mt-2 text-3xl font-bold">94%</p>
+                    <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm">
+                      <p className="text-sm text-[#64748B]">AI Accuracy</p>
+
+                      <p className="mt-2 text-3xl font-bold text-[#111827]">
+                        96%
+                      </p>
+
                       <p className="mt-1 text-sm text-[#16A34A]">Excellent</p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="grid gap-5 lg:grid-cols-3">
-                {/* AI Health */}
-                <div className={`${CARD} relative overflow-hidden`}>
-                  <div className="absolute right-0 top-0 h-24 w-24 rounded-full bg-[#DCFCE7] blur-3xl" />
+              <div className="grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+                {/* AI Command Center */}
 
-                  <div className="relative">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className={SECTION_HEADING}>AI Assistant</p>
-                        <h3 className="mt-2 text-3xl font-bold">94%</h3>
-                      </div>
-
-                      <div className="rounded-2xl bg-[#ECFDF5] p-3">
-                        <Bot className="h-6 w-6 text-[#16A34A]" />
-                      </div>
-                    </div>
-
-                    <div className="mt-6 h-3 rounded-full bg-[#F1F5F9]">
-                      <div
-                        className="h-3 rounded-full bg-[#22C55E]"
-                        style={{ width: "94%" }}
-                      />
-                    </div>
-
-                    <p className="mt-3 text-sm text-[#64748B]">
-                      AI confidence is excellent.
-                    </p>
-                  </div>
-                </div>
-
-                {/* WhatsApp */}
-                <div className={CARD}>
+                <section className={CARD}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className={SECTION_HEADING}>WhatsApp</p>
-                      <h3 className="mt-2 text-2xl font-bold">Connected</h3>
+                      <p className={SECTION_HEADING}>AI Command Center</p>
+
+                      <h2 className={CARD_TITLE}>Assistant Status</h2>
                     </div>
 
-                    <div className="rounded-2xl bg-[#ECFDF5] p-3">
-                      <MessageCircle className="h-6 w-6 text-[#16A34A]" />
-                    </div>
+                    <Bot className="h-8 w-8 text-[#22C55E]" />
                   </div>
 
-                  <div className="mt-6 space-y-3">
+                  <div className="mt-6 space-y-5">
                     <div className="flex justify-between">
-                      <span className="text-[#64748B]">Messages Today</span>
-                      <strong>48</strong>
+                      <span>AI Confidence</span>
+                      <strong>96%</strong>
                     </div>
 
                     <div className="flex justify-between">
-                      <span className="text-[#64748B]">Avg Response</span>
+                      <span>Messages Handled</span>
+                      <strong>124</strong>
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span>Escalated to You</span>
+                      <strong>4</strong>
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span>Average Response</span>
                       <strong>6 sec</strong>
                     </div>
-
-                    <div className="flex justify-between">
-                      <span className="text-[#64748B]">AI Enabled</span>
-                      <strong className="text-[#16A34A]">Yes</strong>
-                    </div>
                   </div>
-                </div>
 
-                {/* Business */}
-                <div className={CARD}>
-                  <p className={SECTION_HEADING}>Business Knowledge</p>
+                  <button className="mt-8 w-full rounded-xl bg-[#16A34A] py-3 font-semibold text-white hover:bg-[#15803D]">
+                    Configure Assistant
+                  </button>
+                </section>
 
-                  <h3 className="mt-2 text-3xl font-bold">92%</h3>
+                {/* Business Health */}
 
-                  <div className="mt-5 space-y-3">
+                <section className={CARD}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className={SECTION_HEADING}>Business Health</p>
+
+                      <h2 className={CARD_TITLE}>Knowledge Base</h2>
+                    </div>
+
+                    <div className="text-3xl">📚</div>
+                  </div>
+
+                  <div className="mt-6 space-y-5">
                     <div className="flex justify-between">
                       <span>Products</span>
                       <strong>12</strong>
@@ -1308,42 +1313,57 @@ export default function DashboardLayout() {
                       <span>Policies</span>
                       <strong>7</strong>
                     </div>
+
+                    <div className="flex justify-between">
+                      <span>Training Score</span>
+                      <strong className="text-[#16A34A]">92%</strong>
+                    </div>
                   </div>
 
-                  <div className="mt-6 h-2 rounded-full bg-[#E5E7EB]">
-                    <div
-                      className="h-2 rounded-full bg-[#22C55E]"
-                      style={{ width: "92%" }}
-                    />
+                  <button className="mt-8 w-full rounded-xl border border-[#E5E7EB] py-3 font-semibold hover:bg-[#F9FAFB]">
+                    Improve Knowledge
+                  </button>
+                </section>
+
+                {/* Sales Pipeline */}
+
+                <section className={CARD}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className={SECTION_HEADING}>Sales Pipeline</p>
+
+                      <h2 className={CARD_TITLE}>Today's Performance</h2>
+                    </div>
+
+                    <div className="text-3xl">💰</div>
                   </div>
-                </div>
 
-                {/* Sales */}
-                <div className={CARD}>
-                  <p className={SECTION_HEADING}>Sales Generated</p>
+                  <div className="mt-6 space-y-5">
+                    <div className="flex justify-between">
+                      <span>Qualified Leads</span>
+                      <strong>24</strong>
+                    </div>
 
-                  <h2 className="mt-2 text-4xl font-bold">KSh 48K</h2>
+                    <div className="flex justify-between">
+                      <span>Quotes Sent</span>
+                      <strong>11</strong>
+                    </div>
 
-                  <p className="mt-2 text-[#16A34A]">↑ 21% this week</p>
-                </div>
+                    <div className="flex justify-between">
+                      <span>Sales Closed</span>
+                      <strong>8</strong>
+                    </div>
 
-                {/* Leads */}
-                <div className={CARD}>
-                  <p className={SECTION_HEADING}>New Leads</p>
+                    <div className="flex justify-between">
+                      <span>Revenue</span>
+                      <strong className="text-[#16A34A]">KSh 48,000</strong>
+                    </div>
+                  </div>
 
-                  <h2 className="mt-2 text-4xl font-bold">67</h2>
-
-                  <p className="mt-2 text-[#16A34A]">24 qualified</p>
-                </div>
-
-                {/* Satisfaction */}
-                <div className={CARD}>
-                  <p className={SECTION_HEADING}>Customer Rating</p>
-
-                  <h2 className="mt-2 text-4xl font-bold">4.9</h2>
-
-                  <p className="mt-2 text-[#64748B]">★★★★★</p>
-                </div>
+                  <button className="mt-8 w-full rounded-xl border border-[#E5E7EB] py-3 font-semibold hover:bg-[#F9FAFB]">
+                    View Sales
+                  </button>
+                </section>
               </div>
 
               <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
@@ -1352,48 +1372,64 @@ export default function DashboardLayout() {
                 <section className={CARD}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className={SECTION_HEADING}>Today's AI Performance</p>
-                      <h2 className={CARD_TITLE}>
-                        How your assistant performed
-                      </h2>
+                      <p className={SECTION_HEADING}>Business Activity</p>
+                      <h2 className={CARD_TITLE}>Live activity from your AI</h2>
                     </div>
 
-                    <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-sm font-semibold text-[#047857]">
+                    <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-sm font-semibold text-[#16A34A]">
                       Live
                     </span>
                   </div>
 
-                  <div className="mt-8 grid grid-cols-2 gap-6">
-                    <div className="rounded-2xl bg-[#F9FAFB] p-5">
-                      <p className="text-sm text-[#64748B]">AI Conversations</p>
-
-                      <p className="mt-2 text-4xl font-bold text-[#111827]">
-                        38
-                      </p>
+                  <div className="mt-6 space-y-4">
+                    <div className="flex items-start gap-4 rounded-xl bg-[#F9FAFB] p-4">
+                      <div className="text-2xl">💰</div>
+                      <div className="flex-1">
+                        <p className="font-semibold text-[#111827]">
+                          AI closed a sale worth KSh 3,500
+                        </p>
+                        <p className="text-sm text-[#64748B]">2 minutes ago</p>
+                      </div>
                     </div>
 
-                    <div className="rounded-2xl bg-[#F9FAFB] p-5">
-                      <p className="text-sm text-[#64748B]">Human Takeovers</p>
-
-                      <p className="mt-2 text-4xl font-bold text-[#111827]">
-                        4
-                      </p>
+                    <div className="flex items-start gap-4 rounded-xl bg-[#F9FAFB] p-4">
+                      <div className="text-2xl">📅</div>
+                      <div className="flex-1">
+                        <p className="font-semibold text-[#111827]">
+                          Appointment booked with Jane Wanjiku
+                        </p>
+                        <p className="text-sm text-[#64748B]">10 minutes ago</p>
+                      </div>
                     </div>
 
-                    <div className="rounded-2xl bg-[#F9FAFB] p-5">
-                      <p className="text-sm text-[#64748B]">Auto Resolution</p>
-
-                      <p className="mt-2 text-4xl font-bold text-[#22C55E]">
-                        89%
-                      </p>
+                    <div className="flex items-start gap-4 rounded-xl bg-[#F9FAFB] p-4">
+                      <div className="text-2xl">💬</div>
+                      <div className="flex-1">
+                        <p className="font-semibold text-[#111827]">
+                          Customer requested human assistance
+                        </p>
+                        <p className="text-sm text-[#64748B]">18 minutes ago</p>
+                      </div>
                     </div>
 
-                    <div className="rounded-2xl bg-[#F9FAFB] p-5">
-                      <p className="text-sm text-[#64748B]">Customer Rating</p>
+                    <div className="flex items-start gap-4 rounded-xl bg-[#F9FAFB] p-4">
+                      <div className="text-2xl">⭐</div>
+                      <div className="flex-1">
+                        <p className="font-semibold text-[#111827]">
+                          New 5-star review received
+                        </p>
+                        <p className="text-sm text-[#64748B]">35 minutes ago</p>
+                      </div>
+                    </div>
 
-                      <p className="mt-2 text-4xl font-bold text-[#111827]">
-                        4.8
-                      </p>
+                    <div className="flex items-start gap-4 rounded-xl bg-[#F9FAFB] p-4">
+                      <div className="text-2xl">🤖</div>
+                      <div className="flex-1">
+                        <p className="font-semibold text-[#111827]">
+                          AI answered 42 customer questions today
+                        </p>
+                        <p className="text-sm text-[#64748B]">Today</p>
+                      </div>
                     </div>
                   </div>
                 </section>
@@ -1401,40 +1437,55 @@ export default function DashboardLayout() {
                 {/* AI Inbox */}
 
                 <section className={CARD}>
-                  <p className={SECTION_HEADING}>AI Inbox</p>
-
-                  <h2 className={CARD_TITLE}>Current Status</h2>
-
-                  <div className="mt-6 space-y-5">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[#64748B]">Waiting Replies</span>
-
-                      <span className="font-semibold">3</span>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className={SECTION_HEADING}>Needs Your Attention</p>
+                      <h2 className={CARD_TITLE}>Items waiting for you</h2>
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <span className="text-[#64748B]">AI Handling</span>
+                    <span className="rounded-full bg-[#FEF3C7] px-3 py-1 text-sm font-semibold text-[#92400E]">
+                      3 Pending
+                    </span>
+                  </div>
 
-                      <span className="font-semibold text-[#22C55E]">17</span>
-                    </div>
+                  <div className="mt-6 space-y-4">
+                    <div className="rounded-xl border border-[#FDE68A] bg-[#FFFBEA] p-4">
+                      <p className="font-semibold text-[#111827]">
+                        💬 Customer requesting a custom quotation
+                      </p>
 
-                    <div className="flex items-center justify-between">
-                      <span className="text-[#64748B]">Needs Review</span>
+                      <p className="mt-1 text-sm text-[#64748B]">
+                        Brian Otieno • Waiting 12 mins
+                      </p>
 
-                      <span className="font-semibold text-[#F59E0B]">2</span>
-                    </div>
-
-                    <div className="flex items-center justify-between">
-                      <span className="text-[#64748B]">Resolved Today</span>
-
-                      <span className="font-semibold">36</span>
-                    </div>
-
-                    <div className="pt-4 border-t border-[#EEF2F6]">
-                      <button className="w-full rounded-xl bg-[#22C55E] py-3 text-white font-semibold hover:bg-[#16A34A] transition">
-                        Open Inbox
+                      <button className="mt-3 rounded-lg bg-[#16A34A] px-4 py-2 text-sm font-semibold text-white hover:bg-[#15803D]">
+                        Open Conversation
                       </button>
                     </div>
+
+                    <div className="rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+                      <p className="font-semibold text-[#111827]">
+                        📦 Product inventory running low
+                      </p>
+
+                      <p className="mt-1 text-sm text-[#64748B]">
+                        Wireless Router X120 (5 left)
+                      </p>
+                    </div>
+
+                    <div className="rounded-xl border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+                      <p className="font-semibold text-[#111827]">
+                        📅 Confirm tomorrow's appointments
+                      </p>
+
+                      <p className="mt-1 text-sm text-[#64748B]">
+                        4 appointments scheduled
+                      </p>
+                    </div>
+
+                    <button className="w-full rounded-xl border border-[#E5E7EB] py-3 font-semibold text-[#111827] transition hover:bg-[#F9FAFB]">
+                      View All Tasks
+                    </button>
                   </div>
                 </section>
               </div>
