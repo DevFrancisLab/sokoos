@@ -48,7 +48,8 @@ const STAT_CARDS = [
 // Micro-interaction tokens
 const TRANSITION = "transition duration-200 ease";
 const TRANSITION_FAST = "transition duration-150 ease";
-const INTERACTION = "transition duration-150 ease-out transform hover:-translate-y-0.5 active:scale-95";
+const INTERACTION =
+  "transition duration-150 ease-out transform hover:-translate-y-0.5 active:scale-95";
 
 // Unified dashboard design system (global tokens)
 // - Radius: 20px for cards/inputs/buttons
@@ -58,19 +59,49 @@ const GLOBAL_RADIUS = "rounded-[24px]";
 const SUBTLE_BORDER = "border-[#EEF2F6]";
 const CARD_SHADOW = "shadow-[0_10px_30px_rgba(15,23,42,0.06)]";
 
-const CARD = `${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-white p-6 ${CARD_SHADOW} transform ` + TRANSITION + " hover:-translate-y-1";
-const CARD_SOFT = `${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-[#F8FAFB] p-6 ${CARD_SHADOW} transform ` + TRANSITION + " hover:-translate-y-1";
-const CARD_FLAT = `${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-[#F9FAFB] p-6 shadow-none transform ` + TRANSITION;
-const LIST_ITEM = `${GLOBAL_RADIUS} bg-[#F9FAFB] p-6 transform ` + TRANSITION + " hover:bg-[#EFF6FF] hover:-translate-y-1";
-const BUTTON_PRIMARY = "inline-flex items-center justify-center rounded-[24px] bg-[#22C55E] px-4 py-3 text-[15px] font-semibold text-white shadow-none " + INTERACTION + " hover:bg-[#16A34A]";
-const BUTTON_SECONDARY = `inline-flex items-center justify-center rounded-[24px] border ${SUBTLE_BORDER} bg-white px-4 py-3 text-[15px] font-semibold text-[#111827] ` + INTERACTION + " hover:bg-[#F3F4F6]";
-const BUTTON_TERTIARY = "inline-flex items-center justify-center rounded-[24px] bg-[#F3F4F6] px-4 py-3 text-[15px] font-semibold text-[#374151] " + INTERACTION + " hover:bg-[#E5E7EB]";
-const QUICK_ACTION_BUTTON = `w-full ${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-[#F9FAFB] p-6 text-left text-[15px] font-semibold text-[#111827] transform ` + TRANSITION + " hover:border-[#CBD5E1] hover:bg-[#EFF6FF] hover:-translate-y-1";
-const INPUT_FIELD = `mt-3 w-full ${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-[#F9FAFB] px-4 py-3 text-[15px] text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7] ` + TRANSITION + " focus:shadow-none";
-const INPUT_FIELD_WHITE = `mt-3 w-full ${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-white px-4 py-3 text-[15px] text-[#111827] shadow-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7] ` + TRANSITION + " focus:shadow-none";
+const CARD =
+  `${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-white p-6 ${CARD_SHADOW} transform ` +
+  TRANSITION +
+  " hover:-translate-y-1";
+const CARD_SOFT =
+  `${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-[#F8FAFB] p-6 ${CARD_SHADOW} transform ` +
+  TRANSITION +
+  " hover:-translate-y-1";
+const CARD_FLAT =
+  `${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-[#F9FAFB] p-6 shadow-none transform ` +
+  TRANSITION;
+const LIST_ITEM =
+  `${GLOBAL_RADIUS} bg-[#F9FAFB] p-6 transform ` +
+  TRANSITION +
+  " hover:bg-[#EFF6FF] hover:-translate-y-1";
+const BUTTON_PRIMARY =
+  "inline-flex items-center justify-center rounded-[24px] bg-[#22C55E] px-4 py-3 text-[15px] font-semibold text-white shadow-none " +
+  INTERACTION +
+  " hover:bg-[#16A34A]";
+const BUTTON_SECONDARY =
+  `inline-flex items-center justify-center rounded-[24px] border ${SUBTLE_BORDER} bg-white px-4 py-3 text-[15px] font-semibold text-[#111827] ` +
+  INTERACTION +
+  " hover:bg-[#F3F4F6]";
+const BUTTON_TERTIARY =
+  "inline-flex items-center justify-center rounded-[24px] bg-[#F3F4F6] px-4 py-3 text-[15px] font-semibold text-[#374151] " +
+  INTERACTION +
+  " hover:bg-[#E5E7EB]";
+const QUICK_ACTION_BUTTON =
+  `w-full ${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-[#F9FAFB] p-6 text-left text-[15px] font-semibold text-[#111827] transform ` +
+  TRANSITION +
+  " hover:border-[#CBD5E1] hover:bg-[#EFF6FF] hover:-translate-y-1";
+const INPUT_FIELD =
+  `mt-3 w-full ${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-[#F9FAFB] px-4 py-3 text-[15px] text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7] ` +
+  TRANSITION +
+  " focus:shadow-none";
+const INPUT_FIELD_WHITE =
+  `mt-3 w-full ${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-white px-4 py-3 text-[15px] text-[#111827] shadow-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7] ` +
+  TRANSITION +
+  " focus:shadow-none";
 // Typography tokens for consistent hierarchy
 const PANEL_TITLE = "text-[24px] font-semibold text-[#111827]";
-const SECTION_HEADING = "text-[12px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]";
+const SECTION_HEADING =
+  "text-[12px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]";
 const CARD_TITLE = "text-[28px] font-semibold mb-6 text-[#0F172A]";
 const PAGE_TITLE = "text-[34px] font-semibold text-[#0F172A]";
 const CUSTOMER_NAME = "text-[28px] font-semibold text-[#111827]";
@@ -80,15 +111,33 @@ const SECONDARY = "text-[12px] text-[#64748B]";
 const MESSAGE_PREVIEW = "text-[15px] text-[#475569]";
 const TIME_LABEL = "text-[12px] text-[#64748B]";
 const CAPTION = "text-[13px] text-[#64748B]";
-const BADGE = "inline-flex h-7 items-center gap-1.5 rounded-full px-3 text-[12px] font-medium tracking-[0.02em] transition-colors duration-200 ease";
+const BADGE =
+  "inline-flex h-7 items-center gap-1.5 rounded-full px-3 text-[12px] font-medium tracking-[0.02em] transition-colors duration-200 ease";
 const BADGE_ICON = "h-2.5 w-2.5 rounded-full";
-const STATUS_CHIP = "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium flex-shrink-0 transition-all duration-150 ease-out transform hover:scale-[1.02]";
+const STATUS_CHIP =
+  "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium flex-shrink-0 transition-all duration-150 ease-out transform hover:scale-[1.02]";
 
 const RECENT_ACTIVITY = [
-  { title: "New customer inquiry", subtitle: "Received in WhatsApp inbox", time: "5m ago" },
-  { title: "AI replied to lead", subtitle: "Followed up about pricing", time: "12m ago" },
-  { title: "Status post scheduled", subtitle: "Weekly promotion goes live", time: "1h ago" },
-  { title: "New product added", subtitle: "Shoes catalog updated", time: "3h ago" },
+  {
+    title: "New customer inquiry",
+    subtitle: "Received in WhatsApp inbox",
+    time: "5m ago",
+  },
+  {
+    title: "AI replied to lead",
+    subtitle: "Followed up about pricing",
+    time: "12m ago",
+  },
+  {
+    title: "Status post scheduled",
+    subtitle: "Weekly promotion goes live",
+    time: "1h ago",
+  },
+  {
+    title: "New product added",
+    subtitle: "Shoes catalog updated",
+    time: "3h ago",
+  },
 ];
 
 const QUICK_ACTIONS = [
@@ -162,12 +211,12 @@ const CUSTOMERS = [
   {
     id: "u5",
     avatar: "SR",
-     name: "Susan Rono",
-     phone: "+254 714 555 777",
-     leadStatus: "Cold lead",
-     interestedProduct: "10 Mbps",
-     lastInteraction: "Jul 01, 2026",
-   },
+    name: "Susan Rono",
+    phone: "+254 714 555 777",
+    leadStatus: "Cold lead",
+    interestedProduct: "10 Mbps",
+    lastInteraction: "Jul 01, 2026",
+  },
 ];
 
 const PRODUCTS = [
@@ -177,10 +226,30 @@ const PRODUCTS = [
 ];
 
 const ANALYTICS_METRICS = [
-  { label: "Messages", value: "13.4k", delta: "+12%", description: "Compared to last week" },
-  { label: "Leads", value: "1,280", delta: "+8%", description: "Warm and new leads" },
-  { label: "Sales", value: "KSh 4.2M", delta: "+18%", description: "Revenue from campaigns" },
-  { label: "AI Resolution", value: "78%", delta: "+6%", description: "Handled without human support" },
+  {
+    label: "Messages",
+    value: "13.4k",
+    delta: "+12%",
+    description: "Compared to last week",
+  },
+  {
+    label: "Leads",
+    value: "1,280",
+    delta: "+8%",
+    description: "Warm and new leads",
+  },
+  {
+    label: "Sales",
+    value: "KSh 4.2M",
+    delta: "+18%",
+    description: "Revenue from campaigns",
+  },
+  {
+    label: "AI Resolution",
+    value: "78%",
+    delta: "+6%",
+    description: "Handled without human support",
+  },
 ];
 
 const ANALYTICS_CHART = [
@@ -220,15 +289,18 @@ const ASSISTANT_TABS = [
 const BUSINESS_KNOWLEDGE_ITEMS = [
   {
     title: "Brand voice",
-    description: "Friendly, helpful, and sales-aware responses that reflect the business’s local presence.",
+    description:
+      "Friendly, helpful, and sales-aware responses that reflect the business’s local presence.",
   },
   {
     title: "Key offerings",
-    description: "20 Mbps, Business Package, and 10 Mbps plans are the most common recommendations.",
+    description:
+      "20 Mbps, Business Package, and 10 Mbps plans are the most common recommendations.",
   },
   {
     title: "FAQ focus",
-    description: "Business hours, plan pricing, trial availability, and support escalation are prioritized.",
+    description:
+      "Business hours, plan pricing, trial availability, and support escalation are prioritized.",
   },
 ];
 
@@ -241,30 +313,36 @@ const TEST_AI_PROMPTS = [
 const ESCALATION_RULES = [
   {
     label: "Escalate when customer asks for a live person",
-    description: "Send urgent requests directly to you when customers request human support."
+    description:
+      "Send urgent requests directly to you when customers request human support.",
   },
   {
     label: "Escalate after business hours",
-    description: "If a message arrives outside the set hours, flag it for your follow-up.",
+    description:
+      "If a message arrives outside the set hours, flag it for your follow-up.",
   },
   {
     label: "Escalate after repeated unanswered questions",
-    description: "Detect when the customer asks multiple questions in a row without a clear response.",
+    description:
+      "Detect when the customer asks multiple questions in a row without a clear response.",
   },
 ];
 
 const CONVERSATION_POLICIES = [
   {
     label: "Keep replies concise",
-    description: "Prefer short, helpful answers that are easy for customers to read on mobile.",
+    description:
+      "Prefer short, helpful answers that are easy for customers to read on mobile.",
   },
   {
     label: "Use polite and professional language",
-    description: "Avoid slang and keep tone appropriate for business customers.",
+    description:
+      "Avoid slang and keep tone appropriate for business customers.",
   },
   {
     label: "Respect business hours",
-    description: "Use outside-hours messages to let customers know when the business will respond next.",
+    description:
+      "Use outside-hours messages to let customers know when the business will respond next.",
   },
 ];
 
@@ -329,7 +407,8 @@ const INBOX_CONVERSATIONS = [
     id: "c6",
     name: "Samuel Kipkemboi",
     phone: "+254722888999",
-    message: "Your 20 Mbps plan is perfect for our office. Let's proceed with the order.",
+    message:
+      "Your 20 Mbps plan is perfect for our office. Let's proceed with the order.",
     time: "3h ago",
     badge: 0,
     source: "owner",
@@ -351,7 +430,8 @@ const INBOX_CONVERSATIONS = [
     id: "c8",
     name: "Peter Ochieng",
     phone: "+254701333222",
-    message: "We've received your payment. Service activation starts tomorrow morning.",
+    message:
+      "We've received your payment. Service activation starts tomorrow morning.",
     time: "Yesterday",
     badge: 0,
     source: "owner",
@@ -366,54 +446,129 @@ const INBOX_TAB_ITEMS = ["All", "AI", "You", "Needs Attention"] as const;
 
 const INBOX_MESSAGES = {
   c1: [
-    { from: "customer", text: "Can you share the latest pricing?", time: "2:13 PM" },
-    { from: "agent", text: "Sure — our starter plan is available from $29/month.", time: "2:14 PM" },
-    { from: "customer", text: "Great, and is there a free trial?", time: "2:15 PM" },
+    {
+      from: "customer",
+      text: "Can you share the latest pricing?",
+      time: "2:13 PM",
+    },
+    {
+      from: "agent",
+      text: "Sure — our starter plan is available from $29/month.",
+      time: "2:14 PM",
+    },
+    {
+      from: "customer",
+      text: "Great, and is there a free trial?",
+      time: "2:15 PM",
+    },
   ],
   c2: [
-    { from: "agent", text: "You can edit availability in Catalog > Products.", time: "1:35 PM" },
+    {
+      from: "agent",
+      text: "You can edit availability in Catalog > Products.",
+      time: "1:35 PM",
+    },
     { from: "customer", text: "Got it, thanks!", time: "1:36 PM" },
   ],
   c3: [
-    { from: "customer", text: "Thanks for the quick response!", time: "12:05 PM" },
-    { from: "agent", text: "Happy to help — let me know if you need anything else.", time: "12:06 PM" },
+    {
+      from: "customer",
+      text: "Thanks for the quick response!",
+      time: "12:05 PM",
+    },
+    {
+      from: "agent",
+      text: "Happy to help — let me know if you need anything else.",
+      time: "12:06 PM",
+    },
   ],
   c4: [
-    { from: "customer", text: "Please pause the AI for tonight.", time: "11:20 AM" },
-    { from: "agent", text: "Sure, I’ll pause it from 9PM tonight.", time: "11:21 AM" },
+    {
+      from: "customer",
+      text: "Please pause the AI for tonight.",
+      time: "11:20 AM",
+    },
+    {
+      from: "agent",
+      text: "Sure, I’ll pause it from 9PM tonight.",
+      time: "11:21 AM",
+    },
   ],
   c5: [
-    { from: "customer", text: "I’m interested in your business package — can you share details?", time: "4:10 PM" },
-    { from: "agent", text: "Absolutely — I’ll send you the package details now.", time: "4:12 PM" },
+    {
+      from: "customer",
+      text: "I’m interested in your business package — can you share details?",
+      time: "4:10 PM",
+    },
+    {
+      from: "agent",
+      text: "Absolutely — I’ll send you the package details now.",
+      time: "4:12 PM",
+    },
   ],
   c6: [
-    { from: "customer", text: "What's the fastest plan you have?", time: "2:30 PM" },
-    { from: "agent", text: "Our 20 Mbps plan is ideal for offices. Would you like more details?", time: "2:32 PM" },
-    { from: "customer", text: "Your 20 Mbps plan is perfect for our office. Let's proceed with the order.", time: "2:45 PM" },
+    {
+      from: "customer",
+      text: "What's the fastest plan you have?",
+      time: "2:30 PM",
+    },
+    {
+      from: "agent",
+      text: "Our 20 Mbps plan is ideal for offices. Would you like more details?",
+      time: "2:32 PM",
+    },
+    {
+      from: "customer",
+      text: "Your 20 Mbps plan is perfect for our office. Let's proceed with the order.",
+      time: "2:45 PM",
+    },
   ],
   c7: [
-    { from: "customer", text: "How long will installation take?", time: "11:00 AM" },
-    { from: "agent", text: "Installation usually takes 2-3 hours. We can schedule it for next week.", time: "11:02 AM" },
-    { from: "customer", text: "Thank you! I'll set up the installation for next Monday.", time: "11:15 AM" },
+    {
+      from: "customer",
+      text: "How long will installation take?",
+      time: "11:00 AM",
+    },
+    {
+      from: "agent",
+      text: "Installation usually takes 2-3 hours. We can schedule it for next week.",
+      time: "11:02 AM",
+    },
+    {
+      from: "customer",
+      text: "Thank you! I'll set up the installation for next Monday.",
+      time: "11:15 AM",
+    },
   ],
   c8: [
-    { from: "customer", text: "I've sent the payment. When does service start?", time: "9:00 AM" },
-    { from: "agent", text: "We've received your payment. Service activation starts tomorrow morning.", time: "9:05 AM" },
+    {
+      from: "customer",
+      text: "I've sent the payment. When does service start?",
+      time: "9:00 AM",
+    },
+    {
+      from: "agent",
+      text: "We've received your payment. Service activation starts tomorrow morning.",
+      time: "9:05 AM",
+    },
   ],
 };
 
-const CUSTOMER_PROFILES: Record<string, {
-  name: string;
-  company: string;
-  phone: string;
-  email: string;
-  location: string;
-  tags: string[];
-  status: string;
-  lastOrder: string;
-  leadStatus: string;
-  interestedProducts: string[];
-}> = {
+const CUSTOMER_PROFILES: Record<
+  string,
+  {
+    name: string;
+    company: string;
+    phone: string;
+    email: string;
+    location: string;
+    tags: string[];
+    status: string;
+    lastOrder: string;
+    leadStatus: string;
+    interestedProducts: string[];
+  }
+> = {
   c1: {
     name: "Aisha Mwangi",
     company: "Nairobi Essentials",
@@ -536,17 +691,27 @@ export default function DashboardLayout() {
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [selected, setSelected] = useState<string>("Home");
-  const [assistantTab, setAssistantTab] = useState<(typeof ASSISTANT_TABS)[number]>("Business Knowledge");
+  const [assistantTab, setAssistantTab] =
+    useState<(typeof ASSISTANT_TABS)[number]>("Business Knowledge");
   const [activeConversation, setActiveConversation] = useState<string>("c1");
   const [searchQuery, setSearchQuery] = useState("");
-   const [customerSearch, setCustomerSearch] = useState("");
-  const [activeTab, setActiveTab] = useState<(typeof INBOX_TAB_ITEMS)[number]>("All");
-  
-  const activeConversationData = INBOX_CONVERSATIONS.find((item) => item.id === activeConversation);
-  const activeCustomerProfile = CUSTOMER_PROFILES[activeConversation as keyof typeof CUSTOMER_PROFILES] ?? CUSTOMER_PROFILES.c1;
-  const activeMessages = INBOX_MESSAGES[activeConversation as keyof typeof INBOX_MESSAGES] ?? [];
-  const [sourceOverrides, setSourceOverrides] = useState<Record<string, string>>({});
-  const getEffectiveSource = (id: string, original?: string) => sourceOverrides[id] ?? original ?? "owner";
+  const [customerSearch, setCustomerSearch] = useState("");
+  const [activeTab, setActiveTab] =
+    useState<(typeof INBOX_TAB_ITEMS)[number]>("All");
+
+  const activeConversationData = INBOX_CONVERSATIONS.find(
+    (item) => item.id === activeConversation,
+  );
+  const activeCustomerProfile =
+    CUSTOMER_PROFILES[activeConversation as keyof typeof CUSTOMER_PROFILES] ??
+    CUSTOMER_PROFILES.c1;
+  const activeMessages =
+    INBOX_MESSAGES[activeConversation as keyof typeof INBOX_MESSAGES] ?? [];
+  const [sourceOverrides, setSourceOverrides] = useState<
+    Record<string, string>
+  >({});
+  const getEffectiveSource = (id: string, original?: string) =>
+    sourceOverrides[id] ?? original ?? "owner";
   const [messageInput, setMessageInput] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [sidebarHovered, setSidebarHovered] = useState(false);
@@ -588,11 +753,17 @@ export default function DashboardLayout() {
   const [products, setProducts] = useState(PRODUCTS);
   const chartMax = Math.max(...ANALYTICS_CHART.map((point) => point.value));
   const [aiEnabled, setAiEnabled] = useState(true);
-  const [businessHours, setBusinessHours] = useState("Mon–Fri, 8:00 AM - 6:00 PM");
+  const [businessHours, setBusinessHours] = useState(
+    "Mon–Fri, 8:00 AM - 6:00 PM",
+  );
   const [humanTakeover, setHumanTakeover] = useState(true);
-  const [language, setLanguage] = useState<(typeof LANGUAGES)[number]>("English");
-  const [personality, setPersonality] = useState<(typeof PERSONALITIES)[number]>("Friendly");
-  const [testAiInput, setTestAiInput] = useState("How much is the Business Package?");
+  const [language, setLanguage] =
+    useState<(typeof LANGUAGES)[number]>("English");
+  const [personality, setPersonality] =
+    useState<(typeof PERSONALITIES)[number]>("Friendly");
+  const [testAiInput, setTestAiInput] = useState(
+    "How much is the Business Package?",
+  );
   const [testAiMessages, setTestAiMessages] = useState([
     {
       id: "m1",
@@ -638,18 +809,26 @@ export default function DashboardLayout() {
   const [escalateRefunds, setEscalateRefunds] = useState(true);
   const [escalateLegalQuestions, setEscalateLegalQuestions] = useState(true);
   const [escalateHumanRequested, setEscalateHumanRequested] = useState(true);
-  const [escalateUnknownQuestions, setEscalateUnknownQuestions] = useState(true);
-  const [escalateNegotiationsAbove10k, setEscalateNegotiationsAbove10k] = useState(true);
+  const [escalateUnknownQuestions, setEscalateUnknownQuestions] =
+    useState(true);
+  const [escalateNegotiationsAbove10k, setEscalateNegotiationsAbove10k] =
+    useState(true);
   const [policyKeepShort, setPolicyKeepShort] = useState(true);
-  const [policyUseProfessionalTone, setPolicyUseProfessionalTone] = useState(true);
+  const [policyUseProfessionalTone, setPolicyUseProfessionalTone] =
+    useState(true);
   const [policyRespectHours, setPolicyRespectHours] = useState(true);
-  const [outsideHoursMode, setOutsideHoursMode] = useState<"continue" | "collect" | "closed">("collect");
+  const [outsideHoursMode, setOutsideHoursMode] = useState<
+    "continue" | "collect" | "closed"
+  >("collect");
   const [maxAiMessages, setMaxAiMessages] = useState(10);
   const [allowCloseSales, setAllowCloseSales] = useState(true);
-  const [allowScheduleAppointments, setAllowScheduleAppointments] = useState(true);
+  const [allowScheduleAppointments, setAllowScheduleAppointments] =
+    useState(true);
   const [assistantName, setAssistantName] = useState("Nuru");
-  const [primaryLanguage, setPrimaryLanguage] = useState<(typeof LANGUAGES)[number]>("English");
-  const [secondaryLanguage, setSecondaryLanguage] = useState<(typeof LANGUAGES)[number]>("Kiswahili");
+  const [primaryLanguage, setPrimaryLanguage] =
+    useState<(typeof LANGUAGES)[number]>("English");
+  const [secondaryLanguage, setSecondaryLanguage] =
+    useState<(typeof LANGUAGES)[number]>("Kiswahili");
   const [tone, setTone] = useState<(typeof TONES)[number]>("Friendly");
   const [upsellProducts, setUpsellProducts] = useState(true);
   const [recommendAlternatives, setRecommendAlternatives] = useState(true);
@@ -657,7 +836,8 @@ export default function DashboardLayout() {
   const [businessInfo, setBusinessInfo] = useState({
     name: "Sokoos Internet",
     type: "Telecom & Connectivity",
-    about: "We help local businesses stay online with reliable internet plans, fast support, and easy onboarding.",
+    about:
+      "We help local businesses stay online with reliable internet plans, fast support, and easy onboarding.",
     hours: "Mon–Fri, 8:00 AM - 6:00 PM",
     serviceAreas: "Nairobi, Kiambu, Thika",
     paymentMethods: "Mobile Money, Bank Transfer, Cash",
@@ -668,10 +848,24 @@ export default function DashboardLayout() {
     { id: "kp3", name: "Business Package", price: "KES 5,000/month" },
   ]);
   const [personalContacts, setPersonalContacts] = useState([
-    { id: "pc1", name: "Mary Wanjiku", relationship: "Wife", phone: "+254712345678" },
-    { id: "pc2", name: "Peter Mwangi", relationship: "Supplier", phone: "+254733222222" },
+    {
+      id: "pc1",
+      name: "Mary Wanjiku",
+      relationship: "Wife",
+      phone: "+254712345678",
+    },
+    {
+      id: "pc2",
+      name: "Peter Mwangi",
+      relationship: "Supplier",
+      phone: "+254733222222",
+    },
   ]);
-  const [newContact, setNewContact] = useState({ name: "", relationship: "", phone: "" });
+  const [newContact, setNewContact] = useState({
+    name: "",
+    relationship: "",
+    phone: "",
+  });
   const addPersonalContact = () => {
     const name = newContact.name.trim();
     const phone = newContact.phone.trim();
@@ -679,43 +873,96 @@ export default function DashboardLayout() {
     if (!name || !phone) return;
     setPersonalContacts((c) => [
       ...c,
-      { id: `pc-${Date.now()}`, name, relationship: relationship || "Contact", phone },
+      {
+        id: `pc-${Date.now()}`,
+        name,
+        relationship: relationship || "Contact",
+        phone,
+      },
     ]);
     setNewContact({ name: "", relationship: "", phone: "" });
   };
   // Personal-contact helpers (moved here so personalContacts is defined first)
-  const isPersonalByPhone = (phone?: string | null) => !!phone && personalContacts.some((pc) => pc.phone === phone);
-  const isPersonalActive = isPersonalByPhone(activeConversationData?.phone ?? null);
-  const activePersonalEntry = personalContacts.find((pc) => pc.phone === activeConversationData?.phone);
-  const activePersonalIcon = activePersonalEntry && ["wife", "husband", "spouse", "family"].some((k) => activePersonalEntry.relationship.toLowerCase().includes(k)) ? "🏠" : "👤";
-  const effectiveActiveSource = isPersonalActive ? "personal" : getEffectiveSource(activeConversation, activeConversationData?.source);
-  const activeAgentName = isPersonalActive ? "Personal" : String(effectiveActiveSource).startsWith("ai") ? "Sokoos AI" : OWNER_NAMES[activeConversation] ?? "You";
+  const isPersonalByPhone = (phone?: string | null) =>
+    !!phone && personalContacts.some((pc) => pc.phone === phone);
+  const isPersonalActive = isPersonalByPhone(
+    activeConversationData?.phone ?? null,
+  );
+  const activePersonalEntry = personalContacts.find(
+    (pc) => pc.phone === activeConversationData?.phone,
+  );
+  const activePersonalIcon =
+    activePersonalEntry &&
+    ["wife", "husband", "spouse", "family"].some((k) =>
+      activePersonalEntry.relationship.toLowerCase().includes(k),
+    )
+      ? "🏠"
+      : "👤";
+  const effectiveActiveSource = isPersonalActive
+    ? "personal"
+    : getEffectiveSource(activeConversation, activeConversationData?.source);
+  const activeAgentName = isPersonalActive
+    ? "Personal"
+    : String(effectiveActiveSource).startsWith("ai")
+      ? "Sokoos AI"
+      : (OWNER_NAMES[activeConversation] ?? "You");
   // Helper: Generate single conversation status badge
   const getConversationStatusBadge = (source: string, isPersonal: boolean) => {
     if (isPersonal) {
-      return { emoji: "🏠", label: "Personal", bg: "bg-[#F1F5F9]", text: "text-[#334155]" };
+      return {
+        emoji: "🏠",
+        label: "Personal",
+        bg: "bg-[#F1F5F9]",
+        text: "text-[#334155]",
+      };
     }
     switch (source) {
       case "ai_handling":
-        return { emoji: "🤖", label: "AI Handling", bg: "bg-[#ECFDF5]", text: "text-[#059669]" };
+        return {
+          emoji: "🤖",
+          label: "AI Handling",
+          bg: "bg-[#ECFDF5]",
+          text: "text-[#059669]",
+        };
       case "ai_handled":
-        return { emoji: "✓", label: "AI Resolved", bg: "bg-[#F0FDF4]", text: "text-[#166534]" };
+        return {
+          emoji: "✓",
+          label: "AI Resolved",
+          bg: "bg-[#F0FDF4]",
+          text: "text-[#166534]",
+        };
       case "needs_attention":
-        return { emoji: "🔴", label: "Needs You", bg: "bg-[#FEF2F2]", text: "text-[#B91C1C]" };
+        return {
+          emoji: "🔴",
+          label: "Needs You",
+          bg: "bg-[#FEF2F2]",
+          text: "text-[#B91C1C]",
+        };
       case "owner":
       default:
-        return { emoji: "👤", label: "You", bg: "bg-[#EFF6FF]", text: "text-[#1E3A8A]" };
+        return {
+          emoji: "👤",
+          label: "You",
+          bg: "bg-[#EFF6FF]",
+          text: "text-[#1E3A8A]",
+        };
     }
   };
 
   const toggleAiForActive = () => {
     // Do not allow toggling AI for personal contacts (mock behavior).
     if (isPersonalActive) return;
-    const current = sourceOverrides[activeConversation] ?? activeConversationData?.source ?? "";
+    const current =
+      sourceOverrides[activeConversation] ??
+      activeConversationData?.source ??
+      "";
     if (String(current).startsWith("ai")) {
       setSourceOverrides((s) => ({ ...s, [activeConversation]: "owner" }));
     } else {
-      setSourceOverrides((s) => ({ ...s, [activeConversation]: "ai_handling" }));
+      setSourceOverrides((s) => ({
+        ...s,
+        [activeConversation]: "ai_handling",
+      }));
     }
   };
   const [faqItems, setFaqItems] = useState([
@@ -726,14 +973,18 @@ export default function DashboardLayout() {
     },
   ]);
   const [policies, setPolicies] = useState({
-    returnPolicy: "Customers may return services within 7 days if there is a technical issue requiring a fix.",
-    deliveryPolicy: "We deliver service activation details via WhatsApp within 24 hours of payment.",
-    cancellationPolicy: "Cancel anytime with 48 hours notice before the next billing cycle.",
+    returnPolicy:
+      "Customers may return services within 7 days if there is a technical issue requiring a fix.",
+    deliveryPolicy:
+      "We deliver service activation details via WhatsApp within 24 hours of payment.",
+    cancellationPolicy:
+      "Cancel anytime with 48 hours notice before the next billing cycle.",
   });
   const [businessProfile, setBusinessProfile] = useState({
     name: "Sokoos Internet",
     industry: "Telecom & Connectivity",
-    description: "We help local businesses stay online with reliable internet plans, fast support, and easy onboarding.",
+    description:
+      "We help local businesses stay online with reliable internet plans, fast support, and easy onboarding.",
     phone: "+254 20 3949 0101",
     email: "support@sokoos.co.ke",
     location: "Nairobi, Kenya",
@@ -743,10 +994,12 @@ export default function DashboardLayout() {
   });
   const [imageLabel, setImageLabel] = useState("No file selected");
   const [customerCollapsed, setCustomerCollapsed] = useState(false);
-  
+
   // Future team state (initialized but not used when hasTeam = false)
   const teamMembers = hasTeam ? MOCK_TEAM_MEMBERS : [];
-  const currentMember = hasTeam ? MOCK_TEAM_MEMBERS.find((m) => m.id === currentUserId) : null;
+  const currentMember = hasTeam
+    ? MOCK_TEAM_MEMBERS.find((m) => m.id === currentUserId)
+    : null;
 
   return (
     <div className="h-screen min-h-screen overflow-hidden bg-[#FFFFFF] text-[#111827]">
@@ -757,77 +1010,85 @@ export default function DashboardLayout() {
         onMouseLeave={() => setSidebarHovered(false)}
       >
         <aside className="md:fixed md:inset-y-0 md:left-0 md:flex md:flex-col md:pt-4 bg-[#FFFFFF] border-r border-[#E5E7EB]/10 w-[72px] z-20">
-        <div className="px-4 pb-4">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="h-8 w-8 rounded-[20px] bg-[#22C55E] flex items-center justify-center text-white font-semibold">S</div>
-              <span className="sr-only">Sokoos</span>
-            </div>
-            <div className="h-10 w-10" />
-          </div>
-        </div>
-
-        <nav className="flex-1 px-1.5 overflow-hidden">
-          <ul className="space-y-2">
-            {NAV_ITEMS.map(({ label, href, Icon }) => {
-              const active = selected === label;
-              return (
-                <li key={href}>
-                  <button
-                    onClick={() => setSelected(label)}
-                    title={label}
-                    aria-label={label}
-                    className={`w-full flex items-center justify-center rounded-[20px] p-2 text-sm font-medium transition duration-200 ${
-                      active
-                        ? "bg-[#ECFDF5] text-[#047857] shadow-sm"
-                        : "text-[#6B7280] hover:bg-[#EFF6FF]"
-                    }`}
-                  >
-                    <Icon className={`h-4 w-4 ${active ? "text-[#059669] opacity-100" : "text-[#6B7280] opacity-90"}`} />
-                    <span className="sr-only">{label}</span>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
-        {sidebarHovered && (
-          <div className="fixed inset-y-0 left-0 z-50 w-64 min-w-[248px] bg-[#FFFFFF] border-r border-[#E5E7EB]/10 shadow-[0_18px_48px_rgba(15,23,42,0.12)] transition-all duration-200 ease-out">
-            <div className="h-full flex flex-col pt-4">
-              <div className="px-4 pb-4">
-                <div className="flex items-center gap-3">
-                  <div className="h-8 w-8 rounded-[20px] bg-[#22C55E] flex items-center justify-center text-white font-semibold">S</div>
-                  <span className="text-lg font-semibold">Sokoos</span>
+          <div className="px-4 pb-4">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="h-8 w-8 rounded-[20px] bg-[#22C55E] flex items-center justify-center text-white font-semibold">
+                  S
                 </div>
+                <span className="sr-only">Sokoos</span>
               </div>
-              <nav className="flex-1 overflow-y-auto px-4">
-                <ul className="space-y-2">
-                  {NAV_ITEMS.map(({ label, href, Icon }) => {
-                    const active = selected === label;
-                    return (
-                      <li key={href}>
-                        <button
-                          onClick={() => setSelected(label)}
-                          title={label}
-                          aria-label={label}
-                          className={`w-full text-left flex items-center gap-3 rounded-full px-3 py-2 text-sm font-medium transition duration-200 ${
-                            active
-                              ? "bg-[#ECFDF5] text-[#047857]"
-                              : "text-[#475569] hover:bg-[#EFF6FF]"
-                          }`}
-                        >
-                          <Icon className={`h-5 w-5 ${active ? "text-[#059669]" : "text-[#6B7280]"}`} />
-                          <span>{label}</span>
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </nav>
+              <div className="h-10 w-10" />
             </div>
           </div>
-        )}
-      </aside>
+
+          <nav className="flex-1 px-1.5 overflow-hidden">
+            <ul className="space-y-2">
+              {NAV_ITEMS.map(({ label, href, Icon }) => {
+                const active = selected === label;
+                return (
+                  <li key={href}>
+                    <button
+                      onClick={() => setSelected(label)}
+                      title={label}
+                      aria-label={label}
+                      className={`w-full flex items-center justify-center rounded-[20px] p-2 text-sm font-medium transition duration-200 ${
+                        active
+                          ? "bg-[#ECFDF5] text-[#047857] shadow-sm"
+                          : "text-[#6B7280] hover:bg-[#EFF6FF]"
+                      }`}
+                    >
+                      <Icon
+                        className={`h-4 w-4 ${active ? "text-[#059669] opacity-100" : "text-[#6B7280] opacity-90"}`}
+                      />
+                      <span className="sr-only">{label}</span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </nav>
+          {sidebarHovered && (
+            <div className="fixed inset-y-0 left-0 z-50 w-64 min-w-[248px] bg-[#FFFFFF] border-r border-[#E5E7EB]/10 shadow-[0_18px_48px_rgba(15,23,42,0.12)] transition-all duration-200 ease-out">
+              <div className="h-full flex flex-col pt-4">
+                <div className="px-4 pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-[20px] bg-[#22C55E] flex items-center justify-center text-white font-semibold">
+                      S
+                    </div>
+                    <span className="text-lg font-semibold">Sokoos</span>
+                  </div>
+                </div>
+                <nav className="flex-1 overflow-y-auto px-4">
+                  <ul className="space-y-2">
+                    {NAV_ITEMS.map(({ label, href, Icon }) => {
+                      const active = selected === label;
+                      return (
+                        <li key={href}>
+                          <button
+                            onClick={() => setSelected(label)}
+                            title={label}
+                            aria-label={label}
+                            className={`w-full text-left flex items-center gap-3 rounded-full px-3 py-2 text-sm font-medium transition duration-200 ${
+                              active
+                                ? "bg-[#ECFDF5] text-[#047857]"
+                                : "text-[#475569] hover:bg-[#EFF6FF]"
+                            }`}
+                          >
+                            <Icon
+                              className={`h-5 w-5 ${active ? "text-[#059669]" : "text-[#6B7280]"}`}
+                            />
+                            <span>{label}</span>
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          )}
+        </aside>
       </div>
 
       {/* Mobile top header with menu button */}
@@ -840,7 +1101,9 @@ export default function DashboardLayout() {
           <Menu className="h-5 w-5" />
         </button>
         <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-[20px] bg-[#22C55E] flex items-center justify-center text-white font-semibold">S</div>
+          <div className="h-8 w-8 rounded-[20px] bg-[#22C55E] flex items-center justify-center text-white font-semibold">
+            S
+          </div>
           <span className="font-semibold">Sokoos</span>
         </div>
       </header>
@@ -848,14 +1111,22 @@ export default function DashboardLayout() {
       {/* Mobile slide-over sidebar */}
       {mobileOpen && (
         <div className="fixed inset-0 z-40 md:hidden">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setMobileOpen(false)} />
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setMobileOpen(false)}
+          />
           <div className="absolute left-0 top-0 bottom-0 w-72 bg-[#FFFFFF] border-r border-[#E5E7EB]/10 p-4 overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-[20px] bg-[#22C55E] flex items-center justify-center text-white font-semibold">S</div>
+                <div className="h-8 w-8 rounded-[20px] bg-[#22C55E] flex items-center justify-center text-white font-semibold">
+                  S
+                </div>
                 <span className="font-semibold">Sokoos</span>
               </div>
-              <button onClick={() => setMobileOpen(false)} className="p-2 rounded-[20px] hover:bg-[#F3F4F6]">
+              <button
+                onClick={() => setMobileOpen(false)}
+                className="p-2 rounded-[20px] hover:bg-[#F3F4F6]"
+              >
                 <X className="h-5 w-5" />
               </button>
             </div>
@@ -872,7 +1143,7 @@ export default function DashboardLayout() {
                           setMobileOpen(false);
                         }}
                         className={`w-full text-left flex items-center gap-2.5 rounded-[20px] px-3 py-2 text-sm font-medium transition duration-200 ${
-                           active
+                          active
                             ? "bg-[#F0FDF4] text-[#065F46] shadow-sm ring-1 ring-[#D1FAE5]/40"
                             : "text-[#475569] hover:bg-[#EFF6FF] hover:text-[#111827]"
                         }`}
@@ -890,163 +1161,299 @@ export default function DashboardLayout() {
       )}
 
       {/* Main content area. On desktop, add left padding to allow for fixed sidebar. On mobile, add top padding to account for the header. */}
-      <main className="h-full pt-14 md:pt-0 md:pl-[72px]">
+      <main className="h-full overflow-hidden pt-14 md:pt-0 md:pl-[72px]">
         <div className="max-w-7xl mx-auto h-full p-4">
           {/* Render placeholder pages based on selected state */}
           {selected === "Home" && (
-            <div className="space-y-6">
-              <div className={CARD}>
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-[#475569]">Good Afternoon, Frank 👋</p>
-                    <h1 className={CARD_TITLE}>Welcome back to Sokoos</h1>
-                    <p className={`mt-6 ${SECONDARY}`}>Here’s what’s happening with your business today.</p>
+            <div className="h-full overflow-y-auto space-y-6 pr-2">
+              <div className="relative overflow-hidden rounded-[32px] border border-[#DCFCE7] bg-gradient-to-br from-[#F0FDF4] via-white to-[#ECFDF5] p-8 shadow-sm">
+                <div className="absolute right-[-60px] top-[-60px] h-56 w-56 rounded-full bg-[#22C55E]/10 blur-3xl" />
+                <div className="absolute bottom-[-80px] left-[-80px] h-72 w-72 rounded-full bg-[#16A34A]/10 blur-3xl" />
+
+                <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+                  <div className="max-w-3xl">
+                    <div className="inline-flex items-center gap-2 rounded-full border border-[#BBF7D0] bg-white px-4 py-2 text-sm font-medium text-[#15803D]">
+                      <Bot className="h-4 w-4" />
+                      AI Assistant Online
+                    </div>
+
+                    <h1 className="mt-6 text-4xl font-bold tracking-tight text-[#111827]">
+                      Grow your business with AI that never sleeps.
+                    </h1>
+
+                    <p className="mt-4 max-w-2xl text-lg leading-8 text-[#64748B]">
+                      Your AI is answering customers, qualifying leads, booking
+                      appointments, and helping you close more sales
+                      automatically.
+                    </p>
+
+                    <div className="mt-8 flex flex-wrap gap-3">
+                      <button className="rounded-xl bg-[#16A34A] px-5 py-3 font-semibold text-white transition hover:bg-[#15803D]">
+                        View Inbox
+                      </button>
+
+                      <button className="rounded-xl border border-[#D1D5DB] bg-white px-5 py-3 font-semibold text-[#111827] transition hover:bg-[#F9FAFB]">
+                        Configure AI
+                      </button>
+                    </div>
                   </div>
-                  <div className="rounded-[20px] bg-[#F9FAFB] px-4 py-2 text-sm text-[#111827]">
-                    Updated just now
+
+                  <div className="grid w-full max-w-sm grid-cols-2 gap-4">
+                    <div className="rounded-2xl bg-white p-5 shadow-sm">
+                      <p className="text-sm text-[#64748B]">AI Replies</p>
+                      <p className="mt-2 text-3xl font-bold">124</p>
+                      <p className="mt-1 text-sm text-[#16A34A]">+18% today</p>
+                    </div>
+
+                    <div className="rounded-2xl bg-white p-5 shadow-sm">
+                      <p className="text-sm text-[#64748B]">Customers</p>
+                      <p className="mt-2 text-3xl font-bold">38</p>
+                      <p className="mt-1 text-sm text-[#16A34A]">Active now</p>
+                    </div>
+
+                    <div className="rounded-2xl bg-white p-5 shadow-sm">
+                      <p className="text-sm text-[#64748B]">Conversion</p>
+                      <p className="mt-2 text-3xl font-bold">41%</p>
+                      <p className="mt-1 text-sm text-[#16A34A]">+6%</p>
+                    </div>
+
+                    <div className="rounded-2xl bg-white p-5 shadow-sm">
+                      <p className="text-sm text-[#64748B]">AI Confidence</p>
+                      <p className="mt-2 text-3xl font-bold">94%</p>
+                      <p className="mt-1 text-sm text-[#16A34A]">Excellent</p>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-                {STAT_CARDS.map((stat, i) => (
-                  <div key={stat.label} className={CARD}>
-                    <p className={SECTION_HEADING}>{i === 0 ? "AI Status" : i === 2 ? "Business Knowledge" : stat.label}</p>
-                    <div className="mt-5">
-                      {i === 0 ? (
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <p className="text-sm text-[#6B7280]">AI Assistant</p>
-                            <p className="text-sm font-semibold text-[#111827]">Active</p>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <p className="text-sm text-[#6B7280]">Confidence</p>
-                            <p className="text-lg font-semibold text-[#111827]">94%</p>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <p className="text-sm text-[#6B7280]">Last automated reply</p>
-                            <p className="text-sm text-[#6B7280]">2 minutes ago</p>
-                          </div>
-                          <div className="mt-2">
-                            <span className="inline-flex items-center rounded-full bg-[#ECFDF5] px-3 py-1 text-sm font-semibold text-[#047857]">Online</span>
-                          </div>
-                        </div>
-                      ) : i === 1 ? (
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <p className="text-sm text-[#6B7280]">Connected Number</p>
-                            <p className="text-sm font-semibold text-[#111827]">+254 712 345 678</p>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <p className="text-sm text-[#6B7280]">Status</p>
-                            <p className="text-sm font-semibold text-[#047857]">Connected</p>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <p className="text-sm text-[#6B7280]">Last Sync</p>
-                            <p className="text-sm text-[#6B7280]">1 minute ago</p>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <p className="text-sm text-[#6B7280]">AI Listening</p>
-                            <p className="text-sm text-[#111827]">Enabled</p>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <p className="text-sm text-[#6B7280]">Messages Today</p>
-                            <p className="text-sm font-semibold text-[#111827]">48</p>
-                          </div>
-                          <div className="mt-2">
-                            <span className="inline-flex items-center rounded-full bg-[#ECFDF5] px-3 py-1 text-sm font-semibold text-[#047857]">Connected</span>
-                          </div>
-                        </div>
-                      ) : i === 2 ? (
-                        <div className="space-y-3">
-                          <div className="flex items-center justify-between">
-                            <p className="text-sm font-semibold text-[#111827]">Business Profile</p>
-                            <p className="text-sm text-[#047857]">✓ Complete</p>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <p className="text-sm text-[#6B7280]">Products</p>
-                            <p className="text-sm font-semibold text-[#111827]">12 configured</p>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <p className="text-sm text-[#6B7280]">FAQs</p>
-                            <p className="text-sm font-semibold text-[#111827]">18 configured</p>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <p className="text-sm text-[#6B7280]">Business Hours</p>
-                            <p className="text-sm font-semibold text-[#111827]">Configured</p>
-                          </div>
-                          <div>
-                            <p className="text-sm text-[#6B7280] mb-2">Knowledge Score</p>
-                            <div className="w-full h-2 rounded-full bg-[#EEF2F6]">
-                              <div className="h-2 rounded-full bg-[#22C55E]" style={{ width: '92%' }} />
-                            </div>
-                            <div className="mt-2 flex items-center justify-between">
-                              <span className="text-sm font-semibold text-[#111827]">92%</span>
-                            </div>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="mt-5 flex items-end justify-between gap-4">
-                          <div>
-                            <p className="text-3xl font-semibold text-[#111827]">{stat.value}</p>
-                          </div>
-                          <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#166534]">{stat.delta}</span>
-                        </div>
-                      )}
+              <div className="grid gap-5 lg:grid-cols-3">
+                {/* AI Health */}
+                <div className={`${CARD} relative overflow-hidden`}>
+                  <div className="absolute right-0 top-0 h-24 w-24 rounded-full bg-[#DCFCE7] blur-3xl" />
+
+                  <div className="relative">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className={SECTION_HEADING}>AI Assistant</p>
+                        <h3 className="mt-2 text-3xl font-bold">94%</h3>
+                      </div>
+
+                      <div className="rounded-2xl bg-[#ECFDF5] p-3">
+                        <Bot className="h-6 w-6 text-[#16A34A]" />
+                      </div>
+                    </div>
+
+                    <div className="mt-6 h-3 rounded-full bg-[#F1F5F9]">
+                      <div
+                        className="h-3 rounded-full bg-[#22C55E]"
+                        style={{ width: "94%" }}
+                      />
+                    </div>
+
+                    <p className="mt-3 text-sm text-[#64748B]">
+                      AI confidence is excellent.
+                    </p>
+                  </div>
+                </div>
+
+                {/* WhatsApp */}
+                <div className={CARD}>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className={SECTION_HEADING}>WhatsApp</p>
+                      <h3 className="mt-2 text-2xl font-bold">Connected</h3>
+                    </div>
+
+                    <div className="rounded-2xl bg-[#ECFDF5] p-3">
+                      <MessageCircle className="h-6 w-6 text-[#16A34A]" />
                     </div>
                   </div>
-                ))}
+
+                  <div className="mt-6 space-y-3">
+                    <div className="flex justify-between">
+                      <span className="text-[#64748B]">Messages Today</span>
+                      <strong>48</strong>
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span className="text-[#64748B]">Avg Response</span>
+                      <strong>6 sec</strong>
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span className="text-[#64748B]">AI Enabled</span>
+                      <strong className="text-[#16A34A]">Yes</strong>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Business */}
+                <div className={CARD}>
+                  <p className={SECTION_HEADING}>Business Knowledge</p>
+
+                  <h3 className="mt-2 text-3xl font-bold">92%</h3>
+
+                  <div className="mt-5 space-y-3">
+                    <div className="flex justify-between">
+                      <span>Products</span>
+                      <strong>12</strong>
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span>FAQs</span>
+                      <strong>18</strong>
+                    </div>
+
+                    <div className="flex justify-between">
+                      <span>Policies</span>
+                      <strong>7</strong>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 h-2 rounded-full bg-[#E5E7EB]">
+                    <div
+                      className="h-2 rounded-full bg-[#22C55E]"
+                      style={{ width: "92%" }}
+                    />
+                  </div>
+                </div>
+
+                {/* Sales */}
+                <div className={CARD}>
+                  <p className={SECTION_HEADING}>Sales Generated</p>
+
+                  <h2 className="mt-2 text-4xl font-bold">KSh 48K</h2>
+
+                  <p className="mt-2 text-[#16A34A]">↑ 21% this week</p>
+                </div>
+
+                {/* Leads */}
+                <div className={CARD}>
+                  <p className={SECTION_HEADING}>New Leads</p>
+
+                  <h2 className="mt-2 text-4xl font-bold">67</h2>
+
+                  <p className="mt-2 text-[#16A34A]">24 qualified</p>
+                </div>
+
+                {/* Satisfaction */}
+                <div className={CARD}>
+                  <p className={SECTION_HEADING}>Customer Rating</p>
+
+                  <h2 className="mt-2 text-4xl font-bold">4.9</h2>
+
+                  <p className="mt-2 text-[#64748B]">★★★★★</p>
+                </div>
               </div>
 
-              <div className="grid gap-5 lg:grid-cols-[1.5fr_1fr]">
+              <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
+                {/* Today's AI Performance */}
+
                 <section className={CARD}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className={SECTION_HEADING}>Recent Activity</p>
-                      <h2 className={CARD_TITLE}>What happened recently</h2>
+                      <p className={SECTION_HEADING}>Today's AI Performance</p>
+                      <h2 className={CARD_TITLE}>
+                        How your assistant performed
+                      </h2>
                     </div>
+
+                    <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-sm font-semibold text-[#047857]">
+                      Live
+                    </span>
                   </div>
-                  <div className="mt-6 space-y-4">
-                    {RECENT_ACTIVITY.map((item) => (
-                      <div key={item.title} className={LIST_ITEM}>
-                        <div className="flex items-center justify-between gap-4">
-                          <p className="font-semibold text-[#111827]">{item.title}</p>
-                          <span className="text-xs text-[#6B7280]">{item.time}</span>
-                        </div>
-                        <p className="mt-2 text-sm text-[#6B7280]">{item.subtitle}</p>
-                      </div>
-                    ))}
+
+                  <div className="mt-8 grid grid-cols-2 gap-6">
+                    <div className="rounded-2xl bg-[#F9FAFB] p-5">
+                      <p className="text-sm text-[#64748B]">AI Conversations</p>
+
+                      <p className="mt-2 text-4xl font-bold text-[#111827]">
+                        38
+                      </p>
+                    </div>
+
+                    <div className="rounded-2xl bg-[#F9FAFB] p-5">
+                      <p className="text-sm text-[#64748B]">Human Takeovers</p>
+
+                      <p className="mt-2 text-4xl font-bold text-[#111827]">
+                        4
+                      </p>
+                    </div>
+
+                    <div className="rounded-2xl bg-[#F9FAFB] p-5">
+                      <p className="text-sm text-[#64748B]">Auto Resolution</p>
+
+                      <p className="mt-2 text-4xl font-bold text-[#22C55E]">
+                        89%
+                      </p>
+                    </div>
+
+                    <div className="rounded-2xl bg-[#F9FAFB] p-5">
+                      <p className="text-sm text-[#64748B]">Customer Rating</p>
+
+                      <p className="mt-2 text-4xl font-bold text-[#111827]">
+                        4.8
+                      </p>
+                    </div>
                   </div>
                 </section>
 
+                {/* AI Inbox */}
+
                 <section className={CARD}>
-                  <div>
-                    <p className={SECTION_HEADING}>Quick Actions</p>
-                    <h2 className={CARD_TITLE}>Jump into work</h2>
-                  </div>
-                  <div className="mt-6 grid gap-4">
-                    {QUICK_ACTIONS.map((action) => (
-                    <button
-                        key={action}
-                        type="button"
-                        className={QUICK_ACTION_BUTTON}
-                      >
-                        {action}
+                  <p className={SECTION_HEADING}>AI Inbox</p>
+
+                  <h2 className={CARD_TITLE}>Current Status</h2>
+
+                  <div className="mt-6 space-y-5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[#64748B]">Waiting Replies</span>
+
+                      <span className="font-semibold">3</span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-[#64748B]">AI Handling</span>
+
+                      <span className="font-semibold text-[#22C55E]">17</span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-[#64748B]">Needs Review</span>
+
+                      <span className="font-semibold text-[#F59E0B]">2</span>
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                      <span className="text-[#64748B]">Resolved Today</span>
+
+                      <span className="font-semibold">36</span>
+                    </div>
+
+                    <div className="pt-4 border-t border-[#EEF2F6]">
+                      <button className="w-full rounded-xl bg-[#22C55E] py-3 text-white font-semibold hover:bg-[#16A34A] transition">
+                        Open Inbox
                       </button>
-                    ))}
+                    </div>
                   </div>
                 </section>
               </div>
             </div>
           )}
           {selected === "Inbox" && (
-              <div className={`grid gap-6 px-6 py-6 transition-all duration-300 ease-out items-stretch h-full grid-cols-1 ${customerCollapsed ? "md:grid-cols-[320px_1fr]" : "md:grid-cols-[320px_1fr_minmax(330px,360px)]"}`}>
-                <section className={`${CARD} w-full h-full min-h-0 flex flex-col min-w-0`}>
+            <div
+              className={`grid gap-6 px-6 py-6 transition-all duration-300 ease-out items-stretch h-full grid-cols-1 ${customerCollapsed ? "md:grid-cols-[320px_1fr]" : "md:grid-cols-[320px_1fr_minmax(330px,360px)]"}`}
+            >
+              <section
+                className={`${CARD} w-full h-full min-h-0 flex flex-col min-w-0`}
+              >
                 <div className="border-b border-[#ECECEC] px-5 py-2">
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <h2 className={PANEL_TITLE}>Conversations</h2>
-                      <p className={`${SECONDARY} mt-0`}>Recent messages and active chats</p>
+                      <p className={`${SECONDARY} mt-0`}>
+                        Recent messages and active chats
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -1080,93 +1487,151 @@ export default function DashboardLayout() {
                   </div>
                   <div className="flex-1 min-h-0 space-y-1.5 overflow-y-auto pr-2 scroll-smooth custom-scrollbar">
                     {INBOX_CONVERSATIONS.filter((conversation) => {
-                      const src = sourceOverrides[conversation.id] ?? conversation.source;
+                      const src =
+                        sourceOverrides[conversation.id] ?? conversation.source;
                       if (activeTab === "Needs Attention") {
                         return src === "needs_attention";
                       }
                       if (activeTab === "AI") {
                         return String(src).startsWith("ai");
                       }
-                        if (activeTab === "You") {
+                      if (activeTab === "You") {
                         return src === "owner";
                       }
                       return true;
                     })
-                      .filter((conversation) =>
-                        (conversation.name ?? "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-                        (conversation.phone ?? "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-                        conversation.message.toLowerCase().includes(searchQuery.toLowerCase()),
+                      .filter(
+                        (conversation) =>
+                          (conversation.name ?? "")
+                            .toLowerCase()
+                            .includes(searchQuery.toLowerCase()) ||
+                          (conversation.phone ?? "")
+                            .toLowerCase()
+                            .includes(searchQuery.toLowerCase()) ||
+                          conversation.message
+                            .toLowerCase()
+                            .includes(searchQuery.toLowerCase()),
                       )
                       .map((conversation) => {
-                      const active = conversation.id === activeConversation;
-                      const effectiveSourceRaw = sourceOverrides[conversation.id] ?? conversation.source;
-                      const isPersonal = personalContacts.some((pc) => pc.phone === conversation.phone);
-                      const effectiveSource = isPersonal ? "personal" : effectiveSourceRaw;
-                      return (
-                        <button
-                          key={conversation.id}
-                          onClick={() => setActiveConversation(conversation.id)}
-                          className={`w-full overflow-hidden rounded-[20px] px-3 py-1.5 min-h-[76px] text-left ${TRANSITION} transform-gpu flex flex-col gap-1.5 ${
+                        const active = conversation.id === activeConversation;
+                        const effectiveSourceRaw =
+                          sourceOverrides[conversation.id] ??
+                          conversation.source;
+                        const isPersonal = personalContacts.some(
+                          (pc) => pc.phone === conversation.phone,
+                        );
+                        const effectiveSource = isPersonal
+                          ? "personal"
+                          : effectiveSourceRaw;
+                        return (
+                          <button
+                            key={conversation.id}
+                            onClick={() =>
+                              setActiveConversation(conversation.id)
+                            }
+                            className={`w-full overflow-hidden rounded-[20px] px-3 py-1.5 min-h-[76px] text-left ${TRANSITION} transform-gpu flex flex-col gap-1.5 ${
                               active
                                 ? "bg-[#F6FFFA] border border-[#D1EECF] ring-1 ring-[#22C55E]/20 shadow-sm"
                                 : "bg-white border border-transparent hover:bg-[#FBFFF8] hover:shadow-[0_10px_30px_rgba(15,23,42,0.06)] hover:-translate-y-0.5"
-                          }`}
-                        >
-                          {/* Header: Avatar + Name + Time */}
-                          <div className="flex items-center justify-between gap-3">
-                            <div className="flex items-center gap-2 min-w-0 flex-1">
-                              <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#E5E7EB] to-[#D1D5DB] text-sm font-semibold text-[#64748B]">{conversation.avatar}</div>
-                              <div className="min-w-0 flex-1">
+                            }`}
+                          >
+                            {/* Header: Avatar + Name + Time */}
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="flex items-center gap-2 min-w-0 flex-1">
+                                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#E5E7EB] to-[#D1D5DB] text-sm font-semibold text-[#64748B]">
+                                  {conversation.avatar}
+                                </div>
+                                <div className="min-w-0 flex-1">
                                   {conversation.isSaved && conversation.name ? (
-                                    <p className={`${BODY_MEDIUM} truncate`} title={conversation.name}>
+                                    <p
+                                      className={`${BODY_MEDIUM} truncate`}
+                                      title={conversation.name}
+                                    >
                                       {conversation.name}
                                     </p>
                                   ) : (
-                                    <p className={`${BODY_MEDIUM} truncate`} title={conversation.phone ?? "Unknown Customer"}>{conversation.phone ?? "Unknown Customer"}</p>
+                                    <p
+                                      className={`${BODY_MEDIUM} truncate`}
+                                      title={
+                                        conversation.phone ?? "Unknown Customer"
+                                      }
+                                    >
+                                      {conversation.phone ?? "Unknown Customer"}
+                                    </p>
                                   )}
+                                </div>
+                              </div>
+                              <div className="flex-shrink-0">
+                                <span
+                                  className={`${TIME_LABEL} whitespace-nowrap text-xs text-[#94A3B8]`}
+                                >
+                                  {formatConversationTime(conversation.time)}
+                                </span>
                               </div>
                             </div>
-                            <div className="flex-shrink-0">
-                              <span className={`${TIME_LABEL} whitespace-nowrap text-xs text-[#94A3B8]`}>{formatConversationTime(conversation.time)}</span>
-                            </div>
-                          </div>
 
-                          {/* Badge Row: Status badge + Unread badge */}
-                          <div className="flex items-center gap-1.5 min-w-0">
-                            {(() => {
-                              const badge = getConversationStatusBadge(effectiveSource, isPersonal);
-                              return (
-                                <span className={`${STATUS_CHIP} ${badge.bg} ${badge.text}`}>
-                                  {badge.emoji} {badge.label}
-                                </span>
-                              );
-                            })()}
-                            <div className="ml-auto flex-shrink-0">
-                              {conversation.badge > 0 ? (
-                                <span className={`inline-flex min-w-[18px] h-4 items-center justify-center rounded-full bg-[#22C55E] text-white text-[10px] font-semibold transform-gpu transition duration-200 ease-out`}>{conversation.badge}</span>
-                              ) : null}
+                            {/* Badge Row: Status badge + Unread badge */}
+                            <div className="flex items-center gap-1.5 min-w-0">
+                              {(() => {
+                                const badge = getConversationStatusBadge(
+                                  effectiveSource,
+                                  isPersonal,
+                                );
+                                return (
+                                  <span
+                                    className={`${STATUS_CHIP} ${badge.bg} ${badge.text}`}
+                                  >
+                                    {badge.emoji} {badge.label}
+                                  </span>
+                                );
+                              })()}
+                              <div className="ml-auto flex-shrink-0">
+                                {conversation.badge > 0 ? (
+                                  <span
+                                    className={`inline-flex min-w-[18px] h-4 items-center justify-center rounded-full bg-[#22C55E] text-white text-[10px] font-semibold transform-gpu transition duration-200 ease-out`}
+                                  >
+                                    {conversation.badge}
+                                  </span>
+                                ) : null}
+                              </div>
                             </div>
-                          </div>
-                          <p className={`min-w-0 truncate ${MESSAGE_PREVIEW} ${SECONDARY}`}>{conversation.message}</p>
-                        </button>
-                      );
-                    })}
+                            <p
+                              className={`min-w-0 truncate ${MESSAGE_PREVIEW} ${SECONDARY}`}
+                            >
+                              {conversation.message}
+                            </p>
+                          </button>
+                        );
+                      })}
                   </div>
                 </div>
               </section>
 
-              <section className={`${CARD} w-full h-full min-h-0 flex flex-col min-w-0`}>
+              <section
+                className={`${CARD} w-full h-full min-h-0 flex flex-col min-w-0`}
+              >
                 {/* Header - Fixed */}
                 <div className="border-b border-[#ECECEC] px-6 py-3 flex-shrink-0">
                   <div className="flex flex-col gap-2">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0 flex-1">
-                        <h2 className={`${CUSTOMER_NAME} truncate`}>{INBOX_CONVERSATIONS.find((item) => item.id === activeConversation)?.name}</h2>
+                        <h2 className={`${CUSTOMER_NAME} truncate`}>
+                          {
+                            INBOX_CONVERSATIONS.find(
+                              (item) => item.id === activeConversation,
+                            )?.name
+                          }
+                        </h2>
                         <div className="mt-1 flex items-center gap-2">
                           {(() => {
-                            const badge = getConversationStatusBadge(effectiveActiveSource, isPersonalActive);
+                            const badge = getConversationStatusBadge(
+                              effectiveActiveSource,
+                              isPersonalActive,
+                            );
                             return (
-                              <span className={`${STATUS_CHIP} font-semibold ${badge.bg} ${badge.text}`}>
+                              <span
+                                className={`${STATUS_CHIP} font-semibold ${badge.bg} ${badge.text}`}
+                              >
                                 {badge.emoji} {badge.label}
                               </span>
                             );
@@ -1184,9 +1649,15 @@ export default function DashboardLayout() {
                               ? "border-[#E5E7EB] bg-[#F9FAFB] text-[#9CA3AF] cursor-not-allowed"
                               : "border-[#22C55E] bg-[#ECFDF5] text-[#166534] hover:bg-[#DCFCE7]"
                           }`}
-                          title={isPersonalActive ? "Cannot toggle mode for personal contacts" : "Toggle conversation mode"}
+                          title={
+                            isPersonalActive
+                              ? "Cannot toggle mode for personal contacts"
+                              : "Toggle conversation mode"
+                          }
                         >
-                          {effectiveActiveSource.startsWith("ai") ? "Human" : "AI"}
+                          {effectiveActiveSource.startsWith("ai")
+                            ? "Human"
+                            : "AI"}
                         </button>
                         {customerCollapsed && (
                           <button
@@ -1202,13 +1673,11 @@ export default function DashboardLayout() {
                       </div>
                     </div>
                     <p className="text-[11px] text-[#94A3B8]">
-                      {isPersonalActive ? (
-                        "AI disabled for this contact"
-                      ) : activeConversationData?.message ? (
-                        `Last activity • ${formatConversationTime(activeConversationData?.time)}`
-                      ) : (
-                        "Waiting for activity"
-                      )}
+                      {isPersonalActive
+                        ? "AI disabled for this contact"
+                        : activeConversationData?.message
+                          ? `Last activity • ${formatConversationTime(activeConversationData?.time)}`
+                          : "Waiting for activity"}
                     </p>
                   </div>
                 </div>
@@ -1217,16 +1686,27 @@ export default function DashboardLayout() {
                 <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar px-6 py-3 flex flex-col justify-end">
                   <div className="space-y-2 flex flex-col">
                     {activeMessages.map((message, index) => {
-                      const originalWasAi = String(activeConversationData?.source).startsWith("ai");
-                      if (message.from === "agent" && originalWasAi && !String(effectiveActiveSource).startsWith("ai")) {
+                      const originalWasAi = String(
+                        activeConversationData?.source,
+                      ).startsWith("ai");
+                      if (
+                        message.from === "agent" &&
+                        originalWasAi &&
+                        !String(effectiveActiveSource).startsWith("ai")
+                      ) {
                         return null;
                       }
                       const isAgent = message.from === "agent";
-                      const isAi = isAgent && String(effectiveActiveSource).startsWith("ai");
+                      const isAi =
+                        isAgent &&
+                        String(effectiveActiveSource).startsWith("ai");
                       const senderLabel = isAi ? "Sokoos AI" : activeAgentName;
 
                       return (
-                        <div key={`${message.time}-${index}`} className={`${TRANSITION_FAST} transition-opacity`}>
+                        <div
+                          key={`${message.time}-${index}`}
+                          className={`${TRANSITION_FAST} transition-opacity`}
+                        >
                           {isAgent ? (
                             <div className="flex items-center gap-1 text-[10px] font-semibold text-[#94A3B8] mb-0.5">
                               {isAi ? (
@@ -1241,15 +1721,25 @@ export default function DashboardLayout() {
                               )}
                             </div>
                           ) : null}
-                          <div className={`flex ${isAgent ? "justify-start" : "justify-end"}`}>
-                            <div className={`rounded-[20px] px-3 py-2 text-sm break-words max-w-[70%] ${
-                              isAgent
-                                ? "bg-[#F0FDF4] text-[#166534] border border-[#DCFCE7]"
-                                : "bg-white text-[#111827] border border-[#E5E7EB]"
-                            } ${TRANSITION_FAST} transition-shadow transform-gpu`}>
+                          <div
+                            className={`flex ${isAgent ? "justify-start" : "justify-end"}`}
+                          >
+                            <div
+                              className={`rounded-[20px] px-3 py-2 text-sm break-words max-w-[70%] ${
+                                isAgent
+                                  ? "bg-[#F0FDF4] text-[#166534] border border-[#DCFCE7]"
+                                  : "bg-white text-[#111827] border border-[#E5E7EB]"
+                              } ${TRANSITION_FAST} transition-shadow transform-gpu`}
+                            >
                               <div className="flex flex-col gap-1">
-                                <p className="leading-relaxed text-sm">{message.text}</p>
-                                <div className={`self-end text-[9px] ${isAgent ? 'text-[#16A34A]/50' : 'text-[#64748B]/50'} font-medium`}>{message.time}</div>
+                                <p className="leading-relaxed text-sm">
+                                  {message.text}
+                                </p>
+                                <div
+                                  className={`self-end text-[9px] ${isAgent ? "text-[#16A34A]/50" : "text-[#64748B]/50"} font-medium`}
+                                >
+                                  {message.time}
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -1261,7 +1751,9 @@ export default function DashboardLayout() {
 
                 {/* Input Area - Sticky at bottom */}
                 <div className="shrink-0 border-t border-[#E5E7EB] bg-white px-6 py-3">
-                  <div className={`rounded-[20px] bg-[#F9FAFB] border border-[#E5E7EB] flex items-center gap-2 min-h-[44px] px-3 py-2 ${TRANSITION}`}>
+                  <div
+                    className={`rounded-[20px] bg-[#F9FAFB] border border-[#E5E7EB] flex items-center gap-2 min-h-[44px] px-3 py-2 ${TRANSITION}`}
+                  >
                     <textarea
                       ref={textareaRef}
                       value={messageInput}
@@ -1282,13 +1774,19 @@ export default function DashboardLayout() {
               </section>
 
               {!customerCollapsed && (
-                <section className={`${CARD} w-full h-full min-h-0 flex flex-col transition-all duration-300 ease-out ${customerPanelFading ? "opacity-80 translate-y-1" : "opacity-100 translate-y-0"} min-w-[330px] max-w-[360px]`}>
+                <section
+                  className={`${CARD} w-full h-full min-h-0 flex flex-col transition-all duration-300 ease-out ${customerPanelFading ? "opacity-80 translate-y-1" : "opacity-100 translate-y-0"} min-w-[330px] max-w-[360px]`}
+                >
                   {/* Header */}
                   <div className="flex items-start justify-between gap-3 shrink-0 px-5 py-4 border-b border-[#ECECEC]">
                     <div>
                       <p className={SECTION_HEADING}>Customer</p>
-                      <h2 className={`${CUSTOMER_NAME} mt-1`}>{activeCustomerProfile.name}</h2>
-                      <p className={`${SECONDARY} mt-2`}>{activeCustomerProfile.company}</p>
+                      <h2 className={`${CUSTOMER_NAME} mt-1`}>
+                        {activeCustomerProfile.name}
+                      </h2>
+                      <p className={`${SECONDARY} mt-2`}>
+                        {activeCustomerProfile.company}
+                      </p>
                     </div>
                     <button
                       type="button"
@@ -1306,35 +1804,80 @@ export default function DashboardLayout() {
                       <section className="space-y-3">
                         <p className={SECTION_HEADING}>Conversation Summary</p>
                         <div className="space-y-2 text-sm text-[#475569]">
-                          <p>• {(() => {
-                            const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
-                            if (/\b(price|pricing|quote|cost)\b/.test(text)) return 'Asked about pricing';
-                            if (/\b(install|installation|setup|set up)\b/.test(text)) return 'Asked about installation';
-                            if (/\b(cancel|stop service|pause service|refund|complain|complaint)\b/.test(text)) return 'Discussed cancellation';
-                            return 'General inquiry';
-                          })()}</p>
-                          <p>• {(() => {
-                            const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
-                            if (/\b(compare|competitor|alternative)\b/.test(text)) return 'Comparing options';
-                            if (/\b(buy|purchase|order|subscribe)\b/.test(text)) return 'Actively evaluating purchase';
-                            return 'Evaluating fit';
-                          })()}</p>
+                          <p>
+                            •{" "}
+                            {(() => {
+                              const text = activeMessages
+                                .map((m) => m.text)
+                                .join(" ")
+                                .toLowerCase();
+                              if (/\b(price|pricing|quote|cost)\b/.test(text))
+                                return "Asked about pricing";
+                              if (
+                                /\b(install|installation|setup|set up)\b/.test(
+                                  text,
+                                )
+                              )
+                                return "Asked about installation";
+                              if (
+                                /\b(cancel|stop service|pause service|refund|complain|complaint)\b/.test(
+                                  text,
+                                )
+                              )
+                                return "Discussed cancellation";
+                              return "General inquiry";
+                            })()}
+                          </p>
+                          <p>
+                            •{" "}
+                            {(() => {
+                              const text = activeMessages
+                                .map((m) => m.text)
+                                .join(" ")
+                                .toLowerCase();
+                              if (
+                                /\b(compare|competitor|alternative)\b/.test(
+                                  text,
+                                )
+                              )
+                                return "Comparing options";
+                              if (
+                                /\b(buy|purchase|order|subscribe)\b/.test(text)
+                              )
+                                return "Actively evaluating purchase";
+                              return "Evaluating fit";
+                            })()}
+                          </p>
                         </div>
                         <div className="h-px bg-[#E5E7EB]/60" />
                       </section>
 
                       <section className="space-y-3">
                         <p className={SECTION_HEADING}>Customer Wants</p>
-                        <p className="text-sm text-[#475569]">{(() => {
-                          const wants: string[] = [];
-                          const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
-                          if (/\b(pricing|price|quote|cost)\b/.test(text)) wants.push('Clear pricing details');
-                          if (/\b(install|installation|setup|schedule)\b/.test(text)) wants.push('Implementation timeline');
-                          if (/\b(trial|demo|free trial)\b/.test(text)) wants.push('Product trial option');
-                          if (/\b(cancel|stop service|refund)\b/.test(text)) wants.push('Retention options');
-                          if (!wants.length) wants.push('More information about the offer');
-                          return wants.join(', ');
-                        })()}</p>
+                        <p className="text-sm text-[#475569]">
+                          {(() => {
+                            const wants: string[] = [];
+                            const text = activeMessages
+                              .map((m) => m.text)
+                              .join(" ")
+                              .toLowerCase();
+                            if (/\b(pricing|price|quote|cost)\b/.test(text))
+                              wants.push("Clear pricing details");
+                            if (
+                              /\b(install|installation|setup|schedule)\b/.test(
+                                text,
+                              )
+                            )
+                              wants.push("Implementation timeline");
+                            if (/\b(trial|demo|free trial)\b/.test(text))
+                              wants.push("Product trial option");
+                            if (/\b(cancel|stop service|refund)\b/.test(text))
+                              wants.push("Retention options");
+                            if (!wants.length)
+                              wants.push("More information about the offer");
+                            return wants.join(", ");
+                          })()}
+                        </p>
                         <div className="h-px bg-[#E5E7EB]/60" />
                       </section>
 
@@ -1343,15 +1886,41 @@ export default function DashboardLayout() {
                         <div className="space-y-2 text-sm text-[#475569]">
                           {(() => {
                             if (isPersonalActive) {
-                              return <p className="text-[#64748B]">Personal contact in manual mode</p>;
+                              return (
+                                <p className="text-[#64748B]">
+                                  Personal contact in manual mode
+                                </p>
+                              );
                             }
-                            const text = activeMessages.filter((m) => m.from === 'agent').map((m) => m.text).join(' ').toLowerCase();
+                            const text = activeMessages
+                              .filter((m) => m.from === "agent")
+                              .map((m) => m.text)
+                              .join(" ")
+                              .toLowerCase();
                             const summary: string[] = [];
-                            if (/\b(pricing|price|quote|cost)\b/.test(text)) summary.push('Shared pricing details');
-                            if (/\b(install|installation|setup|schedule)\b/.test(text)) summary.push('Explained setup details');
-                            if (/\b(faq|question|help|answer|answered)\b/.test(text)) summary.push('Answered common questions');
-                            if (!summary.length) summary.push(effectiveActiveSource.startsWith('ai') ? 'AI assisting this conversation' : 'Human handling this conversation');
-                            return summary.map((item) => <p key={item}>• {item}</p>);
+                            if (/\b(pricing|price|quote|cost)\b/.test(text))
+                              summary.push("Shared pricing details");
+                            if (
+                              /\b(install|installation|setup|schedule)\b/.test(
+                                text,
+                              )
+                            )
+                              summary.push("Explained setup details");
+                            if (
+                              /\b(faq|question|help|answer|answered)\b/.test(
+                                text,
+                              )
+                            )
+                              summary.push("Answered common questions");
+                            if (!summary.length)
+                              summary.push(
+                                effectiveActiveSource.startsWith("ai")
+                                  ? "AI assisting this conversation"
+                                  : "Human handling this conversation",
+                              );
+                            return summary.map((item) => (
+                              <p key={item}>• {item}</p>
+                            ));
                           })()}
                         </div>
                         <div className="h-px bg-[#E5E7EB]/60" />
@@ -1360,50 +1929,117 @@ export default function DashboardLayout() {
                       <section className="space-y-4">
                         <div className="flex items-center justify-between gap-2">
                           <p className={SECTION_HEADING}>Intent Score</p>
-                          <p className="text-sm font-semibold text-[#475569]">{(() => {
-                            const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
-                            const buyKeywords = (text.match(/buy|purchase|order|subscribe|sign up|proceed/g) || []).length;
-                            const infoKeywords = (text.match(/price|pricing|cost|quote/g) || []).length;
-                            return `${Math.min(95, 40 + buyKeywords * 20 + infoKeywords * 10)}%`;
-                          })()}</p>
+                          <p className="text-sm font-semibold text-[#475569]">
+                            {(() => {
+                              const text = activeMessages
+                                .map((m) => m.text)
+                                .join(" ")
+                                .toLowerCase();
+                              const buyKeywords = (
+                                text.match(
+                                  /buy|purchase|order|subscribe|sign up|proceed/g,
+                                ) || []
+                              ).length;
+                              const infoKeywords = (
+                                text.match(/price|pricing|cost|quote/g) || []
+                              ).length;
+                              return `${Math.min(95, 40 + buyKeywords * 20 + infoKeywords * 10)}%`;
+                            })()}
+                          </p>
                         </div>
                         <div className="h-3 rounded-full bg-[#E5E7EB] overflow-hidden">
-                          <div className="h-full rounded-full bg-gradient-to-r from-[#22C55E] via-[#EAB308] to-[#F97316]" style={{ width: `${(() => {
-                            const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
-                            const buyKeywords = (text.match(/buy|purchase|order|subscribe|sign up|proceed/g) || []).length;
-                            const infoKeywords = (text.match(/price|pricing|cost|quote/g) || []).length;
-                            return Math.min(95, 40 + buyKeywords * 20 + infoKeywords * 10);
-                          })()}%` }} />
+                          <div
+                            className="h-full rounded-full bg-gradient-to-r from-[#22C55E] via-[#EAB308] to-[#F97316]"
+                            style={{
+                              width: `${(() => {
+                                const text = activeMessages
+                                  .map((m) => m.text)
+                                  .join(" ")
+                                  .toLowerCase();
+                                const buyKeywords = (
+                                  text.match(
+                                    /buy|purchase|order|subscribe|sign up|proceed/g,
+                                  ) || []
+                                ).length;
+                                const infoKeywords = (
+                                  text.match(/price|pricing|cost|quote/g) || []
+                                ).length;
+                                return Math.min(
+                                  95,
+                                  40 + buyKeywords * 20 + infoKeywords * 10,
+                                );
+                              })()}%`,
+                            }}
+                          />
                         </div>
-                        <p className="text-sm text-[#475569]">{(() => {
-                          const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
-                          const buyKeywords = (text.match(/buy|purchase|order|subscribe|sign up|proceed/g) || []).length;
-                          const infoKeywords = (text.match(/price|pricing|cost|quote/g) || []).length;
-                          return buyKeywords > infoKeywords ? 'High likelihood of conversion' : infoKeywords > 0 ? 'Moderate interest' : 'Needs more nurturing';
-                        })()}</p>
+                        <p className="text-sm text-[#475569]">
+                          {(() => {
+                            const text = activeMessages
+                              .map((m) => m.text)
+                              .join(" ")
+                              .toLowerCase();
+                            const buyKeywords = (
+                              text.match(
+                                /buy|purchase|order|subscribe|sign up|proceed/g,
+                              ) || []
+                            ).length;
+                            const infoKeywords = (
+                              text.match(/price|pricing|cost|quote/g) || []
+                            ).length;
+                            return buyKeywords > infoKeywords
+                              ? "High likelihood of conversion"
+                              : infoKeywords > 0
+                                ? "Moderate interest"
+                                : "Needs more nurturing";
+                          })()}
+                        </p>
                         <div className="h-px bg-[#E5E7EB]/60" />
                       </section>
 
                       <section className="space-y-3">
                         <p className={SECTION_HEADING}>Recommended Next Step</p>
                         <div className="rounded-[20px] border border-[#D1FAE5] bg-[#ECFDF5] p-4">
-                          <p className="text-sm font-semibold text-[#065F46]">{(() => {
-                            const text = activeMessages.map((m) => m.text).join(' ').toLowerCase();
-                            if (/\b(price|pricing|quote|cost)\b/.test(text)) return '📩 Offer Business Package brochure';
-                            if (/\b(install|installation|setup|schedule)\b/.test(text)) return '📅 Propose installation slots';
-                            if (/\b(cancel|stop service|refund|complain|complaint)\b/.test(text)) return '💬 Discuss retention offer';
-                            return '❓ Ask a clarifying question to move forward';
-                          })()}</p>
+                          <p className="text-sm font-semibold text-[#065F46]">
+                            {(() => {
+                              const text = activeMessages
+                                .map((m) => m.text)
+                                .join(" ")
+                                .toLowerCase();
+                              if (/\b(price|pricing|quote|cost)\b/.test(text))
+                                return "📩 Offer Business Package brochure";
+                              if (
+                                /\b(install|installation|setup|schedule)\b/.test(
+                                  text,
+                                )
+                              )
+                                return "📅 Propose installation slots";
+                              if (
+                                /\b(cancel|stop service|refund|complain|complaint)\b/.test(
+                                  text,
+                                )
+                              )
+                                return "💬 Discuss retention offer";
+                              return "❓ Ask a clarifying question to move forward";
+                            })()}
+                          </p>
                         </div>
                         <div className="h-px bg-[#E5E7EB]/60" />
                       </section>
 
                       <section className="space-y-3">
                         <p className={SECTION_HEADING}>Needs Attention</p>
-                        <p className="text-sm text-[#111827]">{(() => {
-                          const hit = activeMessages.find((m) => /discount|urgent|price drop|complain|complaint|refund/i.test(m.text));
-                          return hit ? `⚠️ ${hit.text.substring(0, 50)}...` : '✓ None detected';
-                        })()}</p>
+                        <p className="text-sm text-[#111827]">
+                          {(() => {
+                            const hit = activeMessages.find((m) =>
+                              /discount|urgent|price drop|complain|complaint|refund/i.test(
+                                m.text,
+                              ),
+                            );
+                            return hit
+                              ? `⚠️ ${hit.text.substring(0, 50)}...`
+                              : "✓ None detected";
+                          })()}
+                        </p>
                         <div className="h-px bg-[#E5E7EB]/60" />
                       </section>
 
@@ -1411,7 +2047,12 @@ export default function DashboardLayout() {
                         <p className={SECTION_HEADING}>Tags</p>
                         <div className="flex flex-wrap gap-2">
                           {activeCustomerProfile.tags.map((tag) => (
-                            <span key={tag} className="inline-flex rounded-full bg-[#F0F9FF] text-[#0369A1] px-2.5 py-1 text-xs font-medium">{tag}</span>
+                            <span
+                              key={tag}
+                              className="inline-flex rounded-full bg-[#F0F9FF] text-[#0369A1] px-2.5 py-1 text-xs font-medium"
+                            >
+                              {tag}
+                            </span>
                           ))}
                         </div>
                         <div className="h-px bg-[#E5E7EB]/60" />
@@ -1420,9 +2061,16 @@ export default function DashboardLayout() {
                       <section className="space-y-3">
                         <p className={SECTION_HEADING}>Interested Products</p>
                         <div className="flex flex-wrap gap-2">
-                          {activeCustomerProfile.interestedProducts.map((product) => (
-                            <span key={product} className="inline-flex rounded-full bg-[#F0FDF4] text-[#166534] px-2.5 py-1 text-xs font-medium">{product}</span>
-                          ))}
+                          {activeCustomerProfile.interestedProducts.map(
+                            (product) => (
+                              <span
+                                key={product}
+                                className="inline-flex rounded-full bg-[#F0FDF4] text-[#166534] px-2.5 py-1 text-xs font-medium"
+                              >
+                                {product}
+                              </span>
+                            ),
+                          )}
                         </div>
                       </section>
                     </div>
@@ -1435,8 +2083,14 @@ export default function DashboardLayout() {
             <div className={`space-y-6 ${CARD}`}>
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-sm font-medium text-[#6B7280]">Status Scheduler</p>
-                  <p className="mt-1 text-sm text-[#6B7280]">Plan and publish status posts ahead of time. Use AI to generate copy, then schedule images and captions for the week.</p>
+                  <p className="text-sm font-medium text-[#6B7280]">
+                    Status Scheduler
+                  </p>
+                  <p className="mt-1 text-sm text-[#6B7280]">
+                    Plan and publish status posts ahead of time. Use AI to
+                    generate copy, then schedule images and captions for the
+                    week.
+                  </p>
                 </div>
                 <button
                   type="button"
@@ -1451,37 +2105,60 @@ export default function DashboardLayout() {
                 <section className={CARD}>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">Scheduled posts</p>
-                      <h3 className="mt-2 text-lg font-semibold text-[#111827]">Upcoming posts</h3>
+                      <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">
+                        Scheduled posts
+                      </p>
+                      <h3 className="mt-2 text-lg font-semibold text-[#111827]">
+                        Upcoming posts
+                      </h3>
                     </div>
-                    <span className="rounded-full bg-[#F3F4F6] px-3 py-1 text-xs font-semibold text-[#6B7280]">Mock data</span>
+                    <span className="rounded-full bg-[#F3F4F6] px-3 py-1 text-xs font-semibold text-[#6B7280]">
+                      Mock data
+                    </span>
                   </div>
-                   <div className="mt-6 space-y-4">
-                     {scheduledPosts.map((post) => (
-                       <div key={post.id} className="rounded-[24px] border border-[#E5E7EB]/70 bg-[#F8FAFC]/70 p-4">
-                         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                           <div className="min-w-0">
-                             <p className="text-sm font-semibold text-[#111827]">{post.caption}</p>
-                             <p className="mt-2 text-sm text-[#6B7280]">{post.image}</p>
-                           </div>
-                           <div className="text-right text-sm text-[#6B7280]">
-                             <p className="font-semibold text-[#111827]">{post.date}</p>
-                             <p>{post.time}</p>
-                           </div>
-                         </div>
-                         <div className="mt-4 flex flex-wrap items-center gap-2 text-[13px] text-[#6B7280]">
-                           <span className="rounded-full bg-white px-3 py-1 border border-[#E5E7EB]">Scheduled</span>
-                           <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-[#16A34A]">Status</span>
-                         </div>
-                       </div>
-                     ))}
-                   </div>
-                 </section>
+                  <div className="mt-6 space-y-4">
+                    {scheduledPosts.map((post) => (
+                      <div
+                        key={post.id}
+                        className="rounded-[24px] border border-[#E5E7EB]/70 bg-[#F8FAFC]/70 p-4"
+                      >
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold text-[#111827]">
+                              {post.caption}
+                            </p>
+                            <p className="mt-2 text-sm text-[#6B7280]">
+                              {post.image}
+                            </p>
+                          </div>
+                          <div className="text-right text-sm text-[#6B7280]">
+                            <p className="font-semibold text-[#111827]">
+                              {post.date}
+                            </p>
+                            <p>{post.time}</p>
+                          </div>
+                        </div>
+                        <div className="mt-4 flex flex-wrap items-center gap-2 text-[13px] text-[#6B7280]">
+                          <span className="rounded-full bg-white px-3 py-1 border border-[#E5E7EB]">
+                            Scheduled
+                          </span>
+                          <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-[#16A34A]">
+                            Status
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
 
                 <section className={CARD}>
                   <div className="mb-6">
-                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">New status post</p>
-                    <h3 className="mt-2 text-lg font-semibold text-[#111827]">Create your post</h3>
+                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">
+                      New status post
+                    </p>
+                    <h3 className="mt-2 text-lg font-semibold text-[#111827]">
+                      Create your post
+                    </h3>
                   </div>
                   <div className="space-y-5">
                     <label className="block text-sm font-medium text-[#111827]">
@@ -1492,20 +2169,30 @@ export default function DashboardLayout() {
                         className="mt-2 w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] file:mr-4 file:rounded-full file:border-0 file:bg-[#22C55E] file:px-4 file:py-2 file:text-sm file:text-white"
                         onChange={(event) => {
                           const fileName = event.target.files?.[0]?.name;
-                          setNewPost((prev) => ({ ...prev, image: fileName ?? "" }));
+                          setNewPost((prev) => ({
+                            ...prev,
+                            image: fileName ?? "",
+                          }));
                           setImageLabel(fileName ?? "No file selected");
                         }}
                       />
-                      <p className="mt-2 text-xs text-[#6B7280]">{imageLabel}</p>
+                      <p className="mt-2 text-xs text-[#6B7280]">
+                        {imageLabel}
+                      </p>
                     </label>
                     <label className="block text-sm font-medium text-[#111827]">
                       Caption
-                        <textarea
-                          value={newPost.caption}
-                          onChange={(event) => setNewPost((prev) => ({ ...prev, caption: event.target.value }))}
-                          placeholder="Write a short caption for this status post"
-                          className="mt-2 h-32 w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
-                        />
+                      <textarea
+                        value={newPost.caption}
+                        onChange={(event) =>
+                          setNewPost((prev) => ({
+                            ...prev,
+                            caption: event.target.value,
+                          }))
+                        }
+                        placeholder="Write a short caption for this status post"
+                        className="mt-2 h-32 w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
+                      />
                     </label>
                     <div className="grid gap-4 sm:grid-cols-2">
                       <label className="block text-sm font-medium text-[#111827]">
@@ -1513,7 +2200,12 @@ export default function DashboardLayout() {
                         <input
                           type="date"
                           value={newPost.date}
-                          onChange={(event) => setNewPost((prev) => ({ ...prev, date: event.target.value }))}
+                          onChange={(event) =>
+                            setNewPost((prev) => ({
+                              ...prev,
+                              date: event.target.value,
+                            }))
+                          }
                           className={INPUT_FIELD}
                         />
                       </label>
@@ -1522,7 +2214,12 @@ export default function DashboardLayout() {
                         <input
                           type="time"
                           value={newPost.time}
-                          onChange={(event) => setNewPost((prev) => ({ ...prev, time: event.target.value }))}
+                          onChange={(event) =>
+                            setNewPost((prev) => ({
+                              ...prev,
+                              time: event.target.value,
+                            }))
+                          }
                           className={INPUT_FIELD}
                         />
                       </label>
@@ -1547,17 +2244,24 @@ export default function DashboardLayout() {
               </div>
             </div>
           )}
-            {selected === "Broadcasts" && (
-              <div className="p-6 bg-white rounded-[24px] border border-[#E5E7EB]/30 shadow-none">Sokoos Broadcasts</div>
-            )}
+          {selected === "Broadcasts" && (
+            <div className="p-6 bg-white rounded-[24px] border border-[#E5E7EB]/30 shadow-none">
+              Sokoos Broadcasts
+            </div>
+          )}
           {selected === "Customers" && (
             <div className={`space-y-6 ${CARD}`}>
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">Customers</p>
-                  <h2 className="mt-2 text-2xl font-semibold text-[#111827]">Customer management</h2>
+                  <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">
+                    Customers
+                  </p>
+                  <h2 className="mt-2 text-2xl font-semibold text-[#111827]">
+                    Customer management
+                  </h2>
                   <p className="mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl">
-                    Search and review your WhatsApp leads with easy access to contact details and customer statuses.
+                    Search and review your WhatsApp leads with easy access to
+                    contact details and customer statuses.
                   </p>
                 </div>
                 <div className="relative w-full sm:w-auto">
@@ -1565,7 +2269,7 @@ export default function DashboardLayout() {
                   <input
                     type="text"
                     value={customerSearch}
-                                       onChange={(event) => setCustomerSearch(event.target.value)}
+                    onChange={(event) => setCustomerSearch(event.target.value)}
                     placeholder="Search customers by name, phone, product or status"
                     className="w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] py-3 pl-11 pr-4 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5] sm:w-85"
                   />
@@ -1576,44 +2280,74 @@ export default function DashboardLayout() {
                 <table className="min-w-full divide-y divide-[#E5E7EB]/20 text-left">
                   <thead className="bg-[#F9FAFB]">
                     <tr>
-                      <th className="px-6 py-4 text-sm font-semibold text-[#6B7280]">Avatar</th>
-                      <th className="px-6 py-4 text-sm font-semibold text-[#6B7280]">Name</th>
-                      <th className="px-6 py-4 text-sm font-semibold text-[#6B7280]">Phone</th>
-                      <th className="px-6 py-4 text-sm font-semibold text-[#6B7280]">Lead Status</th>
-                      <th className="px-6 py-4 text-sm font-semibold text-[#6B7280]">Interested Product</th>
-                      <th className="px-6 py-4 text-sm font-semibold text-[#6B7280]">Last Interaction</th>
+                      <th className="px-6 py-4 text-sm font-semibold text-[#6B7280]">
+                        Avatar
+                      </th>
+                      <th className="px-6 py-4 text-sm font-semibold text-[#6B7280]">
+                        Name
+                      </th>
+                      <th className="px-6 py-4 text-sm font-semibold text-[#6B7280]">
+                        Phone
+                      </th>
+                      <th className="px-6 py-4 text-sm font-semibold text-[#6B7280]">
+                        Lead Status
+                      </th>
+                      <th className="px-6 py-4 text-sm font-semibold text-[#6B7280]">
+                        Interested Product
+                      </th>
+                      <th className="px-6 py-4 text-sm font-semibold text-[#6B7280]">
+                        Last Interaction
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-[#E5E7EB]/20 bg-white">
-                    {filteredCustomers.filter((customer) => !isPersonalByPhone(customer.phone)).map((customer) => (
-                      <tr key={customer.id} className="hover:bg-[#F3F4F6] transition-colors">
-                        <td className="px-6 py-4">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ECFCE7] text-sm font-semibold text-[#166534]">
-                            {customer.avatar}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <p className="font-medium text-[#111827]">{customer.name}</p>
-                        </td>
-                        <td className="px-6 py-4 text-sm text-[#6B7280]">{customer.phone}</td>
-                        <td className="px-6 py-4">
-                          <span className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
-                            customer.leadStatus === "Hot lead"
-                              ? "bg-[#FEE2E2] text-[#B91C1C]"
-                              : customer.leadStatus === "Warm lead"
-                              ? "bg-[#FEF3C7] text-[#92400E]"
-                              : "bg-[#EFF6FF] text-[#1D4ED8]"
-                          }`}>
-                            {customer.leadStatus}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 text-sm text-[#6B7280]">{customer.interestedProduct}</td>
-                        <td className="px-6 py-4 text-sm text-[#6B7280]">{customer.lastInteraction}</td>
-                      </tr>
-                    ))}
+                    {filteredCustomers
+                      .filter((customer) => !isPersonalByPhone(customer.phone))
+                      .map((customer) => (
+                        <tr
+                          key={customer.id}
+                          className="hover:bg-[#F3F4F6] transition-colors"
+                        >
+                          <td className="px-6 py-4">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ECFCE7] text-sm font-semibold text-[#166534]">
+                              {customer.avatar}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <p className="font-medium text-[#111827]">
+                              {customer.name}
+                            </p>
+                          </td>
+                          <td className="px-6 py-4 text-sm text-[#6B7280]">
+                            {customer.phone}
+                          </td>
+                          <td className="px-6 py-4">
+                            <span
+                              className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
+                                customer.leadStatus === "Hot lead"
+                                  ? "bg-[#FEE2E2] text-[#B91C1C]"
+                                  : customer.leadStatus === "Warm lead"
+                                    ? "bg-[#FEF3C7] text-[#92400E]"
+                                    : "bg-[#EFF6FF] text-[#1D4ED8]"
+                              }`}
+                            >
+                              {customer.leadStatus}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-sm text-[#6B7280]">
+                            {customer.interestedProduct}
+                          </td>
+                          <td className="px-6 py-4 text-sm text-[#6B7280]">
+                            {customer.lastInteraction}
+                          </td>
+                        </tr>
+                      ))}
                     {filteredCustomers.length === 0 && (
                       <tr>
-                        <td colSpan={6} className="px-6 py-8 text-center text-sm text-[#6B7280]">
+                        <td
+                          colSpan={6}
+                          className="px-6 py-8 text-center text-sm text-[#6B7280]"
+                        >
                           No customers match your search.
                         </td>
                       </tr>
@@ -1627,10 +2361,15 @@ export default function DashboardLayout() {
             <div className={`space-y-6 ${CARD}`}>
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">Catalog</p>
-                  <h2 className="mt-2 text-2xl font-semibold text-[#111827]">Product catalog</h2>
+                  <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">
+                    Catalog
+                  </p>
+                  <h2 className="mt-2 text-2xl font-semibold text-[#111827]">
+                    Product catalog
+                  </h2>
                   <p className="mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl">
-                    Manage your product offerings with active toggles, edit actions, and quick deletes.
+                    Manage your product offerings with active toggles, edit
+                    actions, and quick deletes.
                   </p>
                 </div>
                 <button
@@ -1643,19 +2382,28 @@ export default function DashboardLayout() {
 
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                 {products.map((product) => (
-                  <div key={product.id} className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
+                  <div
+                    key={product.id}
+                    className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm"
+                  >
                     <div className="flex items-start justify-between gap-4">
                       <div>
-                        <p className="text-sm font-medium text-[#6B7280]">{product.name}</p>
-                        <p className="mt-3 text-3xl font-semibold text-[#111827]">{product.price}</p>
+                        <p className="text-sm font-medium text-[#6B7280]">
+                          {product.name}
+                        </p>
+                        <p className="mt-3 text-3xl font-semibold text-[#111827]">
+                          {product.price}
+                        </p>
                       </div>
                       <button
                         type="button"
                         onClick={() =>
                           setProducts((current) =>
                             current.map((item) =>
-                              item.id === product.id ? { ...item, active: !item.active } : item
-                            )
+                              item.id === product.id
+                                ? { ...item, active: !item.active }
+                                : item,
+                            ),
                           )
                         }
                         className={`rounded-full px-3 py-2 text-xs font-semibold ${
@@ -1691,17 +2439,24 @@ export default function DashboardLayout() {
               <div className={CARD}>
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                   <div>
-                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">AI Assistant</p>
-                    <h2 className="mt-2 text-2xl font-semibold text-[#111827]">Customize your business AI agent</h2>
+                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">
+                      AI Assistant
+                    </p>
+                    <h2 className="mt-2 text-2xl font-semibold text-[#111827]">
+                      Customize your business AI agent
+                    </h2>
                     <p className="mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl">
-                      Manage knowledge, behavior rules, escalation and testing from one place. All settings are mocked for now.
+                      Manage knowledge, behavior rules, escalation and testing
+                      from one place. All settings are mocked for now.
                     </p>
                   </div>
                   <button
                     type="button"
                     onClick={() => setAiEnabled((value) => !value)}
                     className={`inline-flex items-center rounded-[24px] px-4 py-3 text-sm font-semibold transition ${
-                      aiEnabled ? "bg-[#22C55E] text-white" : "bg-[#E5E7EB] text-[#6B7280]"
+                      aiEnabled
+                        ? "bg-[#22C55E] text-white"
+                        : "bg-[#E5E7EB] text-[#6B7280]"
                     }`}
                   >
                     {aiEnabled ? "AI Enabled" : "AI Disabled"}
@@ -1736,59 +2491,106 @@ export default function DashboardLayout() {
                       <section className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
                         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                           <div>
-                            <p className="text-sm font-semibold text-[#111827]">Business Information</p>
-                            <p className="mt-2 text-sm text-[#6B7280]">This information helps the AI respond accurately to customer questions.</p>
+                            <p className="text-sm font-semibold text-[#111827]">
+                              Business Information
+                            </p>
+                            <p className="mt-2 text-sm text-[#6B7280]">
+                              This information helps the AI respond accurately
+                              to customer questions.
+                            </p>
                           </div>
                         </div>
                         <div className="mt-6 grid gap-4 lg:grid-cols-2">
                           <div className="space-y-4">
                             <div>
-                              <label className="text-sm font-semibold text-[#111827]">Business Name</label>
+                              <label className="text-sm font-semibold text-[#111827]">
+                                Business Name
+                              </label>
                               <input
                                 value={businessInfo.name}
-                                onChange={(event) => setBusinessInfo((prev) => ({ ...prev, name: event.target.value }))}
+                                onChange={(event) =>
+                                  setBusinessInfo((prev) => ({
+                                    ...prev,
+                                    name: event.target.value,
+                                  }))
+                                }
                                 className={INPUT_FIELD_WHITE}
                               />
                             </div>
                             <div>
-                              <label className="text-sm font-semibold text-[#111827]">Business Type</label>
+                              <label className="text-sm font-semibold text-[#111827]">
+                                Business Type
+                              </label>
                               <input
                                 value={businessInfo.type}
-                                onChange={(event) => setBusinessInfo((prev) => ({ ...prev, type: event.target.value }))}
+                                onChange={(event) =>
+                                  setBusinessInfo((prev) => ({
+                                    ...prev,
+                                    type: event.target.value,
+                                  }))
+                                }
                                 className={INPUT_FIELD_WHITE}
                               />
                             </div>
                             <div>
-                              <label className="text-sm font-semibold text-[#111827]">Business Hours</label>
+                              <label className="text-sm font-semibold text-[#111827]">
+                                Business Hours
+                              </label>
                               <input
                                 value={businessInfo.hours}
-                                onChange={(event) => setBusinessInfo((prev) => ({ ...prev, hours: event.target.value }))}
+                                onChange={(event) =>
+                                  setBusinessInfo((prev) => ({
+                                    ...prev,
+                                    hours: event.target.value,
+                                  }))
+                                }
                                 className={INPUT_FIELD_WHITE}
                               />
                             </div>
                           </div>
                           <div className="space-y-4">
                             <div>
-                              <label className="text-sm font-semibold text-[#111827]">About Us</label>
+                              <label className="text-sm font-semibold text-[#111827]">
+                                About Us
+                              </label>
                               <textarea
                                 value={businessInfo.about}
-                                onChange={(event) => setBusinessInfo((prev) => ({ ...prev, about: event.target.value }))}
+                                onChange={(event) =>
+                                  setBusinessInfo((prev) => ({
+                                    ...prev,
+                                    about: event.target.value,
+                                  }))
+                                }
                                 className="mt-2 min-h-[130px] w-full rounded-[24px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                               />
                             </div>
                             <div>
-                              <label className="text-sm font-semibold text-[#111827]">Service Areas</label>
+                              <label className="text-sm font-semibold text-[#111827]">
+                                Service Areas
+                              </label>
                               <input
                                 value={businessInfo.serviceAreas}
-                                onChange={(event) => setBusinessInfo((prev) => ({ ...prev, serviceAreas: event.target.value }))}
+                                onChange={(event) =>
+                                  setBusinessInfo((prev) => ({
+                                    ...prev,
+                                    serviceAreas: event.target.value,
+                                  }))
+                                }
                                 className={INPUT_FIELD_WHITE}
                               />
                             </div>
                             <div>
-                              <label className="text-sm font-semibold text-[#111827]">Payment Methods</label>
+                              <label className="text-sm font-semibold text-[#111827]">
+                                Payment Methods
+                              </label>
                               <input
                                 value={businessInfo.paymentMethods}
-                                onChange={(event) => setBusinessInfo((prev) => ({ ...prev, paymentMethods: event.target.value }))}
+                                onChange={(event) =>
+                                  setBusinessInfo((prev) => ({
+                                    ...prev,
+                                    paymentMethods: event.target.value,
+                                  }))
+                                }
                                 className={INPUT_FIELD_WHITE}
                               />
                             </div>
@@ -1799,15 +2601,24 @@ export default function DashboardLayout() {
                       <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                           <div>
-                            <p className="text-sm font-semibold text-[#111827]">Products & Services</p>
-                            <p className="mt-2 text-sm text-[#6B7280]">Add the plans and prices your AI assistant should know.</p>
+                            <p className="text-sm font-semibold text-[#111827]">
+                              Products & Services
+                            </p>
+                            <p className="mt-2 text-sm text-[#6B7280]">
+                              Add the plans and prices your AI assistant should
+                              know.
+                            </p>
                           </div>
                           <button
                             type="button"
                             onClick={() =>
                               setKnowledgeProducts((current) => [
                                 ...current,
-                                { id: `kp${current.length + 1}`, name: "", price: "" },
+                                {
+                                  id: `kp${current.length + 1}`,
+                                  name: "",
+                                  price: "",
+                                },
                               ])
                             }
                             className="inline-flex items-center rounded-[24px] bg-[#22C55E] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
@@ -1817,14 +2628,19 @@ export default function DashboardLayout() {
                         </div>
                         <div className="mt-6 space-y-4">
                           {knowledgeProducts.map((product) => (
-                            <div key={product.id} className="grid gap-4 lg:grid-cols-[1fr_0.6fr]">
+                            <div
+                              key={product.id}
+                              className="grid gap-4 lg:grid-cols-[1fr_0.6fr]"
+                            >
                               <input
                                 value={product.name}
                                 onChange={(event) =>
                                   setKnowledgeProducts((current) =>
                                     current.map((item) =>
-                                      item.id === product.id ? { ...item, name: event.target.value } : item
-                                    )
+                                      item.id === product.id
+                                        ? { ...item, name: event.target.value }
+                                        : item,
+                                    ),
                                   )
                                 }
                                 placeholder="Product name"
@@ -1835,8 +2651,10 @@ export default function DashboardLayout() {
                                 onChange={(event) =>
                                   setKnowledgeProducts((current) =>
                                     current.map((item) =>
-                                      item.id === product.id ? { ...item, price: event.target.value } : item
-                                    )
+                                      item.id === product.id
+                                        ? { ...item, price: event.target.value }
+                                        : item,
+                                    ),
                                   )
                                 }
                                 placeholder="Price"
@@ -1850,15 +2668,24 @@ export default function DashboardLayout() {
                       <section className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                           <div>
-                            <p className="text-sm font-semibold text-[#111827]">FAQs</p>
-                            <p className="mt-2 text-sm text-[#6B7280]">Common customer questions the assistant will use when answering.</p>
+                            <p className="text-sm font-semibold text-[#111827]">
+                              FAQs
+                            </p>
+                            <p className="mt-2 text-sm text-[#6B7280]">
+                              Common customer questions the assistant will use
+                              when answering.
+                            </p>
                           </div>
                           <button
                             type="button"
                             onClick={() =>
                               setFaqItems((current) => [
                                 ...current,
-                                { id: `faq${current.length + 1}`, question: "", answer: "" },
+                                {
+                                  id: `faq${current.length + 1}`,
+                                  question: "",
+                                  answer: "",
+                                },
                               ])
                             }
                             className="inline-flex items-center rounded-[24px] bg-[#22C55E] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
@@ -1868,30 +2695,47 @@ export default function DashboardLayout() {
                         </div>
                         <div className="mt-6 space-y-4">
                           {faqItems.map((faq) => (
-                            <div key={faq.id} className="space-y-3 rounded-[24px] bg-white p-5 shadow-sm">
+                            <div
+                              key={faq.id}
+                              className="space-y-3 rounded-[24px] bg-white p-5 shadow-sm"
+                            >
                               <div>
-                                <label className="text-sm font-semibold text-[#111827]">Question</label>
+                                <label className="text-sm font-semibold text-[#111827]">
+                                  Question
+                                </label>
                                 <input
                                   value={faq.question}
                                   onChange={(event) =>
                                     setFaqItems((current) =>
                                       current.map((item) =>
-                                        item.id === faq.id ? { ...item, question: event.target.value } : item
-                                      )
+                                        item.id === faq.id
+                                          ? {
+                                              ...item,
+                                              question: event.target.value,
+                                            }
+                                          : item,
+                                      ),
                                     )
                                   }
                                   className="mt-2 w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                                 />
                               </div>
                               <div>
-                                <label className="text-sm font-semibold text-[#111827]">Answer</label>
+                                <label className="text-sm font-semibold text-[#111827]">
+                                  Answer
+                                </label>
                                 <textarea
                                   value={faq.answer}
                                   onChange={(event) =>
                                     setFaqItems((current) =>
                                       current.map((item) =>
-                                        item.id === faq.id ? { ...item, answer: event.target.value } : item
-                                      )
+                                        item.id === faq.id
+                                          ? {
+                                              ...item,
+                                              answer: event.target.value,
+                                            }
+                                          : item,
+                                      ),
                                     )
                                   }
                                   className="mt-2 min-h-[100px] w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
@@ -1905,33 +2749,57 @@ export default function DashboardLayout() {
                       <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
                         <div className="space-y-4">
                           <div>
-                            <p className="text-sm font-semibold text-[#111827]">Policies</p>
+                            <p className="text-sm font-semibold text-[#111827]">
+                              Policies
+                            </p>
                             <p className="mt-2 text-sm text-[#6B7280]">
-                              This information is used by the AI when responding to customers.
+                              This information is used by the AI when responding
+                              to customers.
                             </p>
                           </div>
                           <div className="space-y-4">
                             <div>
-                              <label className="text-sm font-semibold text-[#111827]">Return Policy</label>
+                              <label className="text-sm font-semibold text-[#111827]">
+                                Return Policy
+                              </label>
                               <textarea
                                 value={policies.returnPolicy}
-                                onChange={(event) => setPolicies((prev) => ({ ...prev, returnPolicy: event.target.value }))}
+                                onChange={(event) =>
+                                  setPolicies((prev) => ({
+                                    ...prev,
+                                    returnPolicy: event.target.value,
+                                  }))
+                                }
                                 className="mt-2 min-h-[100px] w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                               />
                             </div>
                             <div>
-                              <label className="text-sm font-semibold text-[#111827]">Delivery Policy</label>
+                              <label className="text-sm font-semibold text-[#111827]">
+                                Delivery Policy
+                              </label>
                               <textarea
                                 value={policies.deliveryPolicy}
-                                onChange={(event) => setPolicies((prev) => ({ ...prev, deliveryPolicy: event.target.value }))}
+                                onChange={(event) =>
+                                  setPolicies((prev) => ({
+                                    ...prev,
+                                    deliveryPolicy: event.target.value,
+                                  }))
+                                }
                                 className="mt-2 min-h-[100px] w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                               />
                             </div>
                             <div>
-                              <label className="text-sm font-semibold text-[#111827]">Cancellation Policy</label>
+                              <label className="text-sm font-semibold text-[#111827]">
+                                Cancellation Policy
+                              </label>
                               <textarea
                                 value={policies.cancellationPolicy}
-                                onChange={(event) => setPolicies((prev) => ({ ...prev, cancellationPolicy: event.target.value }))}
+                                onChange={(event) =>
+                                  setPolicies((prev) => ({
+                                    ...prev,
+                                    cancellationPolicy: event.target.value,
+                                  }))
+                                }
                                 className="mt-2 min-h-[100px] w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                               />
                             </div>
@@ -1944,18 +2812,27 @@ export default function DashboardLayout() {
                   {assistantTab === "AI Settings" && (
                     <div className="space-y-6">
                       <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                        <p className="text-sm font-semibold text-[#111827]">AI Identity</p>
-                        <p className="mt-1 text-sm text-[#6B7280]">Give your assistant a name and personality.</p>
+                        <p className="text-sm font-semibold text-[#111827]">
+                          AI Identity
+                        </p>
+                        <p className="mt-1 text-sm text-[#6B7280]">
+                          Give your assistant a name and personality.
+                        </p>
                         <div className="mt-4 space-y-4">
                           <div>
-                            <label className="text-sm font-semibold text-[#111827]" htmlFor="assistant-name">
+                            <label
+                              className="text-sm font-semibold text-[#111827]"
+                              htmlFor="assistant-name"
+                            >
                               Assistant Name
                             </label>
                             <input
                               id="assistant-name"
                               type="text"
                               value={assistantName}
-                              onChange={(event) => setAssistantName(event.target.value)}
+                              onChange={(event) =>
+                                setAssistantName(event.target.value)
+                              }
                               className="mt-2 w-full rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                               placeholder="e.g., Nuru"
                             />
@@ -1964,11 +2841,18 @@ export default function DashboardLayout() {
                       </section>
 
                       <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                        <p className="text-sm font-semibold text-[#111827]">Languages</p>
-                        <p className="mt-1 text-sm text-[#6B7280]">Choose which languages your assistant uses.</p>
+                        <p className="text-sm font-semibold text-[#111827]">
+                          Languages
+                        </p>
+                        <p className="mt-1 text-sm text-[#6B7280]">
+                          Choose which languages your assistant uses.
+                        </p>
                         <div className="mt-4 grid gap-4 sm:grid-cols-2">
                           <div>
-                            <label className="text-sm font-semibold text-[#111827]" htmlFor="primary-language">
+                            <label
+                              className="text-sm font-semibold text-[#111827]"
+                              htmlFor="primary-language"
+                            >
                               Primary Language
                             </label>
                             <div className="mt-2 flex flex-wrap gap-2">
@@ -1989,7 +2873,10 @@ export default function DashboardLayout() {
                             </div>
                           </div>
                           <div>
-                            <label className="text-sm font-semibold text-[#111827]" htmlFor="secondary-language">
+                            <label
+                              className="text-sm font-semibold text-[#111827]"
+                              htmlFor="secondary-language"
+                            >
                               Secondary Language
                             </label>
                             <div className="mt-2 flex flex-wrap gap-2">
@@ -2013,11 +2900,18 @@ export default function DashboardLayout() {
                       </section>
 
                       <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                        <p className="text-sm font-semibold text-[#111827]">Tone</p>
-                        <p className="mt-1 text-sm text-[#6B7280]">Select how your assistant communicates with customers.</p>
+                        <p className="text-sm font-semibold text-[#111827]">
+                          Tone
+                        </p>
+                        <p className="mt-1 text-sm text-[#6B7280]">
+                          Select how your assistant communicates with customers.
+                        </p>
                         <div className="mt-4 space-y-3">
                           {TONES.map((option) => (
-                            <label key={option} className="flex items-center gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
+                            <label
+                              key={option}
+                              className="flex items-center gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition"
+                            >
                               <input
                                 type="radio"
                                 name="tone"
@@ -2026,42 +2920,61 @@ export default function DashboardLayout() {
                                 onChange={() => setTone(option)}
                                 className="w-4 h-4"
                               />
-                              <span className="text-sm font-semibold text-[#111827]">{option}</span>
+                              <span className="text-sm font-semibold text-[#111827]">
+                                {option}
+                              </span>
                             </label>
                           ))}
                         </div>
                       </section>
 
                       <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                        <p className="text-sm font-semibold text-[#111827]">Sales Behavior</p>
-                        <p className="mt-1 text-sm text-[#6B7280]">Configure how your assistant handles sales interactions.</p>
+                        <p className="text-sm font-semibold text-[#111827]">
+                          Sales Behavior
+                        </p>
+                        <p className="mt-1 text-sm text-[#6B7280]">
+                          Configure how your assistant handles sales
+                          interactions.
+                        </p>
                         <div className="mt-4 space-y-3">
                           <label className="flex items-center gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
                             <input
                               type="checkbox"
                               checked={upsellProducts}
-                              onChange={() => setUpsellProducts((value) => !value)}
+                              onChange={() =>
+                                setUpsellProducts((value) => !value)
+                              }
                               className="w-4 h-4"
                             />
-                            <span className="text-sm font-semibold text-[#111827]">Upsell Products</span>
+                            <span className="text-sm font-semibold text-[#111827]">
+                              Upsell Products
+                            </span>
                           </label>
                           <label className="flex items-center gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
                             <input
                               type="checkbox"
                               checked={recommendAlternatives}
-                              onChange={() => setRecommendAlternatives((value) => !value)}
+                              onChange={() =>
+                                setRecommendAlternatives((value) => !value)
+                              }
                               className="w-4 h-4"
                             />
-                            <span className="text-sm font-semibold text-[#111827]">Recommend Alternatives</span>
+                            <span className="text-sm font-semibold text-[#111827]">
+                              Recommend Alternatives
+                            </span>
                           </label>
                           <label className="flex items-center gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
                             <input
                               type="checkbox"
                               checked={closeSalesAutomatically}
-                              onChange={() => setCloseSalesAutomatically((value) => !value)}
+                              onChange={() =>
+                                setCloseSalesAutomatically((value) => !value)
+                              }
                               className="w-4 h-4"
                             />
-                            <span className="text-sm font-semibold text-[#111827]">Close Sales Automatically</span>
+                            <span className="text-sm font-semibold text-[#111827]">
+                              Close Sales Automatically
+                            </span>
                           </label>
                         </div>
                       </section>
@@ -2069,7 +2982,9 @@ export default function DashboardLayout() {
                       <div className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-5 text-sm text-[#6B7280]">
                         <p className="font-semibold text-[#111827]">Note</p>
                         <p className="mt-2">
-                          These settings control how your assistant represents your business and interacts with customers. All changes are saved automatically.
+                          These settings control how your assistant represents
+                          your business and interacts with customers. All
+                          changes are saved automatically.
                         </p>
                       </div>
                     </div>
@@ -2080,17 +2995,30 @@ export default function DashboardLayout() {
                       <section className="rounded-[24px] border border-[#E5E7EB] bg-white shadow-sm">
                         <div className="flex h-full min-h-[620px] flex-col">
                           <div className="border-b border-[#E5E7EB] p-6">
-                            <p className="text-sm font-semibold text-[#111827]">Test your assistant</p>
-                            <p className="mt-2 text-sm text-[#6B7280]">Run a mock conversation before customers interact with the AI.</p>
+                            <p className="text-sm font-semibold text-[#111827]">
+                              Test your assistant
+                            </p>
+                            <p className="mt-2 text-sm text-[#6B7280]">
+                              Run a mock conversation before customers interact
+                              with the AI.
+                            </p>
                           </div>
-                          <div ref={testAiScrollRef} className="flex-1 overflow-y-auto px-6 py-5 space-y-4 bg-[#F9FAFB]">
+                          <div
+                            ref={testAiScrollRef}
+                            className="flex-1 overflow-y-auto px-6 py-5 space-y-4 bg-[#F9FAFB]"
+                          >
                             {testAiMessages.map((message) => (
-                              <div key={message.id} className={`max-w-[90%] ${message.role === "user" ? "ml-auto text-right" : "mr-auto text-left"}`}>
-                                <div className={`inline-block rounded-[24px] px-5 py-4 text-sm shadow-sm ${
-                                  message.role === "user"
-                                    ? "bg-[#22C55E] text-white"
-                                    : "bg-white text-[#111827]"
-                                }`}>
+                              <div
+                                key={message.id}
+                                className={`max-w-[90%] ${message.role === "user" ? "ml-auto text-right" : "mr-auto text-left"}`}
+                              >
+                                <div
+                                  className={`inline-block rounded-[24px] px-5 py-4 text-sm shadow-sm ${
+                                    message.role === "user"
+                                      ? "bg-[#22C55E] text-white"
+                                      : "bg-white text-[#111827]"
+                                  }`}
+                                >
                                   <p>{message.text}</p>
                                 </div>
                                 {message.role === "ai" && message.source ? (
@@ -2103,15 +3031,23 @@ export default function DashboardLayout() {
                           </div>
                           <div className="sticky bottom-0 border-t border-[#E5E7EB] bg-white p-4">
                             <div className="space-y-3">
-                              <label className="text-sm font-semibold text-[#111827]" htmlFor="test-ai-prompt">
+                              <label
+                                className="text-sm font-semibold text-[#111827]"
+                                htmlFor="test-ai-prompt"
+                              >
                                 Message
                               </label>
                               <textarea
                                 id="test-ai-prompt"
                                 value={testAiInput}
-                                onChange={(event) => setTestAiInput(event.target.value)}
+                                onChange={(event) =>
+                                  setTestAiInput(event.target.value)
+                                }
                                 onKeyDown={(event) => {
-                                  if (event.key === "Enter" && !event.shiftKey) {
+                                  if (
+                                    event.key === "Enter" &&
+                                    !event.shiftKey
+                                  ) {
                                     event.preventDefault();
                                     sendTestAiMessage();
                                   }
@@ -2120,7 +3056,10 @@ export default function DashboardLayout() {
                                 placeholder="Type a message to the assistant..."
                               />
                               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                                <p className="text-xs text-[#6B7280]">This is a mocked experience only; no backend call is made.</p>
+                                <p className="text-xs text-[#6B7280]">
+                                  This is a mocked experience only; no backend
+                                  call is made.
+                                </p>
                                 <button
                                   type="button"
                                   onClick={sendTestAiMessage}
@@ -2135,7 +3074,9 @@ export default function DashboardLayout() {
                       </section>
 
                       <section className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
-                        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#6B7280]">Quick prompts</p>
+                        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#6B7280]">
+                          Quick prompts
+                        </p>
                         <div className="mt-4 space-y-3">
                           {TEST_AI_PROMPTS.map((prompt) => (
                             <button
@@ -2155,88 +3096,141 @@ export default function DashboardLayout() {
                   {assistantTab === "Escalation Rules" && (
                     <div className="space-y-6">
                       <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                        <p className="text-sm font-semibold text-[#111827]">Escalation Rules</p>
-                        <p className="mt-2 text-sm text-[#6B7280]">Choose which situations trigger handoff to a human representative.</p>
+                        <p className="text-sm font-semibold text-[#111827]">
+                          Escalation Rules
+                        </p>
+                        <p className="mt-2 text-sm text-[#6B7280]">
+                          Choose which situations trigger handoff to a human
+                          representative.
+                        </p>
                         <div className="mt-6 space-y-3">
                           <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
                             <input
                               type="checkbox"
                               checked={escalateComplaints}
-                              onChange={() => setEscalateComplaints((value) => !value)}
+                              onChange={() =>
+                                setEscalateComplaints((value) => !value)
+                              }
                               className="mt-1 w-4 h-4"
                             />
                             <div>
-                              <span className="text-sm font-semibold text-[#111827]">Complaints</span>
-                              <p className="mt-1 text-xs text-[#6B7280]">Detect negative sentiment and escalate immediately.</p>
+                              <span className="text-sm font-semibold text-[#111827]">
+                                Complaints
+                              </span>
+                              <p className="mt-1 text-xs text-[#6B7280]">
+                                Detect negative sentiment and escalate
+                                immediately.
+                              </p>
                             </div>
                           </label>
                           <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
                             <input
                               type="checkbox"
                               checked={escalateRefunds}
-                              onChange={() => setEscalateRefunds((value) => !value)}
+                              onChange={() =>
+                                setEscalateRefunds((value) => !value)
+                              }
                               className="mt-1 w-4 h-4"
                             />
                             <div>
-                              <span className="text-sm font-semibold text-[#111827]">Refund Requests</span>
-                              <p className="mt-1 text-xs text-[#6B7280]">Hand off all refund-related conversations to the owner.</p>
+                              <span className="text-sm font-semibold text-[#111827]">
+                                Refund Requests
+                              </span>
+                              <p className="mt-1 text-xs text-[#6B7280]">
+                                Hand off all refund-related conversations to the
+                                owner.
+                              </p>
                             </div>
                           </label>
                           <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
                             <input
                               type="checkbox"
                               checked={escalateLegalQuestions}
-                              onChange={() => setEscalateLegalQuestions((value) => !value)}
+                              onChange={() =>
+                                setEscalateLegalQuestions((value) => !value)
+                              }
                               className="mt-1 w-4 h-4"
                             />
                             <div>
-                              <span className="text-sm font-semibold text-[#111827]">Legal Questions</span>
-                              <p className="mt-1 text-xs text-[#6B7280]">Escalate any conversation involving legal matters or regulations.</p>
+                              <span className="text-sm font-semibold text-[#111827]">
+                                Legal Questions
+                              </span>
+                              <p className="mt-1 text-xs text-[#6B7280]">
+                                Escalate any conversation involving legal
+                                matters or regulations.
+                              </p>
                             </div>
                           </label>
                           <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
                             <input
                               type="checkbox"
                               checked={escalateHumanRequested}
-                              onChange={() => setEscalateHumanRequested((value) => !value)}
+                              onChange={() =>
+                                setEscalateHumanRequested((value) => !value)
+                              }
                               className="mt-1 w-4 h-4"
                             />
                             <div>
-                              <span className="text-sm font-semibold text-[#111827]">Human Requested</span>
-                              <p className="mt-1 text-xs text-[#6B7280]">Stop responding when customers explicitly ask for a person.</p>
+                              <span className="text-sm font-semibold text-[#111827]">
+                                Human Requested
+                              </span>
+                              <p className="mt-1 text-xs text-[#6B7280]">
+                                Stop responding when customers explicitly ask
+                                for a person.
+                              </p>
                             </div>
                           </label>
                           <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
                             <input
                               type="checkbox"
                               checked={escalateUnknownQuestions}
-                              onChange={() => setEscalateUnknownQuestions((value) => !value)}
+                              onChange={() =>
+                                setEscalateUnknownQuestions((value) => !value)
+                              }
                               className="mt-1 w-4 h-4"
                             />
                             <div>
-                              <span className="text-sm font-semibold text-[#111827]">Unknown Questions</span>
-                              <p className="mt-1 text-xs text-[#6B7280]">Hand off queries outside the AI's knowledge base.</p>
+                              <span className="text-sm font-semibold text-[#111827]">
+                                Unknown Questions
+                              </span>
+                              <p className="mt-1 text-xs text-[#6B7280]">
+                                Hand off queries outside the AI's knowledge
+                                base.
+                              </p>
                             </div>
                           </label>
                           <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
                             <input
                               type="checkbox"
                               checked={escalateNegotiationsAbove10k}
-                              onChange={() => setEscalateNegotiationsAbove10k((value) => !value)}
+                              onChange={() =>
+                                setEscalateNegotiationsAbove10k(
+                                  (value) => !value,
+                                )
+                              }
                               className="mt-1 w-4 h-4"
                             />
                             <div>
-                              <span className="text-sm font-semibold text-[#111827]">Negotiations Above KES 10,000</span>
-                              <p className="mt-1 text-xs text-[#6B7280]">Escalate any negotiation involving amounts above KES 10,000.</p>
+                              <span className="text-sm font-semibold text-[#111827]">
+                                Negotiations Above KES 10,000
+                              </span>
+                              <p className="mt-1 text-xs text-[#6B7280]">
+                                Escalate any negotiation involving amounts above
+                                KES 10,000.
+                              </p>
                             </div>
                           </label>
                         </div>
                       </section>
 
                       <div className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-5 text-sm text-[#6B7280]">
-                        <p className="font-semibold text-[#111827]">How escalation works</p>
+                        <p className="font-semibold text-[#111827]">
+                          How escalation works
+                        </p>
                         <p className="mt-2">
-                          When these situations occur, the AI stops responding and requests owner intervention. You'll receive a notification and can take over the conversation.
+                          When these situations occur, the AI stops responding
+                          and requests owner intervention. You'll receive a
+                          notification and can take over the conversation.
                         </p>
                       </div>
                     </div>
@@ -2245,27 +3239,44 @@ export default function DashboardLayout() {
                   {assistantTab === "Conversation Policies" && (
                     <div className="space-y-6">
                       <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                        <p className="text-sm font-semibold text-[#111827]">Business Hours</p>
-                        <p className="mt-2 text-sm text-[#6B7280]">Set the hours when your business operates.</p>
+                        <p className="text-sm font-semibold text-[#111827]">
+                          Business Hours
+                        </p>
+                        <p className="mt-2 text-sm text-[#6B7280]">
+                          Set the hours when your business operates.
+                        </p>
                         <div className="mt-4">
-                          <label className="text-sm font-semibold text-[#111827]" htmlFor="business-hours">
+                          <label
+                            className="text-sm font-semibold text-[#111827]"
+                            htmlFor="business-hours"
+                          >
                             Operating Hours
                           </label>
                           <input
                             id="business-hours"
                             type="text"
                             value={businessHours}
-                            onChange={(event) => setBusinessHours(event.target.value)}
+                            onChange={(event) =>
+                              setBusinessHours(event.target.value)
+                            }
                             className="mt-2 w-full rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                             placeholder="e.g., 8:00 AM - 6:00 PM"
                           />
-                          <p className="mt-2 text-xs text-[#6B7280]">Example: Mon–Fri 8:00 AM - 6:00 PM, Sat 9:00 AM - 2:00 PM</p>
+                          <p className="mt-2 text-xs text-[#6B7280]">
+                            Example: Mon–Fri 8:00 AM - 6:00 PM, Sat 9:00 AM -
+                            2:00 PM
+                          </p>
                         </div>
                       </section>
 
                       <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                        <p className="text-sm font-semibold text-[#111827]">Outside Business Hours</p>
-                        <p className="mt-2 text-sm text-[#6B7280]">Choose how the AI behaves when customers message outside operating hours.</p>
+                        <p className="text-sm font-semibold text-[#111827]">
+                          Outside Business Hours
+                        </p>
+                        <p className="mt-2 text-sm text-[#6B7280]">
+                          Choose how the AI behaves when customers message
+                          outside operating hours.
+                        </p>
                         <div className="mt-4 space-y-3">
                           <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
                             <input
@@ -2277,8 +3288,12 @@ export default function DashboardLayout() {
                               className="mt-1 w-4 h-4"
                             />
                             <div>
-                              <span className="text-sm font-semibold text-[#111827]">Continue AI conversations</span>
-                              <p className="mt-1 text-xs text-[#6B7280]">AI responds normally, treating it as in-hours.</p>
+                              <span className="text-sm font-semibold text-[#111827]">
+                                Continue AI conversations
+                              </span>
+                              <p className="mt-1 text-xs text-[#6B7280]">
+                                AI responds normally, treating it as in-hours.
+                              </p>
                             </div>
                           </label>
                           <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
@@ -2291,8 +3306,13 @@ export default function DashboardLayout() {
                               className="mt-1 w-4 h-4"
                             />
                             <div>
-                              <span className="text-sm font-semibold text-[#111827]">Collect customer information only</span>
-                              <p className="mt-1 text-xs text-[#6B7280]">AI gathers contact details and messages for follow-up.</p>
+                              <span className="text-sm font-semibold text-[#111827]">
+                                Collect customer information only
+                              </span>
+                              <p className="mt-1 text-xs text-[#6B7280]">
+                                AI gathers contact details and messages for
+                                follow-up.
+                              </p>
                             </div>
                           </label>
                           <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
@@ -2305,29 +3325,50 @@ export default function DashboardLayout() {
                               className="mt-1 w-4 h-4"
                             />
                             <div>
-                              <span className="text-sm font-semibold text-[#111827]">Inform customers that the business is closed</span>
-                              <p className="mt-1 text-xs text-[#6B7280]">AI informs customers of next opening time and offers to store messages.</p>
+                              <span className="text-sm font-semibold text-[#111827]">
+                                Inform customers that the business is closed
+                              </span>
+                              <p className="mt-1 text-xs text-[#6B7280]">
+                                AI informs customers of next opening time and
+                                offers to store messages.
+                              </p>
                             </div>
                           </label>
                         </div>
                       </section>
 
                       <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                        <p className="text-sm font-semibold text-[#111827]">Maximum AI Messages</p>
-                        <p className="mt-2 text-sm text-[#6B7280]">Limit how many consecutive messages the AI can send before escalating to a human.</p>
+                        <p className="text-sm font-semibold text-[#111827]">
+                          Maximum AI Messages
+                        </p>
+                        <p className="mt-2 text-sm text-[#6B7280]">
+                          Limit how many consecutive messages the AI can send
+                          before escalating to a human.
+                        </p>
                         <div className="mt-4">
                           <div className="flex items-center gap-3">
                             <input
                               type="number"
                               value={maxAiMessages}
-                              onChange={(event) => setMaxAiMessages(Math.max(1, parseInt(event.target.value) || 1))}
+                              onChange={(event) =>
+                                setMaxAiMessages(
+                                  Math.max(
+                                    1,
+                                    parseInt(event.target.value) || 1,
+                                  ),
+                                )
+                              }
                               min="1"
                               max="50"
                               className="w-20 rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                             />
-                            <span className="text-sm text-[#6B7280]">messages per conversation</span>
+                            <span className="text-sm text-[#6B7280]">
+                              messages per conversation
+                            </span>
                           </div>
-                          <p className="mt-2 text-xs text-[#6B7280]">Recommended: 8–12 messages before human escalation.</p>
+                          <p className="mt-2 text-xs text-[#6B7280]">
+                            Recommended: 8–12 messages before human escalation.
+                          </p>
                         </div>
                       </section>
 
@@ -2335,12 +3376,19 @@ export default function DashboardLayout() {
                         <div>
                           <div className="flex items-center justify-between gap-4">
                             <div>
-                              <p className="text-sm font-semibold text-[#111827]">Allow AI to Close Sales</p>
-                              <p className="mt-1 text-sm text-[#6B7280]">Let the AI send purchase confirmations and checkout links.</p>
+                              <p className="text-sm font-semibold text-[#111827]">
+                                Allow AI to Close Sales
+                              </p>
+                              <p className="mt-1 text-sm text-[#6B7280]">
+                                Let the AI send purchase confirmations and
+                                checkout links.
+                              </p>
                             </div>
                             <button
                               type="button"
-                              onClick={() => setAllowCloseSales((value) => !value)}
+                              onClick={() =>
+                                setAllowCloseSales((value) => !value)
+                              }
                               className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
                                 allowCloseSales
                                   ? "bg-[#DCFCE7] text-[#166534]"
@@ -2354,12 +3402,19 @@ export default function DashboardLayout() {
                         <div className="border-t border-[#E5E7EB] pt-4">
                           <div className="flex items-center justify-between gap-4">
                             <div>
-                              <p className="text-sm font-semibold text-[#111827]">Allow AI to Schedule Appointments</p>
-                              <p className="mt-1 text-sm text-[#6B7280]">Let the AI book consultations or service visits without human review.</p>
+                              <p className="text-sm font-semibold text-[#111827]">
+                                Allow AI to Schedule Appointments
+                              </p>
+                              <p className="mt-1 text-sm text-[#6B7280]">
+                                Let the AI book consultations or service visits
+                                without human review.
+                              </p>
                             </div>
                             <button
                               type="button"
-                              onClick={() => setAllowScheduleAppointments((value) => !value)}
+                              onClick={() =>
+                                setAllowScheduleAppointments((value) => !value)
+                              }
                               className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
                                 allowScheduleAppointments
                                   ? "bg-[#DCFCE7] text-[#166534]"
@@ -2375,7 +3430,9 @@ export default function DashboardLayout() {
                       <div className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-5 text-sm text-[#6B7280]">
                         <p className="font-semibold text-[#111827]">Note</p>
                         <p className="mt-2">
-                          These policies guide how your AI assistant handles conversations across different scenarios. All changes are automatically saved and take effect immediately.
+                          These policies guide how your AI assistant handles
+                          conversations across different scenarios. All changes
+                          are automatically saved and take effect immediately.
                         </p>
                       </div>
                     </div>
@@ -2388,25 +3445,39 @@ export default function DashboardLayout() {
             <div className={`space-y-6 ${CARD}`}>
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">Analytics</p>
-                  <h2 className="mt-2 text-2xl font-semibold text-[#111827]">Business performance overview</h2>
+                  <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">
+                    Analytics
+                  </p>
+                  <h2 className="mt-2 text-2xl font-semibold text-[#111827]">
+                    Business performance overview
+                  </h2>
                   <p className="mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl">
-                    Monitor messaging trends, lead growth, sales performance and how AI is resolving customer requests.
+                    Monitor messaging trends, lead growth, sales performance and
+                    how AI is resolving customer requests.
                   </p>
                 </div>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                 {ANALYTICS_METRICS.map((metric) => (
-                  <div key={metric.label} className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-5 shadow-sm">
-                    <p className="text-sm font-medium text-[#6B7280]">{metric.label}</p>
+                  <div
+                    key={metric.label}
+                    className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-5 shadow-sm"
+                  >
+                    <p className="text-sm font-medium text-[#6B7280]">
+                      {metric.label}
+                    </p>
                     <div className="mt-4 flex items-end justify-between gap-4">
-                      <p className="text-3xl font-semibold text-[#111827]">{metric.value}</p>
+                      <p className="text-3xl font-semibold text-[#111827]">
+                        {metric.value}
+                      </p>
                       <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#166534]">
                         {metric.delta}
                       </span>
                     </div>
-                    <p className="mt-3 text-sm text-[#6B7280]">{metric.description}</p>
+                    <p className="mt-3 text-sm text-[#6B7280]">
+                      {metric.description}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -2415,10 +3486,16 @@ export default function DashboardLayout() {
                 <section className="rounded-[24px] border border-[#E5E7EB] bg-[#FFFFFF] p-6 shadow-sm">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-[#6B7280]">Weekly messages</p>
-                      <p className="mt-2 text-sm text-[#6B7280]">Volume of incoming messages per day.</p>
+                      <p className="text-sm font-medium text-[#6B7280]">
+                        Weekly messages
+                      </p>
+                      <p className="mt-2 text-sm text-[#6B7280]">
+                        Volume of incoming messages per day.
+                      </p>
                     </div>
-                    <span className="rounded-full bg-[#F3F4F6] px-3 py-1 text-xs font-semibold text-[#6B7280]">Mock trends</span>
+                    <span className="rounded-full bg-[#F3F4F6] px-3 py-1 text-xs font-semibold text-[#6B7280]">
+                      Mock trends
+                    </span>
                   </div>
                   <div className="mt-6 space-y-4">
                     <div className="flex items-end gap-3">
@@ -2427,41 +3504,67 @@ export default function DashboardLayout() {
                         return (
                           <div key={point.label} className="flex-1 text-center">
                             <div className="mx-auto h-40 w-full max-w-12 rounded-4xl bg-[#F3F4F6] p-1">
-                              <div className="mx-auto h-full rounded-4xl bg-[#22C55E]" style={{ height: `${height}px`, width: '100%' }} />
+                              <div
+                                className="mx-auto h-full rounded-4xl bg-[#22C55E]"
+                                style={{ height: `${height}px`, width: "100%" }}
+                              />
                             </div>
-                            <p className="mt-3 text-sm text-[#6B7280]">{point.label}</p>
+                            <p className="mt-3 text-sm text-[#6B7280]">
+                              {point.label}
+                            </p>
                           </div>
                         );
                       })}
                     </div>
                     <div className="rounded-[24px] bg-[#F9FAFB] p-4 text-sm text-[#6B7280]">
-                      This chart shows weekly engagement across your WhatsApp campaign messages.
+                      This chart shows weekly engagement across your WhatsApp
+                      campaign messages.
                     </div>
                   </div>
                 </section>
 
                 <section className="space-y-6 rounded-[24px] border border-[#E5E7EB] bg-[#FFFFFF] p-6 shadow-sm">
                   <div>
-                    <p className="text-sm font-semibold text-[#111827]">Top Questions</p>
+                    <p className="text-sm font-semibold text-[#111827]">
+                      Top Questions
+                    </p>
                     <div className="mt-4 space-y-3">
-                        {TOP_QUESTIONS.map((item) => (
-                        <div key={item.question} className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
-                          <p className="font-medium text-[#111827]">{item.question}</p>
-                          <p className="mt-2 text-sm text-[#6B7280]">{item.volume} requests</p>
+                      {TOP_QUESTIONS.map((item) => (
+                        <div
+                          key={item.question}
+                          className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4"
+                        >
+                          <p className="font-medium text-[#111827]">
+                            {item.question}
+                          </p>
+                          <p className="mt-2 text-sm text-[#6B7280]">
+                            {item.volume} requests
+                          </p>
                         </div>
                       ))}
                     </div>
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-[#111827]">Popular Products</p>
+                    <p className="text-sm font-semibold text-[#111827]">
+                      Popular Products
+                    </p>
                     <div className="mt-4 space-y-3">
                       {POPULAR_PRODUCTS.map((product) => (
-                        <div key={product.name} className="flex items-center justify-between rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+                        <div
+                          key={product.name}
+                          className="flex items-center justify-between rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4"
+                        >
                           <div>
-                            <p className="font-medium text-[#111827]">{product.name}</p>
-                            <p className="text-sm text-[#6B7280]">Top choice for new customers</p>
+                            <p className="font-medium text-[#111827]">
+                              {product.name}
+                            </p>
+                            <p className="text-sm text-[#6B7280]">
+                              Top choice for new customers
+                            </p>
                           </div>
-                          <span className="rounded-full bg-[#E0F2FE] px-3 py-1 text-xs font-semibold text-[#0C4A6E]">{product.sales} sold</span>
+                          <span className="rounded-full bg-[#E0F2FE] px-3 py-1 text-xs font-semibold text-[#0C4A6E]">
+                            {product.sales} sold
+                          </span>
                         </div>
                       ))}
                     </div>
@@ -2475,42 +3578,72 @@ export default function DashboardLayout() {
               <div className={`${CARD}`}>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">Settings</p>
-                    <h2 className="mt-2 text-2xl font-semibold text-[#111827]">Business Profile</h2>
-                    <p className="mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl">This information is used by the AI assistant when communicating with customers.</p>
+                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">
+                      Settings
+                    </p>
+                    <h2 className="mt-2 text-2xl font-semibold text-[#111827]">
+                      Business Profile
+                    </h2>
+                    <p className="mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl">
+                      This information is used by the AI assistant when
+                      communicating with customers.
+                    </p>
                   </div>
                 </div>
               </div>
 
               <div className="grid gap-6 lg:grid-cols-2">
                 <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                  <p className="text-sm font-semibold text-[#111827]">Business Details</p>
+                  <p className="text-sm font-semibold text-[#111827]">
+                    Business Details
+                  </p>
                   <div className="mt-4 space-y-4">
                     <div>
-                      <label className="text-sm font-semibold text-[#111827]">Business Name</label>
+                      <label className="text-sm font-semibold text-[#111827]">
+                        Business Name
+                      </label>
                       <input
                         type="text"
                         value={businessProfile.name}
-                        onChange={(e) => setBusinessProfile((s) => ({ ...s, name: e.target.value }))}
+                        onChange={(e) =>
+                          setBusinessProfile((s) => ({
+                            ...s,
+                            name: e.target.value,
+                          }))
+                        }
                         className="mt-2 w-full rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="e.g., Sokoos Internet"
                       />
                     </div>
                     <div>
-                      <label className="text-sm font-semibold text-[#111827]">Industry</label>
+                      <label className="text-sm font-semibold text-[#111827]">
+                        Industry
+                      </label>
                       <input
                         type="text"
                         value={businessProfile.industry}
-                        onChange={(e) => setBusinessProfile((s) => ({ ...s, industry: e.target.value }))}
+                        onChange={(e) =>
+                          setBusinessProfile((s) => ({
+                            ...s,
+                            industry: e.target.value,
+                          }))
+                        }
                         className="mt-2 w-full rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="e.g., Telecom & Connectivity"
                       />
                     </div>
                     <div>
-                      <label className="text-sm font-semibold text-[#111827]">Description</label>
+                      <label className="text-sm font-semibold text-[#111827]">
+                        Description
+                      </label>
                       <textarea
                         value={businessProfile.description}
-                        onChange={(e) => setBusinessProfile((s) => ({ ...s, description: e.target.value }))}
+                        onChange={(e) =>
+                          setBusinessProfile((s) => ({
+                            ...s,
+                            description: e.target.value,
+                          }))
+                        }
                         className="mt-2 w-full rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="What does your business do?"
                         rows={4}
@@ -2520,34 +3653,57 @@ export default function DashboardLayout() {
                 </section>
 
                 <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                  <p className="text-sm font-semibold text-[#111827]">Contact Information</p>
+                  <p className="text-sm font-semibold text-[#111827]">
+                    Contact Information
+                  </p>
                   <div className="mt-4 space-y-4">
                     <div>
-                      <label className="text-sm font-semibold text-[#111827]">Phone</label>
+                      <label className="text-sm font-semibold text-[#111827]">
+                        Phone
+                      </label>
                       <input
                         type="tel"
                         value={businessProfile.phone}
-                        onChange={(e) => setBusinessProfile((s) => ({ ...s, phone: e.target.value }))}
+                        onChange={(e) =>
+                          setBusinessProfile((s) => ({
+                            ...s,
+                            phone: e.target.value,
+                          }))
+                        }
                         className="mt-2 w-full rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="e.g., +254 20 3949 0101"
                       />
                     </div>
                     <div>
-                      <label className="text-sm font-semibold text-[#111827]">Email</label>
+                      <label className="text-sm font-semibold text-[#111827]">
+                        Email
+                      </label>
                       <input
                         type="email"
                         value={businessProfile.email}
-                        onChange={(e) => setBusinessProfile((s) => ({ ...s, email: e.target.value }))}
+                        onChange={(e) =>
+                          setBusinessProfile((s) => ({
+                            ...s,
+                            email: e.target.value,
+                          }))
+                        }
                         className="mt-2 w-full rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="e.g., support@sokoos.co.ke"
                       />
                     </div>
                     <div>
-                      <label className="text-sm font-semibold text-[#111827]">Location</label>
+                      <label className="text-sm font-semibold text-[#111827]">
+                        Location
+                      </label>
                       <input
                         type="text"
                         value={businessProfile.location}
-                        onChange={(e) => setBusinessProfile((s) => ({ ...s, location: e.target.value }))}
+                        onChange={(e) =>
+                          setBusinessProfile((s) => ({
+                            ...s,
+                            location: e.target.value,
+                          }))
+                        }
                         className="mt-2 w-full rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="e.g., Nairobi, Kenya"
                       />
@@ -2558,24 +3714,40 @@ export default function DashboardLayout() {
 
               <div className="grid gap-6 lg:grid-cols-2">
                 <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                  <p className="text-sm font-semibold text-[#111827]">Operations</p>
+                  <p className="text-sm font-semibold text-[#111827]">
+                    Operations
+                  </p>
                   <div className="mt-4 space-y-4">
                     <div>
-                      <label className="text-sm font-semibold text-[#111827]">Business Hours</label>
+                      <label className="text-sm font-semibold text-[#111827]">
+                        Business Hours
+                      </label>
                       <input
                         type="text"
                         value={businessProfile.businessHours}
-                        onChange={(e) => setBusinessProfile((s) => ({ ...s, businessHours: e.target.value }))}
+                        onChange={(e) =>
+                          setBusinessProfile((s) => ({
+                            ...s,
+                            businessHours: e.target.value,
+                          }))
+                        }
                         className="mt-2 w-full rounded-[24px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="e.g., Mon–Fri, 8:00 AM - 6:00 PM"
                       />
                     </div>
                     <div>
-                      <label className="text-sm font-semibold text-[#111827]">Service Areas</label>
+                      <label className="text-sm font-semibold text-[#111827]">
+                        Service Areas
+                      </label>
                       <input
                         type="text"
                         value={businessProfile.serviceAreas}
-                        onChange={(e) => setBusinessProfile((s) => ({ ...s, serviceAreas: e.target.value }))}
+                        onChange={(e) =>
+                          setBusinessProfile((s) => ({
+                            ...s,
+                            serviceAreas: e.target.value,
+                          }))
+                        }
                         className="mt-2 w-full rounded-[24px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="e.g., Nairobi, Kiambu, Thika"
                       />
@@ -2584,43 +3756,66 @@ export default function DashboardLayout() {
                 </section>
 
                 <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                  <p className="text-sm font-semibold text-[#111827]">Payment Methods</p>
+                  <p className="text-sm font-semibold text-[#111827]">
+                    Payment Methods
+                  </p>
                   <div className="mt-4 space-y-3">
                     <label className="flex items-center gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
                       <input
                         type="checkbox"
                         checked={businessProfile.paymentMethods.mPesa}
-                        onChange={() => setBusinessProfile((s) => ({
-                          ...s,
-                          paymentMethods: { ...s.paymentMethods, mPesa: !s.paymentMethods.mPesa },
-                        }))}
+                        onChange={() =>
+                          setBusinessProfile((s) => ({
+                            ...s,
+                            paymentMethods: {
+                              ...s.paymentMethods,
+                              mPesa: !s.paymentMethods.mPesa,
+                            },
+                          }))
+                        }
                         className="w-4 h-4"
                       />
-                      <span className="text-sm font-semibold text-[#111827]">M-Pesa</span>
+                      <span className="text-sm font-semibold text-[#111827]">
+                        M-Pesa
+                      </span>
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
                       <input
                         type="checkbox"
                         checked={businessProfile.paymentMethods.cash}
-                        onChange={() => setBusinessProfile((s) => ({
-                          ...s,
-                          paymentMethods: { ...s.paymentMethods, cash: !s.paymentMethods.cash },
-                        }))}
+                        onChange={() =>
+                          setBusinessProfile((s) => ({
+                            ...s,
+                            paymentMethods: {
+                              ...s.paymentMethods,
+                              cash: !s.paymentMethods.cash,
+                            },
+                          }))
+                        }
                         className="w-4 h-4"
                       />
-                      <span className="text-sm font-semibold text-[#111827]">Cash</span>
+                      <span className="text-sm font-semibold text-[#111827]">
+                        Cash
+                      </span>
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
                       <input
                         type="checkbox"
                         checked={businessProfile.paymentMethods.bankTransfer}
-                        onChange={() => setBusinessProfile((s) => ({
-                          ...s,
-                          paymentMethods: { ...s.paymentMethods, bankTransfer: !s.paymentMethods.bankTransfer },
-                        }))}
+                        onChange={() =>
+                          setBusinessProfile((s) => ({
+                            ...s,
+                            paymentMethods: {
+                              ...s.paymentMethods,
+                              bankTransfer: !s.paymentMethods.bankTransfer,
+                            },
+                          }))
+                        }
                         className="w-4 h-4"
                       />
-                      <span className="text-sm font-semibold text-[#111827]">Bank Transfer</span>
+                      <span className="text-sm font-semibold text-[#111827]">
+                        Bank Transfer
+                      </span>
                     </label>
                   </div>
                 </section>
@@ -2629,26 +3824,46 @@ export default function DashboardLayout() {
               <div className={`${CARD}`}>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">Settings</p>
-                    <h2 className="mt-2 text-2xl font-semibold text-[#111827]">Personal Contacts</h2>
-                    <p className="mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl">Manage personal contacts the business owner may need quick access to.</p>
+                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">
+                      Settings
+                    </p>
+                    <h2 className="mt-2 text-2xl font-semibold text-[#111827]">
+                      Personal Contacts
+                    </h2>
+                    <p className="mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl">
+                      Manage personal contacts the business owner may need quick
+                      access to.
+                    </p>
                   </div>
                 </div>
               </div>
 
               <div className="grid gap-6 lg:grid-cols-[1.4fr_0.6fr]">
                 <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                  <p className="text-sm font-semibold text-[#111827]">Contacts</p>
-                  <p className="mt-1 text-sm text-[#6B7280]">Card view of personal contacts stored for quick reference.</p>
+                  <p className="text-sm font-semibold text-[#111827]">
+                    Contacts
+                  </p>
+                  <p className="mt-1 text-sm text-[#6B7280]">
+                    Card view of personal contacts stored for quick reference.
+                  </p>
                   <div className="mt-4 grid gap-4 sm:grid-cols-2">
                     {personalContacts.map((pc) => (
-                      <div key={pc.id} className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+                      <div
+                        key={pc.id}
+                        className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4"
+                      >
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="text-lg font-semibold text-[#111827]">{pc.name}</p>
-                            <p className="mt-1 text-sm text-[#6B7280]">{pc.relationship}</p>
+                            <p className="text-lg font-semibold text-[#111827]">
+                              {pc.name}
+                            </p>
+                            <p className="mt-1 text-sm text-[#6B7280]">
+                              {pc.relationship}
+                            </p>
                           </div>
-                          <div className="text-sm text-[#111827]">{pc.phone}</div>
+                          <div className="text-sm text-[#111827]">
+                            {pc.phone}
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -2656,35 +3871,57 @@ export default function DashboardLayout() {
                 </section>
 
                 <aside className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
-                  <p className="text-sm font-semibold text-[#111827]">Add Contact</p>
-                  <p className="mt-1 text-sm text-[#6B7280]">Add a personal contact for quick access.</p>
+                  <p className="text-sm font-semibold text-[#111827]">
+                    Add Contact
+                  </p>
+                  <p className="mt-1 text-sm text-[#6B7280]">
+                    Add a personal contact for quick access.
+                  </p>
                   <div className="mt-4 space-y-3">
                     <div>
-                      <label className="text-sm font-semibold text-[#111827]">Name</label>
+                      <label className="text-sm font-semibold text-[#111827]">
+                        Name
+                      </label>
                       <input
                         type="text"
                         value={newContact.name}
-                        onChange={(e) => setNewContact((s) => ({ ...s, name: e.target.value }))}
+                        onChange={(e) =>
+                          setNewContact((s) => ({ ...s, name: e.target.value }))
+                        }
                         className="mt-2 w-full rounded-[24px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="e.g., Mary Wanjiku"
                       />
                     </div>
                     <div>
-                      <label className="text-sm font-semibold text-[#111827]">Relationship</label>
+                      <label className="text-sm font-semibold text-[#111827]">
+                        Relationship
+                      </label>
                       <input
                         type="text"
                         value={newContact.relationship}
-                        onChange={(e) => setNewContact((s) => ({ ...s, relationship: e.target.value }))}
+                        onChange={(e) =>
+                          setNewContact((s) => ({
+                            ...s,
+                            relationship: e.target.value,
+                          }))
+                        }
                         className="mt-2 w-full rounded-[24px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="e.g., Wife, Supplier"
                       />
                     </div>
                     <div>
-                      <label className="text-sm font-semibold text-[#111827]">Phone Number</label>
+                      <label className="text-sm font-semibold text-[#111827]">
+                        Phone Number
+                      </label>
                       <input
                         type="tel"
                         value={newContact.phone}
-                        onChange={(e) => setNewContact((s) => ({ ...s, phone: e.target.value }))}
+                        onChange={(e) =>
+                          setNewContact((s) => ({
+                            ...s,
+                            phone: e.target.value,
+                          }))
+                        }
                         className="mt-2 w-full rounded-[24px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
                         placeholder="e.g., +254712345678"
                       />
