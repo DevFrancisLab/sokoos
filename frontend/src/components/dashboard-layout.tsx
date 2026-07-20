@@ -1177,12 +1177,14 @@ export default function DashboardLayout() {
                     </p>
 
                     <h1 className="mt-3 text-4xl font-bold text-[#111827]">
-                      Good morning, Francis 👋
-Your AI Employee is already at work.
+                      Good morning, Francis 👋 Your AI Employee is already at
+                      work.
                     </h1>
 
                     <p className="mt-3 max-w-3xl text-lg text-[#64748B] leading-8">
-                      Your AI is responding to customers, qualifying leads, booking appointments and following up automatically. Here's how your business is growing today.
+                      Your AI is responding to customers, qualifying leads,
+                      booking appointments and following up automatically.
+                      Here's how your business is growing today.
                     </p>
 
                     <div className="mt-8 flex flex-wrap gap-3">
