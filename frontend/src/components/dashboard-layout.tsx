@@ -475,7 +475,7 @@ const INBOX_CONVERSATIONS = [
 
 const formatConversationTime = (time: string | undefined) => time || "Unknown";
 
-const INBOX_TAB_ITEMS = ["All", "AI", "You", "Needs Attention"] as const;
+const INBOX_TAB_ITEMS = ["All", "AI Active", "Human", "Needs Reply"] as const;
 
 const INBOX_MESSAGES = {
   c1: [
@@ -731,6 +731,7 @@ export default function DashboardLayout() {
   const [customerSearch, setCustomerSearch] = useState("");
   const [activeTab, setActiveTab] =
     useState<(typeof INBOX_TAB_ITEMS)[number]>("All");
+  const [summaryGenerated, setSummaryGenerated] = useState(false);
 
   const activeConversationData = INBOX_CONVERSATIONS.find(
     (item) => item.id === activeConversation,
@@ -953,13 +954,13 @@ export default function DashboardLayout() {
       case "ai_handling":
         return {
           emoji: "🤖",
-          label: "AI Handling",
+          label: "AI Active",
           bg: "bg-[#ECFDF5]",
           text: "text-[#059669]",
         };
       case "ai_handled":
         return {
-          emoji: "✓",
+          emoji: "✅",
           label: "AI Resolved",
           bg: "bg-[#F0FDF4]",
           text: "text-[#166534]",
@@ -967,7 +968,7 @@ export default function DashboardLayout() {
       case "needs_attention":
         return {
           emoji: "🔴",
-          label: "Needs You",
+          label: "Needs Reply",
           bg: "bg-[#FEF2F2]",
           text: "text-[#B91C1C]",
         };
@@ -975,7 +976,7 @@ export default function DashboardLayout() {
       default:
         return {
           emoji: "👤",
-          label: "You",
+          label: "Human",
           bg: "bg-[#EFF6FF]",
           text: "text-[#1E3A8A]",
         };
@@ -1663,13 +1664,13 @@ export default function DashboardLayout() {
                     {INBOX_CONVERSATIONS.filter((conversation) => {
                       const src =
                         sourceOverrides[conversation.id] ?? conversation.source;
-                      if (activeTab === "Needs Attention") {
+                      if (activeTab === "Needs Reply") {
                         return src === "needs_attention";
                       }
-                      if (activeTab === "AI") {
-                        return String(src).startsWith("ai");
+                      if (activeTab === "AI Active") {
+                        return src === "ai_handling";
                       }
-                      if (activeTab === "You") {
+                      if (activeTab === "Human") {
                         return src === "owner";
                       }
                       return true;
@@ -1703,7 +1704,7 @@ export default function DashboardLayout() {
                             onClick={() =>
                               setActiveConversation(conversation.id)
                             }
-                            className={`w-full overflow-hidden rounded-[20px] px-3 py-1.5 min-h-[76px] text-left ${TRANSITION} transform-gpu flex flex-col gap-1.5 ${
+                            className={`w-full overflow-hidden rounded-[20px] px-3 py-1.5 min-h-[76px] text-left ${TRANSITION} transform-gpu flex flex-col gap-2 ${
                               active
                                 ? "bg-[#F6FFFA] border border-[#D1EECF] ring-1 ring-[#22C55E]/20 shadow-sm"
                                 : "bg-white border border-transparent hover:bg-[#FBFFF8] hover:shadow-[0_10px_30px_rgba(15,23,42,0.06)] hover:-translate-y-0.5"
@@ -1735,7 +1736,14 @@ export default function DashboardLayout() {
                                   )}
                                 </div>
                               </div>
-                              <div className="flex-shrink-0">
+                              <div className="flex items-center gap-2 flex-shrink-0">
+                                {conversation.badge > 0 ? (
+                                  <span
+                                    className={`inline-flex min-w-[18px] h-4 items-center justify-center rounded-full bg-[#22C55E] text-white text-[10px] font-semibold transform-gpu transition duration-200 ease-out`}
+                                  >
+                                    {conversation.badge}
+                                  </span>
+                                ) : null}
                                 <span
                                   className={`${TIME_LABEL} whitespace-nowrap text-xs text-[#94A3B8]`}
                                 >
@@ -1744,8 +1752,8 @@ export default function DashboardLayout() {
                               </div>
                             </div>
 
-                            {/* Badge Row: Status badge + Unread badge */}
-                            <div className="flex items-center gap-1.5 min-w-0">
+                            {/* Badge Row: Status badge */}
+                            <div className="min-w-0">
                               {(() => {
                                 const badge = getConversationStatusBadge(
                                   effectiveSource,
@@ -1759,18 +1767,11 @@ export default function DashboardLayout() {
                                   </span>
                                 );
                               })()}
-                              <div className="ml-auto flex-shrink-0">
-                                {conversation.badge > 0 ? (
-                                  <span
-                                    className={`inline-flex min-w-[18px] h-4 items-center justify-center rounded-full bg-[#22C55E] text-white text-[10px] font-semibold transform-gpu transition duration-200 ease-out`}
-                                  >
-                                    {conversation.badge}
-                                  </span>
-                                ) : null}
-                              </div>
                             </div>
+
                             <p
-                              className={`min-w-0 truncate ${MESSAGE_PREVIEW} ${SECONDARY}`}
+                              className={`${MESSAGE_PREVIEW} ${SECONDARY} min-w-0 truncate`}
+                              title={conversation.message}
                             >
                               {conversation.message}
                             </p>
@@ -1796,7 +1797,10 @@ export default function DashboardLayout() {
                             )?.name
                           }
                         </h2>
-                        <div className="mt-1 flex items-center gap-2">
+                        <p className="text-sm text-[#64748B] truncate">
+                          {activeConversationData?.phone ?? "Unknown phone"}
+                        </p>
+                        <div className="mt-2 flex items-center gap-2">
                           {(() => {
                             const badge = getConversationStatusBadge(
                               effectiveActiveSource,
@@ -1846,19 +1850,12 @@ export default function DashboardLayout() {
                         )}
                       </div>
                     </div>
-                    <p className="text-[11px] text-[#94A3B8]">
-                      {isPersonalActive
-                        ? "AI disabled for this contact"
-                        : activeConversationData?.message
-                          ? `Last activity • ${formatConversationTime(activeConversationData?.time)}`
-                          : "Waiting for activity"}
-                    </p>
                   </div>
                 </div>
 
                 {/* Messages Area - Scrollable, flex-end aligned */}
                 <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar px-6 py-3 flex flex-col justify-end">
-                  <div className="space-y-2 flex flex-col">
+                  <div className="space-y-3 flex flex-col">
                     {activeMessages.map((message, index) => {
                       const originalWasAi = String(
                         activeConversationData?.source,
@@ -1899,18 +1896,18 @@ export default function DashboardLayout() {
                             className={`flex ${isAgent ? "justify-start" : "justify-end"}`}
                           >
                             <div
-                              className={`rounded-[20px] px-3 py-2 text-sm break-words max-w-[70%] ${
+                              className={`rounded-[24px] px-3 py-2 text-sm break-words max-w-[70%] ${
                                 isAgent
                                   ? "bg-[#F0FDF4] text-[#166534] border border-[#DCFCE7]"
                                   : "bg-white text-[#111827] border border-[#E5E7EB]"
                               } ${TRANSITION_FAST} transition-shadow transform-gpu`}
                             >
-                              <div className="flex flex-col gap-1">
+                              <div className="flex flex-col gap-1.5">
                                 <p className="leading-relaxed text-sm">
                                   {message.text}
                                 </p>
                                 <div
-                                  className={`self-end text-[9px] ${isAgent ? "text-[#16A34A]/50" : "text-[#64748B]/50"} font-medium`}
+                                  className={`self-end text-[10px] ${isAgent ? "text-[#16A34A]/40" : "text-[#64748B]/40"} font-normal`}
                                 >
                                   {message.time}
                                 </div>
@@ -1974,136 +1971,178 @@ export default function DashboardLayout() {
                   </div>
 
                   <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar px-5 py-4">
-                    <div className="space-y-6">
-                      <section className="space-y-3">
-                        <p className={SECTION_HEADING}>Conversation Summary</p>
-                        <div className="space-y-2 text-sm text-[#475569]">
-                          <p>
-                            •{" "}
+                    {summaryGenerated ? (
+                      <div className="space-y-6">
+                        <section className="space-y-3">
+                          <p className={SECTION_HEADING}>Conversation Summary</p>
+                          <div className="space-y-2 text-sm text-[#475569]">
+                            <p>
+                              • {(() => {
+                                const text = activeMessages
+                                  .map((m) => m.text)
+                                  .join(" ")
+                                  .toLowerCase();
+                                if (/\b(price|pricing|quote|cost)\b/.test(text))
+                                  return "Asked about pricing";
+                                if (
+                                  /\b(install|installation|setup|set up)\b/.test(
+                                    text,
+                                  )
+                                )
+                                  return "Asked about installation";
+                                if (
+                                  /\b(cancel|stop service|pause service|refund|complain|complaint)\b/.test(
+                                    text,
+                                  )
+                                )
+                                  return "Discussed cancellation";
+                                return "General inquiry";
+                              })()}
+                            </p>
+                            <p>
+                              • {(() => {
+                                const text = activeMessages
+                                  .map((m) => m.text)
+                                  .join(" ")
+                                  .toLowerCase();
+                                if (
+                                  /\b(compare|competitor|alternative)\b/.test(
+                                    text,
+                                  )
+                                )
+                                  return "Comparing options";
+                                if (
+                                  /\b(buy|purchase|order|subscribe)\b/.test(text)
+                                )
+                                  return "Actively evaluating purchase";
+                                return "Evaluating fit";
+                              })()}
+                            </p>
+                          </div>
+                          <div className="h-px bg-[#E5E7EB]/60" />
+                        </section>
+
+                        <section className="space-y-3">
+                          <p className={SECTION_HEADING}>Customer Wants</p>
+                          <p className="text-sm text-[#475569]">
                             {(() => {
+                              const wants: string[] = [];
                               const text = activeMessages
                                 .map((m) => m.text)
                                 .join(" ")
                                 .toLowerCase();
-                              if (/\b(price|pricing|quote|cost)\b/.test(text))
-                                return "Asked about pricing";
+                              if (/\b(pricing|price|quote|cost)\b/.test(text))
+                                wants.push("Clear pricing details");
                               if (
-                                /\b(install|installation|setup|set up)\b/.test(
+                                /\b(install|installation|setup|schedule)\b/.test(
                                   text,
                                 )
                               )
-                                return "Asked about installation";
-                              if (
-                                /\b(cancel|stop service|pause service|refund|complain|complaint)\b/.test(
-                                  text,
-                                )
-                              )
-                                return "Discussed cancellation";
-                              return "General inquiry";
+                                wants.push("Implementation timeline");
+                              if (/\b(trial|demo|free trial)\b/.test(text))
+                                wants.push("Product trial option");
+                              if (/\b(cancel|stop service|refund)\b/.test(text))
+                                wants.push("Retention options");
+                              if (!wants.length)
+                                wants.push("More information about the offer");
+                              return wants.join(", ");
                             })()}
                           </p>
-                          <p>
-                            •{" "}
+                          <div className="h-px bg-[#E5E7EB]/60" />
+                        </section>
+
+                        <section className="space-y-3">
+                          <p className={SECTION_HEADING}>AI Summary</p>
+                          <div className="space-y-2 text-sm text-[#475569]">
                             {(() => {
+                              if (isPersonalActive) {
+                                return (
+                                  <p className="text-[#64748B]">
+                                    Personal contact in manual mode
+                                  </p>
+                                );
+                              }
                               const text = activeMessages
+                                .filter((m) => m.from === "agent")
                                 .map((m) => m.text)
                                 .join(" ")
                                 .toLowerCase();
+                              const summary: string[] = [];
+                              if (/\b(pricing|price|quote|cost)\b/.test(text))
+                                summary.push("Shared pricing details");
                               if (
-                                /\b(compare|competitor|alternative)\b/.test(
+                                /\b(install|installation|setup|schedule)\b/.test(
                                   text,
                                 )
                               )
-                                return "Comparing options";
+                                summary.push("Explained setup details");
                               if (
-                                /\b(buy|purchase|order|subscribe)\b/.test(text)
+                                /\b(faq|question|help|answer|answered)\b/.test(
+                                  text,
+                                )
                               )
-                                return "Actively evaluating purchase";
-                              return "Evaluating fit";
+                                summary.push("Answered common questions");
+                              if (!summary.length)
+                                summary.push(
+                                  effectiveActiveSource.startsWith("ai")
+                                    ? "AI assisting this conversation"
+                                    : "Human handling this conversation",
+                                );
+                              return summary.map((item) => (
+                                <p key={item}>• {item}</p>
+                              ));
                             })()}
-                          </p>
-                        </div>
-                        <div className="h-px bg-[#E5E7EB]/60" />
-                      </section>
+                          </div>
+                          <div className="h-px bg-[#E5E7EB]/60" />
+                        </section>
 
-                      <section className="space-y-3">
-                        <p className={SECTION_HEADING}>Customer Wants</p>
-                        <p className="text-sm text-[#475569]">
-                          {(() => {
-                            const wants: string[] = [];
-                            const text = activeMessages
-                              .map((m) => m.text)
-                              .join(" ")
-                              .toLowerCase();
-                            if (/\b(pricing|price|quote|cost)\b/.test(text))
-                              wants.push("Clear pricing details");
-                            if (
-                              /\b(install|installation|setup|schedule)\b/.test(
-                                text,
-                              )
-                            )
-                              wants.push("Implementation timeline");
-                            if (/\b(trial|demo|free trial)\b/.test(text))
-                              wants.push("Product trial option");
-                            if (/\b(cancel|stop service|refund)\b/.test(text))
-                              wants.push("Retention options");
-                            if (!wants.length)
-                              wants.push("More information about the offer");
-                            return wants.join(", ");
-                          })()}
-                        </p>
-                        <div className="h-px bg-[#E5E7EB]/60" />
-                      </section>
-
-                      <section className="space-y-3">
-                        <p className={SECTION_HEADING}>AI Summary</p>
-                        <div className="space-y-2 text-sm text-[#475569]">
-                          {(() => {
-                            if (isPersonalActive) {
-                              return (
-                                <p className="text-[#64748B]">
-                                  Personal contact in manual mode
-                                </p>
-                              );
-                            }
-                            const text = activeMessages
-                              .filter((m) => m.from === "agent")
-                              .map((m) => m.text)
-                              .join(" ")
-                              .toLowerCase();
-                            const summary: string[] = [];
-                            if (/\b(pricing|price|quote|cost)\b/.test(text))
-                              summary.push("Shared pricing details");
-                            if (
-                              /\b(install|installation|setup|schedule)\b/.test(
-                                text,
-                              )
-                            )
-                              summary.push("Explained setup details");
-                            if (
-                              /\b(faq|question|help|answer|answered)\b/.test(
-                                text,
-                              )
-                            )
-                              summary.push("Answered common questions");
-                            if (!summary.length)
-                              summary.push(
-                                effectiveActiveSource.startsWith("ai")
-                                  ? "AI assisting this conversation"
-                                  : "Human handling this conversation",
-                              );
-                            return summary.map((item) => (
-                              <p key={item}>• {item}</p>
-                            ));
-                          })()}
-                        </div>
-                        <div className="h-px bg-[#E5E7EB]/60" />
-                      </section>
-
-                      <section className="space-y-4">
-                        <div className="flex items-center justify-between gap-2">
-                          <p className={SECTION_HEADING}>Intent Score</p>
-                          <p className="text-sm font-semibold text-[#475569]">
+                        <section className="space-y-4">
+                          <div className="flex items-center justify-between gap-2">
+                            <p className={SECTION_HEADING}>Intent Score</p>
+                            <p className="text-sm font-semibold text-[#475569]">
+                              {(() => {
+                                const text = activeMessages
+                                  .map((m) => m.text)
+                                  .join(" ")
+                                  .toLowerCase();
+                                const buyKeywords = (
+                                  text.match(
+                                    /buy|purchase|order|subscribe|sign up|proceed/g,
+                                  ) || []
+                                ).length;
+                                const infoKeywords = (
+                                  text.match(/price|pricing|cost|quote/g) || []
+                                ).length;
+                                return `${Math.min(95, 40 + buyKeywords * 20 + infoKeywords * 10)}%`;
+                              })()}
+                            </p>
+                          </div>
+                          <div className="h-3 rounded-full bg-[#E5E7EB] overflow-hidden">
+                            <div
+                              className="h-full rounded-full bg-gradient-to-r from-[#22C55E] via-[#EAB308] to-[#F97316]"
+                              style={{
+                                width: `${(() => {
+                                  const text = activeMessages
+                                    .map((m) => m.text)
+                                    .join(" ")
+                                    .toLowerCase();
+                                  const buyKeywords = (
+                                    text.match(
+                                      /buy|purchase|order|subscribe|sign up|proceed/g,
+                                    ) || []
+                                  ).length;
+                                  const infoKeywords = (
+                                    text.match(/price|pricing|cost|quote/g) || []
+                                  ).length;
+                                  return Math.min(
+                                    95,
+                                    40 + buyKeywords * 20 + infoKeywords * 10,
+                                  );
+                                })()}%`,
+                              }}
+                            />
+                          </div>
+                          <p className="text-sm text-[#475569]">
                             {(() => {
                               const text = activeMessages
                                 .map((m) => m.text)
@@ -2117,137 +2156,118 @@ export default function DashboardLayout() {
                               const infoKeywords = (
                                 text.match(/price|pricing|cost|quote/g) || []
                               ).length;
-                              return `${Math.min(95, 40 + buyKeywords * 20 + infoKeywords * 10)}%`;
+                              return buyKeywords > infoKeywords
+                                ? "High likelihood of conversion"
+                                : infoKeywords > 0
+                                  ? "Moderate interest"
+                                  : "Needs more nurturing";
                             })()}
                           </p>
-                        </div>
-                        <div className="h-3 rounded-full bg-[#E5E7EB] overflow-hidden">
-                          <div
-                            className="h-full rounded-full bg-gradient-to-r from-[#22C55E] via-[#EAB308] to-[#F97316]"
-                            style={{
-                              width: `${(() => {
+                          <div className="h-px bg-[#E5E7EB]/60" />
+                        </section>
+
+                        <section className="space-y-3">
+                          <p className={SECTION_HEADING}>Recommended Next Step</p>
+                          <div className="rounded-[20px] border border-[#D1FAE5] bg-[#ECFDF5] p-4">
+                            <p className="text-sm font-semibold text-[#065F46]">
+                              {(() => {
                                 const text = activeMessages
                                   .map((m) => m.text)
                                   .join(" ")
                                   .toLowerCase();
-                                const buyKeywords = (
-                                  text.match(
-                                    /buy|purchase|order|subscribe|sign up|proceed/g,
-                                  ) || []
-                                ).length;
-                                const infoKeywords = (
-                                  text.match(/price|pricing|cost|quote/g) || []
-                                ).length;
-                                return Math.min(
-                                  95,
-                                  40 + buyKeywords * 20 + infoKeywords * 10,
-                                );
-                              })()}%`,
-                            }}
-                          />
-                        </div>
-                        <p className="text-sm text-[#475569]">
-                          {(() => {
-                            const text = activeMessages
-                              .map((m) => m.text)
-                              .join(" ")
-                              .toLowerCase();
-                            const buyKeywords = (
-                              text.match(
-                                /buy|purchase|order|subscribe|sign up|proceed/g,
-                              ) || []
-                            ).length;
-                            const infoKeywords = (
-                              text.match(/price|pricing|cost|quote/g) || []
-                            ).length;
-                            return buyKeywords > infoKeywords
-                              ? "High likelihood of conversion"
-                              : infoKeywords > 0
-                                ? "Moderate interest"
-                                : "Needs more nurturing";
-                          })()}
-                        </p>
-                        <div className="h-px bg-[#E5E7EB]/60" />
-                      </section>
+                                if (/\b(price|pricing|quote|cost)\b/.test(text))
+                                  return "📩 Offer Business Package brochure";
+                                if (
+                                  /\b(install|installation|setup|schedule)\b/.test(
+                                    text,
+                                  )
+                                )
+                                  return "📅 Propose installation slots";
+                                if (
+                                  /\b(cancel|stop service|refund|complain|complaint)\b/.test(
+                                    text,
+                                  )
+                                )
+                                  return "💬 Discuss retention offer";
+                                return "❓ Ask a clarifying question to move forward";
+                              })()}
+                            </p>
+                          </div>
+                          <div className="h-px bg-[#E5E7EB]/60" />
+                        </section>
 
-                      <section className="space-y-3">
-                        <p className={SECTION_HEADING}>Recommended Next Step</p>
-                        <div className="rounded-[20px] border border-[#D1FAE5] bg-[#ECFDF5] p-4">
-                          <p className="text-sm font-semibold text-[#065F46]">
+                        <section className="space-y-3">
+                          <p className={SECTION_HEADING}>Needs Attention</p>
+                          <p className="text-sm text-[#111827]">
                             {(() => {
-                              const text = activeMessages
-                                .map((m) => m.text)
-                                .join(" ")
-                                .toLowerCase();
-                              if (/\b(price|pricing|quote|cost)\b/.test(text))
-                                return "📩 Offer Business Package brochure";
-                              if (
-                                /\b(install|installation|setup|schedule)\b/.test(
-                                  text,
-                                )
-                              )
-                                return "📅 Propose installation slots";
-                              if (
-                                /\b(cancel|stop service|refund|complain|complaint)\b/.test(
-                                  text,
-                                )
-                              )
-                                return "💬 Discuss retention offer";
-                              return "❓ Ask a clarifying question to move forward";
+                              const hit = activeMessages.find((m) =>
+                                /discount|urgent|price drop|complain|complaint|refund/i.test(
+                                  m.text,
+                                ),
+                              );
+                              return hit
+                                ? `⚠️ ${hit.text.substring(0, 50)}...`
+                                : "✓ None detected";
                             })()}
                           </p>
-                        </div>
-                        <div className="h-px bg-[#E5E7EB]/60" />
-                      </section>
+                          <div className="h-px bg-[#E5E7EB]/60" />
+                        </section>
 
-                      <section className="space-y-3">
-                        <p className={SECTION_HEADING}>Needs Attention</p>
-                        <p className="text-sm text-[#111827]">
-                          {(() => {
-                            const hit = activeMessages.find((m) =>
-                              /discount|urgent|price drop|complain|complaint|refund/i.test(
-                                m.text,
-                              ),
-                            );
-                            return hit
-                              ? `⚠️ ${hit.text.substring(0, 50)}...`
-                              : "✓ None detected";
-                          })()}
-                        </p>
-                        <div className="h-px bg-[#E5E7EB]/60" />
-                      </section>
-
-                      <section className="space-y-3">
-                        <p className={SECTION_HEADING}>Tags</p>
-                        <div className="flex flex-wrap gap-2">
-                          {activeCustomerProfile.tags.map((tag) => (
-                            <span
-                              key={tag}
-                              className="inline-flex rounded-full bg-[#F0F9FF] text-[#0369A1] px-2.5 py-1 text-xs font-medium"
-                            >
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                        <div className="h-px bg-[#E5E7EB]/60" />
-                      </section>
-
-                      <section className="space-y-3">
-                        <p className={SECTION_HEADING}>Interested Products</p>
-                        <div className="flex flex-wrap gap-2">
-                          {activeCustomerProfile.interestedProducts.map(
-                            (product) => (
+                        <section className="space-y-3">
+                          <p className={SECTION_HEADING}>Tags</p>
+                          <div className="flex flex-wrap gap-2">
+                            {activeCustomerProfile.tags.map((tag) => (
                               <span
-                                key={product}
-                                className="inline-flex rounded-full bg-[#F0FDF4] text-[#166534] px-2.5 py-1 text-xs font-medium"
+                                key={tag}
+                                className="inline-flex rounded-full bg-[#F0F9FF] text-[#0369A1] px-2.5 py-1 text-xs font-medium"
                               >
-                                {product}
+                                {tag}
                               </span>
-                            ),
-                          )}
+                            ))}
+                          </div>
+                          <div className="h-px bg-[#E5E7EB]/60" />
+                        </section>
+
+                        <section className="space-y-3">
+                          <p className={SECTION_HEADING}>Interested Products</p>
+                          <div className="flex flex-wrap gap-2">
+                            {activeCustomerProfile.interestedProducts.map(
+                              (product) => (
+                                <span
+                                  key={product}
+                                  className="inline-flex rounded-full bg-[#F0FDF4] text-[#166534] px-2.5 py-1 text-xs font-medium"
+                                >
+                                  {product}
+                                </span>
+                              ),
+                            )}
+                          </div>
+                        </section>
+                      </div>
+                    ) : (
+                      <div className="flex h-full min-h-[200px] flex-col items-center justify-center text-center gap-4">
+                        <div className="space-y-3">
+                          <p className={SECTION_HEADING}>✨ AI Insights</p>
+                          <h3 className="text-xl font-semibold text-[#111827]">
+                            Generate an AI summary to view:
+                          </h3>
+                          <div className="space-y-2 text-sm text-[#475569]">
+                            <p>• Conversation Summary</p>
+                            <p>• Customer Intent</p>
+                            <p>• Buying Signals</p>
+                            <p>• Suggested Reply</p>
+                            <p>• Recommended Next Action</p>
+                          </div>
                         </div>
-                      </section>
-                    </div>
+                        <button
+                          type="button"
+                          onClick={() => setSummaryGenerated(true)}
+                          className="inline-flex items-center justify-center rounded-[24px] bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"
+                        >
+                          Generate AI Summary
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </section>
               )}
