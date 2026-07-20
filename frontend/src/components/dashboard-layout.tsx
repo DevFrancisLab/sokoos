@@ -13,6 +13,8 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
+  ChevronUp,
+  ChevronDown,
   Search,
   MessageCircle,
   Clock,
@@ -79,10 +81,10 @@ const STAT_CARDS = [
 ];
 
 // Micro-interaction tokens
-const TRANSITION = "transition duration-200 ease";
-const TRANSITION_FAST = "transition duration-150 ease";
+const TRANSITION = "transition-all duration-200 ease-out";
+const TRANSITION_FAST = "transition-all duration-150 ease-out";
 const INTERACTION =
-  "transition duration-150 ease-out transform hover:-translate-y-0.5 active:scale-95";
+  "transition-all duration-150 ease-out transform-gpu hover:-translate-y-0.5 active:scale-[0.98]";
 
 // Unified dashboard design system (global tokens)
 // - Radius: 20px for cards/inputs/buttons
@@ -741,6 +743,17 @@ export default function DashboardLayout() {
     CUSTOMER_PROFILES.c1;
   const activeMessages =
     INBOX_MESSAGES[activeConversation as keyof typeof INBOX_MESSAGES] ?? [];
+
+  const inboxCounts = {
+    All: INBOX_CONVERSATIONS.length,
+    "AI Active": INBOX_CONVERSATIONS.filter(
+      (item) => item.source === "ai_handling",
+    ).length,
+    Human: INBOX_CONVERSATIONS.filter((item) => item.source === "owner").length,
+    "Needs Reply": INBOX_CONVERSATIONS.filter(
+      (item) => item.source === "needs_attention",
+    ).length,
+  } as const;
   const [sourceOverrides, setSourceOverrides] = useState<
     Record<string, string>
   >({});
@@ -1632,31 +1645,36 @@ export default function DashboardLayout() {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-2 overflow-x-hidden px-5 py-2 flex-nowrap">
+                <div className="flex items-center gap-3 overflow-x-auto px-5 py-2 flex-nowrap custom-scrollbar">
                   {INBOX_TAB_ITEMS.map((tab) => (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab)}
-                      className={`whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold transition duration-200 flex-shrink-0 ${TRANSITION} ${
+                      className={`whitespace-nowrap rounded-full px-4 py-1 text-xs transform flex-shrink-0 ${TRANSITION} ${
                         activeTab === tab
-                          ? "bg-[#22C55E] text-white"
-                          : "bg-[#F3F4F6] text-[#64748B] hover:bg-[#ECFDF5] hover:text-[#065F46] hover:-translate-y-0.5"
-                      }`}
+                          ? "bg-[#22C55E] text-white font-medium shadow-sm"
+                          : "bg-[#F3F4F6] text-[#475569] font-medium"
+                      } hover:shadow-sm active:scale-[0.98]`}
                     >
-                      {tab}
+                      <span className="inline-flex items-center gap-2">
+                        <span>{tab}</span>
+                        <span className="inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-white px-2 text-[11px] font-semibold text-[#475569] shadow-sm">
+                          {inboxCounts[tab]}
+                        </span>
+                      </span>
                     </button>
                   ))}
                 </div>
                 <div className="flex min-h-0 flex-1 flex-col px-5 py-2 gap-2">
-                  <div className="h-[42px] rounded-[20px] bg-[#F9FAFB] px-3 shadow-none ring-1 ring-[#ECECEC] transition duration-150 ease-out focus-within:ring-2 focus-within:ring-[#22C55E] flex items-center">
-                    <div className="flex items-center gap-3 w-full text-[#94A3B8]">
+                  <div className="rounded-[20px] bg-[#F9FAFB] px-4 py-2.5 shadow-none ring-1 ring-[#ECECEC] transition duration-150 ease-out focus-within:ring-2 focus-within:ring-[#22C55E] focus-within:border-[#22C55E] border border-[#E5E7EB]">
+                    <div className="flex h-[44px] items-center gap-3 w-full text-[#94A3B8]">
                       <Search className="h-4 w-4 flex-shrink-0" />
                       <input
                         type="search"
                         placeholder="Search conversations"
                         value={searchQuery}
                         onChange={(event) => setSearchQuery(event.target.value)}
-                        className={`w-full bg-transparent text-sm text-[#111827] placeholder:text-[#CBD5E1] placeholder:font-regular outline-none ${TRANSITION_FAST}`}
+                        className={`w-full h-full bg-transparent text-sm text-[#111827] placeholder:text-[#94A3B8] placeholder:font-regular outline-none ${TRANSITION_FAST}`}
                       />
                     </div>
                   </div>
@@ -1704,29 +1722,29 @@ export default function DashboardLayout() {
                             onClick={() =>
                               setActiveConversation(conversation.id)
                             }
-                            className={`w-full overflow-hidden rounded-[20px] px-3 py-1.5 min-h-[76px] text-left ${TRANSITION} transform-gpu flex flex-col gap-2 ${
+                            className={`w-full overflow-hidden rounded-[20px] px-5 py-3 min-h-[92px] text-left ${TRANSITION} transform-gpu active:scale-[0.98] flex flex-col gap-4 ${
                               active
-                                ? "bg-[#F6FFFA] border border-[#D1EECF] ring-1 ring-[#22C55E]/20 shadow-sm"
+                                ? "bg-[#F3FDF7] border border-[#22C55E]/20 ring-1 ring-[#22C55E]/20 shadow-[0_12px_36px_rgba(15,23,42,0.08)]"
                                 : "bg-white border border-transparent hover:bg-[#FBFFF8] hover:shadow-[0_10px_30px_rgba(15,23,42,0.06)] hover:-translate-y-0.5"
                             }`}
                           >
                             {/* Header: Avatar + Name + Time */}
                             <div className="flex items-center justify-between gap-3">
-                              <div className="flex items-center gap-2 min-w-0 flex-1">
-                                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#E5E7EB] to-[#D1D5DB] text-sm font-semibold text-[#64748B]">
+                              <div className="flex items-center gap-3 min-w-0 flex-1">
+                                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#E5E7EB] to-[#D1D5DB] text-sm font-semibold text-[#64748B]">
                                   {conversation.avatar}
                                 </div>
-                                <div className="min-w-0 flex-1">
+                                <div className="min-w-0 flex-1 space-y-1">
                                   {conversation.isSaved && conversation.name ? (
                                     <p
-                                      className={`${BODY_MEDIUM} truncate`}
+                                      className="text-[16px] font-semibold truncate"
                                       title={conversation.name}
                                     >
                                       {conversation.name}
                                     </p>
                                   ) : (
                                     <p
-                                      className={`${BODY_MEDIUM} truncate`}
+                                      className="text-[16px] font-semibold truncate"
                                       title={
                                         conversation.phone ?? "Unknown Customer"
                                       }
@@ -1736,16 +1754,16 @@ export default function DashboardLayout() {
                                   )}
                                 </div>
                               </div>
-                              <div className="flex items-center gap-2 flex-shrink-0">
+                              <div className="flex items-start gap-2 flex-shrink-0">
                                 {conversation.badge > 0 ? (
                                   <span
-                                    className={`inline-flex min-w-[18px] h-4 items-center justify-center rounded-full bg-[#22C55E] text-white text-[10px] font-semibold transform-gpu transition duration-200 ease-out`}
+                                    className={`inline-flex min-w-[18px] h-4 items-center justify-center rounded-full bg-[#22C55E] text-white text-[10px] font-semibold transform-gpu transition duration-200 ease-out px-2`}
                                   >
                                     {conversation.badge}
                                   </span>
                                 ) : null}
                                 <span
-                                  className={`${TIME_LABEL} whitespace-nowrap text-xs text-[#94A3B8]`}
+                                  className={`${TIME_LABEL} whitespace-nowrap text-[11px] text-[#94A3B8]`}
                                 >
                                   {formatConversationTime(conversation.time)}
                                 </span>
@@ -1761,7 +1779,7 @@ export default function DashboardLayout() {
                                 );
                                 return (
                                   <span
-                                    className={`${STATUS_CHIP} ${badge.bg} ${badge.text}`}
+                                    className={`${STATUS_CHIP} ${badge.bg} ${badge.text} text-xs px-2 py-1`}
                                   >
                                     {badge.emoji} {badge.label}
                                   </span>
@@ -1770,7 +1788,7 @@ export default function DashboardLayout() {
                             </div>
 
                             <p
-                              className={`${MESSAGE_PREVIEW} ${SECONDARY} min-w-0 truncate`}
+                              className={`${SECONDARY} text-[14px] leading-5 min-w-0 truncate`}
                               title={conversation.message}
                             >
                               {conversation.message}
@@ -1786,8 +1804,8 @@ export default function DashboardLayout() {
                 className={`${CARD} w-full h-full min-h-0 flex flex-col min-w-0`}
               >
                 {/* Header - Fixed */}
-                <div className="border-b border-[#ECECEC] px-6 py-3 flex-shrink-0">
-                  <div className="flex flex-col gap-2">
+                <div className="border-b border-[#ECECEC] px-6 py-4 mb-2 flex-shrink-0">
+                  <div className="flex flex-col gap-3">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0 flex-1">
                         <h2 className={`${CUSTOMER_NAME} truncate`}>
@@ -1797,23 +1815,31 @@ export default function DashboardLayout() {
                             )?.name
                           }
                         </h2>
-                        <p className="text-sm text-[#64748B] truncate">
-                          {activeConversationData?.phone ?? "Unknown phone"}
-                        </p>
-                        <div className="mt-2 flex items-center gap-2">
+                        <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-[#64748B]">
+                          <span className="truncate">
+                            {activeConversationData?.phone ?? "Unknown phone"}
+                          </span>
+                          <span className="text-[#94A3B8]">•</span>
                           {(() => {
                             const badge = getConversationStatusBadge(
                               effectiveActiveSource,
                               isPersonalActive,
                             );
                             return (
-                              <span
-                                className={`${STATUS_CHIP} font-semibold ${badge.bg} ${badge.text}`}
-                              >
+                              <span className={`${badge.bg} ${badge.text} rounded-full px-2 py-0.5 text-[11px] font-semibold inline-flex items-center gap-1`}> 
                                 {badge.emoji} {badge.label}
                               </span>
                             );
                           })()}
+                        </div>
+                        <div className="mt-2 flex flex-col gap-2 text-sm text-[#475569]">
+                          <div className="flex items-center justify-between gap-3">
+                            <span className="font-medium text-[#111827]">AI Confidence</span>
+                            <span className="text-[#16A34A] font-semibold">94%</span>
+                          </div>
+                          <div className="h-2 w-full overflow-hidden rounded-full bg-[#DCFCE7]">
+                            <div className="h-full w-[94%] rounded-full bg-[#22C55E]" />
+                          </div>
                         </div>
                       </div>
                       <div className="flex items-center gap-2 flex-shrink-0">
@@ -1821,21 +1847,19 @@ export default function DashboardLayout() {
                           type="button"
                           onClick={toggleAiForActive}
                           disabled={isPersonalActive}
-                          aria-label="Toggle conversation mode"
-                          className={`inline-flex h-8 rounded-full border px-3 text-[10px] font-semibold transition ${TRANSITION_FAST} items-center justify-center ${
+                          aria-label="AI Assist"
+                          className={`inline-flex h-9 rounded-full border px-3.5 text-[10px] font-semibold items-center justify-center ${TRANSITION_FAST} active:scale-[0.98] ${
                             isPersonalActive
-                              ? "border-[#E5E7EB] bg-[#F9FAFB] text-[#9CA3AF] cursor-not-allowed"
-                              : "border-[#22C55E] bg-[#ECFDF5] text-[#166534] hover:bg-[#DCFCE7]"
+                              ? "border-[#E5E7EB] bg-white text-[#9CA3AF] cursor-not-allowed"
+                              : "border-[#22C55E] bg-white text-[#166534] hover:bg-[#ECFDF5]"
                           }`}
                           title={
                             isPersonalActive
                               ? "Cannot toggle mode for personal contacts"
-                              : "Toggle conversation mode"
+                              : "AI Assist"
                           }
                         >
-                          {effectiveActiveSource.startsWith("ai")
-                            ? "Human"
-                            : "AI"}
+                          ✨ AI Assist
                         </button>
                         {customerCollapsed && (
                           <button
@@ -1854,8 +1878,8 @@ export default function DashboardLayout() {
                 </div>
 
                 {/* Messages Area - Scrollable, flex-end aligned */}
-                <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar px-6 py-3 flex flex-col justify-end">
-                  <div className="space-y-3 flex flex-col">
+                <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar px-6 pt-3 pb-6 flex flex-col justify-end bg-[#F8FCF7]">
+                  <div className="space-y-5 flex flex-col">
                     {activeMessages.map((message, index) => {
                       const originalWasAi = String(
                         activeConversationData?.source,
@@ -1896,18 +1920,18 @@ export default function DashboardLayout() {
                             className={`flex ${isAgent ? "justify-start" : "justify-end"}`}
                           >
                             <div
-                              className={`rounded-[24px] px-3 py-2 text-sm break-words max-w-[70%] ${
+                              className={`rounded-[28px] px-3 py-2 text-sm break-words max-w-[70%] ${
                                 isAgent
                                   ? "bg-[#F0FDF4] text-[#166534] border border-[#DCFCE7]"
                                   : "bg-white text-[#111827] border border-[#E5E7EB]"
                               } ${TRANSITION_FAST} transition-shadow transform-gpu`}
                             >
-                              <div className="flex flex-col gap-1.5">
+                              <div className="flex flex-col gap-2">
                                 <p className="leading-relaxed text-sm">
                                   {message.text}
                                 </p>
                                 <div
-                                  className={`self-end text-[10px] ${isAgent ? "text-[#16A34A]/40" : "text-[#64748B]/40"} font-normal`}
+                                  className={`self-end text-[9px] ${isAgent ? "text-[#16A34A]/30" : "text-[#64748B]/30"} font-normal`}
                                 >
                                   {message.time}
                                 </div>
@@ -1923,22 +1947,22 @@ export default function DashboardLayout() {
                 {/* Input Area - Sticky at bottom */}
                 <div className="shrink-0 border-t border-[#E5E7EB] bg-white px-6 py-3">
                   <div
-                    className={`rounded-[20px] bg-[#F9FAFB] border border-[#E5E7EB] flex items-center gap-2 min-h-[44px] px-3 py-2 ${TRANSITION}`}
+                    className={`rounded-[20px] bg-[#F9FAFB] border border-[#E5E7EB] flex items-center gap-3 min-h-[52px] px-4 ${TRANSITION}`}
                   >
                     <textarea
                       ref={textareaRef}
                       value={messageInput}
                       onChange={(event) => setMessageInput(event.target.value)}
-                      placeholder={`Message...`}
+                      placeholder="Type a message..."
                       className={`min-w-0 flex-1 resize-none overflow-y-auto overflow-x-hidden custom-scrollbar bg-transparent text-sm leading-5 text-[#111827] outline-none placeholder:text-[#CBD5E1] placeholder:font-regular ${TRANSITION_FAST}`}
                       rows={1}
-                      style={{ minHeight: 32, maxHeight: 80 }}
+                      style={{ minHeight: 40, maxHeight: 80 }}
                     />
                     <button
                       type="button"
-                      className="inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white transition duration-150 ease-out transform hover:bg-[#16A34A] active:scale-95"
+                      className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white transition duration-150 ease-out transform hover:bg-[#16A34A] active:scale-95"
                     >
-                      <Send className="h-3.5 w-3.5" />
+                      <Send className="h-4 w-4" />
                     </button>
                   </div>
                 </div>
@@ -1951,13 +1975,18 @@ export default function DashboardLayout() {
                   {/* Header */}
                   <div className="flex items-start justify-between gap-3 shrink-0 px-5 py-4 border-b border-[#ECECEC]">
                     <div>
-                      <p className={SECTION_HEADING}>Customer</p>
                       <h2 className={`${CUSTOMER_NAME} mt-1`}>
                         {activeCustomerProfile.name}
                       </h2>
                       <p className={`${SECONDARY} mt-2`}>
                         {activeCustomerProfile.company}
                       </p>
+                      <div className="mt-3 inline-flex items-center gap-2">
+                        <span className="inline-flex h-3.5 w-3.5 shrink-0 rounded-full bg-[#22C55E]" />
+                        <span className={`${STATUS_CHIP} bg-[#ECFDF5] text-[#166534] border border-[#D1FAE5]`}>
+                          {activeCustomerProfile.leadStatus}
+                        </span>
+                      </div>
                     </div>
                     <button
                       type="button"
@@ -1970,7 +1999,7 @@ export default function DashboardLayout() {
                     </button>
                   </div>
 
-                  <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar px-5 py-4">
+                  <div className="flex-1 min-h-0 px-5 py-4">
                     {summaryGenerated ? (
                       <div className="space-y-6">
                         <section className="space-y-3">
@@ -2245,27 +2274,43 @@ export default function DashboardLayout() {
                         </section>
                       </div>
                     ) : (
-                      <div className="flex h-full min-h-[200px] flex-col items-center justify-center text-center gap-4">
-                        <div className="space-y-3">
+                      <div className="flex h-full min-h-[240px] flex-col items-center justify-center gap-6 px-4">
+                        <div className="w-full max-w-[320px] space-y-3 text-left">
                           <p className={SECTION_HEADING}>✨ AI Insights</p>
                           <h3 className="text-xl font-semibold text-[#111827]">
-                            Generate an AI summary to view:
+                            Understand this conversation instantly.
                           </h3>
-                          <div className="space-y-2 text-sm text-[#475569]">
-                            <p>• Conversation Summary</p>
-                            <p>• Customer Intent</p>
-                            <p>• Buying Signals</p>
-                            <p>• Suggested Reply</p>
-                            <p>• Recommended Next Action</p>
-                          </div>
+                          <p className="text-sm text-[#475569] leading-6">
+                            Generate a summary to reveal:
+                          </p>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() => setSummaryGenerated(true)}
-                          className="inline-flex items-center justify-center rounded-[24px] bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"
-                        >
-                          Generate AI Summary
-                        </button>
+                        <div className="flex w-full max-w-[320px] flex-col gap-3 text-sm text-[#475569] text-left">
+                          {[
+                            "Conversation Summary",
+                            "Customer Intent",
+                            "Buying Signals",
+                            "Suggested Reply",
+                            "Recommended Next Action",
+                          ].map((item) => (
+                            <div key={item} className="flex items-start gap-3">
+                              <span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#DCFCE7] text-[#166534] text-[10px] font-semibold">
+                                ✓
+                              </span>
+                              <span className="font-semibold text-[#111827]">
+                                {item}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="mt-6 w-full max-w-[320px]">
+                          <button
+                            type="button"
+                            onClick={() => setSummaryGenerated(true)}
+                            className="w-full rounded-[24px] bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-200 ease-out hover:bg-[#16A34A] hover:shadow-sm active:scale-[0.98]"
+                          >
+                            Generate AI Summary
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>
