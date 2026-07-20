@@ -24,19 +24,52 @@ import {
   Send,
   Bot,
   Plus,
+  Globe,
 } from "lucide-react";
 import AiSummaryCard from "./ui/ai-summary-card";
 
-const NAV_ITEMS: { label: string; href: string; Icon: any }[] = [
-  { label: "Home", href: "/dashboard", Icon: Home },
-  { label: "Inbox", href: "/dashboard/inbox", Icon: Inbox },
-  { label: "Status Scheduler", href: "/dashboard/status", Icon: Calendar },
-  { label: "Broadcasts", href: "/dashboard/broadcasts", Icon: Megaphone },
-  { label: "Customers", href: "/dashboard/customers", Icon: Users },
-  { label: "Catalog", href: "/dashboard/catalog", Icon: Box },
-  { label: "AI Assistant", href: "/dashboard/assistant", Icon: Cpu },
-  { label: "Analytics", href: "/dashboard/analytics", Icon: Activity },
-  { label: "Settings", href: "/dashboard/settings", Icon: Settings },
+const NAV_ITEMS = [
+  {
+    label: "Home",
+    href: "/dashboard",
+    Icon: Home,
+  },
+
+  {
+    label: "Inbox",
+    href: "/dashboard/inbox",
+    Icon: Inbox,
+  },
+
+  {
+    label: "AI Employee",
+    href: "/dashboard/ai",
+    Icon: Cpu,
+  },
+
+  {
+    label: "Growth Pages",
+    href: "/dashboard/pages",
+    Icon: Globe,
+  },
+
+  {
+    label: "Marketing",
+    href: "/dashboard/marketing",
+    Icon: Megaphone,
+  },
+
+  {
+    label: "Analytics",
+    href: "/dashboard/analytics",
+    Icon: Activity,
+  },
+
+  {
+    label: "Settings",
+    href: "/dashboard/settings",
+    Icon: Settings,
+  },
 ];
 const STAT_CARDS = [
   { label: "Messages Today", value: "1,284", delta: "+18%" },
@@ -2220,7 +2253,7 @@ export default function DashboardLayout() {
               )}
             </div>
           )}
-          {selected === "Status Scheduler" && (
+          {selected === "Marketing" && (
             <div className={`space-y-6 ${CARD}`}>
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
@@ -2385,12 +2418,12 @@ export default function DashboardLayout() {
               </div>
             </div>
           )}
-          {selected === "Broadcasts" && (
+          {selected === "Marketing" && (
             <div className="p-6 bg-white rounded-[24px] border border-[#E5E7EB]/30 shadow-none">
               Sokoos Broadcasts
             </div>
           )}
-          {selected === "Customers" && (
+          {selected === "Growth Pages" && (
             <div className={`space-y-6 ${CARD}`}>
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
@@ -2498,7 +2531,7 @@ export default function DashboardLayout() {
               </div>
             </div>
           )}
-          {selected === "Catalog" && (
+          {selected === "AI Employee" && (
             <div className={`space-y-6 ${CARD}`}>
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
@@ -2575,7 +2608,7 @@ export default function DashboardLayout() {
               </div>
             </div>
           )}
-          {selected === "AI Assistant" && (
+          {selected === "AI Employee" && (
             <div className="space-y-6">
               <div className={CARD}>
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
