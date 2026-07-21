@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "@tanstack/react-router";
 import {
   Home,
   Inbox,
@@ -1084,6 +1085,13 @@ export default function DashboardLayout() {
   const [imageLabel, setImageLabel] = useState("No file selected");
   const [customerCollapsed, setCustomerCollapsed] = useState(false);
 
+  const router = useRouter();
+
+  const handleLogout = () => {
+    localStorage.removeItem("sokoos-auth");
+    void router.navigate({ to: "/signin", replace: true });
+  };
+
   // Future team state (initialized but not used when hasTeam = false)
   const teamMembers = hasTeam ? MOCK_TEAM_MEMBERS : [];
   const currentMember = hasTeam
@@ -1287,6 +1295,14 @@ export default function DashboardLayout() {
 
                       <button className="rounded-xl border border-[#E5E7EB] bg-white px-5 py-3 font-semibold text-[#111827] hover:bg-[#F9FAFB] transition">
                         Create Campaign
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        className="rounded-xl border border-[#E5E7EB] bg-white px-5 py-3 font-semibold text-[#111827] hover:bg-[#F9FAFB] transition"
+                      >
+                        Logout
                       </button>
                     </div>
                   </div>

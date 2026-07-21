@@ -11,7 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { isAuthenticated } from "@/lib/auth";
+import { ProtectedRoute } from "@/components/protected-route";
 
 function NotFoundComponent() {
   return (
@@ -131,20 +131,10 @@ function RootComponent() {
   const pathname = router.state.location.pathname;
   const isDashboardRoute = pathname === "/dashboard" || pathname.startsWith("/dashboard/");
 
-  useEffect(() => {
-    if (isDashboardRoute && !isAuthenticated()) {
-      void router.navigate({ to: "/signin", replace: true });
-    }
-  }, [isDashboardRoute, router]);
-
-  if (isDashboardRoute && !isAuthenticated()) {
-    return null;
-  }
-
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      {isDashboardRoute ? <ProtectedRoute /> : <Outlet />}
     </QueryClientProvider>
   );
 }
