@@ -1234,6 +1234,33 @@ export default function DashboardLayout() {
       return { ...p, steps };
     }));
   };
+
+  type Skill = {
+    id: string;
+    name: string;
+    icon?: string;
+    description: string;
+    enabled: boolean;
+    status: 'Active' | 'Idle' | 'Disabled';
+  };
+
+  const [skills, setSkills] = useState<Skill[]>([
+    { id: 's-1', name: 'Answer Questions', icon: '💬', description: 'Respond to customer queries with helpful answers.', enabled: true, status: 'Active' },
+    { id: 's-2', name: 'Recommend Products', icon: '🛍️', description: 'Suggest products based on customer needs.', enabled: true, status: 'Active' },
+    { id: 's-3', name: 'Upsell Customers', icon: '⬆️', description: 'Recommend higher tier or add-ons.', enabled: false, status: 'Disabled' },
+    { id: 's-4', name: 'Cross-sell', icon: '🔗', description: 'Suggest complementary products.', enabled: false, status: 'Disabled' },
+    { id: 's-5', name: 'Generate Quotes', icon: '🧾', description: 'Create quotations based on selected items.', enabled: true, status: 'Active' },
+    { id: 's-6', name: 'Book Appointments', icon: '📅', description: 'Schedule appointments with customers.', enabled: false, status: 'Disabled' },
+    { id: 's-7', name: 'Collect Leads', icon: '📇', description: 'Capture lead details for follow-up.', enabled: true, status: 'Active' },
+    { id: 's-8', name: 'Generate Invoices', icon: '💳', description: 'Produce invoices for completed sales.', enabled: false, status: 'Disabled' },
+    { id: 's-9', name: 'Follow-up Customers', icon: '🔔', description: 'Send follow-ups or reminders.', enabled: false, status: 'Idle' },
+    { id: 's-10', name: 'Translate Messages', icon: '🌐', description: 'Translate customer messages to preferred language.', enabled: true, status: 'Active' },
+  ]);
+
+  const toggleSkill = (id: string) => {
+    setSkills((s) => s.map((k) => k.id === id ? { ...k, enabled: !k.enabled, status: k.enabled ? 'Disabled' : 'Active' } : k));
+  };
+
   const [assistantTab, setAssistantTab] =
     useState<(typeof ASSISTANT_TABS)[number]>("Business Knowledge");
   const [activeConversation, setActiveConversation] = useState<string>("c1");
@@ -3580,23 +3607,41 @@ export default function DashboardLayout() {
 
                     {activeWorkspaceSection === "Skills" && (
                       <div className="space-y-6">
-                        <div className="grid gap-4 sm:grid-cols-2">
-                          <div className="rounded-[24px] bg-[#F9FAFB] p-6">
-                            <p className="text-sm font-semibold text-[#111827]">
-                              Upsell behavior
-                            </p>
-                            <p className="mt-3 text-sm text-[#6B7280]">
-                              {upsellProducts ? "AI may suggest add-ons." : "AI avoids upselling."}
-                            </p>
+                        <div className="rounded-[24px] bg-[#F9FAFB] p-6 flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-semibold text-[#111827]">Skills</p>
+                            <p className="mt-2 text-sm text-[#6B7280]">Enable or disable assistant capabilities using skill cards.</p>
                           </div>
-                          <div className="rounded-[24px] bg-[#F9FAFB] p-6">
-                            <p className="text-sm font-semibold text-[#111827]">
-                              Recommendation style
-                            </p>
-                            <p className="mt-3 text-sm text-[#6B7280]">
-                              {recommendAlternatives ? "Offers alternatives automatically." : "Only answers direct questions."}
-                            </p>
+                          <div className="flex gap-2">
+                            <button onClick={() => setSkills(skills.map(s => ({ ...s, enabled: true, status: 'Active' })))} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Enable All</button>
+                            <button onClick={() => setSkills(skills.map(s => ({ ...s, enabled: false, status: 'Disabled' })))} className="rounded-[10px] border border-[#E5E7EB] px-3 py-2 text-sm font-semibold">Disable All</button>
                           </div>
+                        </div>
+
+                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                          {skills.map((sk) => (
+                            <div key={sk.id} className="rounded-[12px] border border-[#EEF2F6] bg-white p-4 flex items-start gap-4">
+                              <div className="h-12 w-12 rounded-md bg-[#F8FAFB] flex items-center justify-center text-2xl">{sk.icon}</div>
+                              <div className="flex-1">
+                                <div className="flex items-start justify-between gap-3">
+                                  <div>
+                                    <p className="text-sm font-semibold">{sk.name}</p>
+                                    <p className="mt-1 text-xs text-[#64748B]">{sk.description}</p>
+                                  </div>
+                                  <div className="text-right">
+                                    <div className="inline-flex items-center gap-2">
+                                      <p className={`text-xs font-medium ${sk.status === 'Active' ? 'text-[#16A34A]' : sk.status === 'Idle' ? 'text-[#F59E0B]' : 'text-[#B91C1C]'}`}>{sk.status}</p>
+                                      <label className="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" checked={sk.enabled} onChange={() => toggleSkill(sk.id)} className="sr-only peer" />
+                                        <div className="w-11 h-6 bg-[#E5E7EB] peer-checked:bg-[#22C55E] rounded-full peer-focus:ring-2 peer-focus:ring-[#22C55E] transition-colors" />
+                                        <div className="absolute left-0.5 top-0.5 bg-white w-5 h-5 rounded-full peer-checked:translate-x-5 transform transition-transform" />
+                                      </label>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     )}
