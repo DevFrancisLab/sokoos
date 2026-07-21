@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import {
   ArrowRight,
   Check,
@@ -107,6 +107,265 @@ function Nav() {
         </div>
       </div>
     </header>
+  );
+}
+
+function FloatingSokoosAI() {
+  const [isGreetingVisible, setIsGreetingVisible] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isChatClosing, setIsChatClosing] = useState(false);
+  const [message, setMessage] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [messages, setMessages] = useState<Array<{ id: number; role: "user" | "assistant"; content: string }>>([
+    {
+      id: 1,
+      role: "assistant",
+      content: "👋 Welcome! I’m your AI Employee. Ask me about pricing, features, WhatsApp, or growth pages.",
+    },
+  ]);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const suggestedQuestions = [
+    "How much does Sokoos cost?",
+    "Can I connect WhatsApp?",
+    "Can I use Sokoos for my ISP?",
+    "How does the AI learn my business?",
+  ];
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setIsGreetingVisible(true), 2500);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!isChatOpen) return;
+    const timer = window.setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    }, 80);
+    return () => window.clearTimeout(timer);
+  }, [messages, isTyping, isChatOpen]);
+
+  const openChat = () => {
+    setIsGreetingVisible(false);
+    setIsChatClosing(false);
+    setIsChatOpen(true);
+  };
+
+  const closeChat = () => {
+    setIsChatClosing(true);
+    window.setTimeout(() => {
+      setIsChatOpen(false);
+      setIsChatClosing(false);
+    }, 220);
+  };
+
+  const getMockReply = (value: string) => {
+    const normalized = value.toLowerCase();
+
+    if (/(price|pricing|cost)/.test(normalized)) {
+      return "Our plans are designed for businesses of every size.";
+    }
+
+    if (/(isp|internet service provider)/.test(normalized)) {
+      return "Sokoos is perfect for Internet Service Providers.";
+    }
+
+    if (/school/.test(normalized)) {
+      return "Sokoos helps schools answer parent enquiries automatically.";
+    }
+
+    if (/restaurant/.test(normalized)) {
+      return "Sokoos helps restaurants automate customer conversations.";
+    }
+
+    if (/whatsapp/.test(normalized)) {
+      return "Sokoos connects directly with WhatsApp Business.";
+    }
+
+    return "That’s a great question. Once connected to the backend I’ll answer using the real AI.";
+  };
+
+  const sendMessage = (content: string) => {
+    const trimmed = content.trim();
+    if (!trimmed) return;
+
+    setMessages((prev) => [...prev, { id: Date.now(), role: "user", content: trimmed }]);
+    setMessage("");
+    setIsTyping(true);
+
+    window.setTimeout(() => {
+      const reply = getMockReply(trimmed);
+      setMessages((prev) => [...prev, { id: Date.now() + 1, role: "assistant", content: reply }]);
+      setIsTyping(false);
+    }, 700);
+  };
+
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault();
+    sendMessage(message);
+  };
+
+  return (
+    <>
+      <style>{`
+        @keyframes floatingPanelSlide {
+          from {
+            opacity: 0;
+            transform: translateY(20px) scale(0.96);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+      `}</style>
+
+      <div className="fixed bottom-8 right-8 z-[100] flex flex-col items-end">
+        {!isChatOpen && (
+          <div
+            className={`mb-3 w-[240px] rounded-[24px] border border-[#E5E7EB] bg-white p-4 text-left shadow-[0_20px_50px_rgba(15,23,42,0.16)] transition-all duration-300 ease-out ${
+              isGreetingVisible ? "translate-y-0 scale-100 opacity-100" : "translate-y-2 scale-95 opacity-0"
+            }`}
+            style={{ transformOrigin: "bottom right" }}
+          >
+            <button
+              type="button"
+              onClick={() => setIsGreetingVisible(false)}
+              aria-label="Close greeting"
+              className="absolute right-3 top-3 rounded-full p-1 text-[#64748B] transition-colors hover:bg-[#F3F4F6] hover:text-[#111827]"
+            >
+              ×
+            </button>
+            <p className="pr-6 text-2xl leading-none">👋 Hi!</p>
+            <p className="mt-2 text-sm font-semibold text-[#111827]">I&apos;m Sokoos AI.</p>
+            <p className="mt-1 text-sm leading-5 text-[#64748B]">Need help learning about Sokoos?</p>
+            <button
+              type="button"
+              onClick={openChat}
+              className="mt-3 inline-flex items-center rounded-full bg-[#16A34A] px-3.5 py-2 text-sm font-semibold text-white shadow-sm transition-transform hover:-translate-y-0.5"
+            >
+              Ask me
+            </button>
+          </div>
+        )}
+
+        <button
+          type="button"
+          onClick={openChat}
+          className="flex h-[72px] w-[72px] items-center justify-center rounded-full border border-[#EEF2F6] bg-white shadow-[0_20px_50px_rgba(15,23,42,0.16)] transition-transform duration-200 hover:scale-105"
+          aria-label="Open Sokoos AI"
+        >
+          <div className="absolute inset-0 rounded-full border border-[#22C55E]/20" />
+          <div className="absolute -bottom-0.5 -right-0.5 h-5 w-5 rounded-full border-2 border-white bg-[#22C55E] shadow-sm" />
+          <span className="text-3xl">🤖</span>
+        </button>
+      </div>
+
+      {isChatOpen && (
+        <div className="fixed inset-0 z-[110] flex items-end justify-end bg-black/10 p-4 backdrop-blur-[2px]" onClick={closeChat}>
+          <div
+            className={`w-full max-w-[420px] rounded-[28px] border border-[#EEF2F6] bg-white shadow-[0_24px_80px_rgba(15,23,42,0.16)] transition-all duration-300 ease-out ${
+              isChatClosing ? "translate-y-5 scale-95 opacity-0" : "translate-y-0 scale-100 opacity-100"
+            }`}
+            style={{ height: "560px", animation: "floatingPanelSlide 0.25s ease-out" }}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-[#F3F4F6] px-5 py-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-full border border-[#D1FAE5] bg-[#F0FDF4] text-xl">
+                  🤖
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <p className="font-semibold text-[#111827]">Sokoos AI</p>
+                    <span className="h-2.5 w-2.5 rounded-full bg-[#22C55E]" />
+                  </div>
+                  <p className="text-sm text-[#64748B]">AI Employee</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={closeChat}
+                aria-label="Close chat"
+                className="rounded-full p-2 text-[#64748B] transition-colors hover:bg-[#F3F4F6] hover:text-[#111827]"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className="flex h-[calc(560px-88px)] flex-col px-5 py-5">
+              <div className="flex-1 overflow-y-auto rounded-[24px] bg-[#F8FAFC] p-4">
+                <div className="space-y-3">
+                  {messages.map((entry) => (
+                    <div key={entry.id} className={`flex ${entry.role === "user" ? "justify-end" : "justify-start"}`}>
+                      <div
+                        className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-6 shadow-sm ${
+                          entry.role === "user"
+                            ? "bg-[#16A34A] text-white"
+                            : "bg-white text-[#334155]"
+                        }`}
+                        style={{ animation: "floatingPanelSlide 0.25s ease-out" }}
+                      >
+                        <p className="whitespace-pre-line">{entry.content}</p>
+                      </div>
+                    </div>
+                  ))}
+
+                  {messages.length === 1 && (
+                    <div className="flex justify-start">
+                      <div className="max-w-full rounded-2xl bg-white p-3 shadow-sm">
+                        <p className="text-sm font-medium text-[#111827]">Try one of these:</p>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {suggestedQuestions.map((suggestion) => (
+                            <button
+                              key={suggestion}
+                              type="button"
+                              onClick={() => sendMessage(suggestion)}
+                              className="rounded-full border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-1.5 text-sm text-[#334155] transition-all hover:border-[#16A34A] hover:bg-[#ECFDF5] hover:text-[#166534]"
+                            >
+                              {suggestion}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {isTyping && (
+                    <div className="flex justify-start">
+                      <div className="rounded-2xl bg-white px-3.5 py-2.5 shadow-sm">
+                        <div className="flex items-center gap-1.5">
+                          <span className="h-2 w-2 animate-bounce rounded-full bg-[#94A3B8]" style={{ animationDelay: "0ms" }} />
+                          <span className="h-2 w-2 animate-bounce rounded-full bg-[#94A3B8]" style={{ animationDelay: "120ms" }} />
+                          <span className="h-2 w-2 animate-bounce rounded-full bg-[#94A3B8]" style={{ animationDelay: "240ms" }} />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  <div ref={messagesEndRef} />
+                </div>
+              </div>
+
+              <form onSubmit={handleSubmit} className="mt-4 flex items-center gap-2 rounded-full border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-2 shadow-sm">
+                <input
+                  value={message}
+                  onChange={(event) => setMessage(event.target.value)}
+                  placeholder="Ask anything..."
+                  className="h-11 flex-1 border-0 bg-transparent text-sm text-[#111827] outline-none placeholder:text-[#94A3B8]"
+                />
+                <button
+                  type="submit"
+                  className="flex h-11 w-11 items-center justify-center rounded-full bg-[#16A34A] text-white transition-transform hover:scale-105"
+                  aria-label="Send message"
+                >
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 
@@ -760,6 +1019,7 @@ function Index() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Nav />
+      <FloatingSokoosAI />
       <main>
         <Hero />
         <Problem />
