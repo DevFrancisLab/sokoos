@@ -2872,8 +2872,8 @@ export default function DashboardLayout() {
 
                     {activeWorkspaceSection === "Catalogue" && (
                       <div className="space-y-6">
-                        <div className="grid gap-6 xl:grid-cols-[0.28fr_0.72fr]">
-                          <aside className="rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+                        <div className="grid gap-6 xl:grid-cols-[300px_1fr] items-start">
+                          <aside className="rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 sticky top-6">
                             <p className="text-sm font-semibold text-[#111827]">Products & Services</p>
                             <div className="mt-3 space-y-2 text-sm text-[#475569]">
                               {[
@@ -2899,8 +2899,8 @@ export default function DashboardLayout() {
                           </aside>
 
                           <div>
-                            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-                              <div className="flex gap-2">
+                            <div className="mb-4 flex items-center justify-between gap-3">
+                              <div className="flex flex-wrap gap-2">
                                 <button type="button" className="inline-flex items-center gap-2 rounded-[12px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Add Item</button>
                                 <button type="button" className="inline-flex items-center gap-2 rounded-[12px] border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-semibold">Upload Files</button>
                                 <button type="button" className="inline-flex items-center gap-2 rounded-[12px] border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-semibold">Import Excel</button>
@@ -2910,28 +2910,30 @@ export default function DashboardLayout() {
                               <div className="text-sm text-[#64748B]">Showing {CATALOG_ITEMS.length} items</div>
                             </div>
 
-                            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                              {CATALOG_ITEMS.map((item) => (
-                                <div key={item.id} className={`${CARD} p-4`}> 
-                                  <div className="flex items-start gap-4">
-                                    <img src={item.image} alt={item.name} className="h-20 w-28 rounded-lg object-cover" />
-                                    <div className="flex-1">
-                                      <p className="text-sm font-semibold text-[#111827]">{item.name}</p>
-                                      <p className="mt-1 text-xs text-[#6B7280]">{item.category} • {item.imagesCount} images • {item.documentsCount} docs</p>
-                                      <p className="mt-2 text-sm text-[#475569]">{item.description}</p>
+                            <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                              <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                                {CATALOG_ITEMS.map((item) => (
+                                  <div key={item.id} className="rounded-[12px] border border-[#EEF2F6] bg-white p-4 min-h-[160px] flex flex-col justify-between">
+                                    <div className="flex items-start gap-4">
+                                      <img src={item.image} alt={item.name} className="h-20 w-28 flex-shrink-0 rounded-lg object-cover" />
+                                      <div className="flex-1">
+                                        <p className="text-sm font-semibold text-[#111827]">{item.name}</p>
+                                        <p className="mt-1 text-xs text-[#6B7280]">{item.category} • {item.imagesCount} images • {item.documentsCount} docs</p>
+                                        <p className="mt-2 text-sm text-[#475569] line-clamp-3">{item.description}</p>
+                                      </div>
+                                      <div className="text-right ml-2">
+                                        <p className="text-sm font-semibold text-[#111827]">{item.price}</p>
+                                        <p className={`mt-2 text-xs ${item.availability === 'In stock' || item.availability === 'Available' ? 'text-[#16A34A]' : 'text-[#F59E0B]'}`}>{item.availability}</p>
+                                      </div>
                                     </div>
-                                    <div className="text-right">
-                                      <p className="text-sm font-semibold text-[#111827]">{item.price}</p>
-                                      <p className="mt-2 text-xs text-[#16A34A]">{item.availability}</p>
-                                    </div>
-                                  </div>
 
-                                  <div className="mt-4 flex justify-end gap-2">
-                                    <button type="button" className="rounded-[12px] border border-[#E5E7EB] bg-white px-3 py-1 text-sm font-semibold">Edit</button>
-                                    <button type="button" className="rounded-[12px] border border-[#FECACA] bg-white px-3 py-1 text-sm font-semibold text-[#B91C1C]">Delete</button>
+                                    <div className="mt-3 flex justify-end gap-2">
+                                      <button type="button" className="rounded-[10px] border border-[#E5E7EB] bg-white px-3 py-1 text-sm font-semibold">Edit</button>
+                                      <button type="button" className="rounded-[10px] border border-[#FECACA] bg-white px-3 py-1 text-sm font-semibold text-[#B91C1C]">Delete</button>
+                                    </div>
                                   </div>
-                                </div>
-                              ))}
+                                ))}
+                              </div>
                             </div>
                           </div>
                         </div>
