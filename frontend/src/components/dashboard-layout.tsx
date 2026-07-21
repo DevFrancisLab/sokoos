@@ -1038,6 +1038,44 @@ export default function DashboardLayout() {
     }
     setMediaAssets((prev) => prev.filter((m) => m.id !== id));
   };
+
+  const IMPORT_TYPES = ["Excel", "CSV", "PDF Catalogues", "Website Import"] as const;
+
+  type ImportResult = {
+    productsImported: number;
+    warnings: string[];
+    duplicatesFound: number;
+    message: string;
+  };
+
+  const [importState, setImportState] = useState<Record<string, { progress: number; status: "idle" | "uploading" | "done"; result?: ImportResult }>>(
+    () =>
+      IMPORT_TYPES.reduce((acc, t) => {
+        acc[t] = { progress: 0, status: "idle" };
+        return acc;
+      }, {} as Record<string, { progress: number; status: "idle" | "uploading" | "done"; result?: ImportResult }>),
+  );
+
+  const simulateImport = (type: string, file?: File | null) => {
+    setImportState((s) => ({ ...s, [type]: { progress: 0, status: "uploading" } }));
+    let progress = 0;
+    const id = setInterval(() => {
+      progress += Math.floor(Math.random() * 12) + 8;
+      if (progress >= 100) progress = 100;
+      setImportState((s) => ({ ...s, [type]: { ...(s[type] || { progress: 0, status: "uploading" }), progress } }));
+      if (progress >= 100) {
+        clearInterval(id);
+        // Create mock result
+        const productsImported = Math.floor(Math.random() * 90) + 10;
+        const duplicatesFound = Math.floor(Math.random() * 5);
+        const warnings: string[] = [];
+        if (Math.random() > 0.7) warnings.push("Some rows had missing prices");
+        if (Math.random() > 0.85) warnings.push("Invalid category mappings for 2 items");
+        const message = `Imported ${productsImported} products successfully.`;
+        setImportState((s) => ({ ...s, [type]: { progress: 100, status: "done", result: { productsImported, duplicatesFound, warnings, message } } }));
+      }
+    }, 400 + Math.random() * 300);
+  };
   const [assistantTab, setAssistantTab] =
     useState<(typeof ASSISTANT_TABS)[number]>("Business Knowledge");
   const [activeConversation, setActiveConversation] = useState<string>("c1");
@@ -3065,6 +3103,60 @@ export default function DashboardLayout() {
                                         <button type="button" onClick={() => renameAsset(asset.id)} className="rounded-[8px] border border-[#E5E7EB] bg-white px-2 py-1 text-xs font-semibold">Rename</button>
                                         <button type="button" onClick={() => deleteAsset(asset.id)} className="rounded-[8px] border border-[#FECACA] bg-white px-2 py-1 text-xs font-semibold text-[#B91C1C]">Delete</button>
                                       </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            ) : catalogueSubsection === "Imports" ? (
+                              <div>
+                                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                                  {IMPORT_TYPES.map((t) => (
+                                    <div key={t} className="rounded-[12px] border border-[#EEF2F6] bg-white p-4">
+                                      <p className="text-sm font-semibold text-[#111827]">{t}</p>
+                                      <p className="mt-1 text-xs text-[#64748B]">
+                                        {t === "Excel" && "Imports products, SKUs, prices, categories, and stock levels from an .xlsx file."}
+                                        {t === "CSV" && "Imports simple product lists and pricing from CSV files."}
+                                        {t === "PDF Catalogues" && "Extracts product listings from PDF catalogs (best-effort parsing)."}
+                                        {t === "Website Import" && "Fetches product pages from a website URL and converts into product entries."}
+                                      </p>
+
+                                      <div className="mt-4">
+                                        {t === "Website Import" ? (
+                                          <div className="flex gap-2">
+                                            <input placeholder="https://example.com/catalog" className="flex-1 rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" id={`url-${t}`} />
+                                            <button type="button" onClick={() => simulateImport(t as string, null)} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-xs font-semibold text-white">Start</button>
+                                          </div>
+                                        ) : (
+                                          <div className="flex items-center gap-2">
+                                            <input type="file" accept={t === "Excel" ? ".xlsx, .xls" : ".csv"} onChange={(e) => simulateImport(t as string, e.target.files?.[0] ?? null)} className="text-sm" />
+                                          </div>
+                                        )}
+                                      </div>
+
+                                      <div className="mt-3">
+                                        <div className="h-2 w-full bg-[#F1F5F9] rounded-full overflow-hidden">
+                                          <div className="h-2 bg-[#22C55E]" style={{ width: `${importState[t]?.progress ?? 0}%` }} />
+                                        </div>
+                                        <p className="mt-1 text-xs text-[#64748B]">{importState[t]?.status === "uploading" ? `Uploading (${importState[t]?.progress ?? 0}%)` : importState[t]?.status === "done" ? "Completed" : "Idle"}</p>
+                                      </div>
+
+                                      {importState[t]?.status === "done" && importState[t]?.result && (
+                                        <div className="mt-3 rounded-[8px] bg-[#F8FAFB] p-3 text-sm">
+                                          <p className="font-semibold text-[#111827]">{importState[t]!.result!.message}</p>
+                                          <p className="mt-1 text-xs text-[#64748B]">Products imported: {importState[t]!.result!.productsImported}</p>
+                                          <p className="mt-1 text-xs text-[#F59E0B]">Duplicates found: {importState[t]!.result!.duplicatesFound}</p>
+                                          {importState[t]!.result!.warnings.length > 0 && (
+                                            <div className="mt-2 text-xs text-[#F59E0B]">
+                                              <p className="font-semibold">Warnings:</p>
+                                              <ul className="list-disc ml-4">
+                                                {importState[t]!.result!.warnings.map((w, i) => (
+                                                  <li key={i}>{w}</li>
+                                                ))}
+                                              </ul>
+                                            </div>
+                                          )}
+                                        </div>
+                                      )}
                                     </div>
                                   ))}
                                 </div>
