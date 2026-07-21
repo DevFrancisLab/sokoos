@@ -1158,6 +1158,82 @@ export default function DashboardLayout() {
     const url = URL.createObjectURL(f);
     updateTemplate(id, { companyLogo: url });
   };
+
+  type Playbook = {
+    id: string;
+    title: string;
+    steps: string[];
+    allowed?: boolean;
+  };
+
+  const [playbooks, setPlaybooks] = useState<Playbook[]>([
+    {
+      id: 'p-1',
+      title: 'Pricing & Quote Flow',
+      steps: [
+        'Customer asks about pricing',
+        'Recommend suitable product',
+        'Suggest upgrade',
+        'Offer discount if available',
+        'Collect customer details',
+        'Generate quotation',
+        'Ask to proceed',
+      ],
+      allowed: true,
+    },
+  ]);
+
+  const [editingPlaybookId, setEditingPlaybookId] = useState<string | null>(null);
+
+  const addPlaybook = () => {
+    const p: Playbook = { id: `p-${Date.now()}`, title: 'New Playbook', steps: ['Start'], allowed: false };
+    setPlaybooks((s) => [p, ...s]);
+    setEditingPlaybookId(p.id);
+  };
+
+  const updatePlaybook = (id: string, patch: Partial<Playbook>) => {
+    setPlaybooks((s) => s.map((x) => (x.id === id ? { ...x, ...patch } : x)));
+  };
+
+  const duplicatePlaybook = (id: string) => {
+    const p = playbooks.find((x) => x.id === id);
+    if (!p) return;
+    const copy = { ...p, id: `p-${Date.now()}`, title: `${p.title} (copy)` };
+    setPlaybooks((s) => [copy, ...s]);
+  };
+
+  const deletePlaybook = (id: string) => {
+    if (!window.confirm('Delete this playbook?')) return;
+    setPlaybooks((s) => s.filter((x) => x.id !== id));
+    if (editingPlaybookId === id) setEditingPlaybookId(null);
+  };
+
+  const addStep = (id: string, afterIndex = -1) => {
+    setPlaybooks((s) => s.map((p) => {
+      if (p.id !== id) return p;
+      const steps = [...p.steps];
+      steps.splice(afterIndex + 1, 0, 'New step');
+      return { ...p, steps };
+    }));
+  };
+
+  const updateStep = (id: string, index: number, text: string) => {
+    setPlaybooks((s) => s.map((p) => {
+      if (p.id !== id) return p;
+      const steps = [...p.steps];
+      steps[index] = text;
+      return { ...p, steps };
+    }));
+  };
+
+  const removeStep = (id: string, index: number) => {
+    setPlaybooks((s) => s.map((p) => {
+      if (p.id !== id) return p;
+      const steps = [...p.steps];
+      steps.splice(index, 1);
+      return { ...p, steps };
+    }));
+  };
   const [assistantTab, setAssistantTab] =
     useState<(typeof ASSISTANT_TABS)[number]>("Business Knowledge");
   const [activeConversation, setActiveConversation] = useState<string>("c1");
@@ -3403,32 +3479,101 @@ export default function DashboardLayout() {
 
                     {activeWorkspaceSection === "Sales Playbooks" && (
                       <div className="space-y-6">
-                        <div className="rounded-[24px] bg-[#F9FAFB] p-6">
-                          <p className="text-sm font-semibold text-[#111827]">
-                            Sales playbooks
-                          </p>
-                          <p className="mt-3 text-sm text-[#6B7280]">
-                            Ready prompts to help the AI support sales conversations.
-                          </p>
+                        <div className="flex items-center justify-between rounded-[24px] bg-[#F9FAFB] p-6">
+                          <div>
+                            <p className="text-sm font-semibold text-[#111827]">Sales playbooks</p>
+                            <p className="mt-2 text-sm text-[#6B7280]">Visual workflows the AI can follow during sales conversations.</p>
+                          </div>
+                          <div className="flex gap-2">
+                            <button type="button" onClick={addPlaybook} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Create Playbook</button>
+                          </div>
                         </div>
-                        <div className="grid gap-4 sm:grid-cols-2">
-                          {[
-                            "Welcome message",
-                            "Price quote follow-up",
-                            "Upgrade recommendation",
-                          ].map((item) => (
-                            <div
-                              key={item}
-                              className="rounded-[24px] border border-[#E5E7EB] bg-white p-6"
-                            >
-                              <p className="text-sm font-semibold text-[#111827]">
-                                {item}
-                              </p>
-                              <p className="mt-2 text-sm text-[#6B7280]">
-                                Mock script for AI responses and lead engagement.
-                              </p>
+
+                        <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
+                          <div>
+                            <div className="space-y-3">
+                              {playbooks.map((p) => (
+                                <div key={p.id} className="rounded-[12px] border border-[#EEF2F6] bg-white p-3">
+                                  <div className="flex items-center justify-between">
+                                    <div>
+                                      <p className="text-sm font-semibold">{p.title}</p>
+                                      <p className="text-xs text-[#64748B]">{p.steps.length} steps</p>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <button onClick={() => updatePlaybook(p.id, { allowed: !p.allowed })} className={`rounded-[8px] px-2 py-1 text-sm ${p.allowed ? 'bg-[#ECFDF5] border border-[#22C55E] text-[#065F46]' : 'border border-[#E5E7EB] bg-white'}`}>{p.allowed ? 'Allowed' : 'Allow'}</button>
+                                      <button onClick={() => { setEditingPlaybookId(p.id); }} className="rounded-[8px] border border-[#E5E7EB] px-2 py-1 text-sm">Edit</button>
+                                      <button onClick={() => duplicatePlaybook(p.id)} className="rounded-[8px] border border-[#E5E7EB] px-2 py-1 text-sm">Duplicate</button>
+                                      <button onClick={() => deletePlaybook(p.id)} className="rounded-[8px] border border-[#FECACA] px-2 py-1 text-sm text-[#B91C1C]">Delete</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
                             </div>
-                          ))}
+                          </div>
+
+                          <div>
+                            {editingPlaybookId ? (
+                              (() => {
+                                const p = playbooks.find((x) => x.id === editingPlaybookId)!;
+                                return (
+                                  <div className="space-y-4">
+                                    <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-4">
+                                      <div className="flex items-center justify-between">
+                                        <input value={p.title} onChange={(e) => updatePlaybook(p.id, { title: e.target.value })} className="text-lg font-semibold w-full rounded-md border border-transparent px-2 py-1" />
+                                        <div className="flex gap-2 ml-4">
+                                          <button onClick={() => { setEditingPlaybookId(null); }} className="rounded-[8px] border border-[#E5E7EB] px-3 py-1 text-sm">Done</button>
+                                        </div>
+                                      </div>
+
+                                      <div className="mt-4 overflow-auto">
+                                        <div className="flex items-center gap-2">
+                                          {p.steps.map((s, i) => (
+                                            <div key={i} className="flex items-center">
+                                              <div className="rounded-[8px] border border-[#E5E7EB] bg-white px-3 py-2 min-w-[160px]">
+                                                <input value={s} onChange={(e) => updateStep(p.id, i, e.target.value)} className="w-full text-sm" />
+                                                <div className="mt-2 flex gap-1">
+                                                  <button onClick={() => addStep(p.id, i)} className="text-xs rounded px-2 py-1 border border-[#E5E7EB]">+ Add after</button>
+                                                  <button onClick={() => removeStep(p.id, i)} className="text-xs rounded px-2 py-1 border border-[#FECACA] text-[#B91C1C]">Remove</button>
+                                                </div>
+                                              </div>
+                                              {i < p.steps.length - 1 && (
+                                                <div className="mx-2 flex items-center">
+                                                  <svg width="30" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 12h14" stroke="#9CA3AF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M14 5l7 7-7 7" stroke="#9CA3AF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                                                </div>
+                                              )}
+                                            </div>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-4">
+                                      <p className="text-sm text-[#64748B]">Preview</p>
+                                      <div className="mt-3 flex items-center gap-3 overflow-auto">
+                                        {p.steps.map((s, i) => (
+                                          <div key={i} className="flex items-center">
+                                            <div className="rounded-[8px] bg-[#F8FAFB] px-4 py-2 text-sm">{s}</div>
+                                            {i < p.steps.length - 1 && (
+                                              <svg className="mx-2" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 12h14" stroke="#9CA3AF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M14 5l7 7-7 7" stroke="#9CA3AF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                                            )}
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              })()
+                            ) : (
+                              <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-6">
+                                <p className="text-sm text-[#64748B]">Select a playbook to edit or create a new one.</p>
+                                <div className="mt-4">
+                                  <div className="flex gap-2">
+                                    <button onClick={() => { if (playbooks[0]) setEditingPlaybookId(playbooks[0].id); }} className="rounded-[8px] border border-[#E5E7EB] px-3 py-2 text-sm">Edit first</button>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
                     )}
