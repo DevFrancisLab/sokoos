@@ -851,6 +851,86 @@ export default function DashboardLayout() {
       | "Test AI"
       | "Performance"
     >("Identity");
+
+  const CATALOG_ITEMS = [
+    {
+      id: "p-restaurant-001",
+      name: "Ginger Citrus Salad",
+      category: "Restaurant",
+      price: "$8.50",
+      description: "Fresh mixed greens, candied ginger, citrus segments, and sesame vinaigrette.",
+      availability: "In stock",
+      imagesCount: 3,
+      documentsCount: 0,
+      image: "/assets/sample/food-salad.jpg",
+    },
+    {
+      id: "p-retail-001",
+      name: "Everyday Cotton Tee",
+      category: "Retail",
+      price: "$19.99",
+      description: "Soft 100% cotton tee available in multiple colors and sizes.",
+      availability: "Low stock",
+      imagesCount: 4,
+      documentsCount: 1,
+      image: "/assets/sample/tee.jpg",
+    },
+    {
+      id: "p-clinic-001",
+      name: "Adult Wellness Check",
+      category: "Clinic",
+      price: "$65.00",
+      description: "Comprehensive check-up including vitals and basic blood work.",
+      availability: "By appointment",
+      imagesCount: 1,
+      documentsCount: 2,
+      image: "/assets/sample/clinic.jpg",
+    },
+    {
+      id: "p-school-001",
+      name: "Primary Math Workbook",
+      category: "School",
+      price: "$12.00",
+      description: "Grade 3 math workbook with exercises and answer key.",
+      availability: "In stock",
+      imagesCount: 2,
+      documentsCount: 1,
+      image: "/assets/sample/workbook.jpg",
+    },
+    {
+      id: "p-realestate-001",
+      name: "2-Bedroom Riverside Apartment",
+      category: "Real Estate",
+      price: "$250,000",
+      description: "Modern apartment with river views, 2 bed, 2 bath, parking included.",
+      availability: "Available",
+      imagesCount: 8,
+      documentsCount: 3,
+      image: "/assets/sample/apartment.jpg",
+    },
+    {
+      id: "p-salon-001",
+      name: "Deluxe Hair Treatment",
+      category: "Salon",
+      price: "$45.00",
+      description: "Repairing deep-conditioning treatment with scalp massage.",
+      availability: "In stock",
+      imagesCount: 2,
+      documentsCount: 0,
+      image: "/assets/sample/salon.jpg",
+    },
+    {
+      id: "p-electronics-001",
+      name: "Noise-Cancelling Headphones",
+      category: "Electronics",
+      price: "$129.99",
+      description: "Wireless over-ear headphones with 30h battery life.",
+      availability: "In stock",
+      imagesCount: 5,
+      documentsCount: 2,
+      image: "/assets/sample/headphones.jpg",
+    },
+  ];
   const [assistantTab, setAssistantTab] =
     useState<(typeof ASSISTANT_TABS)[number]>("Business Knowledge");
   const [activeConversation, setActiveConversation] = useState<string>("c1");
@@ -2792,23 +2872,68 @@ export default function DashboardLayout() {
 
                     {activeWorkspaceSection === "Catalogue" && (
                       <div className="space-y-6">
-                        <p className="text-sm font-semibold text-[#111827]">
-                          Product catalogue
-                        </p>
-                        <div className="grid gap-4 sm:grid-cols-2">
-                          {knowledgeProducts.slice(0, 4).map((product) => (
-                            <div
-                              key={product.id}
-                              className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-5"
-                            >
-                              <p className="text-sm font-semibold text-[#111827]">
-                                {product.name || "Untitled product"}
-                              </p>
-                              <p className="mt-2 text-sm text-[#6B7280]">
-                                {product.price || "No price set"}
-                              </p>
+                        <div className="grid gap-6 xl:grid-cols-[0.28fr_0.72fr]">
+                          <aside className="rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+                            <p className="text-sm font-semibold text-[#111827]">Products & Services</p>
+                            <div className="mt-3 space-y-2 text-sm text-[#475569]">
+                              {[
+                                "Products & Services",
+                                "Categories",
+                                "Collections",
+                                "Media Library",
+                                "Documents",
+                                "Price Lists",
+                                "Quote Templates",
+                                "Imports",
+                              ].map((item) => (
+                                <button
+                                  key={item}
+                                  type="button"
+                                  className="flex w-full items-center justify-between rounded-[12px] px-3 py-2 text-left text-sm font-medium transition hover:bg-[#EFF6FF]"
+                                >
+                                  <span>{item}</span>
+                                  <ChevronRight className="h-4 w-4 text-[#94A3B8]" />
+                                </button>
+                              ))}
                             </div>
-                          ))}
+                          </aside>
+
+                          <div>
+                            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                              <div className="flex gap-2">
+                                <button type="button" className="inline-flex items-center gap-2 rounded-[12px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Add Item</button>
+                                <button type="button" className="inline-flex items-center gap-2 rounded-[12px] border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-semibold">Upload Files</button>
+                                <button type="button" className="inline-flex items-center gap-2 rounded-[12px] border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-semibold">Import Excel</button>
+                                <button type="button" className="inline-flex items-center gap-2 rounded-[12px] border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-semibold">Import CSV</button>
+                                <button type="button" className="inline-flex items-center gap-2 rounded-[12px] border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-semibold">Upload PDF</button>
+                              </div>
+                              <div className="text-sm text-[#64748B]">Showing {CATALOG_ITEMS.length} items</div>
+                            </div>
+
+                            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                              {CATALOG_ITEMS.map((item) => (
+                                <div key={item.id} className={`${CARD} p-4`}> 
+                                  <div className="flex items-start gap-4">
+                                    <img src={item.image} alt={item.name} className="h-20 w-28 rounded-lg object-cover" />
+                                    <div className="flex-1">
+                                      <p className="text-sm font-semibold text-[#111827]">{item.name}</p>
+                                      <p className="mt-1 text-xs text-[#6B7280]">{item.category} • {item.imagesCount} images • {item.documentsCount} docs</p>
+                                      <p className="mt-2 text-sm text-[#475569]">{item.description}</p>
+                                    </div>
+                                    <div className="text-right">
+                                      <p className="text-sm font-semibold text-[#111827]">{item.price}</p>
+                                      <p className="mt-2 text-xs text-[#16A34A]">{item.availability}</p>
+                                    </div>
+                                  </div>
+
+                                  <div className="mt-4 flex justify-end gap-2">
+                                    <button type="button" className="rounded-[12px] border border-[#E5E7EB] bg-white px-3 py-1 text-sm font-semibold">Edit</button>
+                                    <button type="button" className="rounded-[12px] border border-[#FECACA] bg-white px-3 py-1 text-sm font-semibold text-[#B91C1C]">Delete</button>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     )}
