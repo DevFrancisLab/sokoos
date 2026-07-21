@@ -2155,17 +2155,17 @@ export default function DashboardLayout() {
                         </div>
                       </div>
                     ) : (
-                      <div className="flex h-full min-h-[240px] flex-col items-center justify-center gap-6 px-4">
-                        <div className="w-full max-w-[320px] space-y-3 text-left">
+                      <div className="flex h-full min-h-[220px] flex-col items-start justify-center gap-4 px-1">
+                        <div className="w-full max-w-[280px] space-y-2 text-left">
                           <p className={SECTION_HEADING}>✨ AI Insights</p>
-                          <h3 className="text-xl font-semibold text-[#111827]">
+                          <h3 className="text-[17px] font-semibold leading-6 text-[#111827]">
                             Understand this conversation instantly.
                           </h3>
-                          <p className="text-sm text-[#475569] leading-6">
+                          <p className="text-[13px] leading-5 text-[#475569]">
                             Generate a summary to reveal:
                           </p>
                         </div>
-                        <div className="flex w-full max-w-[320px] flex-col gap-3 text-sm text-[#475569] text-left">
+                        <div className="flex w-full max-w-[280px] flex-col gap-2 text-left text-[13px] text-[#475569]">
                           {[
                             "Conversation Summary",
                             "Customer Intent",
@@ -2173,8 +2173,8 @@ export default function DashboardLayout() {
                             "Suggested Reply",
                             "Recommended Next Action",
                           ].map((item) => (
-                            <div key={item} className="flex items-start gap-3">
-                              <span className="mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#DCFCE7] text-[#166534] text-[10px] font-semibold">
+                            <div key={item} className="flex items-start gap-2.5">
+                              <span className="mt-0.5 inline-flex h-4 w-4 items-center justify-center rounded-full bg-[#DCFCE7] text-[9px] font-semibold text-[#166534]">
                                 ✓
                               </span>
                               <span className="font-semibold text-[#111827]">
@@ -2183,7 +2183,7 @@ export default function DashboardLayout() {
                             </div>
                           ))}
                         </div>
-                        <div className="mt-6 w-full max-w-[320px]">
+                        <div className="mt-2 w-full max-w-[280px]">
                           <button
                             type="button"
                             onClick={() => {
@@ -2192,7 +2192,7 @@ export default function DashboardLayout() {
                               setAiSummary(buildMockAiSummary());
                               window.setTimeout(() => setSummaryVisible(true), 20);
                             }}
-                            className="w-full rounded-[24px] bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-200 ease-out hover:bg-[#16A34A] hover:shadow-sm active:scale-[0.98]"
+                            className="w-full rounded-[24px] bg-[#22C55E] px-4 py-2.5 text-[13px] font-semibold text-white shadow-sm transition-all duration-200 ease-out hover:bg-[#16A34A] hover:shadow-sm active:scale-[0.98]"
                           >
                             Generate AI Summary
                           </button>
