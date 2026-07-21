@@ -1076,6 +1076,88 @@ export default function DashboardLayout() {
       }
     }, 400 + Math.random() * 300);
   };
+
+  type QuoteTemplate = {
+    id: string;
+    companyLogo?: string; // url
+    companyName: string;
+    header: string;
+    footer: string;
+    terms: string;
+    currency: string;
+    tax: string;
+    signature: string;
+    primaryColor: string;
+  };
+
+  const [quoteTemplates, setQuoteTemplates] = useState<QuoteTemplate[]>([
+    {
+      id: "t-1",
+      companyLogo: "/assets/sample/clinic.jpg",
+      companyName: "Acme Services Ltd",
+      header: "Quote",
+      footer: "Thank you for your business.",
+      terms: "Payment due within 30 days.",
+      currency: "USD",
+      tax: "16%",
+      signature: "Authorized Signatory",
+      primaryColor: "#065F46",
+    },
+    {
+      id: "t-2",
+      companyLogo: "/assets/sample/tee.jpg",
+      companyName: "Everyday Retail Co.",
+      header: "Sales Quote",
+      footer: "All sales subject to terms.",
+      terms: "Return within 14 days.",
+      currency: "KES",
+      tax: "0%",
+      signature: "Store Manager",
+      primaryColor: "#0F172A",
+    },
+  ]);
+
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(quoteTemplates[0].id);
+
+  const addQuoteTemplate = () => {
+    const newT: QuoteTemplate = {
+      id: `t-${Date.now()}`,
+      companyName: "New Company",
+      header: "Quote",
+      footer: "",
+      terms: "",
+      currency: "USD",
+      tax: "0%",
+      signature: "",
+      primaryColor: "#065F46",
+    };
+    setQuoteTemplates((s) => [newT, ...s]);
+    setSelectedTemplateId(newT.id);
+  };
+
+  const updateTemplate = (id: string, patch: Partial<QuoteTemplate>) => {
+    setQuoteTemplates((s) => s.map((t) => (t.id === id ? { ...t, ...patch } : t)));
+  };
+
+  const duplicateTemplate = (id: string) => {
+    const t = quoteTemplates.find((x) => x.id === id);
+    if (!t) return;
+    const copy = { ...t, id: `t-${Date.now()}` };
+    setQuoteTemplates((s) => [copy, ...s]);
+    setSelectedTemplateId(copy.id);
+  };
+
+  const deleteTemplate = (id: string) => {
+    if (!window.confirm("Delete this template?")) return;
+    setQuoteTemplates((s) => s.filter((t) => t.id !== id));
+    setSelectedTemplateId((prev) => (prev === id ? (quoteTemplates[0]?.id ?? null) : prev));
+  };
+
+  const uploadLogoForTemplate = (id: string, f: File | null) => {
+    if (!f) return;
+    const url = URL.createObjectURL(f);
+    updateTemplate(id, { companyLogo: url });
+  };
   const [assistantTab, setAssistantTab] =
     useState<(typeof ASSISTANT_TABS)[number]>("Business Knowledge");
   const [activeConversation, setActiveConversation] = useState<string>("c1");
@@ -3159,6 +3241,132 @@ export default function DashboardLayout() {
                                       )}
                                     </div>
                                   ))}
+                                </div>
+                              </div>
+                            ) : catalogueSubsection === "Quote Templates" ? (
+                              <div className="grid gap-6 lg:grid-cols-[1fr_420px]">
+                                <div>
+                                  <div className="mb-4 flex items-center justify-between">
+                                    <p className="text-sm font-semibold text-[#111827]">Quote Templates</p>
+                                    <div className="flex gap-2">
+                                      <button type="button" onClick={addQuoteTemplate} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Create Template</button>
+                                      <button type="button" onClick={() => { const t = quoteTemplates.find(x => x.id === selectedTemplateId); if (t) alert(`Create Quote from template: ${t.companyName}`); }} className="rounded-[10px] border border-[#E5E7EB] px-3 py-2 text-sm font-semibold">Create Quote</button>
+                                    </div>
+                                  </div>
+
+                                  <div className="space-y-3">
+                                    <div className="flex gap-3 overflow-x-auto pb-2">
+                                      {quoteTemplates.map((t) => (
+                                        <button key={t.id} onClick={() => setSelectedTemplateId(t.id)} className={`min-w-[160px] flex-shrink-0 rounded-[10px] border p-3 text-left ${selectedTemplateId === t.id ? 'border-[#22C55E] bg-[#ECFDF5]' : 'bg-white'}`}>
+                                          <p className="text-sm font-semibold">{t.companyName}</p>
+                                          <p className="text-xs text-[#64748B] truncate">{t.header}</p>
+                                        </button>
+                                      ))}
+                                    </div>
+
+                                    {selectedTemplateId && (
+                                      <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-4">
+                                        <div className="grid gap-3">
+                                          <div className="flex items-center gap-3">
+                                            <div className="h-12 w-12 rounded-md overflow-hidden bg-[#F8FAFB] flex items-center justify-center">
+                                              {quoteTemplates.find(q => q.id === selectedTemplateId)?.companyLogo ? (
+                                                <img src={quoteTemplates.find(q => q.id === selectedTemplateId)!.companyLogo} alt="logo" className="h-full w-full object-cover" />
+                                              ) : (
+                                                <div className="text-xs text-[#94A3B8]">Logo</div>
+                                              )}
+                                            </div>
+                                            <div className="flex-1">
+                                              <input value={quoteTemplates.find(q => q.id === selectedTemplateId)?.companyName || ''} onChange={(e) => updateTemplate(selectedTemplateId, { companyName: e.target.value })} className="w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+                                            </div>
+                                            <div className="flex flex-col gap-2">
+                                              <label className="text-xs text-[#6B7280]">Logo</label>
+                                              <input type="file" accept="image/*" onChange={(e) => uploadLogoForTemplate(selectedTemplateId, e.target.files?.[0] ?? null)} />
+                                            </div>
+                                          </div>
+
+                                          <div>
+                                            <label className="text-xs text-[#6B7280]">Header</label>
+                                            <input value={quoteTemplates.find(q => q.id === selectedTemplateId)?.header || ''} onChange={(e) => updateTemplate(selectedTemplateId, { header: e.target.value })} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+                                          </div>
+
+                                          <div>
+                                            <label className="text-xs text-[#6B7280]">Footer</label>
+                                            <input value={quoteTemplates.find(q => q.id === selectedTemplateId)?.footer || ''} onChange={(e) => updateTemplate(selectedTemplateId, { footer: e.target.value })} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+                                          </div>
+
+                                          <div>
+                                            <label className="text-xs text-[#6B7280]">Terms & Conditions</label>
+                                            <textarea value={quoteTemplates.find(q => q.id === selectedTemplateId)?.terms || ''} onChange={(e) => updateTemplate(selectedTemplateId, { terms: e.target.value })} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm min-h-[80px]" />
+                                          </div>
+
+                                          <div className="grid grid-cols-2 gap-3">
+                                            <div>
+                                              <label className="text-xs text-[#6B7280]">Currency</label>
+                                              <input value={quoteTemplates.find(q => q.id === selectedTemplateId)?.currency || ''} onChange={(e) => updateTemplate(selectedTemplateId, { currency: e.target.value })} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+                                            </div>
+                                            <div>
+                                              <label className="text-xs text-[#6B7280]">Tax</label>
+                                              <input value={quoteTemplates.find(q => q.id === selectedTemplateId)?.tax || ''} onChange={(e) => updateTemplate(selectedTemplateId, { tax: e.target.value })} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+                                            </div>
+                                          </div>
+
+                                          <div>
+                                            <label className="text-xs text-[#6B7280]">Signature</label>
+                                            <input value={quoteTemplates.find(q => q.id === selectedTemplateId)?.signature || ''} onChange={(e) => updateTemplate(selectedTemplateId, { signature: e.target.value })} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+                                          </div>
+
+                                          <div>
+                                            <label className="text-xs text-[#6B7280]">Primary Color</label>
+                                            <input type="color" value={quoteTemplates.find(q => q.id === selectedTemplateId)?.primaryColor || '#065F46'} onChange={(e) => updateTemplate(selectedTemplateId, { primaryColor: e.target.value })} className="mt-1 h-10 w-20 p-0 border-none" />
+                                          </div>
+
+                                          <div className="flex justify-end gap-2">
+                                            <button type="button" onClick={() => duplicateTemplate(selectedTemplateId!)} className="rounded-[8px] border border-[#E5E7EB] px-3 py-2 text-sm">Duplicate</button>
+                                            <button type="button" onClick={() => deleteTemplate(selectedTemplateId!)} className="rounded-[8px] border border-[#FECACA] px-3 py-2 text-sm text-[#B91C1C]">Delete</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+
+                                <div>
+                                  <div className={`${CARD} p-4`}>
+                                    <div className="flex items-center justify-between">
+                                      <div className="flex items-center gap-3">
+                                        <div className="h-12 w-12 rounded-md overflow-hidden bg-[#F8FAFB] flex items-center justify-center">
+                                          {quoteTemplates.find(q => q.id === selectedTemplateId)?.companyLogo ? (
+                                            <img src={quoteTemplates.find(q => q.id === selectedTemplateId)!.companyLogo} alt="logo" className="h-full w-full object-cover" />
+                                          ) : (
+                                            <div className="text-xs text-[#94A3B8]">Logo</div>
+                                          )}
+                                        </div>
+                                        <div>
+                                          <p className="text-sm font-semibold">{quoteTemplates.find(q => q.id === selectedTemplateId)?.companyName}</p>
+                                          <p className="text-xs text-[#64748B]">{quoteTemplates.find(q => q.id === selectedTemplateId)?.header}</p>
+                                        </div>
+                                      </div>
+                                      <div className="text-sm text-[#6B7280]">{quoteTemplates.find(q => q.id === selectedTemplateId)?.currency}</div>
+                                    </div>
+
+                                    <div className="mt-4 border-t pt-4">
+                                      <p className="text-sm text-[#475569]">Item lines would appear here in a real quote. Tax: {quoteTemplates.find(q => q.id === selectedTemplateId)?.tax}</p>
+                                    </div>
+
+                                    <div className="mt-6 border-t pt-4">
+                                      <p className="text-sm text-[#64748B]">Terms</p>
+                                      <p className="mt-1 text-sm text-[#475569]">{quoteTemplates.find(q => q.id === selectedTemplateId)?.terms}</p>
+                                    </div>
+
+                                    <div className="mt-6 flex items-center justify-between">
+                                      <div>
+                                        <p className="text-sm font-semibold">{quoteTemplates.find(q => q.id === selectedTemplateId)?.signature}</p>
+                                      </div>
+                                      <div>
+                                        <button type="button" className="rounded-[10px] bg-white border border-[#E5E7EB] px-3 py-2 text-sm">Preview</button>
+                                      </div>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             ) : (
