@@ -81,6 +81,79 @@ const STAT_CARDS = [
   { label: "New Leads", value: "38", delta: "+11%" },
 ];
 
+const KNOWLEDGE_HUB_SOURCES = [
+  {
+    title: "Business Information",
+    description: "Core company details used for greeting customers and explaining your services.",
+    status: "Live",
+    statusDetail: "Published",
+    lastUpdated: "Today",
+  },
+  {
+    title: "Products & Services",
+    description: "Product and service details that the assistant can reference during sales conversations.",
+    status: "Live",
+    statusDetail: "Updated recently",
+    lastUpdated: "2 hours ago",
+  },
+  {
+    title: "Frequently Asked Questions",
+    description: "Common customer questions and answers to improve response accuracy.",
+    status: "Draft",
+    statusDetail: "Needs review",
+    lastUpdated: "Yesterday",
+  },
+  {
+    title: "Business Policies",
+    description: "Company policies governing returns, delivery, and cancellations.",
+    status: "Live",
+    statusDetail: "Reviewed",
+    lastUpdated: "3 days ago",
+  },
+  {
+    title: "Locations",
+    description: "Store and service areas that help the assistant answer location requests.",
+    status: "Live",
+    statusDetail: "Published",
+    lastUpdated: "1 week ago",
+  },
+  {
+    title: "Business Hours",
+    description: "Opening and closing times used for responding to time-based questions.",
+    status: "Live",
+    statusDetail: "Published",
+    lastUpdated: "Today",
+  },
+  {
+    title: "Pricing",
+    description: "Current pricing details for plans, packages, and add-ons.",
+    status: "Draft",
+    statusDetail: "Pending approval",
+    lastUpdated: "Today",
+  },
+  {
+    title: "Payment Methods",
+    description: "Payment options available to customers, including mobile money and bank transfer.",
+    status: "Live",
+    statusDetail: "Published",
+    lastUpdated: "Yesterday",
+  },
+  {
+    title: "Documents",
+    description: "Important documents such as contracts, invoices, and onboarding guides.",
+    status: "Draft",
+    statusDetail: "Add missing files",
+    lastUpdated: "4 days ago",
+  },
+  {
+    title: "Website",
+    description: "Web content and links that the assistant can reference for online support.",
+    status: "Live",
+    statusDetail: "Published",
+    lastUpdated: "2 days ago",
+  },
+];
+
 // Micro-interaction tokens
 const TRANSITION = "transition-all duration-200 ease-out";
 const TRANSITION_FAST = "transition-all duration-150 ease-out";
@@ -2667,29 +2740,50 @@ export default function DashboardLayout() {
 
                     {activeWorkspaceSection === "Knowledge Hub" && (
                       <div className="space-y-6">
-                        <div className="rounded-[24px] bg-[#F9FAFB] p-6">
-                          <p className="text-sm font-semibold text-[#111827]">
-                            Knowledge sources
-                          </p>
-                          <p className="mt-3 text-sm text-[#6B7280]">
-                            The AI uses these references to answer customers accurately.
-                          </p>
-                          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                            <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-4">
-                              <p className="text-sm font-semibold text-[#111827]">
-                                FAQs
-                              </p>
-                              <p className="mt-2 text-sm text-[#6B7280]">
-                                {faqItems.length} saved question-answer pairs.
-                              </p>
+                        <div className={`${CARD_SOFT} space-y-6 max-h-[calc(100vh-280px)] overflow-hidden`}>
+                          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                              <p className="text-sm uppercase tracking-[0.2em] text-[#6B7280]">Knowledge Hub</p>
+                              <h2 className="mt-2 text-2xl font-semibold text-[#111827]">Manage your knowledge sources</h2>
+                              <p className="mt-2 text-sm text-[#6B7280]">Keep your assistant up to date with the latest business knowledge.</p>
                             </div>
-                            <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-4">
-                              <p className="text-sm font-semibold text-[#111827]">
-                                Products & services
-                              </p>
-                              <p className="mt-2 text-sm text-[#6B7280]">
-                                {knowledgeProducts.length} product entries.
-                              </p>
+                            <button
+                              type="button"
+                              className="inline-flex items-center justify-center rounded-[20px] bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"
+                            >
+                              <Plus className="mr-2 h-4 w-4" />
+                              Add Knowledge Source
+                            </button>
+                          </div>
+
+                          <div className="max-h-[calc(100vh-360px)] overflow-y-auto pr-2">
+                            <div className="grid gap-6 xl:grid-cols-2">
+                              {KNOWLEDGE_HUB_SOURCES.map((source) => (
+                                <div key={source.title} className={`${CARD} p-6`}>
+                                  <div className="flex items-start justify-between gap-4">
+                                    <div>
+                                      <p className="text-sm font-semibold text-[#111827]">{source.title}</p>
+                                      <p className="mt-2 text-sm text-[#64748B]">{source.description}</p>
+                                    </div>
+                                    <span className="rounded-full border border-[#E5E7EB] bg-[#F8FAFB] px-3 py-1 text-xs font-semibold text-[#475569]">{source.status}</span>
+                                  </div>
+
+                                  <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                                    <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
+                                      <p className="text-xs uppercase tracking-[0.2em] text-[#6B7280]">Last updated</p>
+                                      <p className="mt-2 text-sm font-semibold text-[#111827]">{source.lastUpdated}</p>
+                                    </div>
+                                    <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
+                                      <p className="text-xs uppercase tracking-[0.2em] text-[#6B7280]">Knowledge status</p>
+                                      <p className="mt-2 text-sm font-semibold text-[#111827]">{source.statusDetail}</p>
+                                    </div>
+                                  </div>
+
+                                  <div className="mt-6 flex justify-end">
+                                    <button type="button" className="rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6]">Edit</button>
+                                  </div>
+                                </div>
+                              ))}
                             </div>
                           </div>
                         </div>
