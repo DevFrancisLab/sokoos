@@ -1261,6 +1261,27 @@ export default function DashboardLayout() {
     setSkills((s) => s.map((k) => k.id === id ? { ...k, enabled: !k.enabled, status: k.enabled ? 'Disabled' : 'Active' } : k));
   };
 
+  type PolicySection = {
+    id: string;
+    title: string;
+    content: string;
+    expanded?: boolean;
+  };
+
+  const [policySections, setPolicySections] = useState<PolicySection[]>([
+    { id: 'pol-1', title: 'Business Rules', content: 'Business rules that govern pricing, discounts, and who can approve special offers.' },
+    { id: 'pol-2', title: 'Refund Policy', content: 'Refunds processed within 30 days with receipt and original packaging.' },
+    { id: 'pol-3', title: 'Cancellation Policy', content: 'Orders can be cancelled within 2 hours of placement; after that contact support.' },
+    { id: 'pol-4', title: 'Delivery Policy', content: 'Standard delivery in 3-5 business days. Express options available.' },
+    { id: 'pol-5', title: 'Escalation Rules', content: 'Escalate to manager for refunds over $1000 or repeated complaints.' },
+    { id: 'pol-6', title: 'Outside Business Hours', content: 'Outside hours, log requests and respond next business day.' },
+    { id: 'pol-7', title: 'Allowed AI Actions', content: 'AI may suggest products and collect basic contact info; it must not provide legal advice.' },
+  ]);
+
+  const togglePolicy = (id: string) => setPolicySections((s) => s.map((p) => p.id === id ? { ...p, expanded: !p.expanded } : p));
+
+  const updatePolicyContent = (id: string, value: string) => setPolicySections((s) => s.map((p) => p.id === id ? { ...p, content: value } : p));
+
   const [assistantTab, setAssistantTab] =
     useState<(typeof ASSISTANT_TABS)[number]>("Business Knowledge");
   const [activeConversation, setActiveConversation] = useState<string>("c1");
@@ -3649,30 +3670,30 @@ export default function DashboardLayout() {
                     {activeWorkspaceSection === "Policies" && (
                       <div className="space-y-6">
                         <div className="rounded-[24px] bg-[#F9FAFB] p-6">
-                          <p className="text-sm font-semibold text-[#111827]">
-                            Policies
-                          </p>
-                          <p className="mt-3 text-sm text-[#6B7280]">
-                            Rules that guide how the AI responds.
-                          </p>
+                          <p className="text-sm font-semibold text-[#111827]">Policies</p>
+                          <p className="mt-3 text-sm text-[#6B7280]">Group and edit policies that guide assistant behavior and business rules.</p>
                         </div>
-                        <div className="space-y-4">
-                          <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-5">
-                            <p className="text-sm font-semibold text-[#111827]">
-                              Return policy
-                            </p>
-                            <p className="mt-2 text-sm text-[#6B7280]">
-                              {policies.returnPolicy}
-                            </p>
-                          </div>
-                          <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-5">
-                            <p className="text-sm font-semibold text-[#111827]">
-                              Delivery policy
-                            </p>
-                            <p className="mt-2 text-sm text-[#6B7280]">
-                              {policies.deliveryPolicy}
-                            </p>
-                          </div>
+
+                        <div className="space-y-3">
+                          {policySections.map((sec) => (
+                            <div key={sec.id} className="rounded-[12px] border border-[#EEF2F6] bg-white">
+                              <button onClick={() => togglePolicy(sec.id)} className="w-full text-left flex items-center justify-between px-4 py-3">
+                                <div>
+                                  <p className="text-sm font-semibold">{sec.title}</p>
+                                  <p className="text-xs text-[#94A3B8]">Click to expand and edit</p>
+                                </div>
+                                <div className="text-xs text-[#64748B]">{sec.expanded ? 'Collapse' : 'Expand'}</div>
+                              </button>
+                              {sec.expanded && (
+                                <div className="px-4 pb-4">
+                                  <textarea value={sec.content} onChange={(e) => updatePolicyContent(sec.id, e.target.value)} className="mt-2 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm min-h-[120px]" />
+                                  <div className="mt-2 flex justify-end gap-2">
+                                    <button onClick={() => togglePolicy(sec.id)} className="rounded-[8px] border border-[#E5E7EB] px-3 py-2 text-sm">Done</button>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          ))}
                         </div>
                       </div>
                     )}
