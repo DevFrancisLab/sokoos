@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { AuthCard } from "@/components/auth-card";
 import { AuthHeader } from "@/components/auth-header";
@@ -17,6 +17,13 @@ export const Route = createFileRoute("/sign-up")({
 
 export default function SignUp() {
   const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && localStorage.getItem("sokoos-auth") === "true") {
+      void router.navigate({ to: "/dashboard", replace: true });
+    }
+  }, [router]);
+
   const [formValues, setFormValues] = useState({
     fullName: "",
     businessEmail: "",

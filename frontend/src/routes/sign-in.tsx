@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { AuthCard } from "@/components/auth-card";
 import { AuthHeader } from "@/components/auth-header";
@@ -16,6 +16,13 @@ export const Route = createFileRoute("/sign-in")({
 
 export default function SignIn() {
   const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && localStorage.getItem("sokoos-auth") === "true") {
+      void router.navigate({ to: "/dashboard", replace: true });
+    }
+  }, [router]);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [touched, setTouched] = useState({ email: false, password: false });
@@ -36,6 +43,7 @@ export default function SignIn() {
     if (!isValid) return;
 
     if (email.trim() === "demo@sokoos.com" && password === "password123") {
+      localStorage.setItem("sokoos-auth", "true");
       signInMock({ id: "demo", name: "Demo User" });
       setAuthError("");
       void router.navigate({ to: "/dashboard" });
