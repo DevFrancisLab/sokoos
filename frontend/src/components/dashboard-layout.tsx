@@ -931,6 +931,113 @@ export default function DashboardLayout() {
       image: "/assets/sample/headphones.jpg",
     },
   ];
+  type MediaAsset = {
+    id: string;
+    name: string;
+    fileType: string;
+    uploadDate: string;
+    size: string;
+    url: string;
+    mime?: string;
+  };
+
+  const [catalogueSubsection, setCatalogueSubsection] = useState<
+    | "Products & Services"
+    | "Categories"
+    | "Collections"
+    | "Media Library"
+    | "Documents"
+    | "Price Lists"
+    | "Quote Templates"
+    | "Imports"
+  >("Products & Services");
+
+  const [mediaAssets, setMediaAssets] = useState<MediaAsset[]>([
+    {
+      id: "m-img-1",
+      name: "Ginger Citrus Salad.jpg",
+      fileType: "Image",
+      uploadDate: new Date().toLocaleString(),
+      size: "128 KB",
+      url: "/assets/sample/food-salad.jpg",
+      mime: "image/jpeg",
+    },
+    {
+      id: "m-pdf-1",
+      name: "Restaurant Menu.pdf",
+      fileType: "PDF",
+      uploadDate: new Date().toLocaleString(),
+      size: "320 KB",
+      url: "/assets/sample/menu.pdf",
+      mime: "application/pdf",
+    },
+    {
+      id: "m-video-1",
+      name: "Salon Promo.mp4",
+      fileType: "Video",
+      uploadDate: new Date().toLocaleString(),
+      size: "6.2 MB",
+      url: "/assets/sample/promo.mp4",
+      mime: "video/mp4",
+    },
+    {
+      id: "m-logo-1",
+      name: "Clinic Logo.png",
+      fileType: "Logo",
+      uploadDate: new Date().toLocaleString(),
+      size: "48 KB",
+      url: "/assets/sample/clinic.jpg",
+      mime: "image/png",
+    },
+  ]);
+
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const handleFiles = (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    const arr = Array.from(files).map((f) => ({
+      id: `asset-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      name: f.name,
+      fileType: f.type.split("/")[0] || "file",
+      uploadDate: new Date().toLocaleString(),
+      size: `${Math.round(f.size / 1024)} KB`,
+      url: URL.createObjectURL(f),
+      mime: f.type,
+    }));
+    setMediaAssets((prev) => [...arr, ...prev]);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    handleFiles(e.dataTransfer.files);
+  };
+
+  const onDragOver = (e: React.DragEvent<HTMLDivElement>) => e.preventDefault();
+
+  const viewAsset = (asset: MediaAsset) => {
+    window.open(asset.url, "_blank");
+  };
+
+  const renameAsset = (id: string) => {
+    const a = mediaAssets.find((m) => m.id === id);
+    if (!a) return;
+    const newName = window.prompt("Rename file", a.name);
+    if (newName) setMediaAssets((prev) => prev.map((m) => (m.id === id ? { ...m, name: newName } : m)));
+  };
+
+  const deleteAsset = (id: string) => {
+    const a = mediaAssets.find((m) => m.id === id);
+    if (!a) return;
+    if (!window.confirm(`Delete ${a.name}?`)) return;
+    // revoke object URL if it was created dynamically
+    try {
+      if (a.url.startsWith("blob:")) URL.revokeObjectURL(a.url);
+    } catch (e) {
+      /* ignore */
+    }
+    setMediaAssets((prev) => prev.filter((m) => m.id !== id));
+  };
   const [assistantTab, setAssistantTab] =
     useState<(typeof ASSISTANT_TABS)[number]>("Business Knowledge");
   const [activeConversation, setActiveConversation] = useState<string>("c1");
@@ -2885,16 +2992,22 @@ export default function DashboardLayout() {
                                 "Price Lists",
                                 "Quote Templates",
                                 "Imports",
-                              ].map((item) => (
-                                <button
-                                  key={item}
-                                  type="button"
-                                  className="flex w-full items-center justify-between rounded-[12px] px-3 py-2 text-left text-sm font-medium transition hover:bg-[#EFF6FF]"
-                                >
-                                  <span>{item}</span>
-                                  <ChevronRight className="h-4 w-4 text-[#94A3B8]" />
-                                </button>
-                              ))}
+                              ].map((item) => {
+                                const active = catalogueSubsection === item;
+                                return (
+                                  <button
+                                    key={item}
+                                    type="button"
+                                    onClick={() => setCatalogueSubsection(item as any)}
+                                    className={`flex w-full items-center justify-between rounded-[12px] px-3 py-2 text-left text-sm font-medium transition ${
+                                      active ? "bg-[#ECFDF5] text-[#065F46]" : "hover:bg-[#EFF6FF]"
+                                    }`}
+                                  >
+                                    <span>{item}</span>
+                                    <ChevronRight className="h-4 w-4 text-[#94A3B8]" />
+                                  </button>
+                                );
+                              })}
                             </div>
                           </aside>
 
@@ -2910,31 +3023,79 @@ export default function DashboardLayout() {
                               <div className="text-sm text-[#64748B]">Showing {CATALOG_ITEMS.length} items</div>
                             </div>
 
-                            <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
-                              <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                                {CATALOG_ITEMS.map((item) => (
-                                  <div key={item.id} className="rounded-[12px] border border-[#EEF2F6] bg-white p-4 min-h-[160px] flex flex-col justify-between">
-                                    <div className="flex items-start gap-4">
-                                      <img src={item.image} alt={item.name} className="h-20 w-28 flex-shrink-0 rounded-lg object-cover" />
-                                      <div className="flex-1">
-                                        <p className="text-sm font-semibold text-[#111827]">{item.name}</p>
-                                        <p className="mt-1 text-xs text-[#6B7280]">{item.category} • {item.imagesCount} images • {item.documentsCount} docs</p>
-                                        <p className="mt-2 text-sm text-[#475569] line-clamp-3">{item.description}</p>
-                                      </div>
-                                      <div className="text-right ml-2">
-                                        <p className="text-sm font-semibold text-[#111827]">{item.price}</p>
-                                        <p className={`mt-2 text-xs ${item.availability === 'In stock' || item.availability === 'Available' ? 'text-[#16A34A]' : 'text-[#F59E0B]'}`}>{item.availability}</p>
-                                      </div>
-                                    </div>
-
-                                    <div className="mt-3 flex justify-end gap-2">
-                                      <button type="button" className="rounded-[10px] border border-[#E5E7EB] bg-white px-3 py-1 text-sm font-semibold">Edit</button>
-                                      <button type="button" className="rounded-[10px] border border-[#FECACA] bg-white px-3 py-1 text-sm font-semibold text-[#B91C1C]">Delete</button>
-                                    </div>
+                            {catalogueSubsection === "Media Library" ? (
+                              <div>
+                                <div
+                                  onDrop={onDrop}
+                                  onDragOver={onDragOver}
+                                  className="rounded-[12px] border-dashed border-2 border-[#E5E7EB] bg-[#FAFAFB] p-6 text-center mb-4"
+                                >
+                                  <p className="text-sm font-semibold text-[#111827]">Drag & drop files here</p>
+                                  <p className="mt-2 text-sm text-[#64748B]">Images, PDFs, videos, logos, brochures, flyers, certificates, menus, floor plans</p>
+                                  <div className="mt-4">
+                                    <input ref={fileInputRef} type="file" multiple className="hidden" onChange={(e) => handleFiles(e.target.files)} />
+                                    <button type="button" onClick={() => fileInputRef.current?.click()} className="inline-flex items-center gap-2 rounded-[12px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Upload files</button>
                                   </div>
-                                ))}
+                                </div>
+
+                                <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                                  {mediaAssets.map((asset) => (
+                                    <div key={asset.id} className="rounded-[12px] border border-[#EEF2F6] bg-white p-3">
+                                      <div className="h-36 w-full mb-3 flex items-center justify-center bg-[#F8FAFB] rounded-md overflow-hidden">
+                                        {asset.mime?.startsWith("image") ? (
+                                          <img src={asset.url} alt={asset.name} className="object-cover h-full w-full" />
+                                        ) : asset.mime?.startsWith("video") ? (
+                                          <video src={asset.url} controls className="h-full w-full object-cover" />
+                                        ) : asset.mime?.includes("pdf") ? (
+                                          <div className="flex flex-col items-center justify-center text-sm text-[#475569]">
+                                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 2h7l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" stroke="#64748B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                                            <span className="mt-2">PDF</span>
+                                          </div>
+                                        ) : (
+                                          <div className="text-sm text-[#475569]">{asset.fileType}</div>
+                                        )}
+                                      </div>
+
+                                      <p className="text-sm font-semibold text-[#111827] truncate">{asset.name}</p>
+                                      <p className="text-xs text-[#6B7280]">{asset.fileType} • {asset.size}</p>
+                                      <p className="text-xs text-[#94A3B8]">{asset.uploadDate}</p>
+
+                                      <div className="mt-3 flex justify-end gap-2">
+                                        <button type="button" onClick={() => viewAsset(asset)} className="rounded-[8px] border border-[#E5E7EB] bg-white px-2 py-1 text-xs font-semibold">View</button>
+                                        <button type="button" onClick={() => renameAsset(asset.id)} className="rounded-[8px] border border-[#E5E7EB] bg-white px-2 py-1 text-xs font-semibold">Rename</button>
+                                        <button type="button" onClick={() => deleteAsset(asset.id)} className="rounded-[8px] border border-[#FECACA] bg-white px-2 py-1 text-xs font-semibold text-[#B91C1C]">Delete</button>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
                               </div>
-                            </div>
+                            ) : (
+                              <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+                                  {CATALOG_ITEMS.map((item) => (
+                                    <div key={item.id} className="rounded-[12px] border border-[#EEF2F6] bg-white p-4 min-h-[160px] flex flex-col justify-between">
+                                      <div className="flex items-start gap-4">
+                                        <img src={item.image} alt={item.name} className="h-20 w-28 flex-shrink-0 rounded-lg object-cover" />
+                                        <div className="flex-1">
+                                          <p className="text-sm font-semibold text-[#111827]">{item.name}</p>
+                                          <p className="mt-1 text-xs text-[#6B7280]">{item.category} • {item.imagesCount} images • {item.documentsCount} docs</p>
+                                          <p className="mt-2 text-sm text-[#475569] line-clamp-3">{item.description}</p>
+                                        </div>
+                                        <div className="text-right ml-2">
+                                          <p className="text-sm font-semibold text-[#111827]">{item.price}</p>
+                                          <p className={`mt-2 text-xs ${item.availability === 'In stock' || item.availability === 'Available' ? 'text-[#16A34A]' : 'text-[#F59E0B]'}`}>{item.availability}</p>
+                                        </div>
+                                      </div>
+
+                                      <div className="mt-3 flex justify-end gap-2">
+                                        <button type="button" className="rounded-[10px] border border-[#E5E7EB] bg-white px-3 py-1 text-sm font-semibold">Edit</button>
+                                        <button type="button" className="rounded-[10px] border border-[#FECACA] bg-white px-3 py-1 text-sm font-semibold text-[#B91C1C]">Delete</button>
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>
