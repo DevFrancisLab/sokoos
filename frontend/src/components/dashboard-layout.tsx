@@ -1282,6 +1282,77 @@ export default function DashboardLayout() {
 
   const updatePolicyContent = (id: string, value: string) => setPolicySections((s) => s.map((p) => p.id === id ? { ...p, content: value } : p));
 
+  type ChatMessage = { id: string; role: 'user' | 'ai'; text: string; time: string };
+  type Conversation = { id: string; title: string; messages: ChatMessage[] };
+
+  const SAMPLE_PROMPTS = [
+    'What is your return policy?',
+    'Recommend a product for a small restaurant',
+    'Offer an upgrade for this customer',
+    'Generate a quote for 10 units of Item X',
+  ];
+
+  const [conversations, setConversations] = useState<Conversation[]>([
+    {
+      id: 'c-1',
+      title: 'Pricing test',
+      messages: [
+        { id: 'm-1', role: 'user', text: 'How much does Product A cost?', time: new Date().toLocaleTimeString() },
+        { id: 'm-2', role: 'ai', text: 'Product A is $99. Would you like a bulk discount?', time: new Date().toLocaleTimeString() },
+      ],
+    },
+    {
+      id: 'c-2',
+      title: 'Booking flow',
+      messages: [
+        { id: 'm-1', role: 'user', text: 'Can I book an installation?', time: new Date().toLocaleTimeString() },
+      ],
+    },
+  ]);
+
+  const [selectedConversationId, setSelectedConversationId] = useState<string | null>(conversations[0]?.id ?? null);
+  const [inputText, setInputText] = useState('');
+  const [aiAnalysis, setAiAnalysis] = useState<any>(null);
+
+  const createConversation = (title?: string) => {
+    const c: Conversation = { id: `c-${Date.now()}`, title: title ?? `Conversation ${conversations.length + 1}`, messages: [] };
+    setConversations((s) => [c, ...s]);
+    setSelectedConversationId(c.id);
+  };
+
+  const addMessage = (convId: string, role: 'user' | 'ai', text: string) => {
+    const msg: ChatMessage = { id: `m-${Date.now()}`, role, text, time: new Date().toLocaleTimeString() };
+    setConversations((s) => s.map((c) => c.id === convId ? { ...c, messages: [...c.messages, msg] } : c));
+    return msg;
+  };
+
+  const generateMockAnalysis = (userText: string, aiText: string) => {
+    const intents = ['Pricing Query', 'Booking', 'Upgrade Request', 'General Inquiry'];
+    const actions = ['Recommend product', 'Generate quote', 'Schedule appointment', 'Collect contact info'];
+    return {
+      intent: intents[Math.floor(Math.random() * intents.length)],
+      confidence: `${Math.floor(70 + Math.random() * 30)}%`,
+      knowledgeUsed: ['Product DB', 'Pricing Rules', 'FAQ'].slice(0, 1 + Math.floor(Math.random() * 3)),
+      suggestedActions: actions.slice(0, 1 + Math.floor(Math.random() * actions.length)),
+      responseTime: `${Math.floor(100 + Math.random() * 400)}ms`,
+      generatedReply: aiText,
+      knowledgeSources: ['Products API', 'Pricing Table'].slice(0, 1 + Math.floor(Math.random() * 2)),
+    };
+  };
+
+  const simulateAiResponse = (convId: string, userText: string) => {
+    addMessage(convId, 'user', userText);
+    setInputText('');
+    // simulate typing
+    setAiAnalysis(null);
+    setTimeout(() => {
+      const aiReply = `Mock reply to: "${userText}"`;
+      const aiMsg = addMessage(convId, 'ai', aiReply);
+      const analysis = generateMockAnalysis(userText, aiMsg.text);
+      setAiAnalysis(analysis);
+    }, 600 + Math.random() * 400);
+  };
+
   const [assistantTab, setAssistantTab] =
     useState<(typeof ASSISTANT_TABS)[number]>("Business Knowledge");
   const [activeConversation, setActiveConversation] = useState<string>("c1");
@@ -3700,49 +3771,86 @@ export default function DashboardLayout() {
 
                     {activeWorkspaceSection === "Test AI" && (
                       <div className="space-y-6">
-                        <div className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6">
-                          <p className="text-sm font-semibold text-[#111827]">
-                            Test the assistant
-                          </p>
-                          <p className="mt-3 text-sm text-[#6B7280]">
-                            Send a sample prompt and review the mock response.
-                          </p>
+                        <div className="rounded-[24px] bg-[#F9FAFB] p-6 flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-semibold text-[#111827]">Test the assistant</p>
+                            <p className="mt-2 text-sm text-[#6B7280]">Run mock conversations and review AI analysis.</p>
+                          </div>
+                          <div className="flex gap-2">
+                            <button onClick={() => createConversation()} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">New Conversation</button>
+                          </div>
                         </div>
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setTestAiMessages((current) => [
-                              ...current,
-                              {
-                                id: `user-test-${Date.now()}`,
-                                role: "user",
-                                text: "How can I upgrade my plan?",
-                              },
-                              {
-                                id: `ai-test-${Date.now()}`,
-                                role: "ai",
-                                text: "You can upgrade anytime through the customer portal. I can send the link now.",
-                                source: "Sales Playbooks → Upgrade",
-                              },
-                            ])
-                          }
-                          className="rounded-[24px] bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white hover:bg-[#16A34A]"
-                        >
-                          Run test prompt
-                        </button>
-                        <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-5">
-                          <p className="text-sm font-semibold text-[#111827]">
-                            Recent mock chat
-                          </p>
-                          <div className="mt-3 space-y-3 text-sm text-[#6B7280]">
-                            {testAiMessages.slice(-2).map((message) => (
-                              <div key={message.id} className="rounded-[20px] bg-[#F9FAFB] p-3">
-                                <p className="font-semibold text-[#111827]">
-                                  {message.role === "ai" ? "AI" : "User"}
-                                </p>
-                                <p className="mt-1">{message.text}</p>
+
+                        <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
+                          <div>
+                            <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-3">
+                              <p className="text-sm font-semibold">Conversations</p>
+                              <div className="mt-3 space-y-2">
+                                {conversations.map((c) => (
+                                  <button key={c.id} onClick={() => setSelectedConversationId(c.id)} className={`w-full text-left rounded-[8px] p-3 ${selectedConversationId === c.id ? 'bg-[#ECFDF5] border border-[#22C55E]' : 'bg-white border border-[#EEF2F6]'}`}>
+                                    <div className="flex items-center justify-between">
+                                      <div>
+                                        <p className="text-sm font-semibold">{c.title}</p>
+                                        <p className="text-xs text-[#64748B] truncate">{c.messages[c.messages.length - 1]?.text || 'No messages yet'}</p>
+                                      </div>
+                                      <div className="text-xs text-[#94A3B8]">{c.messages.length}</div>
+                                    </div>
+                                  </button>
+                                ))}
                               </div>
-                            ))}
+                            </div>
+
+                            <div className="mt-4 rounded-[12px] border border-[#EEF2F6] bg-white p-3">
+                              <p className="text-sm font-semibold">Suggested prompts</p>
+                              <div className="mt-3 flex flex-wrap gap-2">
+                                {SAMPLE_PROMPTS.map((p) => (
+                                  <button key={p} onClick={() => { if (selectedConversationId) simulateAiResponse(selectedConversationId, p); else { createConversation('New'); setTimeout(()=> simulateAiResponse(conversations[0]?.id ?? '', p),100); } }} className="rounded-full border border-[#E5E7EB] bg-white px-3 py-1 text-sm">{p}</button>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div>
+                            <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-4">
+                              <div className="flex items-center justify-between">
+                                <p className="text-sm font-semibold">Chat</p>
+                                <div className="text-xs text-[#94A3B8]">{conversations.find(c=>c.id===selectedConversationId)?.title}</div>
+                              </div>
+
+                              <div className="mt-3 max-h-[320px] overflow-auto space-y-3">
+                                {(conversations.find(c=>c.id===selectedConversationId)?.messages ?? []).map((m) => (
+                                  <div key={m.id} className={`rounded-[12px] p-3 ${m.role === 'ai' ? 'bg-[#F8FAFB]' : 'bg-[#ECFDF5] text-right'}`}>
+                                    <p className="text-xs text-[#64748B]">{m.role === 'ai' ? 'AI' : 'You'}</p>
+                                    <p className="mt-1 text-sm">{m.text}</p>
+                                    <p className="mt-1 text-xs text-[#94A3B8]">{m.time}</p>
+                                  </div>
+                                ))}
+                              </div>
+
+                              <div className="mt-4">
+                                <div className="flex gap-2">
+                                  <input value={inputText} onChange={(e)=>setInputText(e.target.value)} placeholder="Type a test prompt" className="flex-1 rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+                                  <button onClick={() => { if (selectedConversationId && inputText.trim()) simulateAiResponse(selectedConversationId, inputText.trim()); }} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Send</button>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="mt-4 rounded-[12px] border border-[#EEF2F6] bg-white p-4">
+                              <p className="text-sm font-semibold">AI Analysis</p>
+                              {aiAnalysis ? (
+                                <div className="mt-3 text-sm text-[#475569] space-y-2">
+                                  <p><span className="font-semibold">Intent:</span> {aiAnalysis.intent}</p>
+                                  <p><span className="font-semibold">Confidence:</span> {aiAnalysis.confidence}</p>
+                                  <p><span className="font-semibold">Knowledge Used:</span> {aiAnalysis.knowledgeUsed.join(', ')}</p>
+                                  <p><span className="font-semibold">Suggested Actions:</span> {aiAnalysis.suggestedActions.join(', ')}</p>
+                                  <p><span className="font-semibold">Response Time:</span> {aiAnalysis.responseTime}</p>
+                                  <p><span className="font-semibold">Generated Reply:</span> {aiAnalysis.generatedReply}</p>
+                                  <p><span className="font-semibold">Knowledge Sources:</span> {aiAnalysis.knowledgeSources.join(', ')}</p>
+                                </div>
+                              ) : (
+                                <p className="mt-3 text-sm text-[#94A3B8]">No analysis yet. Send a prompt to generate a mock response and analysis.</p>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
