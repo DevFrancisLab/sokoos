@@ -767,6 +767,17 @@ export default function DashboardLayout() {
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [selected, setSelected] = useState<string>("Home");
+  const [activeWorkspaceSection, setActiveWorkspaceSection] =
+    useState<
+      | "Identity"
+      | "Knowledge Hub"
+      | "Catalogue"
+      | "Sales Playbooks"
+      | "Skills"
+      | "Policies"
+      | "Test AI"
+      | "Performance"
+    >("Identity");
   const [assistantTab, setAssistantTab] =
     useState<(typeof ASSISTANT_TABS)[number]>("Business Knowledge");
   const [activeConversation, setActiveConversation] = useState<string>("c1");
@@ -804,8 +815,14 @@ export default function DashboardLayout() {
     sourceOverrides[id] ?? original ?? "owner";
   const [messageInput, setMessageInput] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const identityFormRef = useRef<HTMLDivElement | null>(null);
   const [sidebarHovered, setSidebarHovered] = useState(false);
   const [customerPanelFading, setCustomerPanelFading] = useState(false);
+
+  const scrollIdentityForm = (offset: number) => {
+    if (!identityFormRef.current) return;
+    identityFormRef.current.scrollBy({ top: offset, behavior: "smooth" });
+  };
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -915,11 +932,19 @@ export default function DashboardLayout() {
   const [allowScheduleAppointments, setAllowScheduleAppointments] =
     useState(true);
   const [assistantName, setAssistantName] = useState("Nuru");
+  const [assistantRole, setAssistantRole] = useState("Customer Success Assistant");
+  const [assistantDescription, setAssistantDescription] = useState(
+    "Helps customers find the right internet plan, answer product questions, and support onboarding.",
+  );
   const [primaryLanguage, setPrimaryLanguage] =
     useState<(typeof LANGUAGES)[number]>("English");
   const [secondaryLanguage, setSecondaryLanguage] =
     useState<(typeof LANGUAGES)[number]>("Kiswahili");
   const [tone, setTone] = useState<(typeof TONES)[number]>("Friendly");
+  const [timezone, setTimezone] = useState("East Africa Time (EAT)");
+  const [responseSpeed, setResponseSpeed] = useState("Fast");
+  const [avatarFileName, setAvatarFileName] = useState("profile-avatar.png");
+  const [saveConfirmation, setSaveConfirmation] = useState("");
   const [upsellProducts, setUpsellProducts] = useState(true);
   const [recommendAlternatives, setRecommendAlternatives] = useState(true);
   const [closeSalesAutomatically, setCloseSalesAutomatically] = useState(false);
@@ -2220,6 +2245,639 @@ export default function DashboardLayout() {
               )}
             </div>
           )}
+          {selected === "AI Employee" && (
+            <div className={`space-y-6 ${CARD}`}>
+              <div className="grid gap-6 xl:grid-cols-[0.35fr_0.65fr]">
+                <aside className="sticky top-6 space-y-5 rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
+                  <div>
+                    <p className="text-xs uppercase tracking-[0.2em] text-[#6B7280]">
+                      AI Employee Workspace
+                    </p>
+                    <h2 className="mt-3 text-2xl font-semibold text-[#111827]">
+                      Assistant workspace
+                    </h2>
+                    <p className="mt-3 text-sm leading-6 text-[#6B7280]">
+                      Manage your assistant identity, knowledge sources, and
+                      live behavior from one place.
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    {([
+                      "Identity",
+                      "Knowledge Hub",
+                      "Catalogue",
+                      "Sales Playbooks",
+                      "Skills",
+                      "Policies",
+                      "Test AI",
+                      "Performance",
+                    ] as const).map((section) => {
+                      const active = activeWorkspaceSection === section;
+                      return (
+                        <button
+                          key={section}
+                          type="button"
+                          onClick={() => setActiveWorkspaceSection(section)}
+                          className={`flex w-full items-center justify-between rounded-[20px] px-4 py-3 text-left text-sm font-semibold transition ${
+                            active
+                              ? "bg-[#22C55E] text-white"
+                              : "bg-white text-[#111827] hover:bg-[#EFF6FF]"
+                          }`}
+                        >
+                          <span>{section}</span>
+                          <ChevronRight className="h-4 w-4" />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </aside>
+
+                <main className="space-y-6">
+                  <div className={CARD_SOFT}>
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                      <div>
+                        <p className="text-sm uppercase tracking-[0.2em] text-[#6B7280]">
+                          Workspace overview
+                        </p>
+                        <h2 className="mt-2 text-2xl font-semibold text-[#111827]">
+                          AI Employee command center
+                        </h2>
+                        <p className="mt-2 text-sm text-[#6B7280]">
+                          Review your assistant profile, knowledge, policies,
+                          and performance in one place.
+                        </p>
+                      </div>
+                      <div className="space-y-2 text-right">
+                        <p className="text-sm font-semibold text-[#111827]">
+                          Active section
+                        </p>
+                        <p className="text-sm text-[#6B7280]">
+                          {activeWorkspaceSection}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                    {activeWorkspaceSection === "Identity" && (
+                      <div className="relative space-y-8">
+                        <div className="absolute right-0 top-0 flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => scrollIdentityForm(-240)}
+                            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#111827] transition hover:bg-[#F3F4F6]"
+                          >
+                            <ChevronUp className="h-4 w-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => scrollIdentityForm(240)}
+                            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#111827] transition hover:bg-[#F3F4F6]"
+                          >
+                            <ChevronDown className="h-4 w-4" />
+                          </button>
+                        </div>
+
+                        <div
+                          ref={identityFormRef}
+                          className="max-h-[calc(100vh-280px)] overflow-y-auto pr-4 pb-6"
+                        >
+                          <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+                            <div className="space-y-6">
+                              <div className="rounded-[28px] border border-[#E5E7EB] bg-white p-6 shadow-sm transition-shadow duration-200 hover:shadow-lg">
+                                <div className="rounded-[24px] bg-[#F8FAFB] p-5">
+                                  <p className={SECTION_HEADING}>General</p>
+                                  <h3 className={PANEL_TITLE}>AI Employee profile</h3>
+                                  <p className="mt-2 text-sm leading-6 text-[#475569]">
+                                    Set the assistant identity, business role, and personality used across customer conversations.
+                                  </p>
+                                </div>
+
+                                <div className="grid gap-5">
+                                  <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
+                                    <label className="block text-sm font-semibold text-[#111827]" htmlFor="assistant-name">
+                                      AI Employee Name
+                                    </label>
+                                    <p className="mt-1 text-sm text-[#64748B]">
+                                      The name customers see when the assistant greets them.
+                                    </p>
+                                    <input
+                                      id="assistant-name"
+                                      value={assistantName}
+                                      onChange={(event) => setAssistantName(event.target.value)}
+                                      placeholder="Nuru"
+                                      className={INPUT_FIELD}
+                                    />
+                                  </div>
+
+                                  <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
+                                    <label className="block text-sm font-semibold text-[#111827]" htmlFor="assistant-role">
+                                      Role
+                                    </label>
+                                    <p className="mt-1 text-sm text-[#64748B]">
+                                      Describe the assistant’s primary responsibility.
+                                    </p>
+                                    <input
+                                      id="assistant-role"
+                                      value={assistantRole}
+                                      onChange={(event) => setAssistantRole(event.target.value)}
+                                      placeholder="Customer Success Assistant"
+                                      className={INPUT_FIELD}
+                                    />
+                                  </div>
+
+                                  <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
+                                    <label className="block text-sm font-semibold text-[#111827]" htmlFor="assistant-description">
+                                      Short Description
+                                    </label>
+                                    <p className="mt-1 text-sm text-[#64748B]">
+                                      Summarize the assistant’s voice in one concise sentence.
+                                    </p>
+                                    <textarea
+                                      id="assistant-description"
+                                      value={assistantDescription}
+                                      onChange={(event) => setAssistantDescription(event.target.value)}
+                                      rows={4}
+                                      placeholder="Helps customers find the right internet plan, answer product questions, and support onboarding."
+                                      className={`${INPUT_FIELD} min-h-[150px] resize-none`}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="rounded-[28px] border border-[#E5E7EB] bg-white p-6 shadow-sm transition-shadow duration-200 hover:shadow-lg">
+                                <div className="rounded-[24px] bg-[#F8FAFB] p-5">
+                                  <p className={SECTION_HEADING}>Language & tone</p>
+                                  <h3 className={PANEL_TITLE}>Conversation style</h3>
+                                </div>
+
+                                <div className="space-y-6">
+                                  <div className="grid gap-4 sm:grid-cols-2">
+                                    <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
+                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="primary-language">
+                                        Primary Language
+                                      </label>
+                                      <p className="mt-1 text-sm text-[#64748B]">
+                                        Main language for customer greetings and messages.
+                                      </p>
+                                      <select
+                                        id="primary-language"
+                                        value={primaryLanguage}
+                                        onChange={(event) => setPrimaryLanguage(event.target.value as typeof LANGUAGES[number])}
+                                        className={INPUT_FIELD}
+                                      >
+                                        {LANGUAGES.map((lang) => (
+                                          <option key={lang} value={lang}>
+                                            {lang}
+                                          </option>
+                                        ))}
+                                      </select>
+                                    </div>
+
+                                    <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
+                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="secondary-language">
+                                        Secondary Language
+                                      </label>
+                                      <p className="mt-1 text-sm text-[#64748B]">
+                                        Secondary language used for fallback responses.
+                                      </p>
+                                      <select
+                                        id="secondary-language"
+                                        value={secondaryLanguage}
+                                        onChange={(event) => setSecondaryLanguage(event.target.value as typeof LANGUAGES[number])}
+                                        className={INPUT_FIELD}
+                                      >
+                                        {LANGUAGES.map((lang) => (
+                                          <option key={lang} value={lang}>
+                                            {lang}
+                                          </option>
+                                        ))}
+                                      </select>
+                                    </div>
+                                  </div>
+
+                                  <div className="grid gap-4 sm:grid-cols-2">
+                                    <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
+                                      <p className="block text-sm font-semibold text-[#111827]">Personality</p>
+                                      <p className="mt-1 text-sm text-[#64748B]">
+                                        Pick a personality that fits your business.
+                                      </p>
+                                      <div className="mt-3 grid gap-2">
+                                        {PERSONALITIES.map((personalityOption) => (
+                                          <button
+                                            key={personalityOption}
+                                            type="button"
+                                            onClick={() => setPersonality(personalityOption)}
+                                            className={`w-full min-h-[56px] rounded-[20px] px-4 py-3 text-sm font-semibold text-left transition ${
+                                              personality === personalityOption
+                                                ? "border-[#22C55E] bg-[#ECFDF5] text-[#111827] shadow-sm"
+                                                : "border border-[#E5E7EB] bg-white text-[#475569] hover:border-[#CBD5E1]"
+                                            }`}
+                                          >
+                                            {personalityOption}
+                                          </button>
+                                        ))}
+                                      </div>
+                                    </div>
+
+                                    <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
+                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="tone">
+                                        Tone
+                                      </label>
+                                      <p className="mt-1 text-sm text-[#64748B]">
+                                        The assistant’s formality when replying.
+                                      </p>
+                                      <select
+                                        id="tone"
+                                        value={tone}
+                                        onChange={(event) => setTone(event.target.value as typeof TONES[number])}
+                                        className={INPUT_FIELD}
+                                      >
+                                        {TONES.map((toneOption) => (
+                                          <option key={toneOption} value={toneOption}>
+                                            {toneOption}
+                                          </option>
+                                        ))}
+                                      </select>
+                                      <div className="mt-4 rounded-[20px] border border-dashed border-[#CBD5E1] bg-white p-4 text-sm text-[#475569]">
+                                        <p className="font-semibold text-[#111827]">Tone preview</p>
+                                        <p className="mt-2">
+                                          {tone === "Friendly"
+                                            ? "Hi there! I’m here to help you choose the best plan."
+                                            : tone === "Professional"
+                                            ? "Hello. I’m ready to assist with your service options."
+                                            : tone === "Formal"
+                                            ? "Good day. I can provide more information on our offerings."
+                                            : "Hello. I’m here to help you find the right solution."}
+                                        </p>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div className="grid gap-4 sm:grid-cols-2">
+                                    <div>
+                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-hours">
+                                        Business Hours
+                                      </label>
+                                      <input
+                                        id="business-hours"
+                                        value={businessHours}
+                                        onChange={(event) => setBusinessHours(event.target.value)}
+                                        placeholder="Mon–Fri, 8:00 AM - 6:00 PM"
+                                        className={INPUT_FIELD}
+                                      />
+                                    </div>
+
+                                    <div>
+                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="timezone">
+                                        Timezone
+                                      </label>
+                                      <select
+                                        id="timezone"
+                                        value={timezone}
+                                        onChange={(event) => setTimezone(event.target.value)}
+                                        className={INPUT_FIELD}
+                                      >
+                                        <option>East Africa Time (EAT)</option>
+                                        <option>West Africa Time (WAT)</option>
+                                        <option>Central Africa Time (CAT)</option>
+                                        <option>UTC</option>
+                                      </select>
+                                    </div>
+                                  </div>
+
+                                  <div>
+                                    <label className="block text-sm font-semibold text-[#111827]" htmlFor="response-speed">
+                                      Response Speed
+                                    </label>
+                                    <p className="mt-1 text-sm text-[#64748B]">
+                                      How quickly the assistant responds to customer prompts.
+                                    </p>
+                                    <select
+                                      id="response-speed"
+                                      value={responseSpeed}
+                                      onChange={(event) => setResponseSpeed(event.target.value)}
+                                      className={INPUT_FIELD}
+                                    >
+                                      <option>Instant</option>
+                                      <option>Fast</option>
+                                      <option>Balanced</option>
+                                      <option>Detailed</option>
+                                    </select>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="space-y-6">
+                              <div className={`${CARD} p-6`}>
+                                <div className="flex items-center gap-4">
+                                  <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[#E5F6EC] text-3xl font-semibold text-[#065F46]">
+                                    {assistantName.slice(0, 1) || "A"}
+                                  </div>
+                                  <div>
+                                    <p className="text-sm font-semibold text-[#111827]">
+                                      Assistant avatar
+                                    </p>
+                                    <p className="mt-1 text-sm text-[#6B7280]">
+                                      Upload a profile image so customers recognize the assistant.
+                                    </p>
+                                  </div>
+                                </div>
+
+                                <div className="mt-6 rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+                                  <div className="flex items-center justify-between gap-3">
+                                    <div>
+                                      <p className="text-sm font-semibold text-[#111827]">Selected file</p>
+                                      <p className="mt-1 text-sm text-[#6B7280]">{avatarFileName}</p>
+                                    </div>
+                                    <label className="inline-flex cursor-pointer items-center rounded-full border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6]">
+                                      <Image className="mr-2 h-4 w-4" />
+                                      Upload
+                                      <input
+                                        type="file"
+                                        accept="image/*"
+                                        className="hidden"
+                                        onChange={(event) => {
+                                          const file = event.target.files?.[0];
+                                          if (file) {
+                                            setAvatarFileName(file.name);
+                                          }
+                                        }}
+                                      />
+                                    </label>
+                                  </div>
+                                  <p className="mt-4 text-sm text-[#64748B]">
+                                    Recommended: PNG or JPG, up to 5MB.
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div className={`${CARD} p-6 space-y-6`}>
+                                <div>
+                                  <p className="text-sm font-semibold text-[#111827]">Summary</p>
+                                  <p className="mt-1 text-sm text-[#6B7280]">
+                                    Quick overview of the current assistant configuration.
+                                  </p>
+                                </div>
+
+                                <div className="grid gap-4">
+                                  <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
+                                    <p className="text-sm font-semibold text-[#111827]">Name</p>
+                                    <p className="mt-1 text-sm text-[#6B7280]">{assistantName}</p>
+                                  </div>
+                                  <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
+                                    <p className="text-sm font-semibold text-[#111827]">Role</p>
+                                    <p className="mt-1 text-sm text-[#6B7280]">{assistantRole}</p>
+                                  </div>
+                                  <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
+                                    <p className="text-sm font-semibold text-[#111827]">Timezone</p>
+                                    <p className="mt-1 text-sm text-[#6B7280]">{timezone}</p>
+                                  </div>
+                                  <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
+                                    <p className="text-sm font-semibold text-[#111827]">Response Speed</p>
+                                    <p className="mt-1 text-sm text-[#6B7280]">{responseSpeed}</p>
+                                  </div>
+                                </div>
+
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setSaveConfirmation("Saved successfully.");
+                                    window.setTimeout(() => setSaveConfirmation(""), 3200);
+                                  }}
+                                  className="w-full rounded-[24px] bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"
+                                >
+                                  Save Changes
+                                </button>
+
+                                {saveConfirmation && (
+                                  <p className="text-sm text-[#16A34A]">
+                                    {saveConfirmation}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                    {activeWorkspaceSection === "Knowledge Hub" && (
+                      <div className="space-y-6">
+                        <div className="rounded-[24px] bg-[#F9FAFB] p-6">
+                          <p className="text-sm font-semibold text-[#111827]">
+                            Knowledge sources
+                          </p>
+                          <p className="mt-3 text-sm text-[#6B7280]">
+                            The AI uses these references to answer customers accurately.
+                          </p>
+                          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                            <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-4">
+                              <p className="text-sm font-semibold text-[#111827]">
+                                FAQs
+                              </p>
+                              <p className="mt-2 text-sm text-[#6B7280]">
+                                {faqItems.length} saved question-answer pairs.
+                              </p>
+                            </div>
+                            <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-4">
+                              <p className="text-sm font-semibold text-[#111827]">
+                                Products & services
+                              </p>
+                              <p className="mt-2 text-sm text-[#6B7280]">
+                                {knowledgeProducts.length} product entries.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {activeWorkspaceSection === "Catalogue" && (
+                      <div className="space-y-6">
+                        <p className="text-sm font-semibold text-[#111827]">
+                          Product catalogue
+                        </p>
+                        <div className="grid gap-4 sm:grid-cols-2">
+                          {knowledgeProducts.slice(0, 4).map((product) => (
+                            <div
+                              key={product.id}
+                              className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-5"
+                            >
+                              <p className="text-sm font-semibold text-[#111827]">
+                                {product.name || "Untitled product"}
+                              </p>
+                              <p className="mt-2 text-sm text-[#6B7280]">
+                                {product.price || "No price set"}
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {activeWorkspaceSection === "Sales Playbooks" && (
+                      <div className="space-y-6">
+                        <div className="rounded-[24px] bg-[#F9FAFB] p-6">
+                          <p className="text-sm font-semibold text-[#111827]">
+                            Sales playbooks
+                          </p>
+                          <p className="mt-3 text-sm text-[#6B7280]">
+                            Ready prompts to help the AI support sales conversations.
+                          </p>
+                        </div>
+                        <div className="grid gap-4 sm:grid-cols-2">
+                          {[
+                            "Welcome message",
+                            "Price quote follow-up",
+                            "Upgrade recommendation",
+                          ].map((item) => (
+                            <div
+                              key={item}
+                              className="rounded-[24px] border border-[#E5E7EB] bg-white p-6"
+                            >
+                              <p className="text-sm font-semibold text-[#111827]">
+                                {item}
+                              </p>
+                              <p className="mt-2 text-sm text-[#6B7280]">
+                                Mock script for AI responses and lead engagement.
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {activeWorkspaceSection === "Skills" && (
+                      <div className="space-y-6">
+                        <div className="grid gap-4 sm:grid-cols-2">
+                          <div className="rounded-[24px] bg-[#F9FAFB] p-6">
+                            <p className="text-sm font-semibold text-[#111827]">
+                              Upsell behavior
+                            </p>
+                            <p className="mt-3 text-sm text-[#6B7280]">
+                              {upsellProducts ? "AI may suggest add-ons." : "AI avoids upselling."}
+                            </p>
+                          </div>
+                          <div className="rounded-[24px] bg-[#F9FAFB] p-6">
+                            <p className="text-sm font-semibold text-[#111827]">
+                              Recommendation style
+                            </p>
+                            <p className="mt-3 text-sm text-[#6B7280]">
+                              {recommendAlternatives ? "Offers alternatives automatically." : "Only answers direct questions."}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {activeWorkspaceSection === "Policies" && (
+                      <div className="space-y-6">
+                        <div className="rounded-[24px] bg-[#F9FAFB] p-6">
+                          <p className="text-sm font-semibold text-[#111827]">
+                            Policies
+                          </p>
+                          <p className="mt-3 text-sm text-[#6B7280]">
+                            Rules that guide how the AI responds.
+                          </p>
+                        </div>
+                        <div className="space-y-4">
+                          <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-5">
+                            <p className="text-sm font-semibold text-[#111827]">
+                              Return policy
+                            </p>
+                            <p className="mt-2 text-sm text-[#6B7280]">
+                              {policies.returnPolicy}
+                            </p>
+                          </div>
+                          <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-5">
+                            <p className="text-sm font-semibold text-[#111827]">
+                              Delivery policy
+                            </p>
+                            <p className="mt-2 text-sm text-[#6B7280]">
+                              {policies.deliveryPolicy}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {activeWorkspaceSection === "Test AI" && (
+                      <div className="space-y-6">
+                        <div className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6">
+                          <p className="text-sm font-semibold text-[#111827]">
+                            Test the assistant
+                          </p>
+                          <p className="mt-3 text-sm text-[#6B7280]">
+                            Send a sample prompt and review the mock response.
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setTestAiMessages((current) => [
+                              ...current,
+                              {
+                                id: `user-test-${Date.now()}`,
+                                role: "user",
+                                text: "How can I upgrade my plan?",
+                              },
+                              {
+                                id: `ai-test-${Date.now()}`,
+                                role: "ai",
+                                text: "You can upgrade anytime through the customer portal. I can send the link now.",
+                                source: "Sales Playbooks → Upgrade",
+                              },
+                            ])
+                          }
+                          className="rounded-[24px] bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white hover:bg-[#16A34A]"
+                        >
+                          Run test prompt
+                        </button>
+                        <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-5">
+                          <p className="text-sm font-semibold text-[#111827]">
+                            Recent mock chat
+                          </p>
+                          <div className="mt-3 space-y-3 text-sm text-[#6B7280]">
+                            {testAiMessages.slice(-2).map((message) => (
+                              <div key={message.id} className="rounded-[20px] bg-[#F9FAFB] p-3">
+                                <p className="font-semibold text-[#111827]">
+                                  {message.role === "ai" ? "AI" : "User"}
+                                </p>
+                                <p className="mt-1">{message.text}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {activeWorkspaceSection === "Performance" && (
+                      <div className="space-y-6">
+                        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                          {STAT_CARDS.map((metric) => (
+                            <div key={metric.label} className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-5">
+                              <p className="text-sm font-semibold text-[#111827]">{metric.label}</p>
+                              <p className="mt-3 text-3xl font-semibold text-[#111827]">{metric.value}</p>
+                              <p className="mt-2 text-sm text-[#6B7280]">{metric.delta} vs last week</p>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
+                          <p className="text-sm font-semibold text-[#111827]">AI performance summary</p>
+                          <p className="mt-3 text-sm text-[#6B7280]">
+                            The assistant is resolving customer inquiries quickly while maintaining high satisfaction.
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                </main>
+              </div>
+            </div>
+          )}
           {selected === "Marketing" && (
             <div className={`space-y-6 ${CARD}`}>
               <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -2382,1203 +3040,6 @@ export default function DashboardLayout() {
                     </div>
                   </div>
                 </section>
-              </div>
-            </div>
-          )}
-          {selected === "Marketing" && (
-            <div className="p-6 bg-white rounded-[24px] border border-[#E5E7EB]/30 shadow-none">
-              Sokoos Broadcasts
-            </div>
-          )}
-          {selected === "Growth Pages" && (
-            <div className={`space-y-6 ${CARD}`}>
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">
-                    Customers
-                  </p>
-                  <h2 className="mt-2 text-2xl font-semibold text-[#111827]">
-                    Customer management
-                  </h2>
-                  <p className="mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl">
-                    Search and review your WhatsApp leads with easy access to
-                    contact details and customer statuses.
-                  </p>
-                </div>
-                <div className="relative w-full sm:w-auto">
-                  <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9CA3AF]" />
-                  <input
-                    type="text"
-                    value={customerSearch}
-                    onChange={(event) => setCustomerSearch(event.target.value)}
-                    placeholder="Search customers by name, phone, product or status"
-                    className="w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] py-3 pl-11 pr-4 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5] sm:w-85"
-                  />
-                </div>
-              </div>
-
-              <div className="overflow-hidden rounded-[24px] border border-[#E5E7EB]/20 bg-[#FFFFFF] shadow-none">
-                <table className="min-w-full divide-y divide-[#E5E7EB]/20 text-left">
-                  <thead className="bg-[#F9FAFB]">
-                    <tr>
-                      <th className="px-6 py-4 text-sm font-semibold text-[#6B7280]">
-                        Avatar
-                      </th>
-                      <th className="px-6 py-4 text-sm font-semibold text-[#6B7280]">
-                        Name
-                      </th>
-                      <th className="px-6 py-4 text-sm font-semibold text-[#6B7280]">
-                        Phone
-                      </th>
-                      <th className="px-6 py-4 text-sm font-semibold text-[#6B7280]">
-                        Lead Status
-                      </th>
-                      <th className="px-6 py-4 text-sm font-semibold text-[#6B7280]">
-                        Interested Product
-                      </th>
-                      <th className="px-6 py-4 text-sm font-semibold text-[#6B7280]">
-                        Last Interaction
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-[#E5E7EB]/20 bg-white">
-                    {filteredCustomers
-                      .filter((customer) => !isPersonalByPhone(customer.phone))
-                      .map((customer) => (
-                        <tr
-                          key={customer.id}
-                          className="hover:bg-[#F3F4F6] transition-colors"
-                        >
-                          <td className="px-6 py-4">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ECFCE7] text-sm font-semibold text-[#166534]">
-                              {customer.avatar}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <p className="font-medium text-[#111827]">
-                              {customer.name}
-                            </p>
-                          </td>
-                          <td className="px-6 py-4 text-sm text-[#6B7280]">
-                            {customer.phone}
-                          </td>
-                          <td className="px-6 py-4">
-                            <span
-                              className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
-                                customer.leadStatus === "Hot lead"
-                                  ? "bg-[#FEE2E2] text-[#B91C1C]"
-                                  : customer.leadStatus === "Warm lead"
-                                    ? "bg-[#FEF3C7] text-[#92400E]"
-                                    : "bg-[#EFF6FF] text-[#1D4ED8]"
-                              }`}
-                            >
-                              {customer.leadStatus}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 text-sm text-[#6B7280]">
-                            {customer.interestedProduct}
-                          </td>
-                          <td className="px-6 py-4 text-sm text-[#6B7280]">
-                            {customer.lastInteraction}
-                          </td>
-                        </tr>
-                      ))}
-                    {filteredCustomers.length === 0 && (
-                      <tr>
-                        <td
-                          colSpan={6}
-                          className="px-6 py-8 text-center text-sm text-[#6B7280]"
-                        >
-                          No customers match your search.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-          {selected === "AI Employee" && (
-            <div className={`space-y-6 ${CARD}`}>
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                  <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">
-                    Catalog
-                  </p>
-                  <h2 className="mt-2 text-2xl font-semibold text-[#111827]">
-                    Product catalog
-                  </h2>
-                  <p className="mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl">
-                    Manage your product offerings with active toggles, edit
-                    actions, and quick deletes.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  className="inline-flex items-center justify-center rounded-[20px] bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"
-                >
-                  Add Product
-                </button>
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                {products.map((product) => (
-                  <div
-                    key={product.id}
-                    className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm"
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div>
-                        <p className="text-sm font-medium text-[#6B7280]">
-                          {product.name}
-                        </p>
-                        <p className="mt-3 text-3xl font-semibold text-[#111827]">
-                          {product.price}
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setProducts((current) =>
-                            current.map((item) =>
-                              item.id === product.id
-                                ? { ...item, active: !item.active }
-                                : item,
-                            ),
-                          )
-                        }
-                        className={`rounded-full px-3 py-2 text-xs font-semibold ${
-                          product.active
-                            ? "bg-[#DCFCE7] text-[#166534]"
-                            : "bg-[#E5E7EB] text-[#6B7280]"
-                        }`}
-                      >
-                        {product.active ? "Active" : "Inactive"}
-                      </button>
-                    </div>
-                    <div className="mt-6 flex flex-wrap items-center gap-3">
-                      <button
-                        type="button"
-                        className="rounded-[24px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6]"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        type="button"
-                        className="rounded-[24px] border border-[#FCA5A5] bg-[#FEE2E2] px-4 py-2 text-sm font-semibold text-[#B91C1C] transition hover:bg-[#FECACA]"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-          {selected === "AI Employee" && (
-            <div className="space-y-6">
-              <div className={CARD}>
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">
-                      AI Assistant
-                    </p>
-                    <h2 className="mt-2 text-2xl font-semibold text-[#111827]">
-                      Customize your business AI agent
-                    </h2>
-                    <p className="mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl">
-                      Manage knowledge, behavior rules, escalation and testing
-                      from one place. All settings are mocked for now.
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setAiEnabled((value) => !value)}
-                    className={`inline-flex items-center rounded-[24px] px-4 py-3 text-sm font-semibold transition ${
-                      aiEnabled
-                        ? "bg-[#22C55E] text-white"
-                        : "bg-[#E5E7EB] text-[#6B7280]"
-                    }`}
-                  >
-                    {aiEnabled ? "AI Enabled" : "AI Disabled"}
-                  </button>
-                </div>
-
-                <div className="mt-6 border-b border-[#E5E7EB] pb-4">
-                  <div className="flex flex-wrap gap-2">
-                    {ASSISTANT_TABS.map((tab) => {
-                      const active = assistantTab === tab;
-                      return (
-                        <button
-                          key={tab}
-                          type="button"
-                          onClick={() => setAssistantTab(tab)}
-                          className={`rounded-[24px] px-4 py-2 text-sm font-semibold transition ${
-                            active
-                              ? "bg-[#22C55E] text-white"
-                              : "bg-[#F3F4F6] text-[#374151] hover:bg-[#E5E7EB]"
-                          }`}
-                        >
-                          {tab}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div className="space-y-6 pt-4">
-                  {assistantTab === "Business Knowledge" && (
-                    <div className="space-y-6">
-                      <section className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
-                        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                          <div>
-                            <p className="text-sm font-semibold text-[#111827]">
-                              Business Information
-                            </p>
-                            <p className="mt-2 text-sm text-[#6B7280]">
-                              This information helps the AI respond accurately
-                              to customer questions.
-                            </p>
-                          </div>
-                        </div>
-                        <div className="mt-6 grid gap-4 lg:grid-cols-2">
-                          <div className="space-y-4">
-                            <div>
-                              <label className="text-sm font-semibold text-[#111827]">
-                                Business Name
-                              </label>
-                              <input
-                                value={businessInfo.name}
-                                onChange={(event) =>
-                                  setBusinessInfo((prev) => ({
-                                    ...prev,
-                                    name: event.target.value,
-                                  }))
-                                }
-                                className={INPUT_FIELD_WHITE}
-                              />
-                            </div>
-                            <div>
-                              <label className="text-sm font-semibold text-[#111827]">
-                                Business Type
-                              </label>
-                              <input
-                                value={businessInfo.type}
-                                onChange={(event) =>
-                                  setBusinessInfo((prev) => ({
-                                    ...prev,
-                                    type: event.target.value,
-                                  }))
-                                }
-                                className={INPUT_FIELD_WHITE}
-                              />
-                            </div>
-                            <div>
-                              <label className="text-sm font-semibold text-[#111827]">
-                                Business Hours
-                              </label>
-                              <input
-                                value={businessInfo.hours}
-                                onChange={(event) =>
-                                  setBusinessInfo((prev) => ({
-                                    ...prev,
-                                    hours: event.target.value,
-                                  }))
-                                }
-                                className={INPUT_FIELD_WHITE}
-                              />
-                            </div>
-                          </div>
-                          <div className="space-y-4">
-                            <div>
-                              <label className="text-sm font-semibold text-[#111827]">
-                                About Us
-                              </label>
-                              <textarea
-                                value={businessInfo.about}
-                                onChange={(event) =>
-                                  setBusinessInfo((prev) => ({
-                                    ...prev,
-                                    about: event.target.value,
-                                  }))
-                                }
-                                className="mt-2 min-h-[130px] w-full rounded-[24px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
-                              />
-                            </div>
-                            <div>
-                              <label className="text-sm font-semibold text-[#111827]">
-                                Service Areas
-                              </label>
-                              <input
-                                value={businessInfo.serviceAreas}
-                                onChange={(event) =>
-                                  setBusinessInfo((prev) => ({
-                                    ...prev,
-                                    serviceAreas: event.target.value,
-                                  }))
-                                }
-                                className={INPUT_FIELD_WHITE}
-                              />
-                            </div>
-                            <div>
-                              <label className="text-sm font-semibold text-[#111827]">
-                                Payment Methods
-                              </label>
-                              <input
-                                value={businessInfo.paymentMethods}
-                                onChange={(event) =>
-                                  setBusinessInfo((prev) => ({
-                                    ...prev,
-                                    paymentMethods: event.target.value,
-                                  }))
-                                }
-                                className={INPUT_FIELD_WHITE}
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </section>
-
-                      <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                          <div>
-                            <p className="text-sm font-semibold text-[#111827]">
-                              Products & Services
-                            </p>
-                            <p className="mt-2 text-sm text-[#6B7280]">
-                              Add the plans and prices your AI assistant should
-                              know.
-                            </p>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setKnowledgeProducts((current) => [
-                                ...current,
-                                {
-                                  id: `kp${current.length + 1}`,
-                                  name: "",
-                                  price: "",
-                                },
-                              ])
-                            }
-                            className="inline-flex items-center rounded-[24px] bg-[#22C55E] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
-                          >
-                            Add product
-                          </button>
-                        </div>
-                        <div className="mt-6 space-y-4">
-                          {knowledgeProducts.map((product) => (
-                            <div
-                              key={product.id}
-                              className="grid gap-4 lg:grid-cols-[1fr_0.6fr]"
-                            >
-                              <input
-                                value={product.name}
-                                onChange={(event) =>
-                                  setKnowledgeProducts((current) =>
-                                    current.map((item) =>
-                                      item.id === product.id
-                                        ? { ...item, name: event.target.value }
-                                        : item,
-                                    ),
-                                  )
-                                }
-                                placeholder="Product name"
-                                className="w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
-                              />
-                              <input
-                                value={product.price}
-                                onChange={(event) =>
-                                  setKnowledgeProducts((current) =>
-                                    current.map((item) =>
-                                      item.id === product.id
-                                        ? { ...item, price: event.target.value }
-                                        : item,
-                                    ),
-                                  )
-                                }
-                                placeholder="Price"
-                                className="w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      </section>
-
-                      <section className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
-                        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                          <div>
-                            <p className="text-sm font-semibold text-[#111827]">
-                              FAQs
-                            </p>
-                            <p className="mt-2 text-sm text-[#6B7280]">
-                              Common customer questions the assistant will use
-                              when answering.
-                            </p>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() =>
-                              setFaqItems((current) => [
-                                ...current,
-                                {
-                                  id: `faq${current.length + 1}`,
-                                  question: "",
-                                  answer: "",
-                                },
-                              ])
-                            }
-                            className="inline-flex items-center rounded-[24px] bg-[#22C55E] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
-                          >
-                            Add FAQ
-                          </button>
-                        </div>
-                        <div className="mt-6 space-y-4">
-                          {faqItems.map((faq) => (
-                            <div
-                              key={faq.id}
-                              className="space-y-3 rounded-[24px] bg-white p-5 shadow-sm"
-                            >
-                              <div>
-                                <label className="text-sm font-semibold text-[#111827]">
-                                  Question
-                                </label>
-                                <input
-                                  value={faq.question}
-                                  onChange={(event) =>
-                                    setFaqItems((current) =>
-                                      current.map((item) =>
-                                        item.id === faq.id
-                                          ? {
-                                              ...item,
-                                              question: event.target.value,
-                                            }
-                                          : item,
-                                      ),
-                                    )
-                                  }
-                                  className="mt-2 w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
-                                />
-                              </div>
-                              <div>
-                                <label className="text-sm font-semibold text-[#111827]">
-                                  Answer
-                                </label>
-                                <textarea
-                                  value={faq.answer}
-                                  onChange={(event) =>
-                                    setFaqItems((current) =>
-                                      current.map((item) =>
-                                        item.id === faq.id
-                                          ? {
-                                              ...item,
-                                              answer: event.target.value,
-                                            }
-                                          : item,
-                                      ),
-                                    )
-                                  }
-                                  className="mt-2 min-h-[100px] w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
-                                />
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </section>
-
-                      <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                        <div className="space-y-4">
-                          <div>
-                            <p className="text-sm font-semibold text-[#111827]">
-                              Policies
-                            </p>
-                            <p className="mt-2 text-sm text-[#6B7280]">
-                              This information is used by the AI when responding
-                              to customers.
-                            </p>
-                          </div>
-                          <div className="space-y-4">
-                            <div>
-                              <label className="text-sm font-semibold text-[#111827]">
-                                Return Policy
-                              </label>
-                              <textarea
-                                value={policies.returnPolicy}
-                                onChange={(event) =>
-                                  setPolicies((prev) => ({
-                                    ...prev,
-                                    returnPolicy: event.target.value,
-                                  }))
-                                }
-                                className="mt-2 min-h-[100px] w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
-                              />
-                            </div>
-                            <div>
-                              <label className="text-sm font-semibold text-[#111827]">
-                                Delivery Policy
-                              </label>
-                              <textarea
-                                value={policies.deliveryPolicy}
-                                onChange={(event) =>
-                                  setPolicies((prev) => ({
-                                    ...prev,
-                                    deliveryPolicy: event.target.value,
-                                  }))
-                                }
-                                className="mt-2 min-h-[100px] w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
-                              />
-                            </div>
-                            <div>
-                              <label className="text-sm font-semibold text-[#111827]">
-                                Cancellation Policy
-                              </label>
-                              <textarea
-                                value={policies.cancellationPolicy}
-                                onChange={(event) =>
-                                  setPolicies((prev) => ({
-                                    ...prev,
-                                    cancellationPolicy: event.target.value,
-                                  }))
-                                }
-                                className="mt-2 min-h-[100px] w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </section>
-                    </div>
-                  )}
-
-                  {assistantTab === "AI Settings" && (
-                    <div className="space-y-6">
-                      <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                        <p className="text-sm font-semibold text-[#111827]">
-                          AI Identity
-                        </p>
-                        <p className="mt-1 text-sm text-[#6B7280]">
-                          Give your assistant a name and personality.
-                        </p>
-                        <div className="mt-4 space-y-4">
-                          <div>
-                            <label
-                              className="text-sm font-semibold text-[#111827]"
-                              htmlFor="assistant-name"
-                            >
-                              Assistant Name
-                            </label>
-                            <input
-                              id="assistant-name"
-                              type="text"
-                              value={assistantName}
-                              onChange={(event) =>
-                                setAssistantName(event.target.value)
-                              }
-                              className="mt-2 w-full rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
-                              placeholder="e.g., Nuru"
-                            />
-                          </div>
-                        </div>
-                      </section>
-
-                      <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                        <p className="text-sm font-semibold text-[#111827]">
-                          Languages
-                        </p>
-                        <p className="mt-1 text-sm text-[#6B7280]">
-                          Choose which languages your assistant uses.
-                        </p>
-                        <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                          <div>
-                            <label
-                              className="text-sm font-semibold text-[#111827]"
-                              htmlFor="primary-language"
-                            >
-                              Primary Language
-                            </label>
-                            <div className="mt-2 flex flex-wrap gap-2">
-                              {LANGUAGES.map((option) => (
-                                <button
-                                  key={option}
-                                  type="button"
-                                  onClick={() => setPrimaryLanguage(option)}
-                                  className={`rounded-[24px] border px-3 py-2 text-sm font-semibold transition ${
-                                    primaryLanguage === option
-                                      ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]"
-                                      : "border-[#E5E7EB] bg-[#F9FAFB] text-[#111827] hover:bg-white"
-                                  }`}
-                                >
-                                  {option}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                          <div>
-                            <label
-                              className="text-sm font-semibold text-[#111827]"
-                              htmlFor="secondary-language"
-                            >
-                              Secondary Language
-                            </label>
-                            <div className="mt-2 flex flex-wrap gap-2">
-                              {LANGUAGES.map((option) => (
-                                <button
-                                  key={option}
-                                  type="button"
-                                  onClick={() => setSecondaryLanguage(option)}
-                                  className={`rounded-[24px] border px-3 py-2 text-sm font-semibold transition ${
-                                    secondaryLanguage === option
-                                      ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]"
-                                      : "border-[#E5E7EB] bg-[#F9FAFB] text-[#111827] hover:bg-white"
-                                  }`}
-                                >
-                                  {option}
-                                </button>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      </section>
-
-                      <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                        <p className="text-sm font-semibold text-[#111827]">
-                          Tone
-                        </p>
-                        <p className="mt-1 text-sm text-[#6B7280]">
-                          Select how your assistant communicates with customers.
-                        </p>
-                        <div className="mt-4 space-y-3">
-                          {TONES.map((option) => (
-                            <label
-                              key={option}
-                              className="flex items-center gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition"
-                            >
-                              <input
-                                type="radio"
-                                name="tone"
-                                value={option}
-                                checked={tone === option}
-                                onChange={() => setTone(option)}
-                                className="w-4 h-4"
-                              />
-                              <span className="text-sm font-semibold text-[#111827]">
-                                {option}
-                              </span>
-                            </label>
-                          ))}
-                        </div>
-                      </section>
-
-                      <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                        <p className="text-sm font-semibold text-[#111827]">
-                          Sales Behavior
-                        </p>
-                        <p className="mt-1 text-sm text-[#6B7280]">
-                          Configure how your assistant handles sales
-                          interactions.
-                        </p>
-                        <div className="mt-4 space-y-3">
-                          <label className="flex items-center gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
-                            <input
-                              type="checkbox"
-                              checked={upsellProducts}
-                              onChange={() =>
-                                setUpsellProducts((value) => !value)
-                              }
-                              className="w-4 h-4"
-                            />
-                            <span className="text-sm font-semibold text-[#111827]">
-                              Upsell Products
-                            </span>
-                          </label>
-                          <label className="flex items-center gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
-                            <input
-                              type="checkbox"
-                              checked={recommendAlternatives}
-                              onChange={() =>
-                                setRecommendAlternatives((value) => !value)
-                              }
-                              className="w-4 h-4"
-                            />
-                            <span className="text-sm font-semibold text-[#111827]">
-                              Recommend Alternatives
-                            </span>
-                          </label>
-                          <label className="flex items-center gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition">
-                            <input
-                              type="checkbox"
-                              checked={closeSalesAutomatically}
-                              onChange={() =>
-                                setCloseSalesAutomatically((value) => !value)
-                              }
-                              className="w-4 h-4"
-                            />
-                            <span className="text-sm font-semibold text-[#111827]">
-                              Close Sales Automatically
-                            </span>
-                          </label>
-                        </div>
-                      </section>
-
-                      <div className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-5 text-sm text-[#6B7280]">
-                        <p className="font-semibold text-[#111827]">Note</p>
-                        <p className="mt-2">
-                          These settings control how your assistant represents
-                          your business and interacts with customers. All
-                          changes are saved automatically.
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  {assistantTab === "Test AI" && (
-                    <div className="grid gap-6 lg:grid-cols-[1.4fr_0.8fr]">
-                      <section className="rounded-[24px] border border-[#E5E7EB] bg-white shadow-sm">
-                        <div className="flex h-full min-h-[620px] flex-col">
-                          <div className="border-b border-[#E5E7EB] p-6">
-                            <p className="text-sm font-semibold text-[#111827]">
-                              Test your assistant
-                            </p>
-                            <p className="mt-2 text-sm text-[#6B7280]">
-                              Run a mock conversation before customers interact
-                              with the AI.
-                            </p>
-                          </div>
-                          <div
-                            ref={testAiScrollRef}
-                            className="flex-1 overflow-y-auto px-6 py-5 space-y-4 bg-[#F9FAFB]"
-                          >
-                            {testAiMessages.map((message) => (
-                              <div
-                                key={message.id}
-                                className={`max-w-[90%] ${message.role === "user" ? "ml-auto text-right" : "mr-auto text-left"}`}
-                              >
-                                <div
-                                  className={`inline-block rounded-[24px] px-5 py-4 text-sm shadow-sm ${
-                                    message.role === "user"
-                                      ? "bg-[#22C55E] text-white"
-                                      : "bg-white text-[#111827]"
-                                  }`}
-                                >
-                                  <p>{message.text}</p>
-                                </div>
-                                {message.role === "ai" && message.source ? (
-                                  <span className="mt-2 inline-flex rounded-full bg-[#E5E7EB] px-3 py-1 text-[11px] font-semibold text-[#475569]">
-                                    Source: {message.source}
-                                  </span>
-                                ) : null}
-                              </div>
-                            ))}
-                          </div>
-                          <div className="sticky bottom-0 border-t border-[#E5E7EB] bg-white p-4">
-                            <div className="space-y-3">
-                              <label
-                                className="text-sm font-semibold text-[#111827]"
-                                htmlFor="test-ai-prompt"
-                              >
-                                Message
-                              </label>
-                              <textarea
-                                id="test-ai-prompt"
-                                value={testAiInput}
-                                onChange={(event) =>
-                                  setTestAiInput(event.target.value)
-                                }
-                                onKeyDown={(event) => {
-                                  if (
-                                    event.key === "Enter" &&
-                                    !event.shiftKey
-                                  ) {
-                                    event.preventDefault();
-                                    sendTestAiMessage();
-                                  }
-                                }}
-                                className="min-h-[110px] w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
-                                placeholder="Type a message to the assistant..."
-                              />
-                              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                                <p className="text-xs text-[#6B7280]">
-                                  This is a mocked experience only; no backend
-                                  call is made.
-                                </p>
-                                <button
-                                  type="button"
-                                  onClick={sendTestAiMessage}
-                                  className="inline-flex items-center justify-center rounded-[24px] bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
-                                >
-                                  Send message
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </section>
-
-                      <section className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
-                        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#6B7280]">
-                          Quick prompts
-                        </p>
-                        <div className="mt-4 space-y-3">
-                          {TEST_AI_PROMPTS.map((prompt) => (
-                            <button
-                              key={prompt}
-                              type="button"
-                              onClick={() => setTestAiInput(prompt)}
-                              className="w-full rounded-[24px] border border-[#E5E7EB] bg-white px-4 py-3 text-left text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6]"
-                            >
-                              {prompt}
-                            </button>
-                          ))}
-                        </div>
-                      </section>
-                    </div>
-                  )}
-
-                  {assistantTab === "Escalation Rules" && (
-                    <div className="space-y-6">
-                      <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                        <p className="text-sm font-semibold text-[#111827]">
-                          Escalation Rules
-                        </p>
-                        <p className="mt-2 text-sm text-[#6B7280]">
-                          Choose which situations trigger handoff to a human
-                          representative.
-                        </p>
-                        <div className="mt-6 space-y-3">
-                          <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
-                            <input
-                              type="checkbox"
-                              checked={escalateComplaints}
-                              onChange={() =>
-                                setEscalateComplaints((value) => !value)
-                              }
-                              className="mt-1 w-4 h-4"
-                            />
-                            <div>
-                              <span className="text-sm font-semibold text-[#111827]">
-                                Complaints
-                              </span>
-                              <p className="mt-1 text-xs text-[#6B7280]">
-                                Detect negative sentiment and escalate
-                                immediately.
-                              </p>
-                            </div>
-                          </label>
-                          <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
-                            <input
-                              type="checkbox"
-                              checked={escalateRefunds}
-                              onChange={() =>
-                                setEscalateRefunds((value) => !value)
-                              }
-                              className="mt-1 w-4 h-4"
-                            />
-                            <div>
-                              <span className="text-sm font-semibold text-[#111827]">
-                                Refund Requests
-                              </span>
-                              <p className="mt-1 text-xs text-[#6B7280]">
-                                Hand off all refund-related conversations to the
-                                owner.
-                              </p>
-                            </div>
-                          </label>
-                          <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
-                            <input
-                              type="checkbox"
-                              checked={escalateLegalQuestions}
-                              onChange={() =>
-                                setEscalateLegalQuestions((value) => !value)
-                              }
-                              className="mt-1 w-4 h-4"
-                            />
-                            <div>
-                              <span className="text-sm font-semibold text-[#111827]">
-                                Legal Questions
-                              </span>
-                              <p className="mt-1 text-xs text-[#6B7280]">
-                                Escalate any conversation involving legal
-                                matters or regulations.
-                              </p>
-                            </div>
-                          </label>
-                          <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
-                            <input
-                              type="checkbox"
-                              checked={escalateHumanRequested}
-                              onChange={() =>
-                                setEscalateHumanRequested((value) => !value)
-                              }
-                              className="mt-1 w-4 h-4"
-                            />
-                            <div>
-                              <span className="text-sm font-semibold text-[#111827]">
-                                Human Requested
-                              </span>
-                              <p className="mt-1 text-xs text-[#6B7280]">
-                                Stop responding when customers explicitly ask
-                                for a person.
-                              </p>
-                            </div>
-                          </label>
-                          <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
-                            <input
-                              type="checkbox"
-                              checked={escalateUnknownQuestions}
-                              onChange={() =>
-                                setEscalateUnknownQuestions((value) => !value)
-                              }
-                              className="mt-1 w-4 h-4"
-                            />
-                            <div>
-                              <span className="text-sm font-semibold text-[#111827]">
-                                Unknown Questions
-                              </span>
-                              <p className="mt-1 text-xs text-[#6B7280]">
-                                Hand off queries outside the AI's knowledge
-                                base.
-                              </p>
-                            </div>
-                          </label>
-                          <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
-                            <input
-                              type="checkbox"
-                              checked={escalateNegotiationsAbove10k}
-                              onChange={() =>
-                                setEscalateNegotiationsAbove10k(
-                                  (value) => !value,
-                                )
-                              }
-                              className="mt-1 w-4 h-4"
-                            />
-                            <div>
-                              <span className="text-sm font-semibold text-[#111827]">
-                                Negotiations Above KES 10,000
-                              </span>
-                              <p className="mt-1 text-xs text-[#6B7280]">
-                                Escalate any negotiation involving amounts above
-                                KES 10,000.
-                              </p>
-                            </div>
-                          </label>
-                        </div>
-                      </section>
-
-                      <div className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-5 text-sm text-[#6B7280]">
-                        <p className="font-semibold text-[#111827]">
-                          How escalation works
-                        </p>
-                        <p className="mt-2">
-                          When these situations occur, the AI stops responding
-                          and requests owner intervention. You'll receive a
-                          notification and can take over the conversation.
-                        </p>
-                      </div>
-                    </div>
-                  )}
-
-                  {assistantTab === "Conversation Policies" && (
-                    <div className="space-y-6">
-                      <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                        <p className="text-sm font-semibold text-[#111827]">
-                          Business Hours
-                        </p>
-                        <p className="mt-2 text-sm text-[#6B7280]">
-                          Set the hours when your business operates.
-                        </p>
-                        <div className="mt-4">
-                          <label
-                            className="text-sm font-semibold text-[#111827]"
-                            htmlFor="business-hours"
-                          >
-                            Operating Hours
-                          </label>
-                          <input
-                            id="business-hours"
-                            type="text"
-                            value={businessHours}
-                            onChange={(event) =>
-                              setBusinessHours(event.target.value)
-                            }
-                            className="mt-2 w-full rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
-                            placeholder="e.g., 8:00 AM - 6:00 PM"
-                          />
-                          <p className="mt-2 text-xs text-[#6B7280]">
-                            Example: Mon–Fri 8:00 AM - 6:00 PM, Sat 9:00 AM -
-                            2:00 PM
-                          </p>
-                        </div>
-                      </section>
-
-                      <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                        <p className="text-sm font-semibold text-[#111827]">
-                          Outside Business Hours
-                        </p>
-                        <p className="mt-2 text-sm text-[#6B7280]">
-                          Choose how the AI behaves when customers message
-                          outside operating hours.
-                        </p>
-                        <div className="mt-4 space-y-3">
-                          <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
-                            <input
-                              type="radio"
-                              name="outside-hours"
-                              value="continue"
-                              checked={outsideHoursMode === "continue"}
-                              onChange={() => setOutsideHoursMode("continue")}
-                              className="mt-1 w-4 h-4"
-                            />
-                            <div>
-                              <span className="text-sm font-semibold text-[#111827]">
-                                Continue AI conversations
-                              </span>
-                              <p className="mt-1 text-xs text-[#6B7280]">
-                                AI responds normally, treating it as in-hours.
-                              </p>
-                            </div>
-                          </label>
-                          <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
-                            <input
-                              type="radio"
-                              name="outside-hours"
-                              value="collect"
-                              checked={outsideHoursMode === "collect"}
-                              onChange={() => setOutsideHoursMode("collect")}
-                              className="mt-1 w-4 h-4"
-                            />
-                            <div>
-                              <span className="text-sm font-semibold text-[#111827]">
-                                Collect customer information only
-                              </span>
-                              <p className="mt-1 text-xs text-[#6B7280]">
-                                AI gathers contact details and messages for
-                                follow-up.
-                              </p>
-                            </div>
-                          </label>
-                          <label className="flex items-start gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 hover:bg-white transition">
-                            <input
-                              type="radio"
-                              name="outside-hours"
-                              value="closed"
-                              checked={outsideHoursMode === "closed"}
-                              onChange={() => setOutsideHoursMode("closed")}
-                              className="mt-1 w-4 h-4"
-                            />
-                            <div>
-                              <span className="text-sm font-semibold text-[#111827]">
-                                Inform customers that the business is closed
-                              </span>
-                              <p className="mt-1 text-xs text-[#6B7280]">
-                                AI informs customers of next opening time and
-                                offers to store messages.
-                              </p>
-                            </div>
-                          </label>
-                        </div>
-                      </section>
-
-                      <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                        <p className="text-sm font-semibold text-[#111827]">
-                          Maximum AI Messages
-                        </p>
-                        <p className="mt-2 text-sm text-[#6B7280]">
-                          Limit how many consecutive messages the AI can send
-                          before escalating to a human.
-                        </p>
-                        <div className="mt-4">
-                          <div className="flex items-center gap-3">
-                            <input
-                              type="number"
-                              value={maxAiMessages}
-                              onChange={(event) =>
-                                setMaxAiMessages(
-                                  Math.max(
-                                    1,
-                                    parseInt(event.target.value) || 1,
-                                  ),
-                                )
-                              }
-                              min="1"
-                              max="50"
-                              className="w-20 rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none"
-                            />
-                            <span className="text-sm text-[#6B7280]">
-                              messages per conversation
-                            </span>
-                          </div>
-                          <p className="mt-2 text-xs text-[#6B7280]">
-                            Recommended: 8–12 messages before human escalation.
-                          </p>
-                        </div>
-                      </section>
-
-                      <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm space-y-4">
-                        <div>
-                          <div className="flex items-center justify-between gap-4">
-                            <div>
-                              <p className="text-sm font-semibold text-[#111827]">
-                                Allow AI to Close Sales
-                              </p>
-                              <p className="mt-1 text-sm text-[#6B7280]">
-                                Let the AI send purchase confirmations and
-                                checkout links.
-                              </p>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setAllowCloseSales((value) => !value)
-                              }
-                              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                                allowCloseSales
-                                  ? "bg-[#DCFCE7] text-[#166534]"
-                                  : "bg-[#E5E7EB] text-[#6B7280]"
-                              }`}
-                            >
-                              {allowCloseSales ? "On" : "Off"}
-                            </button>
-                          </div>
-                        </div>
-                        <div className="border-t border-[#E5E7EB] pt-4">
-                          <div className="flex items-center justify-between gap-4">
-                            <div>
-                              <p className="text-sm font-semibold text-[#111827]">
-                                Allow AI to Schedule Appointments
-                              </p>
-                              <p className="mt-1 text-sm text-[#6B7280]">
-                                Let the AI book consultations or service visits
-                                without human review.
-                              </p>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() =>
-                                setAllowScheduleAppointments((value) => !value)
-                              }
-                              className={`rounded-full px-4 py-2 text-sm font-semibold transition ${
-                                allowScheduleAppointments
-                                  ? "bg-[#DCFCE7] text-[#166534]"
-                                  : "bg-[#E5E7EB] text-[#6B7280]"
-                              }`}
-                            >
-                              {allowScheduleAppointments ? "On" : "Off"}
-                            </button>
-                          </div>
-                        </div>
-                      </section>
-
-                      <div className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-5 text-sm text-[#6B7280]">
-                        <p className="font-semibold text-[#111827]">Note</p>
-                        <p className="mt-2">
-                          These policies guide how your AI assistant handles
-                          conversations across different scenarios. All changes
-                          are automatically saved and take effect immediately.
-                        </p>
-                      </div>
-                    </div>
-                  )}
-                </div>
               </div>
             </div>
           )}
