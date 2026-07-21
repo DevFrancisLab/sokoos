@@ -422,13 +422,13 @@ function Hero() {
               Sokoos helps businesses attract new customers, respond instantly on WhatsApp, close more sales, automate follow-ups, and turn one-time buyers into loyal customers, all from one platform.
             </p>
             <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
-              <a
-                href="#cta"
+              <Link
+                to="/sign-up"
                 className="group inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition-transform hover:-translate-y-0.5"
               >
                 Get Started
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-              </a>
+              </Link>
             </div>
             <div className="mt-4 flex flex-col items-center gap-2 text-sm text-muted-foreground sm:flex-row">
               <span className="inline-flex items-center gap-2 text-[#166534]">
@@ -939,17 +939,31 @@ function Pricing() {
                     </li>
                   ))}
                 </ul>
-                <a
-                  href="#cta"
-                  className={`mt-8 inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${
-                    t.highlight
-                      ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                      : "bg-foreground text-background hover:bg-foreground/90"
-                  }`}
-                >
-                  {t.cta}
-                  <ArrowRight className="h-4 w-4" />
-                </a>
+                {t.cta === "Get Started" ? (
+                  <Link
+                    to="/sign-up"
+                    className={`mt-8 inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${
+                      t.highlight
+                        ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                        : "bg-foreground text-background hover:bg-foreground/90"
+                    }`}
+                  >
+                    {t.cta}
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                ) : (
+                  <a
+                    href="#"
+                    className={`mt-8 inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${
+                      t.highlight
+                        ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                        : "bg-foreground text-background hover:bg-foreground/90"
+                    }`}
+                  >
+                    {t.cta}
+                    <ArrowRight className="h-4 w-4" />
+                  </a>
+                )}
               </div>
             </Reveal>
           ))}
@@ -975,13 +989,13 @@ function FinalCTA() {
                 From attracting new customers to closing sales and building customer loyalty, Sokoos helps your business grow with AI-powered automation.
               </p>
               <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                <a
-                  href="#"
+                <Link
+                  to="/sign-up"
                   className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition-transform hover:-translate-y-0.5"
                 >
                   Get Started
                   <ArrowRight className="h-4 w-4" />
-                </a>
+                </Link>
               </div>
             </div>
           </div>
