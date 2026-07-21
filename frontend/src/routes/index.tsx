@@ -111,6 +111,7 @@ function Nav() {
 }
 
 function FloatingSokoosAI() {
+  const STORAGE_KEY = "sokoos-ai-greeting-shown";
   const [isGreetingVisible, setIsGreetingVisible] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isChatClosing, setIsChatClosing] = useState(false);
@@ -132,7 +133,17 @@ function FloatingSokoosAI() {
   ];
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setIsGreetingVisible(true), 2500);
+    const shouldHideGreeting = typeof window !== "undefined" && sessionStorage.getItem(STORAGE_KEY) === "true";
+
+    if (shouldHideGreeting) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      setIsGreetingVisible(true);
+      sessionStorage.setItem(STORAGE_KEY, "true");
+    }, 2500);
+
     return () => window.clearTimeout(timer);
   }, []);
 
@@ -148,6 +159,16 @@ function FloatingSokoosAI() {
     setIsGreetingVisible(false);
     setIsChatClosing(false);
     setIsChatOpen(true);
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem(STORAGE_KEY, "true");
+    }
+  };
+
+  const closeGreeting = () => {
+    setIsGreetingVisible(false);
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem(STORAGE_KEY, "true");
+    }
   };
 
   const closeChat = () => {
@@ -241,7 +262,7 @@ function FloatingSokoosAI() {
           >
             <button
               type="button"
-              onClick={() => setIsGreetingVisible(false)}
+              onClick={closeGreeting}
               aria-label="Close greeting"
               className="absolute right-3 top-3 rounded-full p-1 text-[#64748B] transition-colors hover:bg-[#F3F4F6] hover:text-[#111827]"
             >
