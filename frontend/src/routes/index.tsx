@@ -217,6 +217,18 @@ function FloatingSokoosAI() {
             transform: translateY(0) scale(1);
           }
         }
+
+        @keyframes assistantPulse {
+          0%,
+          100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.28);
+          }
+          50% {
+            transform: scale(1.03);
+            box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+          }
+        }
       `}</style>
 
       <div className="fixed bottom-8 right-8 z-[100] flex flex-col items-end">
@@ -251,11 +263,12 @@ function FloatingSokoosAI() {
         <button
           type="button"
           onClick={openChat}
-          className="flex h-[72px] w-[72px] items-center justify-center rounded-full border border-[#EEF2F6] bg-white shadow-[0_20px_50px_rgba(15,23,42,0.16)] transition-transform duration-200 hover:scale-105"
+          className="relative flex h-[72px] w-[72px] items-center justify-center rounded-full border border-[#EEF2F6] bg-white shadow-[0_20px_50px_rgba(15,23,42,0.16)] transition-transform duration-200 hover:scale-105"
+          style={{ animation: "assistantPulse 2.4s ease-in-out infinite" }}
           aria-label="Open Sokoos AI"
         >
           <div className="absolute inset-0 rounded-full border border-[#22C55E]/20" />
-          <div className="absolute -bottom-0.5 -right-0.5 h-5 w-5 rounded-full border-2 border-white bg-[#22C55E] shadow-sm" />
+          <div className="absolute -bottom-0.5 -right-0.5 h-4.5 w-4.5 rounded-full border-2 border-white bg-[#22C55E] shadow-sm" />
           <span className="text-3xl">🤖</span>
         </button>
       </div>
