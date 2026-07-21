@@ -81,6 +81,45 @@ const STAT_CARDS = [
   { label: "New Leads", value: "38", delta: "+11%" },
 ];
 
+const PERFORMANCE_METRICS = [
+  { label: "Messages Handled", value: "1,842", trend: [26, 38, 32, 46, 51, 58, 63], delta: "+26%", progress: 82 },
+  { label: "Resolution Rate", value: "93%", trend: [72, 78, 82, 86, 91, 92, 93], delta: "+5 pts", progress: 93 },
+  { label: "Human Takeovers", value: "84", trend: [90, 86, 80, 77, 78, 84, 84], delta: "-7%", progress: 75 },
+  { label: "Quotes Generated", value: "312", trend: [24, 28, 34, 42, 48, 56, 62], delta: "+18%", progress: 78 },
+  { label: "Sales Closed", value: "128", trend: [12, 15, 19, 24, 28, 32, 36], delta: "+14%", progress: 68 },
+  { label: "Revenue Influenced", value: "$72.4k", trend: [42, 44, 52, 58, 64, 69, 72], delta: "+21%", progress: 72 },
+  { label: "Average Response Time", value: "1.2m", trend: [1.8, 1.7, 1.6, 1.4, 1.3, 1.2, 1.2], delta: "-12%", progress: 88 },
+  { label: "Top Questions", value: "8", trend: [4, 5, 6, 7, 8, 9, 8], delta: "+11%", progress: 65 },
+];
+
+const KNOWLEDGE_USAGE = [
+  { label: "FAQ Docs", percent: 78 },
+  { label: "Product Catalog", percent: 63 },
+  { label: "Policies", percent: 52 },
+  { label: "Service Guide", percent: 41 },
+];
+
+const TOP_QUESTIONS = [
+  "How much does delivery cost?",
+  "Can I get a discount?",
+  "What’s the lead time?",
+  "Do you offer installation?",
+];
+
+const MOST_VIEWED_PRODUCTS = [
+  { name: "Smart POS Terminal", views: 512 },
+  { name: "AI Chat Assistant", views: 438 },
+  { name: "Service Plan", views: 387 },
+  { name: "Inventory Package", views: 312 },
+];
+
+const RECENT_AI_ACTIVITY = [
+  { type: "Reply", title: "Answered pricing question", time: "2m ago" },
+  { type: "Quote", title: "Generated quote for 10 units", time: "14m ago" },
+  { type: "Follow-up", title: "Suggested follow-up message", time: "42m ago" },
+  { type: "Support", title: "Escalated to human agent", time: "1h ago" },
+];
+
 const KNOWLEDGE_HUB_SOURCES = [
   {
     title: "Business Information",
@@ -3859,19 +3898,115 @@ export default function DashboardLayout() {
                     {activeWorkspaceSection === "Performance" && (
                       <div className="space-y-6">
                         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                          {STAT_CARDS.map((metric) => (
-                            <div key={metric.label} className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-5">
-                              <p className="text-sm font-semibold text-[#111827]">{metric.label}</p>
-                              <p className="mt-3 text-3xl font-semibold text-[#111827]">{metric.value}</p>
-                              <p className="mt-2 text-sm text-[#6B7280]">{metric.delta} vs last week</p>
+                          {PERFORMANCE_METRICS.slice(0, 4).map((metric) => (
+                            <div key={metric.label} className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-5 shadow-sm">
+                              <div className="flex items-center justify-between gap-3">
+                                <p className="text-sm font-semibold text-[#111827]">{metric.label}</p>
+                                <span className="rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#16A34A]">{metric.delta}</span>
+                              </div>
+                              <p className="mt-5 text-3xl font-semibold text-[#111827]">{metric.value}</p>
+                              <div className="mt-5 flex items-center gap-2">
+                                {metric.trend.map((point, index) => (
+                                  <div key={index} className="h-2 rounded-full bg-[#22C55E]" style={{ width: `${Math.max(8, point)}%` }} />
+                                ))}
+                              </div>
+                              <div className="mt-4 h-2 w-full rounded-full bg-[#E5E7EB]">
+                                <div className="h-2 rounded-full bg-[#22C55E]" style={{ width: `${metric.progress}%` }} />
+                              </div>
                             </div>
                           ))}
                         </div>
-                        <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
-                          <p className="text-sm font-semibold text-[#111827]">AI performance summary</p>
-                          <p className="mt-3 text-sm text-[#6B7280]">
-                            The assistant is resolving customer inquiries quickly while maintaining high satisfaction.
-                          </p>
+
+                        <div className="grid gap-4 xl:grid-cols-4">
+                          {PERFORMANCE_METRICS.slice(4).map((metric) => (
+                            <div key={metric.label} className="rounded-[24px] border border-[#E5E7EB] bg-white p-5 shadow-sm">
+                              <div className="flex items-center justify-between gap-3">
+                                <p className="text-sm font-semibold text-[#111827]">{metric.label}</p>
+                                <span className="text-sm text-[#6B7280]">{metric.delta}</span>
+                              </div>
+                              <p className="mt-5 text-3xl font-semibold text-[#111827]">{metric.value}</p>
+                              <div className="mt-4 h-2 w-full rounded-full bg-[#E5E7EB]">
+                                <div className="h-2 rounded-full bg-[#2563EB]" style={{ width: `${metric.progress}%` }} />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
+                          <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                            <div className="flex items-start justify-between gap-4">
+                              <div>
+                                <p className="text-sm font-semibold text-[#111827]">Knowledge Usage</p>
+                                <p className="mt-2 text-sm text-[#6B7280]">How often the AI referred to internal knowledge sources.</p>
+                              </div>
+                              <span className="rounded-full bg-[#F3F4F6] px-3 py-1 text-xs font-semibold text-[#6B7280]">Mock data</span>
+                            </div>
+                            <div className="mt-6 space-y-4">
+                              {KNOWLEDGE_USAGE.map((item) => (
+                                <div key={item.label}>
+                                  <div className="flex items-center justify-between text-sm text-[#475569]">
+                                    <span>{item.label}</span>
+                                    <span>{item.percent}%</span>
+                                  </div>
+                                  <div className="mt-2 h-2 w-full rounded-full bg-[#E5E7EB]">
+                                    <div className="h-2 rounded-full bg-[#2563EB]" style={{ width: `${item.percent}%` }} />
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="grid gap-4">
+                            <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                              <p className="text-sm font-semibold text-[#111827]">Top Questions</p>
+                              <p className="mt-2 text-sm text-[#6B7280]">Most asked questions this week.</p>
+                              <div className="mt-4 space-y-3">
+                                {TOP_QUESTIONS.map((question) => (
+                                  <div key={question} className="rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFB] px-4 py-3 text-sm text-[#111827]">{question}</div>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                              <p className="text-sm font-semibold text-[#111827]">Most Viewed Products</p>
+                              <p className="mt-2 text-sm text-[#6B7280]">Products the AI referenced most in conversations.</p>
+                              <div className="mt-4 space-y-3">
+                                {MOST_VIEWED_PRODUCTS.map((product) => (
+                                  <div key={product.name}>
+                                    <div className="flex items-center justify-between text-sm text-[#475569]">
+                                      <span>{product.name}</span>
+                                      <span className="font-semibold text-[#111827]">{product.views}</span>
+                                    </div>
+                                    <div className="mt-2 h-2 w-full rounded-full bg-[#E5E7EB]">
+                                      <div className="h-2 rounded-full bg-[#22C55E]" style={{ width: `${Math.min(100, (product.views / 512) * 100)}%` }} />
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <p className="text-sm font-semibold text-[#111827]">Recent AI Activity</p>
+                              <p className="mt-2 text-sm text-[#6B7280]">Timeline of the latest assistant actions.</p>
+                            </div>
+                          </div>
+                          <div className="mt-6 space-y-4">
+                            {RECENT_AI_ACTIVITY.map((activity) => (
+                              <div key={activity.title} className="rounded-[20px] border border-[#F3F4F6] bg-[#F8FAFB] p-4">
+                                <div className="flex items-center justify-between gap-2">
+                                  <div>
+                                    <p className="text-sm font-semibold text-[#111827]">{activity.title}</p>
+                                    <p className="text-xs text-[#6B7280]">{activity.type}</p>
+                                  </div>
+                                  <p className="text-xs text-[#94A3B8]">{activity.time}</p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       </div>
                     )}
