@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import {
   ArrowRight,
@@ -90,20 +90,20 @@ function Nav() {
             </a>
           ))}
         </nav>
-          <div className="flex items-center gap-2">
-          <a
-            href="/dashboard"
+        <div className="flex items-center gap-2">
+          <Link
+            to="/signin"
             className="hidden rounded-lg px-3 py-2 text-sm font-medium text-foreground hover:bg-secondary sm:inline-flex"
           >
             Sign in
-          </a>
-          <a
-            href="#cta"
+          </Link>
+          <Link
+            to="/sign-up"
             className="inline-flex items-center gap-1.5 rounded-lg bg-foreground px-3.5 py-2 text-sm font-semibold text-background transition-transform hover:-translate-y-0.5"
           >
             Get Started
             <ArrowRight className="h-3.5 w-3.5" />
-          </a>
+          </Link>
         </div>
       </div>
     </header>
