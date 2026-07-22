@@ -26,6 +26,7 @@ import {
   Image,
   Send,
   Bot,
+  Check,
   Plus,
   Globe,
 } from "lucide-react";
@@ -67,6 +68,11 @@ const NAV_ITEMS = [
     href: "/dashboard/analytics",
     Icon: Activity,
   },
+  {
+    label: "Integrations",
+    href: "/dashboard/integrations",
+    Icon: Bot,
+  },
 
   {
     label: "Settings",
@@ -99,7 +105,7 @@ const KNOWLEDGE_USAGE = [
   { label: "Service Guide", percent: 41 },
 ];
 
-const TOP_QUESTIONS = [
+const PERFORMANCE_TOP_QUESTIONS = [
   "How much does delivery cost?",
   "Can I get a discount?",
   "What’s the lead time?",
@@ -440,6 +446,242 @@ const ANALYTICS_METRICS = [
   },
 ];
 
+const INTEGRATION_SECTIONS = [
+  {
+    section: "Communication",
+    items: [
+      {
+        id: "whatsapp",
+        name: "WhatsApp Business",
+        Icon: MessageCircle,
+        description: "Allow Sokoos AI to reply to customers directly inside WhatsApp.",
+        status: "Connected",
+      },
+      {
+        id: "facebook",
+        name: "Facebook Messenger",
+        Icon: MessageCircle,
+        description: "Allow Sokoos AI to reply to customers on Facebook Messenger.",
+        status: "Not Connected",
+      },
+      {
+        id: "instagram",
+        name: "Instagram",
+        Icon: Image,
+        description: "Allow Sokoos AI to respond to Instagram messages and DMs.",
+        status: "Not Connected",
+      },
+      {
+        id: "telegram",
+        name: "Telegram",
+        Icon: Send,
+        description: "Allow Sokoos AI to manage Telegram conversations.",
+        status: "Not Connected",
+      },
+      {
+        id: "email",
+        name: "Email",
+        Icon: Send,
+        description: "Allow Sokoos AI to read and send business emails.",
+        status: "Connected",
+      },
+    ],
+  },
+  {
+    section: "Payments",
+    items: [
+      {
+        id: "mpesa",
+        name: "M-Pesa",
+        Icon: Phone,
+        description: "Enable mobile money payments and reconciliation.",
+        status: "Not Connected",
+      },
+      {
+        id: "stripe",
+        name: "Stripe",
+        Icon: Tag,
+        description: "Allow the AI to generate payment links.",
+        status: "Not Connected",
+      },
+      {
+        id: "paypal",
+        name: "PayPal",
+        Icon: Tag,
+        description: "Allow the AI to generate PayPal payment links.",
+        status: "Not Connected",
+      },
+      {
+        id: "flutterwave",
+        name: "Flutterwave",
+        Icon: Globe,
+        description: "Allow the AI to process payments across Africa and generate payment links.",
+        status: "Coming Soon",
+      },
+    ],
+  },
+  {
+    section: "E-commerce",
+    items: [
+      {
+        id: "shopify",
+        name: "Shopify",
+        Icon: Box,
+        description: "Allow the AI to answer product questions using your store catalog.",
+        status: "Connected",
+      },
+      {
+        id: "woocommerce",
+        name: "WooCommerce",
+        Icon: Box,
+        description: "Allow the AI to access your WooCommerce product catalog and orders.",
+        status: "Not Connected",
+      },
+      {
+        id: "custom_api",
+        name: "Custom Website API",
+        Icon: Globe,
+        description: "Allow the AI to query your site's product and order APIs.",
+        status: "Not Connected",
+      },
+    ],
+  },
+  {
+    section: "Business",
+    items: [
+      {
+        id: "google_business",
+        name: "Google Business Profile",
+        Icon: Globe,
+        description: "Allow the AI to update and read your business profile and respond to reviews.",
+        status: "Not Connected",
+      },
+      {
+        id: "google_calendar",
+        name: "Google Calendar",
+        Icon: Calendar,
+        description: "Allow the AI to schedule appointments.",
+        status: "Connected",
+      },
+      {
+        id: "outlook",
+        name: "Microsoft Outlook",
+        Icon: Calendar,
+        description: "Allow the AI to schedule meetings and manage business email/calendar.",
+        status: "Not Connected",
+      },
+      {
+        id: "gdrive",
+        name: "Google Drive",
+        Icon: Paperclip,
+        description: "Allow the AI to access business documents and knowledge files.",
+        status: "Connected",
+      },
+      {
+        id: "dropbox",
+        name: "Dropbox",
+        Icon: Paperclip,
+        description: "Allow the AI to access business documents stored in Dropbox.",
+        status: "Not Connected",
+      },
+      {
+        id: "onedrive",
+        name: "OneDrive",
+        Icon: Paperclip,
+        description: "Allow the AI to access business documents stored in OneDrive.",
+        status: "Not Connected",
+      },
+    ],
+  },
+  {
+    section: "Marketing",
+    items: [
+      {
+        id: "meta_ads",
+        name: "Meta Ads",
+        Icon: Megaphone,
+        description: "Allow the AI to sync campaign data and create audiences.",
+        status: "Not Connected",
+      },
+      {
+        id: "google_ads",
+        name: "Google Ads",
+        Icon: Globe,
+        description: "Allow the AI to pull campaign performance and recommend optimizations.",
+        status: "Not Connected",
+      },
+      {
+        id: "tiktok",
+        name: "TikTok",
+        Icon: Globe,
+        description: "Allow the AI to manage TikTok ad campaigns and creatives.",
+        status: "Coming Soon",
+      },
+      {
+        id: "mailchimp",
+        name: "Mailchimp",
+        Icon: Send,
+        description: "Allow the AI to sync contact lists and send marketing campaigns.",
+        status: "Connected",
+      },
+      {
+        id: "brevo",
+        name: "Brevo",
+        Icon: Send,
+        description: "Allow the AI to send campaigns and sync contact lists.",
+        status: "Not Connected",
+      },
+    ],
+  },
+];
+
+const INTEGRATION_CAPABILITIES: Record<string, string[]> = {
+  whatsapp: [
+    "Read messages",
+    "Send replies",
+    "Send images",
+    "Send PDFs",
+    "Send quotations",
+    "Send invoices",
+    "Read delivery status",
+    "Human takeover",
+  ],
+  facebook: ["Read messages", "Send replies"],
+  instagram: ["Read DMs", "Send replies"],
+  telegram: ["Read messages", "Send replies"],
+  email: ["Read emails", "Send emails"],
+  mpesa: ["Initiate payments", "Reconcile transactions"],
+  stripe: ["Create payment links", "Refunds"],
+  paypal: ["Create payment links"],
+  flutterwave: ["Create payment links"],
+  shopify: ["Read products", "Sync orders", "Update inventory"],
+  woocommerce: ["Read products", "Sync orders"],
+  custom_api: ["Query products", "Read orders"],
+  google_business: ["Read profile", "Respond to reviews"],
+  google_calendar: ["Read events", "Create events"],
+  outlook: ["Read calendar", "Create events"],
+  gdrive: ["Read files", "Upload files"],
+  dropbox: ["Read files"],
+  onedrive: ["Read files"],
+  meta_ads: ["Read campaigns", "Create audiences"],
+  google_ads: ["Read campaigns"],
+  tiktok: ["Read campaigns"],
+  mailchimp: ["Sync contacts", "Send campaigns"],
+  brevo: ["Sync contacts"],
+};
+
+const CAPABILITY_FEATURES: { id: string; title: string; requires: string[] }[] = [
+  { id: "receive_whatsapp", title: "Receive WhatsApp messages", requires: ["whatsapp"] },
+  { id: "send_quotations", title: "Send quotations", requires: ["whatsapp", "shopify", "custom_api", "woocommerce"].filter(Boolean) },
+  { id: "schedule_appointments", title: "Schedule appointments", requires: ["google_calendar"] },
+  { id: "collect_payments", title: "Collect payments", requires: ["mpesa", "stripe"] },
+  { id: "send_invoices", title: "Send invoices", requires: ["mpesa", "stripe", "shopify", "custom_api"].filter(Boolean) },
+  { id: "product_recommendations", title: "Generate product recommendations", requires: ["shopify", "custom_api", "woocommerce", "gdrive" /* business knowledge often stored in drive */] },
+  { id: "read_business_documents", title: "Read business documents", requires: ["gdrive", "dropbox"] },
+  { id: "reply_facebook", title: "Reply on Facebook", requires: ["facebook"] },
+  { id: "reply_instagram", title: "Reply on Instagram", requires: ["instagram"] },
+];
+
 const ANALYTICS_CHART = [
   { label: "Mon", value: 48 },
   { label: "Tue", value: 62 },
@@ -450,7 +692,7 @@ const ANALYTICS_CHART = [
   { label: "Sun", value: 60 },
 ];
 
-const TOP_QUESTIONS = [
+const ANALYTICS_TOP_QUESTIONS = [
   { question: "How do I upgrade my plan?", volume: "320" },
   { question: "What are your business hours?", volume: "290" },
   { question: "Can I get a trial?", volume: "215" },
@@ -879,6 +1121,99 @@ export default function DashboardLayout() {
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [selected, setSelected] = useState<string>("Home");
+  const [integrationStates, setIntegrationStates] = useState<Record<string, { status: string; accountName?: string; lastSynced?: string }>>(() => {
+    try {
+      const raw = typeof window !== "undefined" ? window.localStorage.getItem("sokoos.integrationStates") : null;
+      if (raw) {
+        return JSON.parse(raw);
+      }
+    } catch (e) {
+      // ignore
+    }
+
+    const map: Record<string, { status: string; accountName?: string; lastSynced?: string }> = {};
+    INTEGRATION_SECTIONS.forEach((section) => {
+      section.items.forEach((it) => {
+        map[it.id] = { status: it.status };
+      });
+    });
+
+    return map;
+  });
+  const [connectModalOpen, setConnectModalOpen] = useState(false);
+  const [connectModalId, setConnectModalId] = useState<string | null>(null);
+  const [connectForm, setConnectForm] = useState({ email: "", businessName: "", phone: "" });
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerIntegrationId, setDrawerIntegrationId] = useState<string | null>(null);
+
+  const openDrawer = (id: string) => {
+    setDrawerIntegrationId(id);
+    setDrawerOpen(true);
+  };
+
+  const closeDrawer = () => {
+    setDrawerOpen(false);
+    setDrawerIntegrationId(null);
+  };
+
+  const handleDisconnect = (id: string) => {
+    setIntegrationStates((s) => ({
+      ...s,
+      [id]: { status: "Not Connected" },
+    }));
+    closeDrawer();
+  };
+
+  const handleSyncNow = (id: string) => {
+    setIntegrationStates((s) => ({
+      ...s,
+      [id]: {
+        ...(s[id] || {}),
+        status: "Connected",
+        lastSynced: "Just now",
+      },
+    }));
+  };
+
+  const handleReconnect = (id: string) => {
+    setConnectModalId(id);
+    setConnectForm({ email: "", businessName: "", phone: "" });
+    setConnectModalOpen(true);
+  };
+
+  useEffect(() => {
+    try {
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem("sokoos.integrationStates", JSON.stringify(integrationStates));
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, [integrationStates]);
+
+  const getIntegrationName = (id: string | null) => {
+    if (!id) return "Integration";
+    for (const section of INTEGRATION_SECTIONS) {
+      const found = section.items.find((i) => i.id === id);
+      if (found) return found.name;
+    }
+    return id;
+  };
+
+  const handleModalConnect = () => {
+    if (!connectModalId) return;
+    const name = getIntegrationName(connectModalId);
+    setIntegrationStates((s) => ({
+      ...s,
+      [connectModalId]: {
+        status: "Connected",
+        accountName: connectForm.businessName || connectForm.email || `${name} Account`,
+        lastSynced: "Just now",
+      },
+    }));
+    setConnectModalOpen(false);
+    setConnectModalId(null);
+  };
   const [activeWorkspaceSection, setActiveWorkspaceSection] =
     useState<
       | "Identity"
@@ -1760,28 +2095,33 @@ export default function DashboardLayout() {
 
           <nav className="flex-1 px-1.5 overflow-hidden">
             <ul className="space-y-2">
-              {NAV_ITEMS.map(({ label, href, Icon }) => {
-                const active = selected === label;
-                return (
-                  <li key={href}>
-                    <button
-                      onClick={() => setSelected(label)}
-                      title={label}
-                      aria-label={label}
-                      className={`w-full flex items-center justify-center rounded-[20px] p-2 text-sm font-medium transition duration-200 ${
-                        active
-                          ? "bg-[#ECFDF5] text-[#047857] shadow-sm"
-                          : "text-[#6B7280] hover:bg-[#EFF6FF]"
-                      }`}
-                    >
-                      <Icon
-                        className={`h-4 w-4 ${active ? "text-[#059669] opacity-100" : "text-[#6B7280] opacity-90"}`}
-                      />
-                      <span className="sr-only">{label}</span>
-                    </button>
-                  </li>
-                );
-              })}
+                {NAV_ITEMS.map(({ label, href, Icon }) => {
+                  const active = selected === label;
+                  return (
+                    <li key={href}>
+                      <button
+                        onClick={() => {
+                          setSelected(label);
+                          if (typeof window !== "undefined") {
+                            window.history.pushState({}, "", href);
+                          }
+                        }}
+                        title={label}
+                        aria-label={label}
+                        className={`w-full flex items-center justify-center rounded-[20px] p-2 text-sm font-medium transition duration-200 ${
+                          active
+                            ? "bg-[#ECFDF5] text-[#047857] shadow-sm"
+                            : "text-[#6B7280] hover:bg-[#EFF6FF]"
+                        }`}
+                      >
+                        <Icon
+                          className={`h-4 w-4 ${active ? "text-[#059669] opacity-100" : "text-[#6B7280] opacity-90"}`}
+                        />
+                        <span className="sr-only">{label}</span>
+                      </button>
+                    </li>
+                  );
+                })}
             </ul>
           </nav>
           {sidebarHovered && (
@@ -1802,7 +2142,12 @@ export default function DashboardLayout() {
                       return (
                         <li key={href}>
                           <button
-                            onClick={() => setSelected(label)}
+                            onClick={() => {
+                              setSelected(label);
+                              if (typeof window !== "undefined") {
+                                window.history.pushState({}, "", href);
+                              }
+                            }}
                             title={label}
                             aria-label={label}
                             className={`w-full text-left flex items-center gap-3 rounded-full px-3 py-2 text-sm font-medium transition duration-200 ${
@@ -1877,6 +2222,9 @@ export default function DashboardLayout() {
                         onClick={() => {
                           setSelected(label);
                           setMobileOpen(false);
+                          if (typeof window !== "undefined") {
+                            window.history.pushState({}, "", href);
+                          }
                         }}
                         className={`w-full text-left flex items-center gap-2.5 rounded-[20px] px-3 py-2 text-sm font-medium transition duration-200 ${
                           active
@@ -1897,8 +2245,8 @@ export default function DashboardLayout() {
       )}
 
       {/* Main content area. On desktop, add left padding to allow for fixed sidebar. On mobile, add top padding to account for the header. */}
-      <main className="h-full overflow-hidden pt-14 md:pt-0 md:pl-[72px]">
-        <div className="max-w-7xl mx-auto h-full p-4">
+      <main className="h-screen overflow-y-auto pt-14 md:pt-0 md:pl-[72px]">
+        <div className="max-w-7xl mx-auto min-h-screen p-4">
           {/* Render placeholder pages based on selected state */}
           {selected === "Home" && (
             <div className="h-full overflow-y-auto space-y-6 pr-2">
@@ -3961,7 +4309,7 @@ export default function DashboardLayout() {
                               <p className="text-sm font-semibold text-[#111827]">Top Questions</p>
                               <p className="mt-2 text-sm text-[#6B7280]">Most asked questions this week.</p>
                               <div className="mt-4 space-y-3">
-                                {TOP_QUESTIONS.map((question) => (
+                                {PERFORMANCE_TOP_QUESTIONS.map((question) => (
                                   <div key={question} className="rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFB] px-4 py-3 text-sm text-[#111827]">{question}</div>
                                 ))}
                               </div>
@@ -4309,6 +4657,346 @@ export default function DashboardLayout() {
                   </div>
                 </section>
               </div>
+            </div>
+          )}
+          {selected === "Integrations" && (
+            <div className="space-y-6">
+              <div className={`${CARD}`}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">
+                      Integrations
+                    </p>
+                    <h2 className="mt-2 text-2xl font-semibold text-[#111827]">
+                      Integrations
+                    </h2>
+                    <p className="mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl">
+                      Connect your business tools so your AI Employee can work across your entire business.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Readiness summary card */}
+              <div className={`${CARD} flex items-center justify-between gap-6`}> 
+                <div className="flex items-center gap-6">
+                  <div className="flex items-center gap-4">
+                    {/* Circular progress */}
+                    {(() => {
+                      const totalIntegrations = INTEGRATION_SECTIONS.reduce((a, s) => a + s.items.length, 0);
+                      const connectedCount = Object.values(integrationStates).filter((v) => v.status === "Connected").length;
+                      const percent = totalIntegrations === 0 ? 0 : Math.round((connectedCount / totalIntegrations) * 100);
+                      const radius = 36;
+                      const circumference = 2 * Math.PI * radius;
+                      const offset = Math.max(0, circumference * (1 - percent / 100));
+
+                      return (
+                        <div className="flex items-center gap-4">
+                          <svg width="88" height="88" viewBox="0 0 88 88">
+                            <defs />
+                            <g transform="translate(44,44)">
+                              <circle r={radius} stroke="#F3F4F6" strokeWidth="8" fill="none" />
+                              <circle
+                                r={radius}
+                                stroke="#22C55E"
+                                strokeWidth="8"
+                                strokeLinecap="round"
+                                fill="none"
+                                strokeDasharray={circumference}
+                                strokeDashoffset={offset}
+                                transform="rotate(-90)"
+                                style={{ transition: "stroke-dashoffset 300ms ease-out" }}
+                              />
+                              <text x="0" y="4" textAnchor="middle" className="text-[20px] font-semibold" fill="#0F172A">
+                                {percent}%
+                              </text>
+                            </g>
+                          </svg>
+                        </div>
+                      );
+                    })()}
+
+                    <div>
+                      <p className="text-sm font-semibold">AI Employee Readiness</p>
+                      <p className="mt-1 text-sm text-[#6B7280]">Connected integrations and capability readiness</p>
+                      <div className="mt-3 grid grid-cols-4 gap-3 text-sm">
+                        {(() => {
+                          const sectionsForMetrics: { label: string; reqs: string[] }[] = [
+                            { label: "Communication", reqs: ["whatsapp", "facebook", "instagram", "telegram", "email"] },
+                            { label: "Payments", reqs: ["mpesa", "stripe", "paypal", "flutterwave"] },
+                            { label: "Knowledge", reqs: ["gdrive", "dropbox", "onedrive"] },
+                            { label: "Scheduling", reqs: ["google_calendar", "outlook"] },
+                          ];
+
+                          return sectionsForMetrics.map((m) => {
+                            const connected = m.reqs.filter((r) => (integrationStates[r] || { status: "Not Connected" }).status === "Connected").length;
+                            const status = connected === 0 ? "Missing" : connected < m.reqs.length ? "Partial" : "Ready";
+                            const statusClass = status === "Ready" ? "text-[#16A34A]" : status === "Partial" ? "text-[#B45309]" : "text-[#B91C1C]";
+                            return (
+                              <div key={m.label} className="flex flex-col items-start">
+                                <span className="text-xs text-[#6B7280]">{m.label}</span>
+                                <span className={`text-sm font-semibold ${statusClass}`}>{status}</span>
+                              </div>
+                            );
+                          });
+                        })()}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="ml-auto text-right">
+                  <div className="text-sm text-[#6B7280]">Connected integrations</div>
+                  <div className="text-2xl font-semibold">{Object.values(integrationStates).filter((v) => v.status === "Connected").length} / {INTEGRATION_SECTIONS.reduce((a, s) => a + s.items.length, 0)}</div>
+                  <div className="mt-2 text-sm text-[#6B7280]">AI capabilities unlocked</div>
+                  <div className="text-2xl font-semibold">{CAPABILITY_FEATURES.filter((cap) => cap.requires.every((r) => (integrationStates[r] || { status: "Not Connected" }).status === "Connected")).length}</div>
+                </div>
+              </div>
+
+              {INTEGRATION_SECTIONS.map((section) => (
+                <div key={section.section}>
+                  <h3 className="text-sm font-semibold text-[#6B7280] mb-3">{section.section}</h3>
+                  <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {section.items.map((it) => {
+                      const state = integrationStates[it.id] || { status: it.status };
+
+                      const isConnected = state.status === "Connected";
+                      const isComing = state.status === "Coming Soon" || state.status === "ComingSoon";
+                      const isDisconnected = !isConnected && !isComing;
+
+                      const badgeClass = isConnected
+                        ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#166534]"
+                        : isComing
+                        ? "border-[#E9D5FF] bg-[#F5F3FF] text-[#6D28D9]"
+                        : "border-[#F3F4F6] bg-[#F3F4F6] text-[#6B7280]";
+
+                      const iconWrapClass = isConnected
+                        ? "h-12 w-12 rounded-[12px] bg-[#ECFDF5] flex items-center justify-center text-[#166534]"
+                        : isComing
+                        ? "h-12 w-12 rounded-[12px] bg-[#F9FAFB] flex items-center justify-center text-[#94A3B8] opacity-80"
+                        : "h-12 w-12 rounded-[12px] bg-[#F3F4F6] flex items-center justify-center text-[#9CA3AF]";
+
+                      const cardStateClass = isComing ? "opacity-70 grayscale" : "opacity-100";
+
+                      const onConnect = () => {
+                        if (isComing) return;
+                        setConnectModalId(it.id);
+                        setConnectForm({ email: "", businessName: "", phone: "" });
+                        setConnectModalOpen(true);
+                      };
+
+                      const onManage = () => {
+                        openDrawer(it.id);
+                      };
+
+                      return (
+                        <div
+                          key={it.id}
+                          className={`${CARD} flex flex-col justify-between ${cardStateClass} transition-all duration-300 ease-out transform-gpu`}
+                        >
+                          <div>
+                            <div className="flex items-start justify-between gap-4">
+                              <div className="flex items-center gap-4">
+                                <div className={iconWrapClass}>
+                                  <it.Icon className={`h-6 w-6 ${isDisconnected ? "opacity-60" : ""}`} />
+                                </div>
+                                <div>
+                                  <p className={`text-sm font-semibold ${isComing ? "text-[#6B7280]" : "text-[#111827]"}`}> {it.name}</p>
+                                  <p className="mt-1 text-sm text-[#6B7280]">{it.description}</p>
+                                  {isConnected && (
+                                    <div className="mt-2 flex items-center gap-3 text-sm text-[#6B7280]">
+                                      <span className="inline-flex items-center gap-2 text-[13px] text-[#374151]">
+                                        <Check className="h-4 w-4 text-[#16A34A]" /> {state.accountName}
+                                      </span>
+                                      <span className="text-[12px] text-[#94A3B8]">Last synced {state.lastSynced}</span>
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
+
+                              <div>
+                                <span className={`${BADGE} ${badgeClass} ${isComing ? "text-[11px]" : ""}`}>
+                                  {isConnected ? (
+                                    <span className="inline-flex items-center gap-2"><Check className="h-3 w-3 text-[#16A34A]" /> Connected</span>
+                                  ) : isComing ? (
+                                    <span>Coming Soon</span>
+                                  ) : (
+                                    <span>Disconnected</span>
+                                  )}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="mt-6">
+                            <div className="transition-all duration-250 ease-out transform">
+                              {isConnected && (
+                                <>
+                                  <button onClick={onManage} className={`${BUTTON_SECONDARY} w-full`}>Manage</button>
+                                </>
+                              )}
+
+                              {isDisconnected && (
+                                <button onClick={onConnect} className={`${BUTTON_PRIMARY} w-full`}>Connect</button>
+                              )}
+
+                              {isComing && (
+                                <button className={`${BUTTON_TERTIARY} w-full opacity-60 pointer-events-none`}>Coming Soon</button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+              <div className="mt-8">
+                <h3 className="text-sm font-semibold text-[#6B7280] mb-3">What your AI Employee can do</h3>
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  {CAPABILITY_FEATURES.map((cap) => {
+                    const missing = cap.requires.filter((r) => (integrationStates[r] || { status: "Not Connected" }).status !== "Connected");
+                    const enabled = missing.length === 0;
+                    const badgeClass = enabled ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#166534]" : "border-[#F3F4F6] bg-[#F3F4F6] text-[#6B7280]";
+
+                    return (
+                      <div key={cap.id} className={`${CARD} p-4`}> 
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="text-sm font-semibold text-[#111827]">{cap.title}</p>
+                            <p className="mt-1 text-sm text-[#6B7280]">Requires: {cap.requires.map((r) => getIntegrationName(r)).join(", ")}</p>
+                          </div>
+                          <div>
+                            <span className={`${BADGE} ${badgeClass}`}>{enabled ? "Enabled" : "Disabled"}</span>
+                          </div>
+                        </div>
+
+                        {!enabled && (
+                          <div className="mt-4 text-sm text-[#374151]">
+                            <p className="font-medium mb-2">Missing integrations</p>
+                            <ul className="list-none space-y-2">
+                              {missing.map((mid) => (
+                                <li key={mid} className="flex items-center gap-3">
+                                  <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-[#FEE2E2] text-[#B91C1C]">×</span>
+                                  <span>{getIntegrationName(mid)}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+              {connectModalOpen && connectModalId && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-black/40" onClick={() => setConnectModalOpen(false)} />
+                  <div
+                    onClick={(e) => e.stopPropagation()}
+                    className={`${GLOBAL_RADIUS} bg-white p-6 z-10 w-full max-w-md transform transition-all duration-200 ease-out shadow-lg scale-100`}
+                    role="dialog"
+                    aria-modal="true"
+                  >
+                    <h3 className="text-lg font-semibold mb-1">Connect {getIntegrationName(connectModalId)}</h3>
+                    <p className="text-sm text-[#6B7280] mb-4">Connect your {getIntegrationName(connectModalId)} account.</p>
+
+                    <label className="text-sm font-medium">Account Email</label>
+                    <input
+                      type="email"
+                      value={connectForm.email}
+                      onChange={(e) => setConnectForm((s) => ({ ...s, email: e.target.value }))}
+                      className={INPUT_FIELD_WHITE}
+                      placeholder="you@business.com"
+                    />
+
+                    <label className="mt-3 text-sm font-medium">Business Name</label>
+                    <input
+                      type="text"
+                      value={connectForm.businessName}
+                      onChange={(e) => setConnectForm((s) => ({ ...s, businessName: e.target.value }))}
+                      className={INPUT_FIELD_WHITE}
+                      placeholder="Business Name"
+                    />
+
+                    <label className="mt-3 text-sm font-medium">Phone Number</label>
+                    <input
+                      type="tel"
+                      value={connectForm.phone}
+                      onChange={(e) => setConnectForm((s) => ({ ...s, phone: e.target.value }))}
+                      className={INPUT_FIELD_WHITE}
+                      placeholder="+254 7xx xxx xxx"
+                    />
+
+                    <div className="mt-4 flex justify-end gap-3">
+                      <button onClick={() => setConnectModalOpen(false)} className={BUTTON_TERTIARY}>
+                        Cancel
+                      </button>
+                      <button onClick={handleModalConnect} className={BUTTON_PRIMARY}>
+                        Connect
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {drawerOpen && drawerIntegrationId && (
+                <div className="fixed inset-0 z-40 pointer-events-none">
+                  <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={closeDrawer} />
+                  <aside className="pointer-events-auto fixed right-0 top-0 h-full w-[420px] z-50 bg-white shadow-lg transform transition-transform duration-200 ease-out">
+                    <div className="p-6 flex flex-col h-full">
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="h-12 w-12 rounded-[12px] bg-[#F3F4F6] flex items-center justify-center text-[#111827]">
+                            {/* icon */}
+                            {(() => {
+                              const id = drawerIntegrationId as string;
+                              for (const s of INTEGRATION_SECTIONS) {
+                                const found = s.items.find((i) => i.id === id);
+                                if (found) return <found.Icon className="h-6 w-6" />;
+                              }
+                              return null;
+                            })()}
+                          </div>
+                          <div>
+                            <p className="text-lg font-semibold">{getIntegrationName(drawerIntegrationId)}</p>
+                            <p className="text-sm text-[#6B7280]">{(integrationStates[drawerIntegrationId] || {}).accountName || "Connected account"}</p>
+                          </div>
+                        </div>
+                        <button onClick={closeDrawer} className="rounded-full p-2 text-[#6B7280] hover:bg-[#F3F4F6]">
+                          <X className="h-5 w-5" />
+                        </button>
+                      </div>
+
+                      <div className="mt-4 rounded-md border border-[#E5E7EB] p-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <span className="text-sm font-medium">Connection status</span>
+                            <span className="text-sm text-[#6B7280]">{(integrationStates[drawerIntegrationId] || {}).status}</span>
+                          </div>
+                          <div className="text-sm text-[#94A3B8]">Last sync: {(integrationStates[drawerIntegrationId] || {}).lastSynced || "—"}</div>
+                        </div>
+                        <div className="mt-3 flex gap-2">
+                          <button onClick={() => handleReconnect(drawerIntegrationId as string)} className={BUTTON_TERTIARY}>Reconnect</button>
+                          <button onClick={() => handleDisconnect(drawerIntegrationId as string)} className={BUTTON_SECONDARY}>Disconnect</button>
+                          <button onClick={() => handleSyncNow(drawerIntegrationId as string)} className={BUTTON_PRIMARY}>Sync Now</button>
+                        </div>
+                      </div>
+
+                      <div className="mt-6 flex-1 overflow-y-auto">
+                        <p className="text-sm font-semibold text-[#111827] mb-3">Permissions granted</p>
+                        <ul className="space-y-2">
+                          {(INTEGRATION_CAPABILITIES[drawerIntegrationId as string] || []).map((cap) => (
+                            <li key={cap} className="flex items-center gap-3 text-sm text-[#374151]">
+                              <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-[#ECFDF5] text-[#16A34A]">✓</span>
+                              <span>{cap}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </aside>
+                </div>
+              )}
             </div>
           )}
           {selected === "Settings" && (
