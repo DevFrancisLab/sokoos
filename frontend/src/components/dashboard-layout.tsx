@@ -2245,8 +2245,8 @@ export default function DashboardLayout() {
       )}
 
       {/* Main content area. On desktop, add left padding to allow for fixed sidebar. On mobile, add top padding to account for the header. */}
-      <main className="h-screen overflow-y-auto pt-14 md:pt-0 md:pl-[72px]">
-        <div className="max-w-7xl mx-auto min-h-screen p-4">
+      <main className="h-full overflow-x-hidden pt-14 md:pt-0 md:pl-[72px]">
+        <div className="max-w-7xl mx-auto h-full p-4 overflow-x-hidden">
           {/* Render placeholder pages based on selected state */}
           {selected === "Home" && (
             <div className="h-full overflow-y-auto space-y-6 pr-2">
@@ -4660,7 +4660,7 @@ export default function DashboardLayout() {
             </div>
           )}
           {selected === "Integrations" && (
-            <div className="space-y-6">
+            <div className="h-full overflow-y-auto overflow-x-hidden space-y-6 pr-2">
               <div className={`${CARD}`}>
                 <div className="flex items-center justify-between">
                   <div>
