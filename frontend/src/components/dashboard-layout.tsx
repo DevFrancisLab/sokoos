@@ -237,11 +237,11 @@ const LIST_ITEM =
   TRANSITION +
   " hover:bg-[#EFF6FF] hover:-translate-y-1";
 const AI_WORKSPACE_PANEL =
-  "rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6";
+  "rounded-[28px] border border-[#E5E7EB] bg-[#F9FAFB] p-8 lg:p-10";
 const AI_WORKSPACE_SECTION =
-  "rounded-[20px] border border-[#E5E7EB] bg-white p-5";
+  "rounded-[24px] border border-[#E5E7EB] bg-white p-6";
 const AI_WORKSPACE_SUBTLE =
-  "rounded-[20px] border border-[#E5E7EB] bg-[#FCFCFD] p-5";
+  "rounded-[24px] border border-[#E5E7EB] bg-[#FCFCFD] p-6";
 
 type AiSummaryData = {
   customerIntent: string;
@@ -3253,23 +3253,23 @@ export default function DashboardLayout() {
             </div>
           )}
           {selected === "AI Employee" && (
-            <div className={`w-full space-y-6 ${CARD}`}>
-              <div className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
-                <div className="flex flex-col gap-5">
-                  <div className="max-w-3xl">
-                    <p className="text-xs uppercase tracking-[0.2em] text-[#6B7280]">
+            <div className={`mx-auto w-full max-w-[1440px] space-y-10 lg:space-y-12 ${CARD} p-8 lg:p-10`}>
+              <div className="rounded-[28px] border border-[#E5E7EB] bg-[#F9FAFB] p-8 shadow-sm lg:p-10">
+                <div className="flex flex-col gap-8">
+                  <div className="max-w-4xl">
+                    <p className="text-[12px] font-semibold uppercase tracking-[0.24em] text-[#6B7280]">
                       AI Employee
                     </p>
-                    <h2 className="mt-3 text-2xl font-semibold text-[#111827]">
+                    <h2 className="mt-4 text-[28px] font-semibold tracking-[-0.02em] text-[#111827] lg:text-[32px]">
                       Train, equip and manage your AI employee.
                     </h2>
-                    <p className="mt-3 text-sm leading-6 text-[#6B7280]">
+                    <p className="mt-4 text-[16px] leading-7 text-[#6B7280]">
                       Configure your assistant identity, knowledge, policies,
                       and performance from a single workspace.
                     </p>
                   </div>
 
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-3">
                     {([
                       { label: "Identity", section: "Identity" as const, Icon: User },
                       { label: "Knowledge", section: "Knowledge Hub" as const, Icon: BookOpen },
@@ -3287,7 +3287,7 @@ export default function DashboardLayout() {
                           key={tab.label}
                           type="button"
                           onClick={() => setActiveWorkspaceSection(tab.section)}
-                          className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${
+                          className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[15px] font-semibold transition ${
                             active
                               ? "bg-[#22C55E] text-white shadow-sm"
                               : "bg-[#F3F4F6] text-[#6B7280] hover:bg-[#E5E7EB]"
@@ -3302,14 +3302,14 @@ export default function DashboardLayout() {
                 </div>
               </div>
 
-              <main className="space-y-6">
-                <div className="border-b border-[#E5E7EB] pb-4">
-                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                    <div className="max-w-2xl">
-                      <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">
+              <main className="space-y-10">
+                <div className="border-b border-[#E5E7EB] pb-8">
+                  <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="max-w-3xl">
+                      <p className="text-[12px] font-semibold uppercase tracking-[0.24em] text-[#6B7280]">
                         AI Employee
                       </p>
-                      <h2 className="mt-2 text-2xl font-semibold text-[#111827]">
+                      <h2 className="mt-3 text-[24px] font-semibold tracking-[-0.02em] text-[#111827] lg:text-[28px]">
                         Train, equip and manage your AI employee from one place.
                       </h2>
                     </div>
@@ -3328,7 +3328,7 @@ export default function DashboardLayout() {
                   </div>
                 </div>
 
-                <div className="sticky top-4 z-20 mb-4 rounded-[24px] border border-[#E5E7EB] bg-white/95 px-4 py-3 shadow-sm backdrop-blur">
+                <div className="sticky top-4 z-20 mb-6 rounded-[24px] border border-[#E5E7EB] bg-white/95 px-5 py-4 shadow-sm backdrop-blur">
                   <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                     <div className="flex flex-wrap items-center gap-3">
                       <div>
@@ -3365,9 +3365,9 @@ export default function DashboardLayout() {
                   </div>
                 </div>
 
-                <div className="w-full rounded-[24px] border border-[#E5E7EB] bg-[#FCFCFD] p-6 shadow-sm">
+                <div className="w-full rounded-[28px] border border-[#E5E7EB] bg-[#FCFCFD] p-8 shadow-sm lg:p-10">
                     {activeWorkspaceSection === "Identity" && (
-                      <div className="relative space-y-8">
+                      <div className="relative space-y-10">
                         <div className="absolute right-0 top-0 flex gap-2">
                           <button
                             type="button"
@@ -3389,17 +3389,17 @@ export default function DashboardLayout() {
                           ref={identityFormRef}
                           className="max-h-[calc(100vh-280px)] overflow-y-auto pr-4 pb-6"
                         >
-                          <div className="grid gap-8 xl:grid-cols-[1.15fr_0.85fr]">
+                          <div className="grid gap-10 xl:grid-cols-[1.15fr_0.85fr]">
                             <div className="space-y-6">
                               <div className="space-y-5">
                                 <div>
-                                  <p className="text-sm font-semibold text-[#111827]">Assistant profile</p>
-                                  <p className="mt-2 text-sm leading-6 text-[#6B7280]">
+                                  <p className="text-[20px] font-semibold text-[#111827]">Assistant profile</p>
+                                  <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
                                     Configure the assistant details customers see and how your AI greets them.
                                   </p>
                                 </div>
 
-                                <div className="grid gap-5 md:grid-cols-2">
+                                <div className="grid gap-6 md:grid-cols-2">
                                   <div>
                                     <label className="block text-sm font-semibold text-[#111827]" htmlFor="assistant-name">
                                       Assistant Name
@@ -3514,7 +3514,7 @@ export default function DashboardLayout() {
                               </div>
                             </div>
 
-                            <div className="space-y-6">
+                            <div className="space-y-8">
                               <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
                                 <div className="flex items-center gap-4">
                                   <div className="flex h-14 w-14 items-center justify-center rounded-[20px] bg-[#E5F6EC] text-2xl font-semibold text-[#065F46]">
@@ -3548,8 +3548,8 @@ export default function DashboardLayout() {
                               </div>
 
                               <div className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6">
-                                <p className="text-sm font-semibold text-[#111827]">Assistant preview</p>
-                                <div className="mt-5 mx-auto max-w-[280px] rounded-[28px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
+                                <p className="text-[18px] font-semibold text-[#111827]">Assistant preview</p>
+                                <div className="mt-6 mx-auto max-w-[280px] rounded-[28px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
                                   <div className="flex items-center gap-3 border-b border-[#F3F4F6] pb-3">
                                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ECFDF5] text-lg">
                                       👤
@@ -3575,8 +3575,8 @@ export default function DashboardLayout() {
                               </div>
                             </div>
 
-                            <div className="xl:col-span-2 mt-2 border-t border-[#E5E7EB] pt-6">
-                              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                            <div className="xl:col-span-2 mt-6 border-t border-[#E5E7EB] pt-8">
+                              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                 <div className="text-sm text-[#6B7280]">
                                   {saveConfirmation ? saveConfirmation : "Changes update instantly in the workspace."}
                                 </div>
