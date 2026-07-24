@@ -29,6 +29,14 @@ import {
   Check,
   Plus,
   Globe,
+  User,
+  BookOpen,
+  Package,
+  Target,
+  Sparkles,
+  Shield,
+  Plug,
+  BarChart3,
 } from "lucide-react";
 import AiSummaryCard from "./ui/ai-summary-card";
 
@@ -228,6 +236,12 @@ const LIST_ITEM =
   `${GLOBAL_RADIUS} bg-[#F9FAFB] p-6 transform ` +
   TRANSITION +
   " hover:bg-[#EFF6FF] hover:-translate-y-1";
+const AI_WORKSPACE_PANEL =
+  "rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6";
+const AI_WORKSPACE_SECTION =
+  "rounded-[20px] border border-[#E5E7EB] bg-white p-5";
+const AI_WORKSPACE_SUBTLE =
+  "rounded-[20px] border border-[#E5E7EB] bg-[#FCFCFD] p-5";
 
 type AiSummaryData = {
   customerIntent: string;
@@ -1894,6 +1908,7 @@ export default function DashboardLayout() {
   const [responseSpeed, setResponseSpeed] = useState("Fast");
   const [avatarFileName, setAvatarFileName] = useState("profile-avatar.png");
   const [saveConfirmation, setSaveConfirmation] = useState("");
+  const [lastSavedAt, setLastSavedAt] = useState("Not saved yet");
   const [upsellProducts, setUpsellProducts] = useState(true);
   const [recommendAlternatives, setRecommendAlternatives] = useState(true);
   const [closeSalesAutomatically, setCloseSalesAutomatically] = useState(false);
@@ -1930,6 +1945,36 @@ export default function DashboardLayout() {
     relationship: "",
     phone: "",
   });
+  const handleSaveChanges = () => {
+    const savedAt = new Date().toLocaleString([], {
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    });
+    setLastSavedAt(savedAt);
+    setSaveConfirmation("Saved successfully.");
+    window.setTimeout(() => setSaveConfirmation(""), 3200);
+  };
+
+  const handleResetChanges = () => {
+    setAssistantName("Nuru");
+    setAssistantRole("Customer Success Assistant");
+    setAssistantDescription(
+      "Helps customers find the right internet plan, answer product questions, and support onboarding.",
+    );
+    setPrimaryLanguage("English");
+    setSecondaryLanguage("Kiswahili");
+    setTone("Friendly");
+    setBusinessHours("Mon–Fri, 8:00 AM - 6:00 PM");
+    setTimezone("East Africa Time (EAT)");
+    setResponseSpeed("Fast");
+    setAvatarFileName("profile-avatar.png");
+    setLastSavedAt("Not saved yet");
+    setSaveConfirmation("Changes reset.");
+    window.setTimeout(() => setSaveConfirmation(""), 3200);
+  };
+
   const addPersonalContact = () => {
     const name = newContact.name.trim();
     const phone = newContact.phone.trim();
@@ -3208,80 +3253,119 @@ export default function DashboardLayout() {
             </div>
           )}
           {selected === "AI Employee" && (
-            <div className={`space-y-6 ${CARD}`}>
-              <div className="grid gap-6 xl:grid-cols-[0.35fr_0.65fr]">
-                <aside className="sticky top-6 space-y-5 rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
-                  <div>
+            <div className={`w-full space-y-6 ${CARD}`}>
+              <div className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
+                <div className="flex flex-col gap-5">
+                  <div className="max-w-3xl">
                     <p className="text-xs uppercase tracking-[0.2em] text-[#6B7280]">
-                      AI Employee Workspace
+                      AI Employee
                     </p>
                     <h2 className="mt-3 text-2xl font-semibold text-[#111827]">
-                      Assistant workspace
+                      Train, equip and manage your AI employee.
                     </h2>
                     <p className="mt-3 text-sm leading-6 text-[#6B7280]">
-                      Manage your assistant identity, knowledge sources, and
-                      live behavior from one place.
+                      Configure your assistant identity, knowledge, policies,
+                      and performance from a single workspace.
                     </p>
                   </div>
 
-                  <div className="space-y-2">
+                  <div className="flex flex-wrap gap-2">
                     {([
-                      "Identity",
-                      "Knowledge Hub",
-                      "Catalogue",
-                      "Sales Playbooks",
-                      "Skills",
-                      "Policies",
-                      "Test AI",
-                      "Performance",
-                    ] as const).map((section) => {
-                      const active = activeWorkspaceSection === section;
+                      { label: "Identity", section: "Identity" as const, Icon: User },
+                      { label: "Knowledge", section: "Knowledge Hub" as const, Icon: BookOpen },
+                      { label: "Catalogue", section: "Catalogue" as const, Icon: Package },
+                      { label: "Sales Playbooks", section: "Sales Playbooks" as const, Icon: Target },
+                      { label: "Skills", section: "Skills" as const, Icon: Sparkles },
+                      { label: "Policies", section: "Policies" as const, Icon: Shield },
+                      { label: "Integrations", section: "Policies" as const, Icon: Plug },
+                      { label: "Test AI", section: "Test AI" as const, Icon: Bot },
+                      { label: "Performance", section: "Performance" as const, Icon: BarChart3 },
+                    ]).map((tab) => {
+                      const active = activeWorkspaceSection === tab.section;
                       return (
                         <button
-                          key={section}
+                          key={tab.label}
                           type="button"
-                          onClick={() => setActiveWorkspaceSection(section)}
-                          className={`flex w-full items-center justify-between rounded-[20px] px-4 py-3 text-left text-sm font-semibold transition ${
+                          onClick={() => setActiveWorkspaceSection(tab.section)}
+                          className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition ${
                             active
-                              ? "bg-[#22C55E] text-white"
-                              : "bg-white text-[#111827] hover:bg-[#EFF6FF]"
+                              ? "bg-[#22C55E] text-white shadow-sm"
+                              : "bg-[#F3F4F6] text-[#6B7280] hover:bg-[#E5E7EB]"
                           }`}
                         >
-                          <span>{section}</span>
-                          <ChevronRight className="h-4 w-4" />
+                          <tab.Icon className="h-4 w-4" />
+                          {tab.label}
                         </button>
                       );
                     })}
                   </div>
-                </aside>
+                </div>
+              </div>
 
-                <main className="space-y-6">
-                  <div className={CARD_SOFT}>
-                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                      <div>
-                        <p className="text-sm uppercase tracking-[0.2em] text-[#6B7280]">
-                          Workspace overview
-                        </p>
-                        <h2 className="mt-2 text-2xl font-semibold text-[#111827]">
-                          AI Employee command center
-                        </h2>
-                        <p className="mt-2 text-sm text-[#6B7280]">
-                          Review your assistant profile, knowledge, policies,
-                          and performance in one place.
-                        </p>
-                      </div>
-                      <div className="space-y-2 text-right">
-                        <p className="text-sm font-semibold text-[#111827]">
-                          Active section
-                        </p>
-                        <p className="text-sm text-[#6B7280]">
-                          {activeWorkspaceSection}
-                        </p>
-                      </div>
+              <main className="space-y-6">
+                <div className="border-b border-[#E5E7EB] pb-4">
+                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="max-w-2xl">
+                      <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">
+                        AI Employee
+                      </p>
+                      <h2 className="mt-2 text-2xl font-semibold text-[#111827]">
+                        Train, equip and manage your AI employee from one place.
+                      </h2>
+                    </div>
+                    <div className="flex flex-wrap items-center justify-start gap-2 lg:justify-end">
+                      <span className="text-sm font-medium text-[#6B7280]">Assistant Status</span>
+                      <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#166534]">
+                        Online
+                      </span>
+                      <span className="rounded-full bg-[#F3F4F6] px-3 py-1 text-xs font-semibold text-[#6B7280]">
+                        AI Enabled
+                      </span>
+                      <span className="rounded-full bg-[#F3F4F6] px-3 py-1 text-xs font-semibold text-[#6B7280]">
+                        WhatsApp Connected (mock)
+                      </span>
                     </div>
                   </div>
+                </div>
 
-                  <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                <div className="sticky top-4 z-20 mb-4 rounded-[24px] border border-[#E5E7EB] bg-white/95 px-4 py-3 shadow-sm backdrop-blur">
+                  <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                    <div className="flex flex-wrap items-center gap-3">
+                      <div>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]">
+                          Current Section
+                        </p>
+                        <p className="text-sm font-semibold text-[#111827]">{activeWorkspaceSection}</p>
+                      </div>
+                      <div className="hidden h-8 w-px bg-[#E5E7EB] lg:block" />
+                      <div>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]">
+                          Last Saved
+                        </p>
+                        <p className="text-sm font-semibold text-[#111827]">{lastSavedAt}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={handleSaveChanges}
+                        className="rounded-[20px] bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
+                      >
+                        Save Changes
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleResetChanges}
+                        className="rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6]"
+                      >
+                        Reset Changes
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="w-full rounded-[24px] border border-[#E5E7EB] bg-[#FCFCFD] p-6 shadow-sm">
                     {activeWorkspaceSection === "Identity" && (
                       <div className="relative space-y-8">
                         <div className="absolute right-0 top-0 flex gap-2">
@@ -3305,25 +3389,21 @@ export default function DashboardLayout() {
                           ref={identityFormRef}
                           className="max-h-[calc(100vh-280px)] overflow-y-auto pr-4 pb-6"
                         >
-                          <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+                          <div className="grid gap-8 xl:grid-cols-[1.15fr_0.85fr]">
                             <div className="space-y-6">
-                              <div className="rounded-[28px] border border-[#E5E7EB] bg-white p-6 shadow-sm transition-shadow duration-200 hover:shadow-lg">
-                                <div className="rounded-[24px] bg-[#F8FAFB] p-5">
-                                  <p className={SECTION_HEADING}>General</p>
-                                  <h3 className={PANEL_TITLE}>AI Employee profile</h3>
-                                  <p className="mt-2 text-sm leading-6 text-[#475569]">
-                                    Set the assistant identity, business role, and personality used across customer conversations.
+                              <div className="space-y-5">
+                                <div>
+                                  <p className="text-sm font-semibold text-[#111827]">Assistant profile</p>
+                                  <p className="mt-2 text-sm leading-6 text-[#6B7280]">
+                                    Configure the assistant details customers see and how your AI greets them.
                                   </p>
                                 </div>
 
-                                <div className="grid gap-5">
-                                  <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
+                                <div className="grid gap-5 md:grid-cols-2">
+                                  <div>
                                     <label className="block text-sm font-semibold text-[#111827]" htmlFor="assistant-name">
-                                      AI Employee Name
+                                      Assistant Name
                                     </label>
-                                    <p className="mt-1 text-sm text-[#64748B]">
-                                      The name customers see when the assistant greets them.
-                                    </p>
                                     <input
                                       id="assistant-name"
                                       value={assistantName}
@@ -3333,13 +3413,10 @@ export default function DashboardLayout() {
                                     />
                                   </div>
 
-                                  <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
+                                  <div>
                                     <label className="block text-sm font-semibold text-[#111827]" htmlFor="assistant-role">
-                                      Role
+                                      Business Role
                                     </label>
-                                    <p className="mt-1 text-sm text-[#64748B]">
-                                      Describe the assistant’s primary responsibility.
-                                    </p>
                                     <input
                                       id="assistant-role"
                                       value={assistantRole}
@@ -3348,277 +3425,168 @@ export default function DashboardLayout() {
                                       className={INPUT_FIELD}
                                     />
                                   </div>
+                                </div>
 
-                                  <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
-                                    <label className="block text-sm font-semibold text-[#111827]" htmlFor="assistant-description">
-                                      Short Description
+                                <div className="grid gap-5 md:grid-cols-2">
+                                  <div>
+                                    <label className="block text-sm font-semibold text-[#111827]" htmlFor="primary-language">
+                                      Primary Language
                                     </label>
-                                    <p className="mt-1 text-sm text-[#64748B]">
-                                      Summarize the assistant’s voice in one concise sentence.
-                                    </p>
-                                    <textarea
-                                      id="assistant-description"
-                                      value={assistantDescription}
-                                      onChange={(event) => setAssistantDescription(event.target.value)}
-                                      rows={4}
-                                      placeholder="Helps customers find the right internet plan, answer product questions, and support onboarding."
-                                      className={`${INPUT_FIELD} min-h-[150px] resize-none`}
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div className="rounded-[28px] border border-[#E5E7EB] bg-white p-6 shadow-sm transition-shadow duration-200 hover:shadow-lg">
-                                <div className="rounded-[24px] bg-[#F8FAFB] p-5">
-                                  <p className={SECTION_HEADING}>Language & tone</p>
-                                  <h3 className={PANEL_TITLE}>Conversation style</h3>
-                                </div>
-
-                                <div className="space-y-6">
-                                  <div className="grid gap-4 sm:grid-cols-2">
-                                    <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
-                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="primary-language">
-                                        Primary Language
-                                      </label>
-                                      <p className="mt-1 text-sm text-[#64748B]">
-                                        Main language for customer greetings and messages.
-                                      </p>
-                                      <select
-                                        id="primary-language"
-                                        value={primaryLanguage}
-                                        onChange={(event) => setPrimaryLanguage(event.target.value as typeof LANGUAGES[number])}
-                                        className={INPUT_FIELD}
-                                      >
-                                        {LANGUAGES.map((lang) => (
-                                          <option key={lang} value={lang}>
-                                            {lang}
-                                          </option>
-                                        ))}
-                                      </select>
-                                    </div>
-
-                                    <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
-                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="secondary-language">
-                                        Secondary Language
-                                      </label>
-                                      <p className="mt-1 text-sm text-[#64748B]">
-                                        Secondary language used for fallback responses.
-                                      </p>
-                                      <select
-                                        id="secondary-language"
-                                        value={secondaryLanguage}
-                                        onChange={(event) => setSecondaryLanguage(event.target.value as typeof LANGUAGES[number])}
-                                        className={INPUT_FIELD}
-                                      >
-                                        {LANGUAGES.map((lang) => (
-                                          <option key={lang} value={lang}>
-                                            {lang}
-                                          </option>
-                                        ))}
-                                      </select>
-                                    </div>
-                                  </div>
-
-                                  <div className="grid gap-4 sm:grid-cols-2">
-                                    <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
-                                      <p className="block text-sm font-semibold text-[#111827]">Personality</p>
-                                      <p className="mt-1 text-sm text-[#64748B]">
-                                        Pick a personality that fits your business.
-                                      </p>
-                                      <div className="mt-3 grid gap-2">
-                                        {PERSONALITIES.map((personalityOption) => (
-                                          <button
-                                            key={personalityOption}
-                                            type="button"
-                                            onClick={() => setPersonality(personalityOption)}
-                                            className={`w-full min-h-[56px] rounded-[20px] px-4 py-3 text-sm font-semibold text-left transition ${
-                                              personality === personalityOption
-                                                ? "border-[#22C55E] bg-[#ECFDF5] text-[#111827] shadow-sm"
-                                                : "border border-[#E5E7EB] bg-white text-[#475569] hover:border-[#CBD5E1]"
-                                            }`}
-                                          >
-                                            {personalityOption}
-                                          </button>
-                                        ))}
-                                      </div>
-                                    </div>
-
-                                    <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
-                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="tone">
-                                        Tone
-                                      </label>
-                                      <p className="mt-1 text-sm text-[#64748B]">
-                                        The assistant’s formality when replying.
-                                      </p>
-                                      <select
-                                        id="tone"
-                                        value={tone}
-                                        onChange={(event) => setTone(event.target.value as typeof TONES[number])}
-                                        className={INPUT_FIELD}
-                                      >
-                                        {TONES.map((toneOption) => (
-                                          <option key={toneOption} value={toneOption}>
-                                            {toneOption}
-                                          </option>
-                                        ))}
-                                      </select>
-                                      <div className="mt-4 rounded-[20px] border border-dashed border-[#CBD5E1] bg-white p-4 text-sm text-[#475569]">
-                                        <p className="font-semibold text-[#111827]">Tone preview</p>
-                                        <p className="mt-2">
-                                          {tone === "Friendly"
-                                            ? "Hi there! I’m here to help you choose the best plan."
-                                            : tone === "Professional"
-                                            ? "Hello. I’m ready to assist with your service options."
-                                            : tone === "Formal"
-                                            ? "Good day. I can provide more information on our offerings."
-                                            : "Hello. I’m here to help you find the right solution."}
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  <div className="grid gap-4 sm:grid-cols-2">
-                                    <div>
-                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-hours">
-                                        Business Hours
-                                      </label>
-                                      <input
-                                        id="business-hours"
-                                        value={businessHours}
-                                        onChange={(event) => setBusinessHours(event.target.value)}
-                                        placeholder="Mon–Fri, 8:00 AM - 6:00 PM"
-                                        className={INPUT_FIELD}
-                                      />
-                                    </div>
-
-                                    <div>
-                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="timezone">
-                                        Timezone
-                                      </label>
-                                      <select
-                                        id="timezone"
-                                        value={timezone}
-                                        onChange={(event) => setTimezone(event.target.value)}
-                                        className={INPUT_FIELD}
-                                      >
-                                        <option>East Africa Time (EAT)</option>
-                                        <option>West Africa Time (WAT)</option>
-                                        <option>Central Africa Time (CAT)</option>
-                                        <option>UTC</option>
-                                      </select>
-                                    </div>
+                                    <select
+                                      id="primary-language"
+                                      value={primaryLanguage}
+                                      onChange={(event) => setPrimaryLanguage(event.target.value as typeof LANGUAGES[number])}
+                                      className={INPUT_FIELD}
+                                    >
+                                      {LANGUAGES.map((lang) => (
+                                        <option key={lang} value={lang}>
+                                          {lang}
+                                        </option>
+                                      ))}
+                                    </select>
                                   </div>
 
                                   <div>
-                                    <label className="block text-sm font-semibold text-[#111827]" htmlFor="response-speed">
-                                      Response Speed
+                                    <label className="block text-sm font-semibold text-[#111827]" htmlFor="secondary-language">
+                                      Secondary Language
                                     </label>
-                                    <p className="mt-1 text-sm text-[#64748B]">
-                                      How quickly the assistant responds to customer prompts.
-                                    </p>
                                     <select
-                                      id="response-speed"
-                                      value={responseSpeed}
-                                      onChange={(event) => setResponseSpeed(event.target.value)}
+                                      id="secondary-language"
+                                      value={secondaryLanguage}
+                                      onChange={(event) => setSecondaryLanguage(event.target.value as typeof LANGUAGES[number])}
                                       className={INPUT_FIELD}
                                     >
-                                      <option>Instant</option>
-                                      <option>Fast</option>
-                                      <option>Balanced</option>
-                                      <option>Detailed</option>
+                                      {LANGUAGES.map((lang) => (
+                                        <option key={lang} value={lang}>
+                                          {lang}
+                                        </option>
+                                      ))}
                                     </select>
                                   </div>
+                                </div>
+
+                                <div className="grid gap-5 md:grid-cols-2">
+                                  <div>
+                                    <label className="block text-sm font-semibold text-[#111827]" htmlFor="tone">
+                                      Tone
+                                    </label>
+                                    <select
+                                      id="tone"
+                                      value={tone}
+                                      onChange={(event) => setTone(event.target.value as typeof TONES[number])}
+                                      className={INPUT_FIELD}
+                                    >
+                                      {TONES.map((toneOption) => (
+                                        <option key={toneOption} value={toneOption}>
+                                          {toneOption}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </div>
+
+                                  <div>
+                                    <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-hours">
+                                      Business Hours
+                                    </label>
+                                    <input
+                                      id="business-hours"
+                                      value={businessHours}
+                                      onChange={(event) => setBusinessHours(event.target.value)}
+                                      placeholder="Mon–Fri, 8:00 AM - 6:00 PM"
+                                      className={INPUT_FIELD}
+                                    />
+                                  </div>
+                                </div>
+
+                                <div>
+                                  <label className="block text-sm font-semibold text-[#111827]" htmlFor="assistant-description">
+                                    Greeting Message
+                                  </label>
+                                  <textarea
+                                    id="assistant-description"
+                                    value={assistantDescription}
+                                    onChange={(event) => setAssistantDescription(event.target.value)}
+                                    rows={5}
+                                    placeholder="Helps customers find the right internet plan, answer product questions, and support onboarding."
+                                    className={`${INPUT_FIELD} min-h-[140px] resize-none`}
+                                  />
                                 </div>
                               </div>
                             </div>
 
                             <div className="space-y-6">
-                              <div className={`${CARD} p-6`}>
+                              <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
                                 <div className="flex items-center gap-4">
-                                  <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[#E5F6EC] text-3xl font-semibold text-[#065F46]">
+                                  <div className="flex h-14 w-14 items-center justify-center rounded-[20px] bg-[#E5F6EC] text-2xl font-semibold text-[#065F46]">
                                     {assistantName.slice(0, 1) || "A"}
                                   </div>
                                   <div>
-                                    <p className="text-sm font-semibold text-[#111827]">
-                                      Assistant avatar
-                                    </p>
+                                    <p className="text-sm font-semibold text-[#111827]">Avatar upload</p>
                                     <p className="mt-1 text-sm text-[#6B7280]">
-                                      Upload a profile image so customers recognize the assistant.
+                                      Add a profile image for recognition.
                                     </p>
                                   </div>
                                 </div>
 
-                                <div className="mt-6 rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
-                                  <div className="flex items-center justify-between gap-3">
-                                    <div>
-                                      <p className="text-sm font-semibold text-[#111827]">Selected file</p>
-                                      <p className="mt-1 text-sm text-[#6B7280]">{avatarFileName}</p>
-                                    </div>
-                                    <label className="inline-flex cursor-pointer items-center rounded-full border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6]">
-                                      <Image className="mr-2 h-4 w-4" />
-                                      Upload
-                                      <input
-                                        type="file"
-                                        accept="image/*"
-                                        className="hidden"
-                                        onChange={(event) => {
-                                          const file = event.target.files?.[0];
-                                          if (file) {
-                                            setAvatarFileName(file.name);
-                                          }
-                                        }}
-                                      />
-                                    </label>
-                                  </div>
-                                  <p className="mt-4 text-sm text-[#64748B]">
-                                    Recommended: PNG or JPG, up to 5MB.
-                                  </p>
-                                </div>
+                                <label className="mt-6 flex cursor-pointer items-center justify-center rounded-[20px] border border-dashed border-[#CBD5E1] bg-[#F9FAFB] px-4 py-5 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6]">
+                                  <Image className="mr-2 h-4 w-4" />
+                                  Upload avatar
+                                  <input
+                                    type="file"
+                                    accept="image/*"
+                                    className="hidden"
+                                    onChange={(event) => {
+                                      const file = event.target.files?.[0];
+                                      if (file) {
+                                        setAvatarFileName(file.name);
+                                      }
+                                    }}
+                                  />
+                                </label>
+
+                                <p className="mt-3 text-sm text-[#64748B]">{avatarFileName || "No file selected"}</p>
                               </div>
 
-                              <div className={`${CARD} p-6 space-y-6`}>
-                                <div>
-                                  <p className="text-sm font-semibold text-[#111827]">Summary</p>
-                                  <p className="mt-1 text-sm text-[#6B7280]">
-                                    Quick overview of the current assistant configuration.
-                                  </p>
-                                </div>
+                              <div className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6">
+                                <p className="text-sm font-semibold text-[#111827]">Assistant preview</p>
+                                <div className="mt-5 mx-auto max-w-[280px] rounded-[28px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
+                                  <div className="flex items-center gap-3 border-b border-[#F3F4F6] pb-3">
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ECFDF5] text-lg">
+                                      👤
+                                    </div>
+                                    <div>
+                                      <p className="text-sm font-semibold text-[#111827]">{assistantName || "Nuru"}</p>
+                                      <p className="text-xs text-[#6B7280]">Online now</p>
+                                    </div>
+                                  </div>
 
-                                <div className="grid gap-4">
-                                  <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
-                                    <p className="text-sm font-semibold text-[#111827]">Name</p>
-                                    <p className="mt-1 text-sm text-[#6B7280]">{assistantName}</p>
-                                  </div>
-                                  <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
-                                    <p className="text-sm font-semibold text-[#111827]">Role</p>
-                                    <p className="mt-1 text-sm text-[#6B7280]">{assistantRole}</p>
-                                  </div>
-                                  <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
-                                    <p className="text-sm font-semibold text-[#111827]">Timezone</p>
-                                    <p className="mt-1 text-sm text-[#6B7280]">{timezone}</p>
-                                  </div>
-                                  <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
-                                    <p className="text-sm font-semibold text-[#111827]">Response Speed</p>
-                                    <p className="mt-1 text-sm text-[#6B7280]">{responseSpeed}</p>
+                                  <div className="mt-4 space-y-3">
+                                    <div className="max-w-[80%] rounded-2xl bg-[#F3F4F6] p-3 text-sm text-[#111827]">
+                                      Hello!
+                                    </div>
+                                    <div className="max-w-[92%] rounded-2xl bg-[#F3F4F6] p-3 text-sm text-[#111827]">
+                                      I’m {assistantName || "Nuru"}, the AI assistant for Sokoos Internet.
+                                    </div>
+                                    <div className="max-w-[92%] rounded-2xl bg-[#F3F4F6] p-3 text-sm text-[#111827]">
+                                      How can I help today?
+                                    </div>
                                   </div>
                                 </div>
+                              </div>
+                            </div>
 
+                            <div className="xl:col-span-2 mt-2 border-t border-[#E5E7EB] pt-6">
+                              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                <div className="text-sm text-[#6B7280]">
+                                  {saveConfirmation ? saveConfirmation : "Changes update instantly in the workspace."}
+                                </div>
                                 <button
                                   type="button"
-                                  onClick={() => {
-                                    setSaveConfirmation("Saved successfully.");
-                                    window.setTimeout(() => setSaveConfirmation(""), 3200);
-                                  }}
-                                  className="w-full rounded-[24px] bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"
+                                  onClick={handleSaveChanges}
+                                  className="rounded-[24px] bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"
                                 >
                                   Save Changes
                                 </button>
-
-                                {saveConfirmation && (
-                                  <p className="text-sm text-[#16A34A]">
-                                    {saveConfirmation}
-                                  </p>
-                                )}
                               </div>
                             </div>
                           </div>
@@ -3629,7 +3597,7 @@ export default function DashboardLayout() {
 
                     {activeWorkspaceSection === "Knowledge Hub" && (
                       <div className="space-y-6">
-                        <div className={`${CARD_SOFT} space-y-6 max-h-[calc(100vh-280px)] overflow-hidden`}>
+                        <div className={`${AI_WORKSPACE_PANEL} space-y-6 max-h-[calc(100vh-280px)] overflow-hidden`}>
                           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                             <div>
                               <p className="text-sm uppercase tracking-[0.2em] text-[#6B7280]">Knowledge Hub</p>
@@ -3648,7 +3616,7 @@ export default function DashboardLayout() {
                           <div className="max-h-[calc(100vh-360px)] overflow-y-auto pr-2">
                             <div className="grid gap-6 xl:grid-cols-2">
                               {KNOWLEDGE_HUB_SOURCES.map((source) => (
-                                <div key={source.title} className={`${CARD} p-6`}>
+                                <div key={source.title} className={`${AI_WORKSPACE_SECTION}`}>
                                   <div className="flex items-start justify-between gap-4">
                                     <div>
                                       <p className="text-sm font-semibold text-[#111827]">{source.title}</p>
@@ -3913,7 +3881,7 @@ export default function DashboardLayout() {
                                 </div>
 
                                 <div>
-                                  <div className={`${CARD} p-4`}>
+                                  <div className={`${AI_WORKSPACE_SUBTLE}`}>
                                     <div className="flex items-center justify-between">
                                       <div className="flex items-center gap-3">
                                         <div className="h-12 w-12 rounded-md overflow-hidden bg-[#F8FAFB] flex items-center justify-center">
@@ -4360,7 +4328,6 @@ export default function DashboardLayout() {
                     )}
                 </main>
               </div>
-            </div>
           )}
           {selected === "Marketing" && (
             <div className={`space-y-6 ${CARD}`}>
@@ -4615,7 +4582,7 @@ export default function DashboardLayout() {
                       Top Questions
                     </p>
                     <div className="mt-4 space-y-3">
-                      {TOP_QUESTIONS.map((item) => (
+                      {ANALYTICS_TOP_QUESTIONS.map((item) => (
                         <div
                           key={item.question}
                           className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4"
@@ -4860,7 +4827,7 @@ export default function DashboardLayout() {
                     const badgeClass = enabled ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#166534]" : "border-[#F3F4F6] bg-[#F3F4F6] text-[#6B7280]";
 
                     return (
-                      <div key={cap.id} className={`${CARD} p-4`}> 
+                      <div key={cap.id} className={`${AI_WORKSPACE_SUBTLE}`}> 
                         <div className="flex items-center justify-between">
                           <div>
                             <p className="text-sm font-semibold text-[#111827]">{cap.title}</p>
