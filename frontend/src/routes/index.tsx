@@ -416,10 +416,11 @@ function Hero() {
               ✨ Acquire • Convert • Retain
             </div>
             <h1 className="mt-6 text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl">
-              Your AI Employee for <span className="text-[#16A34A]">Customer Growth</span>
+              Never Miss a <span className="text-[#16A34A]">Lead</span> or Lose a{" "}
+              <span className="text-[#16A34A]">Customer</span> Again
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Sokoos helps businesses attract new customers, respond instantly on WhatsApp, close more sales, automate follow-ups, and turn one-time buyers into loyal customers, all from one platform.
+              Your AI employee that acquires customers, converts leads into sales, and retains customers across every channel.
             </p>
             <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
               <Link
