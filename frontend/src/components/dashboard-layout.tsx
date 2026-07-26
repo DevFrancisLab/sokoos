@@ -1933,7 +1933,9 @@ export default function DashboardLayout() {
   const [communicationChannels, setCommunicationChannels] = useState({
     whatsapp: true,
     websiteChat: true,
-    email: true,
+    instagram: false,
+    facebookMessenger: false,
+    googleBusinessMessages: false,
   });
   const [primaryLanguage, setPrimaryLanguage] =
     useState<(typeof LANGUAGES)[number]>("English");
@@ -2010,7 +2012,13 @@ export default function DashboardLayout() {
   const handleResetChanges = () => {
     setWelcomeMessage("Hello! Welcome to Sokoos Internet. How can we help today?");
     setAwayMessage("Thanks for getting in touch. Our team is currently away and will reply during working hours.");
-    setCommunicationChannels({ whatsapp: true, websiteChat: true, email: true });
+    setCommunicationChannels({
+      whatsapp: true,
+      websiteChat: true,
+      instagram: false,
+      facebookMessenger: false,
+      googleBusinessMessages: false,
+    });
     setBusinessInfo({
       name: "Sokoos Internet",
       type: "Telecom & Connectivity",
@@ -3484,7 +3492,9 @@ export default function DashboardLayout() {
                                         <p className="mt-1">{[
                                           communicationChannels.whatsapp && "WhatsApp",
                                           communicationChannels.websiteChat && "Website Chat",
-                                          communicationChannels.email && "Email",
+                                          communicationChannels.instagram && "Instagram",
+                                          communicationChannels.facebookMessenger && "Facebook Messenger",
+                                          communicationChannels.googleBusinessMessages && "Google Business Messages",
                                         ].filter(Boolean).join(", ") || "None"}</p>
                                       </div>
                                       <div>
@@ -3865,21 +3875,43 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
 
-                                  <div>
-                                    <p className="block text-sm font-semibold text-[#111827]">Communication Channels</p>
-                                    <div className="mt-3 grid gap-3 sm:grid-cols-3">
-                                      {([
-                                        ["whatsapp", "WhatsApp"],
-                                        ["websiteChat", "Website Chat"],
-                                        ["email", "Email"],
-                                      ] as const).map(([channel, label]) => (
-                                        <label key={channel} className="flex items-center gap-3 rounded-[16px] border border-[#E5E7EB] bg-white px-3 py-3 text-sm font-medium text-[#475569]">
-                                          <input type="checkbox" checked={communicationChannels[channel]} onChange={() => setCommunicationChannels((current) => ({ ...current, [channel]: !current[channel] }))} className="h-4 w-4 rounded border-[#CBD5E1] text-[#22C55E] focus:ring-[#22C55E]" />
-                                          <span>{label}</span>
-                                        </label>
-                                      ))}
+                                  <section className="rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+                                    <div>
+                                      <p className="text-sm font-semibold text-[#111827]">Communication Channels</p>
+                                      <p className="mt-1 text-sm text-[#6B7280]">Choose where customers can interact with your business.</p>
                                     </div>
-                                  </div>
+                                    <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                                      {([
+                                        { id: "whatsapp", name: "WhatsApp", icon: MessageCircle },
+                                        { id: "websiteChat", name: "Website Chat", icon: Globe },
+                                        { id: "instagram", name: "Instagram", icon: Image },
+                                        { id: "facebookMessenger", name: "Facebook Messenger", icon: Users },
+                                        { id: "googleBusinessMessages", name: "Google Business Messages", icon: Search },
+                                      ] as const).map((channel) => {
+                                        const connected = communicationChannels[channel.id];
+                                        const Icon = channel.icon;
+
+                                        return (
+                                          <div key={channel.id} className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                            <div className="flex items-start justify-between gap-3">
+                                              <div className="flex items-center gap-3">
+                                                <div className="flex h-10 w-10 items-center justify-center rounded-[12px] bg-[#E5F6EC] text-[#065F46]">
+                                                  <Icon className="h-5 w-5" />
+                                                </div>
+                                                <p className="text-sm font-semibold text-[#111827]">{channel.name}</p>
+                                              </div>
+                                              <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${connected ? "bg-[#ECFDF5] text-[#166534]" : "bg-[#F3F4F6] text-[#6B7280]"}`}>
+                                                {connected ? "Connected" : "Not connected"}
+                                              </span>
+                                            </div>
+                                            <button type="button" disabled className="mt-4 w-full rounded-[12px] border border-[#E5E7EB] bg-[#F3F4F6] px-3 py-2 text-sm font-semibold text-[#94A3B8] cursor-not-allowed">
+                                              Configure
+                                            </button>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  </section>
                                 </div>
                               </section>
                             </div>
