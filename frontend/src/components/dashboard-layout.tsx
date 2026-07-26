@@ -3887,31 +3887,52 @@ export default function DashboardLayout() {
                               <section className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
                                 <p className="text-[20px] font-semibold text-[#111827]">Live Preview</p>
                                 <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
-                                  Review how your business appears in customer conversations.
+                                  Preview a customer conversation with your business on WhatsApp.
                                 </p>
-                                <div className="mt-6 mx-auto max-w-[280px] rounded-[28px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
-                                  <div className="flex items-center gap-3 border-b border-[#F3F4F6] pb-3">
-                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ECFDF5] text-lg">
-                                      👤
-                                    </div>
-                                    <div>
-                                      <p className="text-sm font-semibold text-[#111827]">{businessInfo.name || "Your business"}</p>
-                                      <p className="text-xs text-[#6B7280]">Online now</p>
-                                    </div>
-                                  </div>
+                                {(() => {
+                                  const greeting = primaryLanguage === "Kiswahili"
+                                    ? "Habari 👋"
+                                    : primaryLanguage === "French"
+                                    ? "Bonjour 👋"
+                                    : primaryLanguage === "Arabic"
+                                    ? "مرحباً 👋"
+                                    : primaryLanguage === "German"
+                                    ? "Hallo 👋"
+                                    : "Hello 👋";
+                                  const businessName = businessInfo.name || "Your business";
+                                  const welcome = welcomeMessage || `Welcome to ${businessName}. How can we help you today?`;
 
-                                  <div className="mt-4 space-y-3">
-                                    <div className="max-w-[80%] rounded-2xl bg-[#F3F4F6] p-3 text-sm text-[#111827]">
-                                      Hello!
+                                  return (
+                                    <div className="mt-6 mx-auto max-w-[320px] overflow-hidden rounded-[28px] border border-[#E5E7EB] bg-white shadow-sm">
+                                      <div className="flex items-center gap-3 border-b border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3">
+                                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#E5F6EC] text-sm font-semibold text-[#065F46]">
+                                          {businessName.slice(0, 1) || "B"}
+                                        </div>
+                                        <div className="min-w-0">
+                                          <p className="truncate text-sm font-semibold text-[#111827]">{businessName}</p>
+                                          <p className="text-xs text-[#6B7280]">Business account</p>
+                                        </div>
+                                      </div>
+
+                                      <div className="space-y-3 bg-[#F8FAFB] p-4">
+                                        <div className="ml-auto w-fit max-w-[80%] rounded-2xl rounded-br-sm bg-[#DCFCE7] px-3 py-2 text-sm text-[#111827]">
+                                          Hi
+                                        </div>
+                                        <div className="w-fit max-w-[88%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm text-[#111827] shadow-sm">
+                                          {greeting}
+                                        </div>
+                                        <div className="w-fit max-w-[92%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm leading-6 text-[#111827] shadow-sm">
+                                          {welcome}
+                                        </div>
+                                      </div>
+
+                                      <div className="flex items-center justify-between border-t border-[#E5E7EB] px-4 py-3 text-xs text-[#6B7280]">
+                                        <span>{primaryLanguage}</span>
+                                        <span>{personality} brand voice</span>
+                                      </div>
                                     </div>
-                                    <div className="max-w-[92%] rounded-2xl bg-[#F3F4F6] p-3 text-sm text-[#111827]">
-                                      Welcome to {businessInfo.name || "our business"}.
-                                    </div>
-                                    <div className="max-w-[92%] rounded-2xl bg-[#F3F4F6] p-3 text-sm text-[#111827]">
-                                      {welcomeMessage || "How can we help today?"}
-                                    </div>
-                                  </div>
-                                </div>
+                                  );
+                                })()}
                               </section>
                             </div>
 
