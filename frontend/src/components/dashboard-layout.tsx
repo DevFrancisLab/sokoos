@@ -750,6 +750,7 @@ const BRAND_VOICE_DETAILS: Record<
     example: "Hey there! Let’s find exactly what you need ✨",
   },
 };
+const LOGO_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Crect width='240' height='240' rx='32' fill='%23E5F6EC'/%3E%3Cpath d='M73 91h94v58H73z' rx='8' fill='%2322C55E'/%3E%3Cpath d='M91 72h58v19H91z' fill='%23065F46'/%3E%3Ccircle cx='120' cy='120' r='17' fill='white'/%3E%3C/svg%3E";
 const TONES = ["Friendly", "Professional", "Formal", "Sales-focused", "Technical", "Custom"] as const;
 
 const ASSISTANT_TABS = [
@@ -1954,7 +1955,10 @@ export default function DashboardLayout() {
     "Personalize responses": true,
   });
   const [timezone, setTimezone] = useState("East Africa Time (EAT)");
-  const [avatarFileName, setAvatarFileName] = useState("profile-avatar.png");
+  const [avatarFileName, setAvatarFileName] = useState("");
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
+  const [logoPreviewOpen, setLogoPreviewOpen] = useState(false);
+  const [logoError, setLogoError] = useState("");
   const [saveConfirmation, setSaveConfirmation] = useState("");
   const [lastSavedAt, setLastSavedAt] = useState("Not saved yet");
   const [upsellProducts, setUpsellProducts] = useState(true);
@@ -2036,7 +2040,10 @@ export default function DashboardLayout() {
     setTone("Friendly");
     setBusinessHours("Mon–Fri, 8:00 AM - 6:00 PM");
     setTimezone("East Africa Time (EAT)");
-    setAvatarFileName("profile-avatar.png");
+    setAvatarFileName("");
+    setLogoPreview(null);
+    setLogoPreviewOpen(false);
+    setLogoError("");
     setLastSavedAt("Not saved yet");
     setSaveConfirmation("Changes reset.");
     window.setTimeout(() => setSaveConfirmation(""), 3200);
@@ -3919,34 +3926,77 @@ export default function DashboardLayout() {
                             <div className="space-y-8">
                               <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
                                 <div className="flex items-center gap-4">
-                                  <div className="flex h-14 w-14 items-center justify-center rounded-[20px] bg-[#E5F6EC] text-2xl font-semibold text-[#065F46]">
-                                    {businessInfo.name.slice(0, 1) || "B"}
+                                  <div className="flex h-14 w-14 overflow-hidden items-center justify-center rounded-[20px] bg-[#E5F6EC] text-2xl font-semibold text-[#065F46]">
+                                    {logoPreview ? (
+                                      <img src={logoPreview} alt="Business logo preview" className="h-full w-full object-cover" />
+                                    ) : (
+                                      businessInfo.name.slice(0, 1) || "B"
+                                    )}
                                   </div>
                                   <div>
                                     <p className="text-[20px] font-semibold text-[#111827]">Business Logo</p>
                                     <p className="mt-1 text-[16px] leading-7 text-[#6B7280]">
-                                      Add the logo customers recognise.
+                                      Add the logo customers recognise across your channels.
                                     </p>
                                   </div>
                                 </div>
 
-                                <label className="mt-6 flex cursor-pointer items-center justify-center rounded-[20px] border border-dashed border-[#CBD5E1] bg-[#F9FAFB] px-4 py-5 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6]">
-                                  <Image className="mr-2 h-4 w-4" />
-                                  Upload Logo
-                                  <input
-                                    type="file"
-                                    accept="image/*"
-                                    className="hidden"
-                                    onChange={(event) => {
-                                      const file = event.target.files?.[0];
-                                      if (file) {
-                                        setAvatarFileName(file.name);
-                                      }
-                                    }}
-                                  />
-                                </label>
+                                <div className="mt-6 rounded-[20px] border border-dashed border-[#CBD5E1] bg-[#F9FAFB] p-4">
+                                  {logoPreview ? (
+                                    <img src={logoPreview} alt="Uploaded business logo" className="mx-auto h-28 w-28 rounded-[16px] object-cover" />
+                                  ) : (
+                                    <div className="mx-auto flex h-28 w-28 items-center justify-center rounded-[16px] bg-[#E5F6EC] text-3xl font-semibold text-[#065F46]">
+                                      {businessInfo.name.slice(0, 1) || "B"}
+                                    </div>
+                                  )}
+                                  <p className="mt-4 text-center text-sm text-[#64748B]">PNG, JPG or SVG · Maximum 5MB</p>
+                                </div>
 
-                                <p className="mt-3 text-sm text-[#64748B]">{avatarFileName || "No file selected"}</p>
+                                <div className="mt-4 flex flex-wrap gap-2">
+                                  <label className="inline-flex cursor-pointer items-center justify-center rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6]">
+                                    <Image className="mr-2 h-4 w-4" />
+                                    Upload Logo
+                                    <input
+                                      type="file"
+                                      accept="image/png,image/jpeg,image/svg+xml"
+                                      className="hidden"
+                                      onChange={(event) => {
+                                        const file = event.target.files?.[0];
+                                        if (!file) return;
+                                        const supportedTypes = ["image/png", "image/jpeg", "image/svg+xml"];
+                                        if (!supportedTypes.includes(file.type)) {
+                                          setLogoError("Please upload a PNG, JPG or SVG file.");
+                                          return;
+                                        }
+                                        if (file.size > 5 * 1024 * 1024) {
+                                          setLogoError("Logo files must be 5MB or smaller.");
+                                          return;
+                                        }
+                                        setAvatarFileName(file.name);
+                                        setLogoPreview(LOGO_PLACEHOLDER);
+                                        setLogoError("");
+                                      }}
+                                    />
+                                  </label>
+                                  <button type="button" onClick={() => { setLogoPreview(null); setLogoPreviewOpen(false); setAvatarFileName(""); setLogoError(""); }} disabled={!logoPreview} className="rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6] disabled:cursor-not-allowed disabled:text-[#94A3B8]">
+                                    Remove Logo
+                                  </button>
+                                  <button type="button" onClick={() => setLogoPreviewOpen(true)} disabled={!logoPreview} className="rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6] disabled:cursor-not-allowed disabled:text-[#94A3B8]">
+                                    Preview Logo
+                                  </button>
+                                </div>
+
+                                <p className="mt-3 text-sm text-[#64748B]">{logoError || avatarFileName || "No logo uploaded"}</p>
+
+                                {logoPreviewOpen && logoPreview && (
+                                  <div className="mt-4 rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+                                    <div className="flex items-center justify-between gap-3">
+                                      <p className="text-sm font-semibold text-[#111827]">Logo Preview</p>
+                                      <button type="button" onClick={() => setLogoPreviewOpen(false)} className="text-sm font-semibold text-[#475569]">Close</button>
+                                    </div>
+                                    <img src={logoPreview} alt="Business logo preview" className="mt-4 h-40 w-full rounded-[16px] bg-white object-contain" />
+                                  </div>
+                                )}
                               </section>
 
                               <section className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
