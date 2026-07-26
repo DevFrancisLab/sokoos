@@ -1894,11 +1894,17 @@ export default function DashboardLayout() {
   const [allowCloseSales, setAllowCloseSales] = useState(true);
   const [allowScheduleAppointments, setAllowScheduleAppointments] =
     useState(true);
-  const [assistantName, setAssistantName] = useState("Nuru");
-  const [assistantRole, setAssistantRole] = useState("Customer Success Employee");
-  const [assistantDescription, setAssistantDescription] = useState(
-    "Helps customers find the right internet plan, answer product questions, and support onboarding.",
+  const [welcomeMessage, setWelcomeMessage] = useState(
+    "Hello! Welcome to Sokoos Internet. How can we help today?",
   );
+  const [awayMessage, setAwayMessage] = useState(
+    "Thanks for getting in touch. Our team is currently away and will reply during working hours.",
+  );
+  const [communicationChannels, setCommunicationChannels] = useState({
+    whatsapp: true,
+    websiteChat: true,
+    email: true,
+  });
   const [primaryLanguage, setPrimaryLanguage] =
     useState<(typeof LANGUAGES)[number]>("English");
   const [secondaryLanguage, setSecondaryLanguage] =
@@ -1916,7 +1922,6 @@ export default function DashboardLayout() {
     "Personalize responses": true,
   });
   const [timezone, setTimezone] = useState("East Africa Time (EAT)");
-  const [responseSpeed, setResponseSpeed] = useState("Fast");
   const [avatarFileName, setAvatarFileName] = useState("profile-avatar.png");
   const [saveConfirmation, setSaveConfirmation] = useState("");
   const [lastSavedAt, setLastSavedAt] = useState("Not saved yet");
@@ -1928,6 +1933,10 @@ export default function DashboardLayout() {
     type: "Telecom & Connectivity",
     about:
       "We help local businesses stay online with reliable internet plans, fast support, and easy onboarding.",
+    website: "https://sokoos.com",
+    address: "Nairobi, Kenya",
+    phone: "+254 700 000 000",
+    whatsapp: "+254 700 000 000",
     hours: "Mon–Fri, 8:00 AM - 6:00 PM",
     serviceAreas: "Nairobi, Kiambu, Thika",
     paymentMethods: "Mobile Money, Bank Transfer, Cash",
@@ -1969,17 +1978,26 @@ export default function DashboardLayout() {
   };
 
   const handleResetChanges = () => {
-    setAssistantName("Nuru");
-    setAssistantRole("Customer Success Employee");
-    setAssistantDescription(
-      "Helps customers find the right internet plan, answer product questions, and support onboarding.",
-    );
+    setWelcomeMessage("Hello! Welcome to Sokoos Internet. How can we help today?");
+    setAwayMessage("Thanks for getting in touch. Our team is currently away and will reply during working hours.");
+    setCommunicationChannels({ whatsapp: true, websiteChat: true, email: true });
+    setBusinessInfo({
+      name: "Sokoos Internet",
+      type: "Telecom & Connectivity",
+      about: "We help local businesses stay online with reliable internet plans, fast support, and easy onboarding.",
+      website: "https://sokoos.com",
+      address: "Nairobi, Kenya",
+      phone: "+254 700 000 000",
+      whatsapp: "+254 700 000 000",
+      hours: "Mon–Fri, 8:00 AM - 6:00 PM",
+      serviceAreas: "Nairobi, Kiambu, Thika",
+      paymentMethods: "Mobile Money, Bank Transfer, Cash",
+    });
     setPrimaryLanguage("English");
     setSecondaryLanguage("Kiswahili");
     setTone("Friendly");
     setBusinessHours("Mon–Fri, 8:00 AM - 6:00 PM");
     setTimezone("East Africa Time (EAT)");
-    setResponseSpeed("Fast");
     setAvatarFileName("profile-avatar.png");
     setLastSavedAt("Not saved yet");
     setSaveConfirmation("Changes reset.");
@@ -3282,7 +3300,7 @@ export default function DashboardLayout() {
 
                   <div className="flex flex-wrap gap-3">
                     {([
-                      { label: "Identity", section: "Identity" as const, Icon: User },
+                      { label: "Business Identity", section: "Identity" as const, Icon: User },
                       { label: "Knowledge", section: "Knowledge Hub" as const, Icon: BookOpen },
                       { label: "Catalogue", section: "Catalogue" as const, Icon: Package },
                       { label: "Sales Playbooks", section: "Sales Playbooks" as const, Icon: Target },
@@ -3346,7 +3364,7 @@ export default function DashboardLayout() {
                         <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]">
                           Current Section
                         </p>
-                        <p className="text-sm font-semibold text-[#111827]">{activeWorkspaceSection}</p>
+                        <p className="text-sm font-semibold text-[#111827]">{activeWorkspaceSection === "Identity" ? "Business Identity" : activeWorkspaceSection}</p>
                       </div>
                       <div className="hidden h-8 w-px bg-[#E5E7EB] lg:block" />
                       <div>
@@ -3406,29 +3424,27 @@ export default function DashboardLayout() {
                                 <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
                                   <div className="flex items-start gap-4">
                                     <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#E5F6EC] text-2xl font-semibold text-[#065F46]">
-                                      {assistantName.slice(0, 1) || "A"}
+                                      {businessInfo.name.slice(0, 1) || "B"}
                                     </div>
                                     <div>
                                       <div className="flex flex-wrap items-center gap-2">
                                         <h3 className="text-[24px] font-semibold text-[#111827]">
-                                          {assistantName || "Nuru"}
+                                          {businessInfo.name || "Your business"}
                                         </h3>
                                         <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#166534]">
-                                          Online
+                                          Business profile
                                         </span>
                                         <span className="rounded-full bg-[#F3F4F6] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#6B7280]">
-                                          AI Enabled
+                                          Customer-facing
                                         </span>
                                       </div>
-                                      <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
-                                        {assistantRole || "Customer Success Employee"}
-                                      </p>
+                                      <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">{businessInfo.type}</p>
                                       <div className="mt-4 flex flex-wrap gap-2 text-sm text-[#475569]">
                                         <span className="rounded-full border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-1">
-                                          {primaryLanguage}
+                                          {businessInfo.website}
                                         </span>
                                         <span className="rounded-full border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-1">
-                                          {secondaryLanguage}
+                                          {businessInfo.address}
                                         </span>
                                       </div>
                                     </div>
@@ -3436,7 +3452,7 @@ export default function DashboardLayout() {
 
                                   <div className="w-full max-w-[280px] rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
                                     <p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]">
-                                      Profile details
+                                      Business details
                                     </p>
                                     <div className="mt-4 space-y-3 text-sm text-[#475569]">
                                       <div>
@@ -3444,8 +3460,8 @@ export default function DashboardLayout() {
                                         <p className="mt-1">{businessHours}</p>
                                       </div>
                                       <div>
-                                        <p className="font-semibold text-[#111827]">Channels</p>
-                                        <p className="mt-1">WhatsApp, Website Chat, Email</p>
+                                        <p className="font-semibold text-[#111827]">WhatsApp</p>
+                                        <p className="mt-1">{businessInfo.whatsapp}</p>
                                       </div>
                                     </div>
                                   </div>
@@ -3453,15 +3469,15 @@ export default function DashboardLayout() {
 
                                 <div className="mt-6 flex flex-col gap-3 rounded-[24px] border border-[#E5E7EB] bg-[#FCFCFD] p-4 sm:flex-row sm:items-center sm:justify-between">
                                   <div>
-                                    <p className="text-sm font-semibold text-[#111827]">Avatar controls</p>
+                                    <p className="text-sm font-semibold text-[#111827]">Business logo</p>
                                     <p className="mt-1 text-sm text-[#6B7280]">
-                                      Update the profile image or generate a new one.
+                                      Upload the logo customers will recognise.
                                     </p>
                                   </div>
                                   <div className="flex flex-wrap gap-2">
                                     <label className="inline-flex cursor-pointer items-center justify-center rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6]">
                                       <Image className="mr-2 h-4 w-4" />
-                                      Upload Avatar
+                                      Upload Logo
                                       <input
                                         type="file"
                                         accept="image/*"
@@ -3478,7 +3494,7 @@ export default function DashboardLayout() {
                                       type="button"
                                       className="rounded-[20px] border border-[#E5E7EB] bg-[#F3F4F6] px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#E5E7EB]"
                                     >
-                                      Generate Avatar
+                                      Generate Logo
                                     </button>
                                   </div>
                                 </div>
@@ -3487,59 +3503,85 @@ export default function DashboardLayout() {
                               <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
                                 <div className="space-y-4">
                                   <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Basic Details</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">Business details</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
-                                      Define what customers see when your AI Employee represents your business.
+                                      Define the details customers see when they interact with your business.
                                     </p>
                                   </div>
 
                                   <div className="grid gap-4 md:grid-cols-2">
-                                    <div>
-                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="assistant-name">
-                                        AI Employee Name
-                                      </label>
-                                      <input
-                                        id="assistant-name"
-                                        value={assistantName}
-                                        onChange={(event) => setAssistantName(event.target.value)}
-                                        placeholder="Nuru"
-                                        className={`${INPUT_FIELD} mt-2`}
-                                      />
-                                    </div>
-
-                                    <div>
-                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="assistant-role">
-                                        Business Role
-                                      </label>
-                                      <input
-                                        id="assistant-role"
-                                        value={assistantRole}
-                                        onChange={(event) => setAssistantRole(event.target.value)}
-                                        placeholder="Customer Success Employee"
-                                        className={`${INPUT_FIELD} mt-2`}
-                                      />
-                                    </div>
-
-                                    <div>
-                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="department">
-                                        Department
-                                      </label>
-                                      <input
-                                        id="department"
-                                        placeholder="Customer Support"
-                                        className={`${INPUT_FIELD} mt-2`}
-                                      />
-                                    </div>
-
                                     <div>
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-name">
                                         Business Name
                                       </label>
                                       <input
                                         id="business-name"
-                                        value="Sokoos Internet"
+                                        value={businessInfo.name}
+                                        onChange={(event) => setBusinessInfo((current) => ({ ...current, name: event.target.value }))}
+                                        placeholder="Your business name"
                                         className={`${INPUT_FIELD} mt-2`}
                                       />
+                                    </div>
+
+                                    <div>
+                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="industry">
+                                        Industry
+                                      </label>
+                                      <input
+                                        id="industry"
+                                        value={businessInfo.type}
+                                        onChange={(event) => setBusinessInfo((current) => ({ ...current, type: event.target.value }))}
+                                        placeholder="e.g. Retail, Hospitality, Services"
+                                        className={`${INPUT_FIELD} mt-2`}
+                                      />
+                                    </div>
+
+                                    <div>
+                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-website">
+                                        Website
+                                      </label>
+                                      <input
+                                        id="business-website"
+                                        value={businessInfo.website}
+                                        onChange={(event) => setBusinessInfo((current) => ({ ...current, website: event.target.value }))}
+                                        placeholder="https://yourbusiness.com"
+                                        className={`${INPUT_FIELD} mt-2`}
+                                      />
+                                    </div>
+
+                                    <div>
+                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-phone">
+                                        Business Phone
+                                      </label>
+                                      <input
+                                        id="business-phone"
+                                        value={businessInfo.phone}
+                                        onChange={(event) => setBusinessInfo((current) => ({ ...current, phone: event.target.value }))}
+                                        placeholder="+254 700 000 000"
+                                        className={`${INPUT_FIELD} mt-2`}
+                                      />
+                                    </div>
+                                  </div>
+                                  <div>
+                                    <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-description">
+                                      Business Description
+                                    </label>
+                                    <textarea
+                                      id="business-description"
+                                      value={businessInfo.about}
+                                      onChange={(event) => setBusinessInfo((current) => ({ ...current, about: event.target.value }))}
+                                      rows={3}
+                                      className={`${INPUT_FIELD} mt-2 resize-none`}
+                                    />
+                                  </div>
+                                  <div className="grid gap-4 md:grid-cols-2">
+                                    <div>
+                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="physical-address">Physical Address</label>
+                                      <input id="physical-address" value={businessInfo.address} onChange={(event) => setBusinessInfo((current) => ({ ...current, address: event.target.value }))} className={`${INPUT_FIELD} mt-2`} />
+                                    </div>
+                                    <div>
+                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="whatsapp-number">WhatsApp Number</label>
+                                      <input id="whatsapp-number" value={businessInfo.whatsapp} onChange={(event) => setBusinessInfo((current) => ({ ...current, whatsapp: event.target.value }))} className={`${INPUT_FIELD} mt-2`} />
                                     </div>
                                   </div>
                                 </div>
@@ -3548,9 +3590,9 @@ export default function DashboardLayout() {
                               <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
                                 <div className="space-y-5">
                                   <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Personality</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">Brand Voice</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
-                                      Choose a voice that feels aligned with your brand and customer experience.
+                                      Choose how your business should sound in every customer conversation.
                                     </p>
                                   </div>
 
@@ -3577,7 +3619,7 @@ export default function DashboardLayout() {
                                   <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
                                     <p className="text-sm font-semibold text-[#111827]">Writing Style</p>
                                     <p className="mt-2 text-sm leading-6 text-[#6B7280]">
-                                      Fine-tune how your AI Employee expresses itself in conversation.
+                                      Fine-tune how your business communicates with customers.
                                     </p>
                                     <div className="mt-4 grid gap-3 sm:grid-cols-2">
                                       {[
@@ -3620,42 +3662,46 @@ export default function DashboardLayout() {
                               <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
                                 <div className="space-y-5">
                                   <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Greeting Message</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">Customer messages</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
-                                      This is the first message customers receive.
+                                      Set the messages customers receive when they contact your business.
                                     </p>
                                   </div>
 
                                   <div className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
                                     <div>
-                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="assistant-description">
-                                        Greeting message
+                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="welcome-message">
+                                        Welcome Message
                                       </label>
                                       <textarea
-                                        id="assistant-description"
-                                        value={assistantDescription}
-                                        onChange={(event) => setAssistantDescription(event.target.value)}
-                                        rows={6}
-                                        placeholder="Hi there! I can help you find the right plan or answer your questions."
-                                        className={`${INPUT_FIELD} mt-2 min-h-[180px] resize-none`}
+                                        id="welcome-message"
+                                        value={welcomeMessage}
+                                        onChange={(event) => setWelcomeMessage(event.target.value)}
+                                        rows={4}
+                                        placeholder="Hello! Welcome to our business. How can we help today?"
+                                        className={`${INPUT_FIELD} mt-2 resize-none`}
                                       />
                                     </div>
 
                                     <div className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 shadow-sm">
                                       <div className="flex items-center gap-2">
                                         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#ECFDF5] text-sm font-semibold text-[#166534]">
-                                          {assistantName.slice(0, 1) || "A"}
+                                          {businessInfo.name.slice(0, 1) || "B"}
                                         </div>
                                         <div>
-                                          <p className="text-sm font-semibold text-[#111827]">{assistantName || "Nuru"}</p>
+                                          <p className="text-sm font-semibold text-[#111827]">{businessInfo.name || "Your business"}</p>
                                           <p className="text-xs text-[#6B7280]">Online now</p>
                                         </div>
                                       </div>
 
                                       <div className="mt-4 rounded-[20px] rounded-bl-sm bg-[#22C55E] px-4 py-3 text-sm font-medium text-white shadow-sm">
-                                        {assistantDescription || "Hi there! I can help you find the right plan or answer your questions."}
+                                        {welcomeMessage || "Hello! Welcome to our business. How can we help today?"}
                                       </div>
                                     </div>
+                                  </div>
+                                  <div>
+                                    <label className="block text-sm font-semibold text-[#111827]" htmlFor="away-message">Away Message</label>
+                                    <textarea id="away-message" value={awayMessage} onChange={(event) => setAwayMessage(event.target.value)} rows={3} className={`${INPUT_FIELD} mt-2 resize-none`} />
                                   </div>
                                 </div>
                               </section>
@@ -3663,9 +3709,9 @@ export default function DashboardLayout() {
                               <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
                                 <div className="space-y-5">
                                   <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Languages</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">Supported Languages</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
-                                      Configure the languages your AI Employee can use for customer conversations.
+                                      Choose the languages your business can use with customers.
                                     </p>
                                   </div>
 
@@ -3742,9 +3788,9 @@ export default function DashboardLayout() {
                               <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
                                 <div className="space-y-5">
                                   <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Availability</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">Working Hours & Channels</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
-                                      Tell customers when your AI Employee is active and how quickly it responds.
+                                      Tell customers when your business is open and where they can reach you.
                                     </p>
                                   </div>
 
@@ -3781,20 +3827,19 @@ export default function DashboardLayout() {
                                   </div>
 
                                   <div>
-                                    <label className="block text-sm font-semibold text-[#111827]" htmlFor="response-speed">
-                                      Response Speed
-                                    </label>
-                                    <select
-                                      id="response-speed"
-                                      value={responseSpeed}
-                                      onChange={(event) => setResponseSpeed(event.target.value)}
-                                      className={INPUT_FIELD}
-                                    >
-                                      <option>Instant</option>
-                                      <option>Fast</option>
-                                      <option>Balanced</option>
-                                      <option>Detailed</option>
-                                    </select>
+                                    <p className="block text-sm font-semibold text-[#111827]">Communication Channels</p>
+                                    <div className="mt-3 grid gap-3 sm:grid-cols-3">
+                                      {([
+                                        ["whatsapp", "WhatsApp"],
+                                        ["websiteChat", "Website Chat"],
+                                        ["email", "Email"],
+                                      ] as const).map(([channel, label]) => (
+                                        <label key={channel} className="flex items-center gap-3 rounded-[16px] border border-[#E5E7EB] bg-white px-3 py-3 text-sm font-medium text-[#475569]">
+                                          <input type="checkbox" checked={communicationChannels[channel]} onChange={() => setCommunicationChannels((current) => ({ ...current, [channel]: !current[channel] }))} className="h-4 w-4 rounded border-[#CBD5E1] text-[#22C55E] focus:ring-[#22C55E]" />
+                                          <span>{label}</span>
+                                        </label>
+                                      ))}
+                                    </div>
                                   </div>
                                 </div>
                               </section>
@@ -3804,19 +3849,19 @@ export default function DashboardLayout() {
                               <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
                                 <div className="flex items-center gap-4">
                                   <div className="flex h-14 w-14 items-center justify-center rounded-[20px] bg-[#E5F6EC] text-2xl font-semibold text-[#065F46]">
-                                    {assistantName.slice(0, 1) || "A"}
+                                    {businessInfo.name.slice(0, 1) || "B"}
                                   </div>
                                   <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Avatar</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">Business Logo</p>
                                     <p className="mt-1 text-[16px] leading-7 text-[#6B7280]">
-                                      Add a profile image for recognition.
+                                      Add the logo customers recognise.
                                     </p>
                                   </div>
                                 </div>
 
                                 <label className="mt-6 flex cursor-pointer items-center justify-center rounded-[20px] border border-dashed border-[#CBD5E1] bg-[#F9FAFB] px-4 py-5 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6]">
                                   <Image className="mr-2 h-4 w-4" />
-                                  Upload avatar
+                                  Upload Logo
                                   <input
                                     type="file"
                                     accept="image/*"
@@ -3836,7 +3881,7 @@ export default function DashboardLayout() {
                               <section className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
                                 <p className="text-[20px] font-semibold text-[#111827]">Live Preview</p>
                                 <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
-                                  Review how your AI Employee appears in conversation.
+                                  Review how your business appears in customer conversations.
                                 </p>
                                 <div className="mt-6 mx-auto max-w-[280px] rounded-[28px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
                                   <div className="flex items-center gap-3 border-b border-[#F3F4F6] pb-3">
@@ -3844,7 +3889,7 @@ export default function DashboardLayout() {
                                       👤
                                     </div>
                                     <div>
-                                      <p className="text-sm font-semibold text-[#111827]">{assistantName || "Nuru"}</p>
+                                      <p className="text-sm font-semibold text-[#111827]">{businessInfo.name || "Your business"}</p>
                                       <p className="text-xs text-[#6B7280]">Online now</p>
                                     </div>
                                   </div>
@@ -3854,10 +3899,10 @@ export default function DashboardLayout() {
                                       Hello!
                                     </div>
                                     <div className="max-w-[92%] rounded-2xl bg-[#F3F4F6] p-3 text-sm text-[#111827]">
-                                      I’m {assistantName || "Nuru"}, the AI Employee for Sokoos Internet.
+                                      Welcome to {businessInfo.name || "our business"}.
                                     </div>
                                     <div className="max-w-[92%] rounded-2xl bg-[#F3F4F6] p-3 text-sm text-[#111827]">
-                                      How can I help today?
+                                      {welcomeMessage || "How can we help today?"}
                                     </div>
                                   </div>
                                 </div>
