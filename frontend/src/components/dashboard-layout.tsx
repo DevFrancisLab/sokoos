@@ -719,7 +719,37 @@ const POPULAR_PRODUCTS = [
 ];
 
 const LANGUAGES = ["English", "Kiswahili"] as const;
-const PERSONALITIES = ["Friendly", "Professional", "Formal", "Sales-focused", "Technical", "Custom"] as const;
+const PERSONALITIES = ["Professional", "Friendly", "Luxury", "Casual", "Technical", "Playful"] as const;
+
+const BRAND_VOICE_DETAILS: Record<
+  (typeof PERSONALITIES)[number],
+  { description: string; example: string }
+> = {
+  Professional: {
+    description: "Clear, polished and dependable.",
+    example: "Thank you for reaching out. How may we assist you today?",
+  },
+  Friendly: {
+    description: "Warm, helpful and approachable.",
+    example: "Hello 👋 We’re happy to help. What can we do for you?",
+  },
+  Luxury: {
+    description: "Refined, attentive and elevated.",
+    example: "Welcome. We would be delighted to assist you.",
+  },
+  Casual: {
+    description: "Relaxed, simple and conversational.",
+    example: "Hi! What can we help you with today?",
+  },
+  Technical: {
+    description: "Precise, informative and direct.",
+    example: "Hello. Please share the details and we’ll help you resolve it.",
+  },
+  Playful: {
+    description: "Upbeat, lively and full of personality.",
+    example: "Hey there! Let’s find exactly what you need ✨",
+  },
+};
 const TONES = ["Friendly", "Professional", "Formal", "Sales-focused", "Technical", "Custom"] as const;
 
 const ASSISTANT_TABS = [
@@ -3603,20 +3633,23 @@ export default function DashboardLayout() {
                                   </div>
 
                                   <div className="grid gap-3 md:grid-cols-2">
-                                    {(["Friendly", "Professional", "Formal", "Sales-focused", "Technical", "Custom"] as const).map((personalityOption) => {
+                                    {PERSONALITIES.map((personalityOption) => {
                                       const active = personality === personalityOption;
+                                      const voice = BRAND_VOICE_DETAILS[personalityOption];
                                       return (
                                         <button
                                           key={personalityOption}
                                           type="button"
                                           onClick={() => setPersonality(personalityOption)}
-                                          className={`rounded-[20px] border px-4 py-4 text-left text-sm font-semibold transition ${
+                                          className={`rounded-[20px] border px-4 py-4 text-left transition ${
                                             active
                                               ? "border-[#22C55E] bg-[#ECFDF5] text-[#111827] shadow-sm"
                                               : "border-[#E5E7EB] bg-[#F9FAFB] text-[#475569] hover:border-[#CBD5E1]"
                                           }`}
                                         >
-                                          {personalityOption}
+                                          <p className="text-sm font-semibold">{personalityOption}</p>
+                                          <p className="mt-1 text-sm leading-5 text-[#64748B]">{voice.description}</p>
+                                          <p className="mt-3 text-xs leading-5 text-[#475569]">“{voice.example}”</p>
                                         </button>
                                       );
                                     })}
