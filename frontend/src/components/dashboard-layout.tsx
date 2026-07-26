@@ -3456,9 +3456,9 @@ export default function DashboardLayout() {
                           onChangeCapture={() => setHasUnsavedChanges(true)}
                           className="max-h-[calc(100vh-280px)] overflow-y-auto pr-4 pb-6"
                         >
-                          <div className="grid gap-8 xl:grid-cols-[1.2fr_0.8fr]">
-                            <div className="space-y-8">
-                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                          <div className="grid gap-10 xl:grid-cols-[1.2fr_0.8fr]">
+                            <div className="space-y-10">
+                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-8">
                                 <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
                                   <div className="flex items-start gap-4">
                                     <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#E5F6EC] text-2xl font-semibold text-[#065F46]">
@@ -3591,8 +3591,8 @@ export default function DashboardLayout() {
                                 </div>
                               </section>
 
-                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                                <div className="space-y-4">
+                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-8">
+                                <div className="space-y-6">
                                   <div>
                                     <p className="text-[20px] font-semibold text-[#111827]">Business details</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
@@ -3600,7 +3600,7 @@ export default function DashboardLayout() {
                                     </p>
                                   </div>
 
-                                  <div className="grid gap-4 md:grid-cols-2">
+                                  <div className="grid gap-5 md:grid-cols-2">
                                     <div>
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-name">
                                         Business Name
@@ -3665,7 +3665,7 @@ export default function DashboardLayout() {
                                       className={`${INPUT_FIELD} mt-2 resize-none`}
                                     />
                                   </div>
-                                  <div className="grid gap-4 md:grid-cols-2">
+                                  <div className="grid gap-5 border-t border-[#F1F5F9] pt-6 md:grid-cols-2">
                                     <div>
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="physical-address">Physical Address</label>
                                       <input id="physical-address" value={businessInfo.address} onChange={(event) => setBusinessInfo((current) => ({ ...current, address: event.target.value }))} className={`${INPUT_FIELD} mt-2`} />
@@ -3678,8 +3678,8 @@ export default function DashboardLayout() {
                                 </div>
                               </section>
 
-                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                                <div className="space-y-5">
+                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-8">
+                                <div className="space-y-6">
                                   <div>
                                     <p className="text-[20px] font-semibold text-[#111827]">Brand Voice</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
@@ -3687,7 +3687,7 @@ export default function DashboardLayout() {
                                     </p>
                                   </div>
 
-                                  <div className="grid gap-3 md:grid-cols-2">
+                                  <div className="grid gap-4 md:grid-cols-2">
                                     {PERSONALITIES.map((personalityOption) => {
                                       const active = personality === personalityOption;
                                       const voice = BRAND_VOICE_DETAILS[personalityOption];
@@ -3696,7 +3696,7 @@ export default function DashboardLayout() {
                                           key={personalityOption}
                                           type="button"
                                           onClick={() => { setPersonality(personalityOption); setHasUnsavedChanges(true); }}
-                                          className={`rounded-[20px] border px-4 py-4 text-left transition ${
+                                          className={`rounded-[20px] border px-5 py-5 text-left transition ${
                                             active
                                               ? "border-[#22C55E] bg-[#ECFDF5] text-[#111827] shadow-sm"
                                               : "border-[#E5E7EB] bg-[#F9FAFB] text-[#475569] hover:border-[#CBD5E1]"
@@ -3753,8 +3753,8 @@ export default function DashboardLayout() {
                                 </div>
                               </section>
 
-                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                                <div className="space-y-5">
+                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-8">
+                                <div className="space-y-6">
                                   <div>
                                     <p className="text-[20px] font-semibold text-[#111827]">Customer messages</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
@@ -3762,7 +3762,7 @@ export default function DashboardLayout() {
                                     </p>
                                   </div>
 
-                                  <div className="grid gap-5 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
+                                  <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
                                     <div>
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="welcome-message">
                                         Welcome Message
@@ -3800,8 +3800,8 @@ export default function DashboardLayout() {
                                 </div>
                               </section>
 
-                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                                <div className="space-y-5">
+                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-8">
+                                <div className="space-y-6">
                                   <div>
                                     <p className="text-[20px] font-semibold text-[#111827]">Supported Languages</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
@@ -3809,7 +3809,7 @@ export default function DashboardLayout() {
                                     </p>
                                   </div>
 
-                                  <div className="grid gap-5 md:grid-cols-2">
+                                  <div className="grid gap-6 md:grid-cols-2">
                                     <div>
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="primary-language">
                                         Primary Language
@@ -3880,8 +3880,8 @@ export default function DashboardLayout() {
                                 </div>
                               </section>
 
-                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
-                                <div className="space-y-5">
+                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-8">
+                                <div className="space-y-6">
                                   <div>
                                     <p className="text-[20px] font-semibold text-[#111827]">Working Hours & Channels</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
@@ -3889,7 +3889,7 @@ export default function DashboardLayout() {
                                     </p>
                                   </div>
 
-                                  <div className="grid gap-5 md:grid-cols-2">
+                                  <div className="grid gap-6 md:grid-cols-2">
                                     <div>
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-hours">
                                         Business Hours
@@ -3962,8 +3962,8 @@ export default function DashboardLayout() {
                               </section>
                             </div>
 
-                            <div className="space-y-8">
-                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                            <div className="space-y-10">
+                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-8">
                                 <div className="flex items-center gap-4">
                                   <div className="flex h-14 w-14 overflow-hidden items-center justify-center rounded-[20px] bg-[#E5F6EC] text-2xl font-semibold text-[#065F46]">
                                     {logoPreview ? (
@@ -4038,7 +4038,7 @@ export default function DashboardLayout() {
                                 )}
                               </section>
 
-                              <section className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
+                              <section className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-8">
                                 <p className="text-[20px] font-semibold text-[#111827]">Live Preview</p>
                                 <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
                                   Preview a customer conversation with your business on WhatsApp.
