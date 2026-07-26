@@ -1959,8 +1959,7 @@ export default function DashboardLayout() {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [logoPreviewOpen, setLogoPreviewOpen] = useState(false);
   const [logoError, setLogoError] = useState("");
-  const [saveConfirmation, setSaveConfirmation] = useState("");
-  const [lastSavedAt, setLastSavedAt] = useState("Not saved yet");
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(true);
   const [upsellProducts, setUpsellProducts] = useState(true);
   const [recommendAlternatives, setRecommendAlternatives] = useState(true);
   const [closeSalesAutomatically, setCloseSalesAutomatically] = useState(false);
@@ -2002,15 +2001,7 @@ export default function DashboardLayout() {
     phone: "",
   });
   const handleSaveChanges = () => {
-    const savedAt = new Date().toLocaleString([], {
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-    });
-    setLastSavedAt(savedAt);
-    setSaveConfirmation("Saved successfully.");
-    window.setTimeout(() => setSaveConfirmation(""), 3200);
+    setHasUnsavedChanges(false);
   };
 
   const handleResetChanges = () => {
@@ -2037,6 +2028,15 @@ export default function DashboardLayout() {
     });
     setPrimaryLanguage("English");
     setSecondaryLanguage("Kiswahili");
+    setSupportedLanguages(["English", "Kiswahili"]);
+    setPersonality("Friendly");
+    setWritingStyleOptions({
+      "Use emojis": false,
+      "Keep replies short": true,
+      "Explain simply": true,
+      "Ask follow-up questions": false,
+      "Personalize responses": true,
+    });
     setTone("Friendly");
     setBusinessHours("Mon–Fri, 8:00 AM - 6:00 PM");
     setTimezone("East Africa Time (EAT)");
@@ -2044,9 +2044,7 @@ export default function DashboardLayout() {
     setLogoPreview(null);
     setLogoPreviewOpen(false);
     setLogoError("");
-    setLastSavedAt("Not saved yet");
-    setSaveConfirmation("Changes reset.");
-    window.setTimeout(() => setSaveConfirmation(""), 3200);
+    setHasUnsavedChanges(false);
   };
 
   const addPersonalContact = () => {
@@ -3404,19 +3402,12 @@ export default function DashboardLayout() {
 
                 <div className="sticky top-4 z-20 mb-6 rounded-[24px] border border-[#E5E7EB] bg-white/95 px-5 py-4 shadow-sm backdrop-blur">
                   <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                    <div className="flex flex-wrap items-center gap-3">
+                    <div className="flex items-center gap-3">
                       <div>
                         <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]">
-                          Current Section
+                          Unsaved Changes
                         </p>
-                        <p className="text-sm font-semibold text-[#111827]">{activeWorkspaceSection === "Identity" ? "Business Identity" : activeWorkspaceSection}</p>
-                      </div>
-                      <div className="hidden h-8 w-px bg-[#E5E7EB] lg:block" />
-                      <div>
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]">
-                          Last Saved
-                        </p>
-                        <p className="text-sm font-semibold text-[#111827]">{lastSavedAt}</p>
+                        <p className="text-sm font-semibold text-[#111827]">{hasUnsavedChanges ? "Changes are ready to save." : "All changes are saved."}</p>
                       </div>
                     </div>
 
@@ -3424,7 +3415,8 @@ export default function DashboardLayout() {
                       <button
                         type="button"
                         onClick={handleSaveChanges}
-                        className="rounded-[20px] bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
+                        disabled={!hasUnsavedChanges}
+                        className="rounded-[20px] bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#16A34A] disabled:cursor-not-allowed disabled:bg-[#86EFAC]"
                       >
                         Save Changes
                       </button>
@@ -3433,7 +3425,7 @@ export default function DashboardLayout() {
                         onClick={handleResetChanges}
                         className="rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6]"
                       >
-                        Reset Changes
+                        Discard Changes
                       </button>
                     </div>
                   </div>
@@ -3461,6 +3453,7 @@ export default function DashboardLayout() {
 
                         <div
                           ref={identityFormRef}
+                          onChangeCapture={() => setHasUnsavedChanges(true)}
                           className="max-h-[calc(100vh-280px)] overflow-y-auto pr-4 pb-6"
                         >
                           <div className="grid gap-8 xl:grid-cols-[1.2fr_0.8fr]">
@@ -3657,7 +3650,7 @@ export default function DashboardLayout() {
                                         <button
                                           key={personalityOption}
                                           type="button"
-                                          onClick={() => setPersonality(personalityOption)}
+                                          onClick={() => { setPersonality(personalityOption); setHasUnsavedChanges(true); }}
                                           className={`rounded-[20px] border px-4 py-4 text-left transition ${
                                             active
                                               ? "border-[#22C55E] bg-[#ECFDF5] text-[#111827] shadow-sm"
@@ -3818,14 +3811,15 @@ export default function DashboardLayout() {
                                           <button
                                             key={language}
                                             type="button"
-                                            onClick={() =>
+                                            onClick={() => {
+                                              setHasUnsavedChanges(true);
                                               setSupportedLanguages((current) => {
                                                 if (current.includes(language)) {
                                                   return current.filter((item) => item !== language);
                                                 }
                                                 return [...current, language];
-                                              })
-                                            }
+                                              });
+                                            }}
                                             className={`rounded-full px-4 py-2 text-sm font-medium transition ${
                                               selected
                                                 ? "bg-[#111827] text-white shadow-sm"
@@ -3978,7 +3972,7 @@ export default function DashboardLayout() {
                                       }}
                                     />
                                   </label>
-                                  <button type="button" onClick={() => { setLogoPreview(null); setLogoPreviewOpen(false); setAvatarFileName(""); setLogoError(""); }} disabled={!logoPreview} className="rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6] disabled:cursor-not-allowed disabled:text-[#94A3B8]">
+                                  <button type="button" onClick={() => { setLogoPreview(null); setLogoPreviewOpen(false); setAvatarFileName(""); setLogoError(""); setHasUnsavedChanges(true); }} disabled={!logoPreview} className="rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6] disabled:cursor-not-allowed disabled:text-[#94A3B8]">
                                     Remove Logo
                                   </button>
                                   <button type="button" onClick={() => setLogoPreviewOpen(true)} disabled={!logoPreview} className="rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6] disabled:cursor-not-allowed disabled:text-[#94A3B8]">
@@ -4051,20 +4045,6 @@ export default function DashboardLayout() {
                               </section>
                             </div>
 
-                            <div className="xl:col-span-2 mt-6 border-t border-[#E5E7EB] pt-8">
-                              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                                <div className="text-sm text-[#6B7280]">
-                                  {saveConfirmation ? saveConfirmation : "Changes update instantly in the workspace."}
-                                </div>
-                                <button
-                                  type="button"
-                                  onClick={handleSaveChanges}
-                                  className="rounded-[24px] bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"
-                                >
-                                  Save Changes
-                                </button>
-                              </div>
-                            </div>
                           </div>
                         </div>
                       </div>
