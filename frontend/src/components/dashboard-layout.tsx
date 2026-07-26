@@ -3432,36 +3432,42 @@ export default function DashboardLayout() {
                                           {businessInfo.name || "Your business"}
                                         </h3>
                                         <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#166534]">
-                                          Business profile
-                                        </span>
-                                        <span className="rounded-full bg-[#F3F4F6] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#6B7280]">
-                                          Customer-facing
+                                          Active
                                         </span>
                                       </div>
                                       <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">{businessInfo.type}</p>
-                                      <div className="mt-4 flex flex-wrap gap-2 text-sm text-[#475569]">
-                                        <span className="rounded-full border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-1">
-                                          {businessInfo.website}
-                                        </span>
-                                        <span className="rounded-full border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-1">
-                                          {businessInfo.address}
-                                        </span>
-                                      </div>
+                                      <p className="mt-4 text-sm text-[#475569]">Business Logo</p>
                                     </div>
                                   </div>
 
                                   <div className="w-full max-w-[280px] rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
                                     <p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]">
-                                      Business details
+                                      Business Overview
                                     </p>
                                     <div className="mt-4 space-y-3 text-sm text-[#475569]">
                                       <div>
-                                        <p className="font-semibold text-[#111827]">Working hours</p>
+                                        <p className="font-semibold text-[#111827]">Status</p>
+                                        <p className="mt-1">Active</p>
+                                      </div>
+                                      <div>
+                                        <p className="font-semibold text-[#111827]">Connected Channels</p>
+                                        <p className="mt-1">{[
+                                          communicationChannels.whatsapp && "WhatsApp",
+                                          communicationChannels.websiteChat && "Website Chat",
+                                          communicationChannels.email && "Email",
+                                        ].filter(Boolean).join(", ") || "None"}</p>
+                                      </div>
+                                      <div>
+                                        <p className="font-semibold text-[#111827]">Business Hours</p>
                                         <p className="mt-1">{businessHours}</p>
                                       </div>
                                       <div>
-                                        <p className="font-semibold text-[#111827]">WhatsApp</p>
-                                        <p className="mt-1">{businessInfo.whatsapp}</p>
+                                        <p className="font-semibold text-[#111827]">Supported Languages</p>
+                                        <p className="mt-1">{supportedLanguages.join(", ") || "None"}</p>
+                                      </div>
+                                      <div>
+                                        <p className="font-semibold text-[#111827]">Brand Voice</p>
+                                        <p className="mt-1">{personality}</p>
                                       </div>
                                     </div>
                                   </div>
