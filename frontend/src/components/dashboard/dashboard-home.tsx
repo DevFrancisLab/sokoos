@@ -66,7 +66,7 @@ export default function DashboardHome({
     { label: "Complete Business Profile", done: true },
     { label: "Teach Sokoo about your business", done: true },
     { label: "Test your AI", done: false },
-    { label: "Enable AI Assistant", done: true },
+    { label: "Enable AI Employee", done: true },
   ];
 
   const quickActions = [
@@ -126,7 +126,7 @@ export default function DashboardHome({
           <div className="max-w-2xl space-y-3">
             <p className={SECTION_HEADING}>Home</p>
             <h1 className={PAGE_TITLE}>
-              Get your AI assistant ready for real customers
+              Get your AI Employee ready to represent your business
             </h1>
             <p className={`${SECONDARY} max-w-xl`}>
               This view focuses on onboarding progress so a business owner can
@@ -158,7 +158,7 @@ export default function DashboardHome({
                 <>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-slate-500">AI Assistant</p>
+                      <p className="text-sm text-slate-500">AI Employee</p>
 
                       <h3 className="mt-1 text-2xl font-bold text-slate-900">
                         Active

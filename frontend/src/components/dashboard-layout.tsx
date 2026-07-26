@@ -122,7 +122,7 @@ const PERFORMANCE_TOP_QUESTIONS = [
 
 const MOST_VIEWED_PRODUCTS = [
   { name: "Smart POS Terminal", views: 512 },
-  { name: "AI Chat Assistant", views: 438 },
+  { name: "AI Employee", views: 438 },
   { name: "Service Plan", views: 387 },
   { name: "Inventory Package", views: 312 },
 ];
@@ -144,7 +144,7 @@ const KNOWLEDGE_HUB_SOURCES = [
   },
   {
     title: "Products & Services",
-    description: "Product and service details that the assistant can reference during sales conversations.",
+    description: "Product and service details your AI Employee can use in sales conversations.",
     status: "Live",
     statusDetail: "Updated recently",
     lastUpdated: "2 hours ago",
@@ -165,7 +165,7 @@ const KNOWLEDGE_HUB_SOURCES = [
   },
   {
     title: "Locations",
-    description: "Store and service areas that help the assistant answer location requests.",
+    description: "Store and service areas that help your AI Employee answer location requests.",
     status: "Live",
     statusDetail: "Published",
     lastUpdated: "1 week ago",
@@ -200,7 +200,7 @@ const KNOWLEDGE_HUB_SOURCES = [
   },
   {
     title: "Website",
-    description: "Web content and links that the assistant can reference for online support.",
+    description: "Web content and links your AI Employee can use for customer support.",
     status: "Live",
     statusDetail: "Published",
     lastUpdated: "2 days ago",
@@ -1866,7 +1866,7 @@ export default function DashboardLayout() {
       role: "ai" as const,
       text: trimmed.toLowerCase().includes("business package")
         ? "Our Business Package costs KES 5,000/month."
-        : "This is a mock reply from your AI assistant based on the configured business knowledge.",
+        : "This is a mock reply from your AI Employee based on the configured business knowledge.",
       source: "Products & Services → Business Package",
     };
     setTestAiMessages((current) => [...current, userMessage, aiMessage]);
@@ -1895,7 +1895,7 @@ export default function DashboardLayout() {
   const [allowScheduleAppointments, setAllowScheduleAppointments] =
     useState(true);
   const [assistantName, setAssistantName] = useState("Nuru");
-  const [assistantRole, setAssistantRole] = useState("Customer Success Assistant");
+  const [assistantRole, setAssistantRole] = useState("Customer Success Employee");
   const [assistantDescription, setAssistantDescription] = useState(
     "Helps customers find the right internet plan, answer product questions, and support onboarding.",
   );
@@ -1970,7 +1970,7 @@ export default function DashboardLayout() {
 
   const handleResetChanges = () => {
     setAssistantName("Nuru");
-    setAssistantRole("Customer Success Assistant");
+    setAssistantRole("Customer Success Employee");
     setAssistantDescription(
       "Helps customers find the right internet plan, answer product questions, and support onboarding.",
     );
@@ -3112,7 +3112,7 @@ export default function DashboardLayout() {
                               <div>
                                 <p className={SECTION_HEADING}>✨ AI Summary</p>
                                 <h3 className="mt-2 text-[18px] font-semibold text-[#111827]">
-                                  Sales assistant snapshot
+                                  AI Employee snapshot
                                 </h3>
                               </div>
                               <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#16A34A]">
@@ -3275,8 +3275,8 @@ export default function DashboardLayout() {
                       Train, equip and manage your AI employee.
                     </h2>
                     <p className="mt-4 text-[16px] leading-7 text-[#6B7280]">
-                      Configure your assistant identity, knowledge, policies,
-                      and performance from a single workspace.
+                      Define what customers see, what your AI Employee knows,
+                      how it works, and how well it serves customers.
                     </p>
                   </div>
 
@@ -3325,7 +3325,7 @@ export default function DashboardLayout() {
                       </h2>
                     </div>
                     <div className="flex flex-wrap items-center justify-start gap-2 lg:justify-end">
-                      <span className="text-sm font-medium text-[#6B7280]">Assistant Status</span>
+                      <span className="text-sm font-medium text-[#6B7280]">AI Employee Status</span>
                       <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#166534]">
                         Online
                       </span>
@@ -3421,7 +3421,7 @@ export default function DashboardLayout() {
                                         </span>
                                       </div>
                                       <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
-                                        {assistantRole || "Customer Success Assistant"}
+                                        {assistantRole || "Customer Success Employee"}
                                       </p>
                                       <div className="mt-4 flex flex-wrap gap-2 text-sm text-[#475569]">
                                         <span className="rounded-full border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-1">
@@ -3489,14 +3489,14 @@ export default function DashboardLayout() {
                                   <div>
                                     <p className="text-[20px] font-semibold text-[#111827]">Basic Details</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
-                                      These details define how your AI Employee introduces itself to customers.
+                                      Define what customers see when your AI Employee represents your business.
                                     </p>
                                   </div>
 
                                   <div className="grid gap-4 md:grid-cols-2">
                                     <div>
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="assistant-name">
-                                        Assistant Name
+                                        AI Employee Name
                                       </label>
                                       <input
                                         id="assistant-name"
@@ -3515,7 +3515,7 @@ export default function DashboardLayout() {
                                         id="assistant-role"
                                         value={assistantRole}
                                         onChange={(event) => setAssistantRole(event.target.value)}
-                                        placeholder="Customer Success Assistant"
+                                        placeholder="Customer Success Employee"
                                         className={`${INPUT_FIELD} mt-2`}
                                       />
                                     </div>
@@ -3577,7 +3577,7 @@ export default function DashboardLayout() {
                                   <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
                                     <p className="text-sm font-semibold text-[#111827]">Writing Style</p>
                                     <p className="mt-2 text-sm leading-6 text-[#6B7280]">
-                                      Fine-tune how the assistant expresses itself in conversation.
+                                      Fine-tune how your AI Employee expresses itself in conversation.
                                     </p>
                                     <div className="mt-4 grid gap-3 sm:grid-cols-2">
                                       {[
@@ -3665,7 +3665,7 @@ export default function DashboardLayout() {
                                   <div>
                                     <p className="text-[20px] font-semibold text-[#111827]">Languages</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
-                                      Configure the languages your assistant can use for customer conversations.
+                                      Configure the languages your AI Employee can use for customer conversations.
                                     </p>
                                   </div>
 
@@ -3744,7 +3744,7 @@ export default function DashboardLayout() {
                                   <div>
                                     <p className="text-[20px] font-semibold text-[#111827]">Availability</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
-                                      Tell customers when the assistant is active and how quickly it responds.
+                                      Tell customers when your AI Employee is active and how quickly it responds.
                                     </p>
                                   </div>
 
@@ -3836,7 +3836,7 @@ export default function DashboardLayout() {
                               <section className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm">
                                 <p className="text-[20px] font-semibold text-[#111827]">Live Preview</p>
                                 <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
-                                  Review how the assistant appears in conversation.
+                                  Review how your AI Employee appears in conversation.
                                 </p>
                                 <div className="mt-6 mx-auto max-w-[280px] rounded-[28px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
                                   <div className="flex items-center gap-3 border-b border-[#F3F4F6] pb-3">
@@ -3854,7 +3854,7 @@ export default function DashboardLayout() {
                                       Hello!
                                     </div>
                                     <div className="max-w-[92%] rounded-2xl bg-[#F3F4F6] p-3 text-sm text-[#111827]">
-                                      I’m {assistantName || "Nuru"}, the AI assistant for Sokoos Internet.
+                                      I’m {assistantName || "Nuru"}, the AI Employee for Sokoos Internet.
                                     </div>
                                     <div className="max-w-[92%] rounded-2xl bg-[#F3F4F6] p-3 text-sm text-[#111827]">
                                       How can I help today?
@@ -3890,8 +3890,8 @@ export default function DashboardLayout() {
                           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                             <div>
                               <p className="text-sm uppercase tracking-[0.2em] text-[#6B7280]">Knowledge Hub</p>
-                              <h2 className="mt-2 text-2xl font-semibold text-[#111827]">Manage your knowledge sources</h2>
-                              <p className="mt-2 text-sm text-[#6B7280]">Keep your assistant up to date with the latest business knowledge.</p>
+                              <h2 className="mt-2 text-2xl font-semibold text-[#111827]">What your AI Employee knows</h2>
+                              <p className="mt-2 text-sm text-[#6B7280]">Keep the business knowledge your AI Employee uses up to date.</p>
                             </div>
                             <button
                               type="button"
@@ -3940,7 +3940,8 @@ export default function DashboardLayout() {
                       <div className="space-y-6">
                         <div className="grid gap-6 xl:grid-cols-[300px_1fr] items-start">
                           <aside className="rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 sticky top-6">
-                            <p className="text-sm font-semibold text-[#111827]">Products & Services</p>
+                            <p className="text-sm font-semibold text-[#111827]">What your AI Employee sells</p>
+                            <p className="mt-2 text-sm text-[#6B7280]">Manage the products and services it can offer customers.</p>
                             <div className="mt-3 space-y-2 text-sm text-[#475569]">
                               {[
                                 "Products & Services",
@@ -4245,7 +4246,7 @@ export default function DashboardLayout() {
                         <div className="flex items-center justify-between rounded-[24px] bg-[#F9FAFB] p-6">
                           <div>
                             <p className="text-sm font-semibold text-[#111827]">Sales playbooks</p>
-                            <p className="mt-2 text-sm text-[#6B7280]">Visual workflows the AI can follow during sales conversations.</p>
+                            <p className="mt-2 text-sm text-[#6B7280]">Define how your AI Employee sells in customer conversations.</p>
                           </div>
                           <div className="flex gap-2">
                             <button type="button" onClick={addPlaybook} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Create Playbook</button>
@@ -4346,7 +4347,7 @@ export default function DashboardLayout() {
                         <div className="rounded-[24px] bg-[#F9FAFB] p-6 flex items-center justify-between">
                           <div>
                             <p className="text-sm font-semibold text-[#111827]">Skills</p>
-                            <p className="mt-2 text-sm text-[#6B7280]">Enable or disable assistant capabilities using skill cards.</p>
+                            <p className="mt-2 text-sm text-[#6B7280]">Choose the actions your AI Employee can perform.</p>
                           </div>
                           <div className="flex gap-2">
                             <button onClick={() => setSkills(skills.map(s => ({ ...s, enabled: true, status: 'Active' })))} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Enable All</button>
@@ -4386,7 +4387,7 @@ export default function DashboardLayout() {
                       <div className="space-y-6">
                         <div className="rounded-[24px] bg-[#F9FAFB] p-6">
                           <p className="text-sm font-semibold text-[#111827]">Policies</p>
-                          <p className="mt-3 text-sm text-[#6B7280]">Group and edit policies that guide assistant behavior and business rules.</p>
+                          <p className="mt-3 text-sm text-[#6B7280]">Set what your AI Employee can and cannot do for your business.</p>
                         </div>
 
                         <div className="space-y-3">
@@ -4417,7 +4418,7 @@ export default function DashboardLayout() {
                       <div className="space-y-6">
                         <div className="rounded-[24px] bg-[#F9FAFB] p-6 flex items-center justify-between">
                           <div>
-                            <p className="text-sm font-semibold text-[#111827]">Test the assistant</p>
+                            <p className="text-sm font-semibold text-[#111827]">Test your AI Employee</p>
                             <p className="mt-2 text-sm text-[#6B7280]">Run mock conversations and review AI analysis.</p>
                           </div>
                           <div className="flex gap-2">
@@ -4596,7 +4597,7 @@ export default function DashboardLayout() {
                           <div className="flex items-center justify-between">
                             <div>
                               <p className="text-sm font-semibold text-[#111827]">Recent AI Activity</p>
-                              <p className="mt-2 text-sm text-[#6B7280]">Timeline of the latest assistant actions.</p>
+                              <p className="mt-2 text-sm text-[#6B7280]">Timeline of the latest AI Employee actions.</p>
                             </div>
                           </div>
                           <div className="mt-6 space-y-4">
@@ -4927,7 +4928,7 @@ export default function DashboardLayout() {
                       Integrations
                     </h2>
                     <p className="mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl">
-                      Connect your business tools so your AI Employee can work across your entire business.
+                      Connect the systems your AI Employee can access across your business.
                     </p>
                   </div>
                 </div>
@@ -5267,7 +5268,7 @@ export default function DashboardLayout() {
                       Business Profile
                     </h2>
                     <p className="mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl">
-                      This information is used by the AI assistant when
+                      This information is used by your AI Employee when
                       communicating with customers.
                     </p>
                   </div>

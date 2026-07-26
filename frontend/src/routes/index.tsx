@@ -456,7 +456,7 @@ function Hero() {
             <div className="overflow-hidden rounded-2xl border border-border bg-white shadow-[var(--shadow-elevated)]">
               <img
                 src={heroDashboard}
-                alt="Sokoos WhatsApp assistant dashboard showing conversations, AI responses, scheduled status posts and analytics"
+                alt="Sokoos AI Employee dashboard showing conversations, customer responses, scheduled status posts and performance"
                 width={1600}
                 height={1120}
                 className="h-auto w-full"
@@ -600,7 +600,7 @@ function Solution() {
               <div className="overflow-hidden rounded-2xl border border-border bg-white shadow-[var(--shadow-elevated)]">
                 <img
                   src={solutionDashboard}
-                  alt="Sokoos unified WhatsApp inbox with AI assistant and product catalog"
+                  alt="Sokoos unified WhatsApp inbox with an AI Employee and product catalogue"
                   loading="lazy"
                   width={1408}
                   height={1008}
@@ -842,7 +842,7 @@ function Pricing() {
       desc: "For solo owners just getting started.",
       features: [
         "1 WhatsApp number",
-        "AI Assistant (500 replies/mo)",
+        "AI Employee (500 replies/mo)",
         "Unified inbox",
         "Product catalog",
         "Email support",
@@ -857,7 +857,7 @@ function Pricing() {
       desc: "For growing teams who sell every day.",
       features: [
         "1 WhatsApp number",
-        "AI Assistant (unlimited replies)",
+        "AI Employee (unlimited replies)",
         "Human takeover for 5 team members",
         "Status scheduler",
         "Business insights dashboard",

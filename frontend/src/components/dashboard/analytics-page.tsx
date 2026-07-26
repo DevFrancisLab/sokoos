@@ -32,7 +32,7 @@ export default function AnalyticsPage({ onBack }: AnalyticsPageProps) {
               <Sparkles className="h-4 w-4" />
               <span className="font-semibold">AI response quality is trending up</span>
             </div>
-            <p className="mt-3 text-sm text-[#475569]">The assistant is helping more customers get answers quickly and is handing off more complex cases appropriately.</p>
+            <p className="mt-3 text-sm text-[#475569]">Your AI Employee is helping more customers get answers quickly and handing off complex cases appropriately.</p>
           </div>
         </div>
 

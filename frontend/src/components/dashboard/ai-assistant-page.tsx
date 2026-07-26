@@ -70,10 +70,10 @@ export default function AIAssistantPage({
       <div className={`${CARD} border-[#ECFDF5] bg-gradient-to-br from-[#F0FDF4] to-white`}>
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-2xl">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#94A3B8]">AI setup</p>
-            <h1 className="mt-2 text-[34px] font-semibold text-[#0F172A]">Make the AI sound like your best employee</h1>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#94A3B8]">AI Employee</p>
+            <h1 className="mt-2 text-[34px] font-semibold text-[#0F172A]">Set up your AI Employee</h1>
             <p className="mt-3 text-[15px] text-[#475569]">
-              A business owner can now teach the assistant what matters most: your offerings, your tone, and when to hand off to you.
+              Teach your AI Employee what matters most: your offerings, your tone, and when to hand off to your team.
             </p>
           </div>
           <button
@@ -140,8 +140,8 @@ export default function AIAssistantPage({
                 <div className="rounded-[24px] border border-[#EEF2F6] bg-[#F8FAFB] p-5">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-semibold text-[#111827]">Enable AI assistance</p>
-                      <p className="text-sm text-[#64748B]">Let the assistant respond to customer questions automatically.</p>
+                      <p className="font-semibold text-[#111827]">Enable AI Employee</p>
+                      <p className="text-sm text-[#64748B]">Let your AI Employee respond to customer questions automatically.</p>
                     </div>
                     <button type="button" onClick={() => setAiEnabled(!aiEnabled)} className="text-[#22C55E]">
                       {aiEnabled ? <ToggleRight className="h-8 w-8" /> : <ToggleLeft className="h-8 w-8" />}

@@ -82,13 +82,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Sokoos is an AI-powered WhatsApp assistant that answers customers, closes sales, and schedules Status posts 24/7 for modern businesses.",
+          "Sokoos is an AI Employee that represents your business, serves customers, closes sales, and schedules Status posts 24/7.",
       },
       { property: "og:title", content: "Sokoos — Your AI Employee on WhatsApp" },
       {
         property: "og:description",
         content:
-          "AI-powered WhatsApp assistant for growing businesses. Never miss another customer again.",
+          "An AI Employee for growing businesses. Never miss another customer again.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
