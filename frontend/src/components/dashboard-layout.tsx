@@ -3461,8 +3461,8 @@ export default function DashboardLayout() {
                               <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
                                 <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
                                   <div className="flex items-start gap-4">
-                                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#E5F6EC] text-2xl font-semibold text-[#065F46]">
-                                      {businessInfo.name.slice(0, 1) || "B"}
+                                    <div className="flex h-16 w-16 overflow-hidden items-center justify-center rounded-[20px] bg-[#E5F6EC] text-2xl font-semibold text-[#065F46]">
+                                      {logoPreview ? <img src={logoPreview} alt="Business logo" className="h-full w-full object-cover" /> : (businessInfo.name.slice(0, 1) || "B")}
                                     </div>
                                     <div>
                                       <div className="flex flex-wrap items-center gap-2">
@@ -3474,18 +3474,31 @@ export default function DashboardLayout() {
                                         </span>
                                       </div>
                                       <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">{businessInfo.type}</p>
-                                      <p className="mt-4 text-sm text-[#475569]">Business Logo</p>
+                                      <p className="mt-3 text-sm text-[#475569]">Business profile</p>
                                     </div>
                                   </div>
 
                                   <div className="w-full max-w-[280px] rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
-                                    <p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]">
-                                      Business Overview
-                                    </p>
+                                    <div className="flex items-center justify-between gap-3">
+                                      <p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]">Business Profile</p>
+                                      <button type="button" onClick={() => document.getElementById("business-name")?.focus()} className="text-xs font-semibold text-[#166534] hover:text-[#065F46]">Edit</button>
+                                    </div>
                                     <div className="mt-4 space-y-3 text-sm text-[#475569]">
                                       <div>
                                         <p className="font-semibold text-[#111827]">Status</p>
                                         <p className="mt-1">Active</p>
+                                      </div>
+                                      <div>
+                                        <p className="font-semibold text-[#111827]">Phone</p>
+                                        <p className="mt-1">{businessInfo.phone}</p>
+                                      </div>
+                                      <div>
+                                        <p className="font-semibold text-[#111827]">Website</p>
+                                        <p className="mt-1 truncate">{businessInfo.website}</p>
+                                      </div>
+                                      <div>
+                                        <p className="font-semibold text-[#111827]">Address</p>
+                                        <p className="mt-1">{businessInfo.address}</p>
                                       </div>
                                       <div>
                                         <p className="font-semibold text-[#111827]">Connected Channels</p>
@@ -3560,7 +3573,7 @@ export default function DashboardLayout() {
 
                                 <div className="mt-6 flex flex-col gap-3 rounded-[24px] border border-[#E5E7EB] bg-[#FCFCFD] p-4 sm:flex-row sm:items-center sm:justify-between">
                                   <div>
-                                    <p className="text-sm font-semibold text-[#111827]">Business logo</p>
+                                    <p className="text-sm font-semibold text-[#111827]">Business Logo</p>
                                     <p className="mt-1 text-sm text-[#6B7280]">
                                       Upload the logo customers will recognise.
                                     </p>
@@ -3577,6 +3590,7 @@ export default function DashboardLayout() {
                                           const file = event.target.files?.[0];
                                           if (file) {
                                             setAvatarFileName(file.name);
+                                            setLogoPreview(LOGO_PLACEHOLDER);
                                           }
                                         }}
                                       />
@@ -3594,7 +3608,7 @@ export default function DashboardLayout() {
                               <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
                                 <div className="space-y-6">
                                   <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Business details</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">Business Profile</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
                                       Define the details customers see when they interact with your business.
                                     </p>
@@ -3681,7 +3695,7 @@ export default function DashboardLayout() {
                               <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
                                 <div className="space-y-6">
                                   <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Brand Voice</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">Brand Personality</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
                                       Choose how your business should sound in every customer conversation.
                                     </p>
@@ -3691,31 +3705,50 @@ export default function DashboardLayout() {
                                     {PERSONALITIES.map((personalityOption) => {
                                       const active = personality === personalityOption;
                                       const voice = BRAND_VOICE_DETAILS[personalityOption];
+                                      const Icon = personalityOption === "Professional"
+                                        ? User
+                                        : personalityOption === "Friendly"
+                                        ? Smile
+                                        : personalityOption === "Luxury"
+                                        ? Sparkles
+                                        : personalityOption === "Technical"
+                                        ? Cpu
+                                        : personalityOption === "Playful"
+                                        ? MessageCircle
+                                        : Globe;
                                       return (
                                         <button
                                           key={personalityOption}
                                           type="button"
+                                          aria-pressed={active}
                                           onClick={() => { setPersonality(personalityOption); setHasUnsavedChanges(true); }}
-                                          className={`rounded-[20px] border px-5 py-5 text-left transition ${
+                                          className={`group rounded-[20px] border p-5 text-left transition ${
                                             active
                                               ? "border-[#22C55E] bg-[#ECFDF5] text-[#111827] shadow-sm"
                                               : "border-[#E5E7EB] bg-[#F9FAFB] text-[#475569] hover:border-[#CBD5E1]"
                                           }`}
                                         >
-                                          <p className="text-sm font-semibold">{personalityOption}</p>
-                                          <p className="mt-1 text-sm leading-5 text-[#64748B]">{voice.description}</p>
+                                          <div className="flex items-start gap-4">
+                                            <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] ${active ? "bg-[#22C55E] text-white" : "bg-white text-[#166534]"}`}>
+                                              <Icon className="h-5 w-5" />
+                                            </div>
+                                            <div>
+                                              <p className="text-sm font-semibold">{personalityOption}</p>
+                                              <p className="mt-1 text-sm leading-5 text-[#64748B]">{voice.description}</p>
+                                            </div>
+                                          </div>
                                           <p className="mt-3 text-xs leading-5 text-[#475569]">“{voice.example}”</p>
                                         </button>
                                       );
                                     })}
                                   </div>
 
-                                  <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
-                                    <p className="text-sm font-semibold text-[#111827]">Writing Style</p>
+                                  <div className="border-t border-[#E5E7EB] pt-6">
+                                    <p className="text-sm font-semibold text-[#111827]">Communication Style</p>
                                     <p className="mt-2 text-sm leading-6 text-[#6B7280]">
                                       Fine-tune how your business communicates with customers.
                                     </p>
-                                    <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                                    <div className="mt-4 flex flex-wrap gap-2">
                                       {[
                                         "Use emojis",
                                         "Keep replies short",
@@ -3727,7 +3760,7 @@ export default function DashboardLayout() {
                                         return (
                                           <label
                                             key={option}
-                                            className={`flex items-center gap-3 rounded-[16px] border px-3 py-3 text-sm font-medium transition ${
+                                            className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium transition ${
                                               checked
                                                 ? "border-[#22C55E] bg-[#ECFDF5] text-[#111827]"
                                                 : "border-[#E5E7EB] bg-white text-[#475569]"
@@ -3742,9 +3775,10 @@ export default function DashboardLayout() {
                                                   [option]: !current[option],
                                                 }))
                                               }
-                                              className="h-4 w-4 rounded border-[#CBD5E1] text-[#22C55E] focus:ring-[#22C55E]"
+                                              className="sr-only"
                                             />
-                                            <span>{option}</span>
+                                            {checked && <Check className="h-4 w-4" />}
+                                            <span>{option.replace("Personalize responses", "Personalized").replace("Keep replies short", "Short Replies").replace("Ask follow-up questions", "Ask Follow-up Questions").replace("Explain simply", "Explain Simply").replace("Use emojis", "Use Emojis")}</span>
                                           </label>
                                         );
                                       })}
@@ -3756,9 +3790,9 @@ export default function DashboardLayout() {
                               <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
                                 <div className="space-y-6">
                                   <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Customer messages</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">Customer Experience</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
-                                      Set the messages customers receive when they contact your business.
+                                      Shape the messages customers see, with a live WhatsApp preview.
                                     </p>
                                   </div>
 
@@ -3777,8 +3811,8 @@ export default function DashboardLayout() {
                                       />
                                     </div>
 
-                                    <div className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 shadow-sm">
-                                      <div className="flex items-center gap-2">
+                                    <div className="overflow-hidden rounded-[24px] border border-[#E5E7EB] bg-white shadow-sm">
+                                      <div className="flex items-center gap-2 border-b border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3">
                                         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#ECFDF5] text-sm font-semibold text-[#166534]">
                                           {businessInfo.name.slice(0, 1) || "B"}
                                         </div>
@@ -3788,8 +3822,15 @@ export default function DashboardLayout() {
                                         </div>
                                       </div>
 
-                                      <div className="mt-4 rounded-[20px] rounded-bl-sm bg-[#22C55E] px-4 py-3 text-sm font-medium text-white shadow-sm">
-                                        {welcomeMessage || "Hello! Welcome to our business. How can we help today?"}
+                                      <div className="space-y-3 bg-[#F8FAFB] p-4">
+                                        <div className="ml-auto w-fit rounded-2xl rounded-br-sm bg-[#DCFCE7] px-3 py-2 text-sm text-[#111827]">Hi</div>
+                                        <div className="w-fit max-w-[92%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm leading-6 text-[#111827] shadow-sm">
+                                          {welcomeMessage || "Hello! Welcome to our business. How can we help today?"}
+                                        </div>
+                                        <div className="pt-1 text-[11px] font-medium uppercase tracking-[0.14em] text-[#94A3B8]">Away message</div>
+                                        <div className="w-fit max-w-[92%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm leading-6 text-[#111827] shadow-sm">
+                                          {awayMessage || "We will get back to you during business hours."}
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
@@ -3803,47 +3844,36 @@ export default function DashboardLayout() {
                               <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
                                 <div className="space-y-6">
                                   <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Supported Languages</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">Languages</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
                                       Choose the languages your business can use with customers.
                                     </p>
                                   </div>
 
-                                  <div className="grid gap-6 md:grid-cols-2">
-                                    <div>
-                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="primary-language">
-                                        Primary Language
-                                      </label>
-                                      <select
-                                        id="primary-language"
-                                        value={primaryLanguage}
-                                        onChange={(event) => setPrimaryLanguage(event.target.value as typeof LANGUAGES[number])}
-                                        className={`${INPUT_FIELD} mt-2`}
-                                      >
+                                  <div className="grid gap-5 md:grid-cols-2">
+                                    <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+                                      <div className="flex items-center justify-between gap-3">
+                                        <p className="text-sm font-semibold text-[#111827]">Primary Language</p>
+                                        <span className="rounded-full bg-[#DCFCE7] px-2.5 py-1 text-xs font-semibold text-[#166534]">{primaryLanguage}</span>
+                                      </div>
+                                      <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Primary language">
                                         {LANGUAGES.map((lang) => (
-                                          <option key={lang} value={lang}>
+                                          <button key={lang} type="button" aria-pressed={primaryLanguage === lang} onClick={() => { setPrimaryLanguage(lang); setHasUnsavedChanges(true); }} className={`rounded-full px-3 py-2 text-sm font-medium transition ${primaryLanguage === lang ? "bg-[#111827] text-white" : "border border-[#E5E7EB] bg-white text-[#475569]"}`}>
                                             {lang}
-                                          </option>
+                                          </button>
                                         ))}
-                                      </select>
+                                      </div>
                                     </div>
 
-                                    <div>
-                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="secondary-language">
-                                        Secondary Language
-                                      </label>
-                                      <select
-                                        id="secondary-language"
-                                        value={secondaryLanguage}
-                                        onChange={(event) => setSecondaryLanguage(event.target.value as typeof LANGUAGES[number])}
-                                        className={`${INPUT_FIELD} mt-2`}
-                                      >
+                                    <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+                                      <p className="text-sm font-semibold text-[#111827]">Secondary Language</p>
+                                      <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Secondary language">
                                         {LANGUAGES.map((lang) => (
-                                          <option key={lang} value={lang}>
+                                          <button key={lang} type="button" aria-pressed={secondaryLanguage === lang} onClick={() => { setSecondaryLanguage(lang); setHasUnsavedChanges(true); }} className={`rounded-full px-3 py-2 text-sm font-medium transition ${secondaryLanguage === lang ? "bg-[#111827] text-white" : "border border-[#E5E7EB] bg-white text-[#475569]"}`}>
                                             {lang}
-                                          </option>
+                                          </button>
                                         ))}
-                                      </select>
+                                      </div>
                                     </div>
                                   </div>
 
@@ -3856,6 +3886,7 @@ export default function DashboardLayout() {
                                           <button
                                             key={language}
                                             type="button"
+                                            aria-pressed={selected}
                                             onClick={() => {
                                               setHasUnsavedChanges(true);
                                               setSupportedLanguages((current) => {
@@ -4038,56 +4069,6 @@ export default function DashboardLayout() {
                                 )}
                               </section>
 
-                              <section className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6">
-                                <p className="text-[20px] font-semibold text-[#111827]">Live Preview</p>
-                                <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
-                                  Preview a customer conversation with your business on WhatsApp.
-                                </p>
-                                {(() => {
-                                  const greeting = primaryLanguage === "Kiswahili"
-                                    ? "Habari 👋"
-                                    : primaryLanguage === "French"
-                                    ? "Bonjour 👋"
-                                    : primaryLanguage === "Arabic"
-                                    ? "مرحباً 👋"
-                                    : primaryLanguage === "German"
-                                    ? "Hallo 👋"
-                                    : "Hello 👋";
-                                  const businessName = businessInfo.name || "Your business";
-                                  const welcome = welcomeMessage || `Welcome to ${businessName}. How can we help you today?`;
-
-                                  return (
-                                    <div className="mt-6 mx-auto max-w-[320px] overflow-hidden rounded-[28px] border border-[#E5E7EB] bg-white shadow-sm">
-                                      <div className="flex items-center gap-3 border-b border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3">
-                                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#E5F6EC] text-sm font-semibold text-[#065F46]">
-                                          {businessName.slice(0, 1) || "B"}
-                                        </div>
-                                        <div className="min-w-0">
-                                          <p className="truncate text-sm font-semibold text-[#111827]">{businessName}</p>
-                                          <p className="text-xs text-[#6B7280]">Business account</p>
-                                        </div>
-                                      </div>
-
-                                      <div className="space-y-3 bg-[#F8FAFB] p-4">
-                                        <div className="ml-auto w-fit max-w-[80%] rounded-2xl rounded-br-sm bg-[#DCFCE7] px-3 py-2 text-sm text-[#111827]">
-                                          Hi
-                                        </div>
-                                        <div className="w-fit max-w-[88%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm text-[#111827] shadow-sm">
-                                          {greeting}
-                                        </div>
-                                        <div className="w-fit max-w-[92%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm leading-6 text-[#111827] shadow-sm">
-                                          {welcome}
-                                        </div>
-                                      </div>
-
-                                      <div className="flex items-center justify-between border-t border-[#E5E7EB] px-4 py-3 text-xs text-[#6B7280]">
-                                        <span>{primaryLanguage}</span>
-                                        <span>{personality} brand voice</span>
-                                      </div>
-                                    </div>
-                                  );
-                                })()}
-                              </section>
                             </div>
 
                           </div>
