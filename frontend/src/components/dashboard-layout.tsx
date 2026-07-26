@@ -3431,9 +3431,9 @@ export default function DashboardLayout() {
                   </div>
                 </div>
 
-                <div className="w-full rounded-[28px] border border-[#E5E7EB] bg-[#FCFCFD] p-8 shadow-sm lg:p-10">
+                <div className="w-full rounded-[28px] border border-[#E5E7EB] bg-[#FCFCFD] p-6 lg:p-8">
                     {activeWorkspaceSection === "Identity" && (
-                      <div className="relative space-y-10">
+                      <div className="relative space-y-6">
                         <div className="absolute right-0 top-0 flex gap-2">
                           <button
                             type="button"
@@ -3456,9 +3456,9 @@ export default function DashboardLayout() {
                           onChangeCapture={() => setHasUnsavedChanges(true)}
                           className="max-h-[calc(100vh-280px)] overflow-y-auto pr-4 pb-6"
                         >
-                          <div className="grid gap-10 xl:grid-cols-[1.2fr_0.8fr]">
-                            <div className="space-y-10">
-                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-8">
+                          <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
+                            <div className="space-y-6">
+                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
                                 <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
                                   <div className="flex items-start gap-4">
                                     <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#E5F6EC] text-2xl font-semibold text-[#065F46]">
@@ -3591,7 +3591,7 @@ export default function DashboardLayout() {
                                 </div>
                               </section>
 
-                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-8">
+                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
                                 <div className="space-y-6">
                                   <div>
                                     <p className="text-[20px] font-semibold text-[#111827]">Business details</p>
@@ -3678,7 +3678,7 @@ export default function DashboardLayout() {
                                 </div>
                               </section>
 
-                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-8">
+                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
                                 <div className="space-y-6">
                                   <div>
                                     <p className="text-[20px] font-semibold text-[#111827]">Brand Voice</p>
@@ -3753,7 +3753,7 @@ export default function DashboardLayout() {
                                 </div>
                               </section>
 
-                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-8">
+                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
                                 <div className="space-y-6">
                                   <div>
                                     <p className="text-[20px] font-semibold text-[#111827]">Customer messages</p>
@@ -3800,7 +3800,7 @@ export default function DashboardLayout() {
                                 </div>
                               </section>
 
-                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-8">
+                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
                                 <div className="space-y-6">
                                   <div>
                                     <p className="text-[20px] font-semibold text-[#111827]">Supported Languages</p>
@@ -3880,7 +3880,7 @@ export default function DashboardLayout() {
                                 </div>
                               </section>
 
-                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-8">
+                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
                                 <div className="space-y-6">
                                   <div>
                                     <p className="text-[20px] font-semibold text-[#111827]">Working Hours & Channels</p>
@@ -3962,8 +3962,8 @@ export default function DashboardLayout() {
                               </section>
                             </div>
 
-                            <div className="space-y-10">
-                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-8">
+                            <div className="space-y-6">
+                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
                                 <div className="flex items-center gap-4">
                                   <div className="flex h-14 w-14 overflow-hidden items-center justify-center rounded-[20px] bg-[#E5F6EC] text-2xl font-semibold text-[#065F46]">
                                     {logoPreview ? (
@@ -4038,7 +4038,7 @@ export default function DashboardLayout() {
                                 )}
                               </section>
 
-                              <section className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-8">
+                              <section className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6">
                                 <p className="text-[20px] font-semibold text-[#111827]">Live Preview</p>
                                 <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
                                   Preview a customer conversation with your business on WhatsApp.
@@ -4098,7 +4098,7 @@ export default function DashboardLayout() {
 
                     {activeWorkspaceSection === "Knowledge Hub" && (
                       <div className="space-y-6">
-                        <div className={`${AI_WORKSPACE_PANEL} space-y-6 max-h-[calc(100vh-280px)] overflow-hidden`}>
+                        <div className="space-y-6">
                           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                             <div>
                               <p className="text-sm uppercase tracking-[0.2em] text-[#6B7280]">Knowledge Hub</p>
@@ -4114,10 +4114,10 @@ export default function DashboardLayout() {
                             </button>
                           </div>
 
-                          <div className="max-h-[calc(100vh-360px)] overflow-y-auto pr-2">
-                            <div className="grid gap-6 xl:grid-cols-2">
+                          <div>
+                            <div className="grid gap-4 xl:grid-cols-2">
                               {KNOWLEDGE_HUB_SOURCES.map((source) => (
-                                <div key={source.title} className={`${AI_WORKSPACE_SECTION}`}>
+                                <div key={source.title} className={`${AI_WORKSPACE_SECTION} p-5`}>
                                   <div className="flex items-start justify-between gap-4">
                                     <div>
                                       <p className="text-sm font-semibold text-[#111827]">{source.title}</p>
@@ -4126,18 +4126,18 @@ export default function DashboardLayout() {
                                     <span className="rounded-full border border-[#E5E7EB] bg-[#F8FAFB] px-3 py-1 text-xs font-semibold text-[#475569]">{source.status}</span>
                                   </div>
 
-                                  <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                                    <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
+                                  <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                                    <div className="rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFB] p-3">
                                       <p className="text-xs uppercase tracking-[0.2em] text-[#6B7280]">Last updated</p>
                                       <p className="mt-2 text-sm font-semibold text-[#111827]">{source.lastUpdated}</p>
                                     </div>
-                                    <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
+                                    <div className="rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFB] p-3">
                                       <p className="text-xs uppercase tracking-[0.2em] text-[#6B7280]">Knowledge status</p>
                                       <p className="mt-2 text-sm font-semibold text-[#111827]">{source.statusDetail}</p>
                                     </div>
                                   </div>
 
-                                  <div className="mt-6 flex justify-end">
+                                  <div className="mt-5 flex justify-end">
                                     <button type="button" className="rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6]">Edit</button>
                                   </div>
                                 </div>
@@ -4150,11 +4150,11 @@ export default function DashboardLayout() {
 
                     {activeWorkspaceSection === "Catalogue" && (
                       <div className="space-y-6">
-                        <div className="grid gap-6 xl:grid-cols-[300px_1fr] items-start">
-                          <aside className="rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 sticky top-6">
+                        <div className="grid gap-5 xl:grid-cols-[260px_minmax(0,1fr)] items-start">
+                          <aside className="rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 xl:sticky xl:top-6">
                             <p className="text-sm font-semibold text-[#111827]">What your AI Employee sells</p>
                             <p className="mt-2 text-sm text-[#6B7280]">Manage the products and services it can offer customers.</p>
-                            <div className="mt-3 space-y-2 text-sm text-[#475569]">
+                            <div className="mt-4 space-y-1 text-sm text-[#475569]">
                               {[
                                 "Products & Services",
                                 "Categories",
@@ -4184,7 +4184,7 @@ export default function DashboardLayout() {
                           </aside>
 
                           <div>
-                            <div className="mb-4 flex items-center justify-between gap-3">
+                            <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                               <div className="flex flex-wrap gap-2">
                                 <button type="button" className="inline-flex items-center gap-2 rounded-[12px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Add Item</button>
                                 <button type="button" className="inline-flex items-center gap-2 rounded-[12px] border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-semibold">Upload Files</button>
@@ -4455,7 +4455,7 @@ export default function DashboardLayout() {
 
                     {activeWorkspaceSection === "Sales Playbooks" && (
                       <div className="space-y-6">
-                        <div className="flex items-center justify-between rounded-[24px] bg-[#F9FAFB] p-6">
+                        <div className="flex flex-col gap-4 rounded-[24px] border border-[#E5E7EB] bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
                           <div>
                             <p className="text-sm font-semibold text-[#111827]">Sales playbooks</p>
                             <p className="mt-2 text-sm text-[#6B7280]">Define how your AI Employee sells in customer conversations.</p>
@@ -4465,11 +4465,11 @@ export default function DashboardLayout() {
                           </div>
                         </div>
 
-                        <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
+                        <div className="grid gap-5 lg:grid-cols-[320px_minmax(0,1fr)]">
                           <div>
-                            <div className="space-y-3">
+                            <div className="space-y-2">
                               {playbooks.map((p) => (
-                                <div key={p.id} className="rounded-[12px] border border-[#EEF2F6] bg-white p-3">
+                                <div key={p.id} className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
                                   <div className="flex items-center justify-between">
                                     <div>
                                       <p className="text-sm font-semibold">{p.title}</p>
@@ -4556,7 +4556,7 @@ export default function DashboardLayout() {
 
                     {activeWorkspaceSection === "Skills" && (
                       <div className="space-y-6">
-                        <div className="rounded-[24px] bg-[#F9FAFB] p-6 flex items-center justify-between">
+                        <div className="flex flex-col gap-4 rounded-[24px] border border-[#E5E7EB] bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
                           <div>
                             <p className="text-sm font-semibold text-[#111827]">Skills</p>
                             <p className="mt-2 text-sm text-[#6B7280]">Choose the actions your AI Employee can perform.</p>
@@ -4567,9 +4567,9 @@ export default function DashboardLayout() {
                           </div>
                         </div>
 
-                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                           {skills.map((sk) => (
-                            <div key={sk.id} className="rounded-[12px] border border-[#EEF2F6] bg-white p-4 flex items-start gap-4">
+                            <div key={sk.id} className="flex items-start gap-4 rounded-[20px] border border-[#E5E7EB] bg-white p-5">
                               <div className="h-12 w-12 rounded-md bg-[#F8FAFB] flex items-center justify-center text-2xl">{sk.icon}</div>
                               <div className="flex-1">
                                 <div className="flex items-start justify-between gap-3">
@@ -4597,15 +4597,15 @@ export default function DashboardLayout() {
 
                     {activeWorkspaceSection === "Policies" && (
                       <div className="space-y-6">
-                        <div className="rounded-[24px] bg-[#F9FAFB] p-6">
+                        <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-5">
                           <p className="text-sm font-semibold text-[#111827]">Policies</p>
                           <p className="mt-3 text-sm text-[#6B7280]">Set what your AI Employee can and cannot do for your business.</p>
                         </div>
 
-                        <div className="space-y-3">
+                        <div className="space-y-2">
                           {policySections.map((sec) => (
-                            <div key={sec.id} className="rounded-[12px] border border-[#EEF2F6] bg-white">
-                              <button onClick={() => togglePolicy(sec.id)} className="w-full text-left flex items-center justify-between px-4 py-3">
+                            <div key={sec.id} className="rounded-[16px] border border-[#E5E7EB] bg-white">
+                              <button onClick={() => togglePolicy(sec.id)} className="flex w-full items-center justify-between px-5 py-4 text-left">
                                 <div>
                                   <p className="text-sm font-semibold">{sec.title}</p>
                                   <p className="text-xs text-[#94A3B8]">Click to expand and edit</p>
@@ -4628,7 +4628,7 @@ export default function DashboardLayout() {
 
                     {activeWorkspaceSection === "Test AI" && (
                       <div className="space-y-6">
-                        <div className="rounded-[24px] bg-[#F9FAFB] p-6 flex items-center justify-between">
+                        <div className="flex flex-col gap-4 rounded-[24px] border border-[#E5E7EB] bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
                           <div>
                             <p className="text-sm font-semibold text-[#111827]">Test your AI Employee</p>
                             <p className="mt-2 text-sm text-[#6B7280]">Run mock conversations and review AI analysis.</p>
@@ -4638,9 +4638,9 @@ export default function DashboardLayout() {
                           </div>
                         </div>
 
-                        <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
+                        <div className="grid gap-5 lg:grid-cols-[320px_minmax(0,1fr)]">
                           <div>
-                            <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-3">
+                            <div className="rounded-[20px] border border-[#E5E7EB] bg-white p-4">
                               <p className="text-sm font-semibold">Conversations</p>
                               <div className="mt-3 space-y-2">
                                 {conversations.map((c) => (
@@ -4657,7 +4657,7 @@ export default function DashboardLayout() {
                               </div>
                             </div>
 
-                            <div className="mt-4 rounded-[12px] border border-[#EEF2F6] bg-white p-3">
+                            <div className="mt-4 rounded-[20px] border border-[#E5E7EB] bg-white p-4">
                               <p className="text-sm font-semibold">Suggested prompts</p>
                               <div className="mt-3 flex flex-wrap gap-2">
                                 {SAMPLE_PROMPTS.map((p) => (
@@ -4668,7 +4668,7 @@ export default function DashboardLayout() {
                           </div>
 
                           <div>
-                            <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-4">
+                            <div className="rounded-[20px] border border-[#E5E7EB] bg-white p-5">
                               <div className="flex items-center justify-between">
                                 <p className="text-sm font-semibold">Chat</p>
                                 <div className="text-xs text-[#94A3B8]">{conversations.find(c=>c.id===selectedConversationId)?.title}</div>
@@ -4692,7 +4692,7 @@ export default function DashboardLayout() {
                               </div>
                             </div>
 
-                            <div className="mt-4 rounded-[12px] border border-[#EEF2F6] bg-white p-4">
+                            <div className="mt-4 rounded-[20px] border border-[#E5E7EB] bg-white p-5">
                               <p className="text-sm font-semibold">AI Analysis</p>
                               {aiAnalysis ? (
                                 <div className="mt-3 text-sm text-[#475569] space-y-2">
@@ -4717,7 +4717,7 @@ export default function DashboardLayout() {
                       <div className="space-y-6">
                         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                           {PERFORMANCE_METRICS.slice(0, 4).map((metric) => (
-                            <div key={metric.label} className="rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-5 shadow-sm">
+                            <div key={metric.label} className="rounded-[20px] border border-[#E5E7EB] bg-white p-5">
                               <div className="flex items-center justify-between gap-3">
                                 <p className="text-sm font-semibold text-[#111827]">{metric.label}</p>
                                 <span className="rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#16A34A]">{metric.delta}</span>
@@ -4737,7 +4737,7 @@ export default function DashboardLayout() {
 
                         <div className="grid gap-4 xl:grid-cols-4">
                           {PERFORMANCE_METRICS.slice(4).map((metric) => (
-                            <div key={metric.label} className="rounded-[24px] border border-[#E5E7EB] bg-white p-5 shadow-sm">
+                            <div key={metric.label} className="rounded-[20px] border border-[#E5E7EB] bg-white p-5">
                               <div className="flex items-center justify-between gap-3">
                                 <p className="text-sm font-semibold text-[#111827]">{metric.label}</p>
                                 <span className="text-sm text-[#6B7280]">{metric.delta}</span>
@@ -4751,7 +4751,7 @@ export default function DashboardLayout() {
                         </div>
 
                         <div className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
-                          <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                          <div className="rounded-[20px] border border-[#E5E7EB] bg-white p-5">
                             <div className="flex items-start justify-between gap-4">
                               <div>
                                 <p className="text-sm font-semibold text-[#111827]">Knowledge Usage</p>
@@ -4775,7 +4775,7 @@ export default function DashboardLayout() {
                           </div>
 
                           <div className="grid gap-4">
-                            <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                            <div className="rounded-[20px] border border-[#E5E7EB] bg-white p-5">
                               <p className="text-sm font-semibold text-[#111827]">Top Questions</p>
                               <p className="mt-2 text-sm text-[#6B7280]">Most asked questions this week.</p>
                               <div className="mt-4 space-y-3">
@@ -4785,7 +4785,7 @@ export default function DashboardLayout() {
                               </div>
                             </div>
 
-                            <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                            <div className="rounded-[20px] border border-[#E5E7EB] bg-white p-5">
                               <p className="text-sm font-semibold text-[#111827]">Most Viewed Products</p>
                               <p className="mt-2 text-sm text-[#6B7280]">Products the AI referenced most in conversations.</p>
                               <div className="mt-4 space-y-3">
@@ -4805,7 +4805,7 @@ export default function DashboardLayout() {
                           </div>
                         </div>
 
-                        <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                        <div className="rounded-[20px] border border-[#E5E7EB] bg-white p-5">
                           <div className="flex items-center justify-between">
                             <div>
                               <p className="text-sm font-semibold text-[#111827]">Recent AI Activity</p>
