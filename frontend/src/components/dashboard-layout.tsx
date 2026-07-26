@@ -3513,6 +3513,51 @@ export default function DashboardLayout() {
                                   </div>
                                 </div>
 
+                                {(() => {
+                                  const identityFields = [
+                                    { label: "Business Name", complete: Boolean(businessInfo.name.trim()) },
+                                    { label: "Industry", complete: Boolean(businessInfo.type.trim()) },
+                                    { label: "Business Description", complete: Boolean(businessInfo.about.trim()) },
+                                    { label: "Website", complete: Boolean(businessInfo.website.trim()) },
+                                    { label: "Business Phone", complete: Boolean(businessInfo.phone.trim()) },
+                                    { label: "WhatsApp Number", complete: Boolean(businessInfo.whatsapp.trim()) },
+                                    { label: "Physical Address", complete: Boolean(businessInfo.address.trim()) },
+                                    { label: "Business Hours", complete: Boolean(businessHours.trim()) },
+                                    { label: "Supported Languages", complete: supportedLanguages.length > 0 },
+                                    { label: "Brand Voice", complete: Boolean(personality) },
+                                    { label: "Welcome Message", complete: Boolean(welcomeMessage.trim()) },
+                                    { label: "Away Message", complete: Boolean(awayMessage.trim()) },
+                                    { label: "Business Logo", complete: Boolean(avatarFileName) },
+                                  ];
+                                  const missingFields = identityFields.filter((field) => !field.complete).map((field) => field.label);
+                                  const completion = Math.round(((identityFields.length - missingFields.length) / identityFields.length) * 100);
+
+                                  return (
+                                    <div className="mt-6 rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+                                      <div className="flex items-center justify-between gap-4">
+                                        <div>
+                                          <p className="text-sm font-semibold text-[#111827]">Business Identity</p>
+                                          <p className="mt-1 text-sm text-[#6B7280]">{completion}% Complete</p>
+                                        </div>
+                                        <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#166534]">{completion}%</span>
+                                      </div>
+                                      <div className="mt-4 h-2 w-full rounded-full bg-[#E5E7EB]">
+                                        <div className="h-2 rounded-full bg-[#22C55E] transition-all" style={{ width: `${completion}%` }} />
+                                      </div>
+                                      <div className="mt-4">
+                                        <p className="text-sm font-semibold text-[#111827]">Missing</p>
+                                        <div className="mt-2 flex flex-wrap gap-2">
+                                          {missingFields.length > 0 ? missingFields.map((field) => (
+                                            <span key={field} className="rounded-full bg-white px-3 py-1 text-xs font-medium text-[#64748B]">{field}</span>
+                                          )) : (
+                                            <span className="text-sm text-[#166534]">Your Business Identity is complete.</span>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                })()}
+
                                 <div className="mt-6 flex flex-col gap-3 rounded-[24px] border border-[#E5E7EB] bg-[#FCFCFD] p-4 sm:flex-row sm:items-center sm:justify-between">
                                   <div>
                                     <p className="text-sm font-semibold text-[#111827]">Business logo</p>
