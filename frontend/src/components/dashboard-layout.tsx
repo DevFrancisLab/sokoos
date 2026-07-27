@@ -3461,12 +3461,13 @@ export default function DashboardLayout() {
                               <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
                                 <div className="space-y-6">
                                   <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Business Profile</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">Who are you?</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
-                                      Define the details customers see when they interact with your business.
+                                      Share the essentials customers need to recognise and trust your business.
                                     </p>
                                   </div>
 
+                                  <p className="text-sm font-semibold text-[#475569]">The basics</p>
                                   <div className="grid gap-5 md:grid-cols-2">
                                     <div>
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-name">
@@ -3533,6 +3534,7 @@ export default function DashboardLayout() {
                                     />
                                   </div>
                                   <div className="grid gap-5 border-t border-[#F1F5F9] pt-6 md:grid-cols-2">
+                                    <p className="md:col-span-2 text-sm font-semibold text-[#475569]">How customers can find you</p>
                                     <div>
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="physical-address">Physical Address</label>
                                       <input id="physical-address" value={businessInfo.address} onChange={(event) => setBusinessInfo((current) => ({ ...current, address: event.target.value }))} className={`${INPUT_FIELD} mt-2`} />
@@ -3548,9 +3550,9 @@ export default function DashboardLayout() {
                               <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
                                 <div className="space-y-6">
                                   <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Brand Personality</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">How should your business speak?</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
-                                      Choose how your business should sound in every customer conversation.
+                                      Choose the personality customers should feel in every conversation.
                                     </p>
                                   </div>
 
@@ -3597,9 +3599,9 @@ export default function DashboardLayout() {
                                   </div>
 
                                   <div className="border-t border-[#E5E7EB] pt-6">
-                                    <p className="text-sm font-semibold text-[#111827]">Communication Style</p>
+                                    <p className="text-sm font-semibold text-[#111827]">What should every reply feel like?</p>
                                     <p className="mt-2 text-sm leading-6 text-[#6B7280]">
-                                      Fine-tune how your business communicates with customers.
+                                      Pick the small habits that make replies feel naturally on-brand.
                                     </p>
                                     <div className="mt-4 flex flex-wrap gap-2">
                                       {[
@@ -3643,9 +3645,9 @@ export default function DashboardLayout() {
                               <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
                                 <div className="space-y-6">
                                   <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Customer Experience</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">What should customers experience?</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
-                                      Shape the messages customers see, with a live WhatsApp preview.
+                                      Set the welcome and away messages customers receive first.
                                     </p>
                                   </div>
 
@@ -3675,9 +3677,9 @@ export default function DashboardLayout() {
                               <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
                                 <div className="space-y-6">
                                   <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Languages</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">Which languages can it use?</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
-                                      Choose the languages your business can use with customers.
+                                      Choose the languages customers can comfortably use with your business.
                                     </p>
                                   </div>
 
@@ -3745,9 +3747,9 @@ export default function DashboardLayout() {
                               <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
                                 <div className="space-y-6">
                                   <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Working Hours & Channels</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">When and where can customers reach you?</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
-                                      Tell customers when your business is open and where they can reach you.
+                                      Set expectations for availability and choose the places you meet customers.
                                     </p>
                                   </div>
 
@@ -3832,8 +3834,8 @@ export default function DashboardLayout() {
                                 </summary>
                                 <div className="mt-5 xl:mt-0">
                                   <div className="hidden xl:block">
-                                    <p className="text-[20px] font-semibold text-[#111827]">Live Preview</p>
-                                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">See the conversation customers experience on WhatsApp.</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">See it through a customer’s eyes</p>
+                                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">This conversation changes as you train the business experience.</p>
                                   </div>
 
                                   <div className="mt-5 overflow-hidden rounded-[20px] border border-[#E5E7EB] bg-white shadow-sm">
