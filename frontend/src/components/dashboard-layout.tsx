@@ -3456,10 +3456,10 @@ export default function DashboardLayout() {
                           onChangeCapture={() => setHasUnsavedChanges(true)}
                           className="max-h-[calc(100vh-280px)] overflow-y-auto pr-4 pb-6"
                         >
-                          <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
-                            <div className="space-y-6">
-                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
-                                <div className="space-y-6">
+                          <div className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
+                            <div className="space-y-4">
+                              <section className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                <div className="space-y-4">
                                   <div>
                                     <p className="text-[20px] font-semibold text-[#111827]">Who are you?</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
@@ -3468,7 +3468,7 @@ export default function DashboardLayout() {
                                   </div>
 
                                   <p className="text-sm font-semibold text-[#475569]">The basics</p>
-                                  <div className="grid gap-5 md:grid-cols-2">
+                                  <div className="grid gap-4 md:grid-cols-2">
                                     <div>
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-name">
                                         Business Name
@@ -3533,7 +3533,7 @@ export default function DashboardLayout() {
                                       className={`${INPUT_FIELD} mt-2 resize-none`}
                                     />
                                   </div>
-                                  <div className="grid gap-5 border-t border-[#F1F5F9] pt-6 md:grid-cols-2">
+                                  <div className="grid gap-4 border-t border-[#F1F5F9] pt-4 md:grid-cols-2">
                                     <p className="md:col-span-2 text-sm font-semibold text-[#475569]">How customers can find you</p>
                                     <div>
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="physical-address">Physical Address</label>
@@ -3547,8 +3547,8 @@ export default function DashboardLayout() {
                                 </div>
                               </section>
 
-                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
-                                <div className="space-y-6">
+                              <section className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                <div className="space-y-4">
                                   <div>
                                     <p className="text-[20px] font-semibold text-[#111827]">How should your business speak?</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
@@ -3577,14 +3577,14 @@ export default function DashboardLayout() {
                                           type="button"
                                           aria-pressed={active}
                                           onClick={() => { setPersonality(personalityOption); setHasUnsavedChanges(true); }}
-                                          className={`group rounded-[20px] border p-5 text-left transition ${
+                                          className={`group rounded-[16px] border p-4 text-left transition ${
                                             active
                                               ? "border-[#22C55E] bg-[#ECFDF5] text-[#111827] shadow-sm"
                                               : "border-[#E5E7EB] bg-[#F9FAFB] text-[#475569] hover:border-[#CBD5E1]"
                                           }`}
                                         >
                                           <div className="flex items-start gap-4">
-                                            <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-[14px] ${active ? "bg-[#22C55E] text-white" : "bg-white text-[#166534]"}`}>
+                                            <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-[12px] ${active ? "bg-[#22C55E] text-white" : "bg-white text-[#166534]"}`}>
                                               <Icon className="h-5 w-5" />
                                             </div>
                                             <div>
@@ -3598,7 +3598,7 @@ export default function DashboardLayout() {
                                     })}
                                   </div>
 
-                                  <div className="border-t border-[#E5E7EB] pt-6">
+                                  <div className="border-t border-[#E5E7EB] pt-4">
                                     <p className="text-sm font-semibold text-[#111827]">What should every reply feel like?</p>
                                     <p className="mt-2 text-sm leading-6 text-[#6B7280]">
                                       Pick the small habits that make replies feel naturally on-brand.
@@ -3642,8 +3642,8 @@ export default function DashboardLayout() {
                                 </div>
                               </section>
 
-                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
-                                <div className="space-y-6">
+                              <section className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                <div className="space-y-4">
                                   <div>
                                     <p className="text-[20px] font-semibold text-[#111827]">What should customers experience?</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
@@ -3651,7 +3651,7 @@ export default function DashboardLayout() {
                                     </p>
                                   </div>
 
-                                  <div className="space-y-6">
+                                  <div className="space-y-4">
                                     <div>
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="welcome-message">
                                         Welcome Message
@@ -3674,8 +3674,8 @@ export default function DashboardLayout() {
                                 </div>
                               </section>
 
-                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
-                                <div className="space-y-6">
+                              <section className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                <div className="space-y-4">
                                   <div>
                                     <p className="text-[20px] font-semibold text-[#111827]">Which languages can it use?</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
@@ -3683,8 +3683,8 @@ export default function DashboardLayout() {
                                     </p>
                                   </div>
 
-                                  <div className="grid gap-5 md:grid-cols-2">
-                                    <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+                                  <div className="grid gap-4 md:grid-cols-2">
+                                    <div className="rounded-[16px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
                                       <div className="flex items-center justify-between gap-3">
                                         <p className="text-sm font-semibold text-[#111827]">Primary Language</p>
                                         <span className="rounded-full bg-[#DCFCE7] px-2.5 py-1 text-xs font-semibold text-[#166534]">{primaryLanguage}</span>
@@ -3698,7 +3698,7 @@ export default function DashboardLayout() {
                                       </div>
                                     </div>
 
-                                    <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+                                    <div className="rounded-[16px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
                                       <p className="text-sm font-semibold text-[#111827]">Secondary Language</p>
                                       <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Secondary language">
                                         {LANGUAGES.map((lang) => (
@@ -3710,7 +3710,7 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
 
-                                  <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+                                  <div className="rounded-[16px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
                                     <p className="text-sm font-semibold text-[#111827]">Supported Languages</p>
                                     <div className="mt-4 flex flex-wrap gap-2">
                                       {(["English", "Kiswahili", "French", "Arabic", "German"] as const).map((language) => {
@@ -3744,8 +3744,8 @@ export default function DashboardLayout() {
                                 </div>
                               </section>
 
-                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
-                                <div className="space-y-6">
+                              <section className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                <div className="space-y-4">
                                   <div>
                                     <p className="text-[20px] font-semibold text-[#111827]">When and where can customers reach you?</p>
                                     <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
@@ -3753,7 +3753,7 @@ export default function DashboardLayout() {
                                     </p>
                                   </div>
 
-                                  <div className="grid gap-6 md:grid-cols-2">
+                                  <div className="grid gap-4 md:grid-cols-2">
                                     <div>
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-hours">
                                         Business Hours
@@ -3785,7 +3785,7 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
 
-                                  <section className="rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+                                  <section className="rounded-[16px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
                                     <div>
                                       <p className="text-sm font-semibold text-[#111827]">Communication Channels</p>
                                       <p className="mt-1 text-sm text-[#6B7280]">Choose where customers can interact with your business.</p>
@@ -3826,19 +3826,19 @@ export default function DashboardLayout() {
                               </section>
                             </div>
 
-                            <div className="space-y-6">
-                              <details open className="group rounded-[24px] border border-[#E5E7EB] bg-white p-6 xl:sticky xl:top-6">
+                            <div className="space-y-4">
+                              <details open className="group rounded-[16px] border border-[#E5E7EB] bg-white p-4 xl:sticky xl:top-4">
                                 <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-[20px] font-semibold text-[#111827] [&::-webkit-details-marker]:hidden xl:hidden">
                                   Live Preview
                                   <ChevronDown className="h-5 w-5 transition group-open:rotate-180" />
                                 </summary>
-                                <div className="mt-5 xl:mt-0">
+                                <div className="mt-4 xl:mt-0">
                                   <div className="hidden xl:block">
                                     <p className="text-[20px] font-semibold text-[#111827]">See it through a customer’s eyes</p>
                                     <p className="mt-2 text-sm leading-6 text-[#6B7280]">This conversation changes as you train the business experience.</p>
                                   </div>
 
-                                  <div className="mt-5 overflow-hidden rounded-[20px] border border-[#E5E7EB] bg-white shadow-sm">
+                                  <div className="mt-4 overflow-hidden rounded-[16px] border border-[#E5E7EB] bg-white shadow-sm">
                                     <div className="flex items-center gap-3 border-b border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3">
                                       <div className="flex h-10 w-10 overflow-hidden items-center justify-center rounded-full bg-[#ECFDF5] text-sm font-semibold text-[#166534]">
                                         {logoPreview ? <img src={logoPreview} alt="Business logo" className="h-full w-full object-cover" /> : (businessInfo.name.slice(0, 1) || "B")}
@@ -3868,9 +3868,9 @@ export default function DashboardLayout() {
                                 </div>
                               </details>
 
-                              <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
+                              <section className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
                                 <div className="flex items-center gap-4">
-                                  <div className="flex h-14 w-14 overflow-hidden items-center justify-center rounded-[20px] bg-[#E5F6EC] text-2xl font-semibold text-[#065F46]">
+                                  <div className="flex h-14 w-14 overflow-hidden items-center justify-center rounded-[16px] bg-[#E5F6EC] text-2xl font-semibold text-[#065F46]">
                                     {logoPreview ? (
                                       <img src={logoPreview} alt="Business logo preview" className="h-full w-full object-cover" />
                                     ) : (
@@ -3885,7 +3885,7 @@ export default function DashboardLayout() {
                                   </div>
                                 </div>
 
-                                <div className="mt-6 rounded-[20px] border border-dashed border-[#CBD5E1] bg-[#F9FAFB] p-4">
+                                <div className="mt-4 rounded-[16px] border border-dashed border-[#CBD5E1] bg-[#F9FAFB] p-4">
                                   {logoPreview ? (
                                     <img src={logoPreview} alt="Uploaded business logo" className="mx-auto h-28 w-28 rounded-[16px] object-cover" />
                                   ) : (
@@ -3897,7 +3897,7 @@ export default function DashboardLayout() {
                                 </div>
 
                                 <div className="mt-4 flex flex-wrap gap-2">
-                                  <label className="inline-flex cursor-pointer items-center justify-center rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6]">
+                                  <label className="inline-flex cursor-pointer items-center justify-center rounded-[16px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6]">
                                     <Image className="mr-2 h-4 w-4" />
                                     Upload Logo
                                     <input
@@ -3922,10 +3922,10 @@ export default function DashboardLayout() {
                                       }}
                                     />
                                   </label>
-                                  <button type="button" onClick={() => { setLogoPreview(null); setLogoPreviewOpen(false); setAvatarFileName(""); setLogoError(""); setHasUnsavedChanges(true); }} disabled={!logoPreview} className="rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6] disabled:cursor-not-allowed disabled:text-[#94A3B8]">
+                                  <button type="button" onClick={() => { setLogoPreview(null); setLogoPreviewOpen(false); setAvatarFileName(""); setLogoError(""); setHasUnsavedChanges(true); }} disabled={!logoPreview} className="rounded-[16px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6] disabled:cursor-not-allowed disabled:text-[#94A3B8]">
                                     Remove Logo
                                   </button>
-                                  <button type="button" onClick={() => setLogoPreviewOpen(true)} disabled={!logoPreview} className="rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6] disabled:cursor-not-allowed disabled:text-[#94A3B8]">
+                                  <button type="button" onClick={() => setLogoPreviewOpen(true)} disabled={!logoPreview} className="rounded-[16px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6] disabled:cursor-not-allowed disabled:text-[#94A3B8]">
                                     Preview Logo
                                   </button>
                                 </div>
@@ -3933,7 +3933,7 @@ export default function DashboardLayout() {
                                 <p className="mt-3 text-sm text-[#64748B]">{logoError || avatarFileName || "No logo uploaded"}</p>
 
                                 {logoPreviewOpen && logoPreview && (
-                                  <div className="mt-4 rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+                                  <div className="mt-4 rounded-[16px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
                                     <div className="flex items-center justify-between gap-3">
                                       <p className="text-sm font-semibold text-[#111827]">Logo Preview</p>
                                       <button type="button" onClick={() => setLogoPreviewOpen(false)} className="text-sm font-semibold text-[#475569]">Close</button>
