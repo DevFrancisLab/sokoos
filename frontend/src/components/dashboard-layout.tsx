@@ -14,7 +14,6 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
-  ChevronUp,
   ChevronDown,
   Search,
   MessageCircle,
@@ -1809,14 +1808,8 @@ export default function DashboardLayout() {
     sourceOverrides[id] ?? original ?? "owner";
   const [messageInput, setMessageInput] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  const identityFormRef = useRef<HTMLDivElement | null>(null);
   const [sidebarHovered, setSidebarHovered] = useState(false);
   const [customerPanelFading, setCustomerPanelFading] = useState(false);
-
-  const scrollIdentityForm = (offset: number) => {
-    if (!identityFormRef.current) return;
-    identityFormRef.current.scrollBy({ top: offset, behavior: "smooth" });
-  };
 
   useEffect(() => {
     const textarea = textareaRef.current;
@@ -1976,6 +1969,33 @@ export default function DashboardLayout() {
     serviceAreas: "Nairobi, Kiambu, Thika",
     paymentMethods: "Mobile Money, Bank Transfer, Cash",
   });
+  const previewLanguageCopy = primaryLanguage === "Kiswahili"
+    ? {
+        customerGreeting: "Habari! Naomba maelezo zaidi.",
+        availabilityQuestion: "Je, mpo wazi sasa?",
+        defaultWelcome: "Habari! Tunawezaje kukusaidia leo?",
+      }
+    : {
+        customerGreeting: "Hi, I’d like to learn more.",
+        availabilityQuestion: "Are you available now?",
+        defaultWelcome: "Hello! How can we help today?",
+      };
+  const previewPersonalityReply = {
+    Professional: `Thank you for reaching out to ${businessInfo.name || "us"}. How may we assist?`,
+    Friendly: `We’d love to help${writingStyleOptions["Use emojis"] ? " 👋" : ""}. What would you like to know?`,
+    Luxury: `Welcome. We would be delighted to assist with your enquiry.`,
+    Casual: `Absolutely — what can we help with today?`,
+    Technical: `Please share what you need help with and we’ll guide you clearly.`,
+    Playful: `You got it${writingStyleOptions["Use emojis"] ? " ✨" : ""}! What can we help you find?`,
+  }[personality];
+  const previewBusinessContext = writingStyleOptions["Keep replies short"]
+    ? previewPersonalityReply
+    : `${previewPersonalityReply} ${businessInfo.about || "We’re here to help."}`;
+  const previewFollowUp = writingStyleOptions["Ask follow-up questions"]
+    ? primaryLanguage === "Kiswahili"
+      ? "Ungependa kujua nini hasa?"
+      : "What would you like to know first?"
+    : null;
   const [knowledgeProducts, setKnowledgeProducts] = useState([
     { id: "kp1", name: "10 Mbps Internet", price: "KES 2,500/month" },
     { id: "kp2", name: "20 Mbps Internet", price: "KES 3,500/month" },
@@ -3325,23 +3345,23 @@ export default function DashboardLayout() {
             </div>
           )}
           {selected === "AI Employee" && (
-            <div className={`mx-auto w-full max-w-[1440px] space-y-10 lg:space-y-12 ${CARD} p-8 lg:p-10`}>
-              <div className="rounded-[28px] border border-[#E5E7EB] bg-[#F9FAFB] p-8 shadow-sm lg:p-10">
-                <div className="flex flex-col gap-8">
-                  <div className="max-w-4xl">
+            <div className="mx-auto w-full max-w-[1280px] space-y-6 px-4 pb-10 lg:px-6">
+              <div className="border-b border-[#E5E7EB] pb-5">
+                <div className="flex flex-col gap-5">
+                  <div className="max-w-3xl">
                     <p className="text-[12px] font-semibold uppercase tracking-[0.24em] text-[#6B7280]">
                       AI Employee
                     </p>
-                    <h2 className="mt-4 text-[28px] font-semibold tracking-[-0.02em] text-[#111827] lg:text-[32px]">
-                      Train, equip and manage your AI employee.
+                    <h2 className="mt-2 text-[24px] font-semibold tracking-[-0.02em] text-[#111827] lg:text-[26px]">
+                      Shape how your AI employee represents your business.
                     </h2>
-                    <p className="mt-4 text-[16px] leading-7 text-[#6B7280]">
-                      Define what customers see, what your AI Employee knows,
-                      how it works, and how well it serves customers.
+                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">
+                      Give it the business context, voice, and availability it needs to serve customers confidently.
                     </p>
                   </div>
 
-                  <div className="flex flex-wrap gap-3">
+                  <nav aria-label="AI employee workspace sections" className="sticky top-3 z-30 -mx-4 overflow-x-auto scroll-smooth border-y border-[#E5E7EB] bg-white/95 px-4 py-3 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur lg:-mx-6 lg:px-6">
+                    <div className="flex w-max gap-2">
                     {([
                       { label: "Business Identity", section: "Identity" as const, Icon: User },
                       { label: "Knowledge", section: "Knowledge Hub" as const, Icon: BookOpen },
@@ -3359,10 +3379,10 @@ export default function DashboardLayout() {
                           key={tab.label}
                           type="button"
                           onClick={() => setActiveWorkspaceSection(tab.section)}
-                          className={`inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-[15px] font-semibold transition ${
+                          className={`relative inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ease-out after:absolute after:bottom-1 after:left-1/2 after:h-0.5 after:w-4 after:-translate-x-1/2 after:rounded-full after:bg-current after:transition-transform after:duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 ${
                             active
-                              ? "bg-[#22C55E] text-white shadow-sm"
-                              : "bg-[#F3F4F6] text-[#6B7280] hover:bg-[#E5E7EB]"
+                              ? "bg-[#22C55E] text-white shadow-sm after:scale-x-100"
+                              : "bg-[#F3F4F6] text-[#6B7280] after:scale-x-0 hover:bg-[#E5E7EB] hover:text-[#374151]"
                           }`}
                         >
                           <tab.Icon className="h-4 w-4" />
@@ -3370,111 +3390,74 @@ export default function DashboardLayout() {
                         </button>
                       );
                     })}
-                  </div>
+                    </div>
+                  </nav>
                 </div>
               </div>
 
-              <main className="space-y-10">
-                <div className="border-b border-[#E5E7EB] pb-8">
-                  <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-                    <div className="max-w-3xl">
-                      <p className="text-[12px] font-semibold uppercase tracking-[0.24em] text-[#6B7280]">
-                        AI Employee
-                      </p>
-                      <h2 className="mt-3 text-[24px] font-semibold tracking-[-0.02em] text-[#111827] lg:text-[28px]">
-                        Train, equip and manage your AI employee from one place.
-                      </h2>
-                    </div>
-                    <div className="flex flex-wrap items-center justify-start gap-2 lg:justify-end">
-                      <span className="text-sm font-medium text-[#6B7280]">AI Employee Status</span>
-                      <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#166534]">
-                        Online
-                      </span>
-                      <span className="rounded-full bg-[#F3F4F6] px-3 py-1 text-xs font-semibold text-[#6B7280]">
-                        AI Enabled
-                      </span>
-                      <span className="rounded-full bg-[#F3F4F6] px-3 py-1 text-xs font-semibold text-[#6B7280]">
-                        WhatsApp Connected (mock)
-                      </span>
-                    </div>
+              <main className="space-y-6">
+                <div className="flex flex-col gap-3 border-b border-[#E5E7EB] pb-4 lg:flex-row lg:items-center lg:justify-between">
+                  <div className="max-w-3xl">
+                    <p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]">
+                      {activeWorkspaceSection === "Identity" ? "Identity training" : "AI Employee workspace"}
+                    </p>
+                    <p className="mt-1 text-sm text-[#475569]">{activeWorkspaceSection === "Identity" ? "Seven focused areas to help your AI represent you with confidence." : "Train and manage your AI employee."}</p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-xs font-medium text-[#6B7280]">Status</span>
+                    <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#166534]">Online</span>
+                    <span className="rounded-full bg-[#F3F4F6] px-3 py-1 text-xs font-semibold text-[#6B7280]">AI enabled</span>
                   </div>
                 </div>
 
-                <div className="sticky top-4 z-20 mb-6 rounded-[24px] border border-[#E5E7EB] bg-white/95 px-5 py-4 shadow-sm backdrop-blur">
-                  <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                    <div className="flex items-center gap-3">
-                      <div>
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]">
-                          Unsaved Changes
-                        </p>
-                        <p className="text-sm font-semibold text-[#111827]">{hasUnsavedChanges ? "Changes are ready to save." : "All changes are saved."}</p>
-                      </div>
+                {hasUnsavedChanges && (
+                  <div className="sticky top-[68px] z-20 flex animate-in items-center justify-between gap-2 rounded-xl border border-[#BBF7D0] bg-white/95 px-4 py-2 shadow-[0_8px_20px_rgba(15,23,42,0.08)] backdrop-blur fade-in-0 slide-in-from-top-2 duration-200">
+                    <div className="flex min-w-0 items-center gap-2">
+                      <span className="h-2 w-2 shrink-0 rounded-full bg-[#22C55E]" />
+                      <p className="truncate text-sm font-medium text-[#111827]">Unsaved changes</p>
                     </div>
-
-                    <div className="flex flex-wrap gap-2">
-                      <button
-                        type="button"
-                        onClick={handleSaveChanges}
-                        disabled={!hasUnsavedChanges}
-                        className="rounded-[20px] bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#16A34A] disabled:cursor-not-allowed disabled:bg-[#86EFAC]"
-                      >
-                        Save Changes
-                      </button>
+                    <div className="flex shrink-0 items-center gap-2">
                       <button
                         type="button"
                         onClick={handleResetChanges}
-                        className="rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6]"
+                        className="rounded-lg px-2.5 py-1.5 text-xs font-semibold text-[#64748B] transition hover:bg-[#F3F4F6] hover:text-[#111827]"
                       >
-                        Discard Changes
+                        Discard
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleSaveChanges}
+                        className="rounded-lg bg-[#22C55E] px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#16A34A]"
+                      >
+                        Save Changes
                       </button>
                     </div>
                   </div>
-                </div>
+                )}
 
-                <div className="w-full rounded-[28px] border border-[#E5E7EB] bg-[#FCFCFD] p-6 lg:p-8">
+                <div className="w-full">
                     {activeWorkspaceSection === "Identity" && (
-                      <div className="relative space-y-6">
-                        <div className="absolute right-0 top-0 flex gap-2">
-                          <button
-                            type="button"
-                            onClick={() => scrollIdentityForm(-240)}
-                            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#111827] transition hover:bg-[#F3F4F6]"
-                          >
-                            <ChevronUp className="h-4 w-4" />
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => scrollIdentityForm(240)}
-                            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#111827] transition hover:bg-[#F3F4F6]"
-                          >
-                            <ChevronDown className="h-4 w-4" />
-                          </button>
-                        </div>
-
-                        <div
-                          ref={identityFormRef}
-                          onChangeCapture={() => setHasUnsavedChanges(true)}
-                          className="max-h-[calc(100vh-280px)] overflow-y-auto pr-4 pb-6"
-                        >
-                          <div className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
-                            <div className="space-y-4">
-                              <section className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
-                                <div className="space-y-4">
+                      <div className="space-y-8">
+                        <div onChangeCapture={() => setHasUnsavedChanges(true)}>
+                          <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1.35fr)_minmax(300px,0.65fr)]">
+                            <div className="space-y-8 scroll-smooth xl:max-h-[calc(100vh-220px)] xl:overflow-y-auto xl:pr-4">
+                              <section className="border-b border-[#E5E7EB] pb-8">
+                                <div className="space-y-6">
                                   <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Who are you?</p>
-                                    <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
-                                      Share the essentials customers need to recognise and trust your business.
+                                    <p className="text-[20px] font-semibold text-[#111827]">Start with your business</p>
+                                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">
+                                      Give your AI the essentials it needs to represent you well.
                                     </p>
                                   </div>
 
-                                  <p className="text-sm font-semibold text-[#475569]">The basics</p>
                                   <div className="grid gap-4 md:grid-cols-2">
                                     <div>
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-name">
-                                        Business Name
+                                        What is your business called?
                                       </label>
                                       <input
                                         id="business-name"
+                                        autoComplete="organization"
                                         value={businessInfo.name}
                                         onChange={(event) => setBusinessInfo((current) => ({ ...current, name: event.target.value }))}
                                         placeholder="Your business name"
@@ -3484,7 +3467,7 @@ export default function DashboardLayout() {
 
                                     <div>
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="industry">
-                                        Industry
+                                        What kind of business is it?
                                       </label>
                                       <input
                                         id="industry"
@@ -3495,68 +3478,59 @@ export default function DashboardLayout() {
                                       />
                                     </div>
 
-                                    <div>
-                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-website">
-                                        Website
-                                      </label>
-                                      <input
-                                        id="business-website"
-                                        value={businessInfo.website}
-                                        onChange={(event) => setBusinessInfo((current) => ({ ...current, website: event.target.value }))}
-                                        placeholder="https://yourbusiness.com"
-                                        className={`${INPUT_FIELD} mt-2`}
-                                      />
-                                    </div>
-
-                                    <div>
-                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-phone">
-                                        Business Phone
-                                      </label>
-                                      <input
-                                        id="business-phone"
-                                        value={businessInfo.phone}
-                                        onChange={(event) => setBusinessInfo((current) => ({ ...current, phone: event.target.value }))}
-                                        placeholder="+254 700 000 000"
-                                        className={`${INPUT_FIELD} mt-2`}
-                                      />
-                                    </div>
                                   </div>
                                   <div>
                                     <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-description">
-                                      Business Description
+                                      Teach your AI about your business
                                     </label>
                                     <textarea
                                       id="business-description"
                                       value={businessInfo.about}
                                       onChange={(event) => setBusinessInfo((current) => ({ ...current, about: event.target.value }))}
-                                      rows={3}
+                                      rows={2}
                                       className={`${INPUT_FIELD} mt-2 resize-none`}
                                     />
                                   </div>
-                                  <div className="grid gap-4 border-t border-[#F1F5F9] pt-4 md:grid-cols-2">
-                                    <p className="md:col-span-2 text-sm font-semibold text-[#475569]">How customers can find you</p>
+                                </div>
+                              </section>
+
+                              <section className="border-b border-[#E5E7EB] pb-8">
+                                <div className="space-y-6">
+                                  <div>
+                                    <p className="text-[20px] font-semibold text-[#111827]">How can customers reach you?</p>
+                                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">Give your AI the right places to send people.</p>
+                                  </div>
+                                  <div className="grid gap-4 md:grid-cols-2">
                                     <div>
-                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="physical-address">Physical Address</label>
-                                      <input id="physical-address" value={businessInfo.address} onChange={(event) => setBusinessInfo((current) => ({ ...current, address: event.target.value }))} className={`${INPUT_FIELD} mt-2`} />
+                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-website">Website</label>
+                                      <input id="business-website" type="url" autoComplete="url" value={businessInfo.website} onChange={(event) => setBusinessInfo((current) => ({ ...current, website: event.target.value }))} placeholder="https://yourbusiness.com" className={`${INPUT_FIELD} mt-2`} />
                                     </div>
                                     <div>
-                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="whatsapp-number">WhatsApp Number</label>
-                                      <input id="whatsapp-number" value={businessInfo.whatsapp} onChange={(event) => setBusinessInfo((current) => ({ ...current, whatsapp: event.target.value }))} className={`${INPUT_FIELD} mt-2`} />
+                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-phone">Phone number</label>
+                                      <input id="business-phone" type="tel" autoComplete="tel" value={businessInfo.phone} onChange={(event) => setBusinessInfo((current) => ({ ...current, phone: event.target.value }))} placeholder="+254 700 000 000" className={`${INPUT_FIELD} mt-2`} />
+                                    </div>
+                                    <div>
+                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="physical-address">Where are you based?</label>
+                                      <input id="physical-address" autoComplete="street-address" value={businessInfo.address} onChange={(event) => setBusinessInfo((current) => ({ ...current, address: event.target.value }))} className={`${INPUT_FIELD} mt-2`} />
+                                    </div>
+                                    <div>
+                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="whatsapp-number">WhatsApp number</label>
+                                      <input id="whatsapp-number" type="tel" autoComplete="tel" value={businessInfo.whatsapp} onChange={(event) => setBusinessInfo((current) => ({ ...current, whatsapp: event.target.value }))} className={`${INPUT_FIELD} mt-2`} />
                                     </div>
                                   </div>
                                 </div>
                               </section>
 
-                              <section className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
-                                <div className="space-y-4">
+                              <section className="border-b border-[#E5E7EB] pb-8">
+                                <div className="space-y-6">
                                   <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">How should your business speak?</p>
-                                    <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
-                                      Choose the personality customers should feel in every conversation.
+                                    <p className="text-[20px] font-semibold text-[#111827]">How should your AI sound?</p>
+                                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">
+                                      Choose a personality that feels right for your customers.
                                     </p>
                                   </div>
 
-                                  <div className="grid gap-4 md:grid-cols-2">
+                                  <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
                                     {PERSONALITIES.map((personalityOption) => {
                                       const active = personality === personalityOption;
                                       const voice = BRAND_VOICE_DETAILS[personalityOption];
@@ -3577,31 +3551,41 @@ export default function DashboardLayout() {
                                           type="button"
                                           aria-pressed={active}
                                           onClick={() => { setPersonality(personalityOption); setHasUnsavedChanges(true); }}
-                                          className={`group rounded-[16px] border p-4 text-left transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 ${
+                                          className={`group relative min-h-[74px] rounded-xl border p-3 text-left transition-all duration-200 ease-out hover:-translate-y-px hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] ${
                                             active
-                                              ? "border-[#22C55E] bg-[#ECFDF5] text-[#111827] shadow-sm"
-                                              : "border-[#E5E7EB] bg-[#F9FAFB] text-[#475569] hover:border-[#CBD5E1]"
+                                              ? "border-[#22C55E] bg-[#ECFDF5] text-[#111827] shadow-[0_4px_12px_rgba(34,197,94,0.12)]"
+                                              : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#A7F3D0]"
                                           }`}
                                         >
-                                          <div className="flex items-start gap-4">
-                                            <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-[12px] transition-all duration-200 ease-out group-hover:scale-105 ${active ? "bg-[#22C55E] text-white" : "bg-white text-[#166534]"}`}>
-                                              <Icon className="h-5 w-5" />
+                                          <div className="flex items-center gap-3">
+                                            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-all duration-200 ease-out group-hover:scale-105 ${active ? "bg-[#22C55E] text-white" : "bg-[#F0FDF4] text-[#166534]"}`}>
+                                              <Icon className="h-4 w-4" />
                                             </div>
-                                            <div>
+                                            <div className="min-w-0 flex-1">
                                               <p className="text-sm font-semibold">{personalityOption}</p>
-                                              <p className="mt-1 text-sm leading-5 text-[#64748B]">{voice.description}</p>
+                                              <p className="mt-0.5 truncate text-xs text-[#64748B]">{voice.description}</p>
                                             </div>
+                                            {active && <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white"><Check className="h-3 w-3" /></span>}
                                           </div>
-                                          <p className="mt-3 text-xs leading-5 text-[#475569]">“{voice.example}”</p>
                                         </button>
                                       );
                                     })}
                                   </div>
 
+                                  <div className="overflow-hidden rounded-xl bg-[#F0FDF4] px-4 py-3 transition-all duration-300 ease-out">
+                                    <div className="flex items-start gap-3">
+                                      <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white"><Check className="h-3.5 w-3.5" /></div>
+                                      <div>
+                                        <p className="text-sm font-semibold text-[#166534]">Your AI will sound {personality.toLowerCase()}</p>
+                                        <p className="mt-0.5 text-sm leading-5 text-[#475569]">“{BRAND_VOICE_DETAILS[personality].example}”</p>
+                                      </div>
+                                    </div>
+                                  </div>
+
                                   <div className="border-t border-[#E5E7EB] pt-4">
-                                    <p className="text-sm font-semibold text-[#111827]">What should every reply feel like?</p>
+                                    <p className="text-sm font-semibold text-[#111827]">How should your AI reply?</p>
                                     <p className="mt-2 text-sm leading-6 text-[#6B7280]">
-                                      Pick the small habits that make replies feel naturally on-brand.
+                                      Pick a few habits to make every reply feel natural.
                                     </p>
                                     <div className="mt-4 flex flex-wrap gap-2">
                                       {[
@@ -3642,25 +3626,25 @@ export default function DashboardLayout() {
                                 </div>
                               </section>
 
-                              <section className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
-                                <div className="space-y-4">
+                              <section className="border-b border-[#E5E7EB] pb-8">
+                                <div className="space-y-6">
                                   <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">What should customers experience?</p>
-                                    <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
-                                      Set the welcome and away messages customers receive first.
+                                    <p className="text-[20px] font-semibold text-[#111827]">Set the first impression</p>
+                                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">
+                                      Teach your AI what to say at the start of a conversation.
                                     </p>
                                   </div>
 
                                   <div className="space-y-4">
                                     <div>
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="welcome-message">
-                                        Welcome Message
+                                        What should your AI say when someone says “Hi”?
                                       </label>
                                       <textarea
                                         id="welcome-message"
                                         value={welcomeMessage}
                                         onChange={(event) => setWelcomeMessage(event.target.value)}
-                                        rows={4}
+                                        rows={2}
                                         placeholder="Hello! Welcome to our business. How can we help today?"
                                         className={`${INPUT_FIELD} mt-2 resize-none`}
                                       />
@@ -3668,25 +3652,25 @@ export default function DashboardLayout() {
 
                                   </div>
                                   <div>
-                                    <label className="block text-sm font-semibold text-[#111827]" htmlFor="away-message">Away Message</label>
-                                    <textarea id="away-message" value={awayMessage} onChange={(event) => setAwayMessage(event.target.value)} rows={3} className={`${INPUT_FIELD} mt-2 resize-none`} />
+                                    <label className="block text-sm font-semibold text-[#111827]" htmlFor="away-message">What should your AI say when you’re unavailable?</label>
+                                    <textarea id="away-message" value={awayMessage} onChange={(event) => setAwayMessage(event.target.value)} rows={2} className={`${INPUT_FIELD} mt-2 resize-none`} />
                                   </div>
                                 </div>
                               </section>
 
-                              <section className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
-                                <div className="space-y-4">
+                              <section className="border-b border-[#E5E7EB] pb-8">
+                                <div className="space-y-6">
                                   <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Which languages can it use?</p>
-                                    <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
-                                      Choose the languages customers can comfortably use with your business.
+                                    <p className="text-[20px] font-semibold text-[#111827]">Which languages should your AI speak?</p>
+                                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">
+                                      Choose the languages your AI can use with customers.
                                     </p>
                                   </div>
 
                                   <div className="grid gap-4 md:grid-cols-2">
-                                    <div className="rounded-[16px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+                                    <div className="rounded-xl bg-[#F9FAFB] p-4 transition-shadow duration-200 ease-out hover:shadow-sm">
                                       <div className="flex items-center justify-between gap-3">
-                                        <p className="text-sm font-semibold text-[#111827]">Primary Language</p>
+                                        <p className="text-sm font-semibold text-[#111827]">Main language</p>
                                         <span className="rounded-full bg-[#DCFCE7] px-2.5 py-1 text-xs font-semibold text-[#166534]">{primaryLanguage}</span>
                                       </div>
                                       <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Primary language">
@@ -3698,8 +3682,8 @@ export default function DashboardLayout() {
                                       </div>
                                     </div>
 
-                                    <div className="rounded-[16px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
-                                      <p className="text-sm font-semibold text-[#111827]">Secondary Language</p>
+                                    <div className="rounded-xl bg-[#F9FAFB] p-4 transition-shadow duration-200 ease-out hover:shadow-sm">
+                                      <p className="text-sm font-semibold text-[#111827]">Second language</p>
                                       <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Secondary language">
                                         {LANGUAGES.map((lang) => (
                                           <button key={lang} type="button" aria-pressed={secondaryLanguage === lang} onClick={() => { setSecondaryLanguage(lang); setHasUnsavedChanges(true); }} className={`rounded-full px-3 py-2 text-sm font-medium transition-all duration-200 ease-out hover:-translate-y-px hover:shadow-sm ${secondaryLanguage === lang ? "bg-[#111827] text-white" : "border border-[#E5E7EB] bg-white text-[#475569]"}`}>
@@ -3710,8 +3694,8 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
 
-                                  <div className="rounded-[16px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
-                                    <p className="text-sm font-semibold text-[#111827]">Supported Languages</p>
+                                  <div className="rounded-xl bg-[#F9FAFB] p-4 transition-shadow duration-200 ease-out hover:shadow-sm">
+                                    <p className="text-sm font-semibold text-[#111827]">Other languages your AI can understand</p>
                                     <div className="mt-4 flex flex-wrap gap-2">
                                       {(["English", "Kiswahili", "French", "Arabic", "German"] as const).map((language) => {
                                         const selected = supportedLanguages.includes(language);
@@ -3744,38 +3728,38 @@ export default function DashboardLayout() {
                                 </div>
                               </section>
 
-                              <section className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
-                                <div className="space-y-4">
+                              <section className="border-b border-[#E5E7EB] pb-8">
+                                <div className="space-y-6">
                                   <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">When and where can customers reach you?</p>
-                                    <p className="mt-2 text-[16px] leading-7 text-[#6B7280]">
-                                      Set expectations for availability and choose the places you meet customers.
+                                    <p className="text-[20px] font-semibold text-[#111827]">When should your AI be available?</p>
+                                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">
+                                      Help your AI set the right expectations about your hours.
                                     </p>
                                   </div>
 
                                   <div className="grid gap-4 md:grid-cols-2">
                                     <div>
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-hours">
-                                        Business Hours
+                                        When are you open?
                                       </label>
                                       <input
                                         id="business-hours"
                                         value={businessHours}
                                         onChange={(event) => setBusinessHours(event.target.value)}
                                         placeholder="Mon–Fri, 8:00 AM - 6:00 PM"
-                                        className={INPUT_FIELD}
+                                        className={`${INPUT_FIELD} mt-2`}
                                       />
                                     </div>
 
                                     <div>
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="timezone">
-                                        Timezone
+                                        Your time zone
                                       </label>
                                       <select
                                         id="timezone"
                                         value={timezone}
                                         onChange={(event) => setTimezone(event.target.value)}
-                                        className={INPUT_FIELD}
+                                        className={`${INPUT_FIELD} mt-2`}
                                       >
                                         <option>East Africa Time (EAT)</option>
                                         <option>West Africa Time (WAT)</option>
@@ -3785,10 +3769,19 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
 
-                                  <section className="rounded-[16px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
+                                </div>
+                              </section>
+
+                              <section className="pb-2">
+                                <div className="space-y-6">
+                                  <div>
+                                    <p className="text-[20px] font-semibold text-[#111827]">Where should your AI work?</p>
+                                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">Choose where customers can start a conversation with your AI.</p>
+                                  </div>
+                                  <div className="rounded-xl bg-[#F9FAFB] p-4">
                                     <div>
-                                      <p className="text-sm font-semibold text-[#111827]">Communication Channels</p>
-                                      <p className="mt-1 text-sm text-[#6B7280]">Choose where customers can interact with your business.</p>
+                                      <p className="text-sm font-semibold text-[#111827]">Your AI’s workspaces</p>
+                                      <p className="mt-2 text-sm text-[#6B7280]">See where your AI is ready to help customers.</p>
                                     </div>
                                     <div className="mt-4 space-y-2">
                                       {([
@@ -3802,69 +3795,88 @@ export default function DashboardLayout() {
                                         const Icon = channel.icon;
 
                                         return (
-                                          <div key={channel.id} className="flex items-center gap-3 rounded-[12px] border border-[#E5E7EB] bg-white p-3 transition-shadow duration-200 ease-out hover:shadow-sm">
-                                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-[10px] bg-[#E5F6EC] text-[#065F46]">
-                                                  <Icon className="h-5 w-5" />
+                                          <div key={channel.id} className="flex min-h-10 items-center gap-2 rounded-lg bg-white px-2 py-2 transition-all duration-200 ease-out hover:-translate-y-px hover:shadow-sm">
+                                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[#E5F6EC] text-[#065F46]">
+                                                  <Icon className="h-4 w-4" />
                                             </div>
                                             <p className="min-w-0 flex-1 text-sm font-semibold text-[#111827]">{channel.name}</p>
-                                              <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${connected ? "bg-[#ECFDF5] text-[#166534]" : "bg-[#F3F4F6] text-[#6B7280]"}`}>
+                                              <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${connected ? "bg-[#ECFDF5] text-[#166534]" : "bg-[#F3F4F6] text-[#6B7280]"}`}>
                                                 {connected ? "Connected" : "Not connected"}
                                               </span>
-                                            <button type="button" disabled className="rounded-[10px] border border-[#E5E7EB] bg-[#F3F4F6] px-2.5 py-1.5 text-xs font-semibold text-[#94A3B8] cursor-not-allowed">
+                                            <button type="button" disabled className="rounded-md border border-[#E5E7EB] bg-[#F8FAFC] px-2 py-1 text-[11px] font-semibold text-[#94A3B8] cursor-not-allowed">
                                               Configure
                                             </button>
                                           </div>
                                         );
                                       })}
                                     </div>
-                                  </section>
+                                  </div>
                                 </div>
                               </section>
                             </div>
 
-                            <div className="space-y-4">
-                              <details open className="group rounded-[16px] border border-[#E5E7EB] bg-white p-4 xl:sticky xl:top-4">
-                                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-[20px] font-semibold text-[#111827] [&::-webkit-details-marker]:hidden xl:hidden">
-                                  Live Preview
+                            <div className="space-y-8">
+                              <details open className="group rounded-[24px] border border-[#E5E7EB] bg-white p-4 shadow-[0_12px_32px_rgba(15,23,42,0.10)] transition-shadow duration-200 ease-out hover:shadow-[0_16px_36px_rgba(15,23,42,0.12)] xl:sticky xl:top-20">
+                                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-base font-semibold text-[#111827] [&::-webkit-details-marker]:hidden xl:hidden">
+                                  See what your AI would say
                                   <ChevronDown className="h-5 w-5 transition group-open:rotate-180" />
                                 </summary>
-                                <div className="mt-4 xl:mt-0">
-                                  <div className="hidden xl:block">
-                                    <p className="text-[20px] font-semibold text-[#111827]">See it through a customer’s eyes</p>
-                                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">This conversation changes as you train the business experience.</p>
+                                <div className="max-h-0 overflow-hidden opacity-0 transition-[max-height,opacity] duration-200 ease-out group-open:max-h-[720px] group-open:opacity-100 xl:mt-0 xl:max-h-[720px] xl:opacity-100">
+                                  <div className="hidden xl:flex items-center justify-between gap-3">
+                                    <div>
+                                      <p className="text-base font-semibold text-[#111827]">See what your AI would say</p>
+                                      <p className="mt-0.5 text-xs text-[#6B7280]">This updates as you teach your AI.</p>
+                                    </div>
+                                    <span className="inline-flex items-center gap-1.5 rounded-full bg-[#ECFDF5] px-2.5 py-1 text-[11px] font-semibold text-[#166534]">
+                                      <span className="h-1.5 w-1.5 rounded-full bg-[#22C55E]" /> Live
+                                    </span>
                                   </div>
 
-                                  <div className="mt-4 overflow-hidden rounded-[16px] border border-[#E5E7EB] bg-white shadow-sm">
+                                  <div className="mx-auto mt-3 max-w-[340px] overflow-hidden rounded-[24px] border border-[#DDE4EA] bg-white shadow-[0_8px_20px_rgba(15,23,42,0.10)]">
                                     <div className="flex items-center gap-3 border-b border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3">
                                       <div className="flex h-10 w-10 overflow-hidden items-center justify-center rounded-full bg-[#ECFDF5] text-sm font-semibold text-[#166534]">
                                         {logoPreview ? <img src={logoPreview} alt="Business logo" className="h-full w-full object-cover" /> : (businessInfo.name.slice(0, 1) || "B")}
                                       </div>
                                       <div className="min-w-0">
                                         <p className="truncate text-sm font-semibold text-[#111827]">{businessInfo.name || "Your business"}</p>
-                                        <p className="text-xs text-[#6B7280]">Online now</p>
+                                        <p className="truncate text-xs text-[#6B7280]">{businessInfo.type || "AI assistant"} · {primaryLanguage}</p>
                                       </div>
+                                      <span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-[#22C55E]" aria-label="Online" />
                                     </div>
 
-                                    <div className="space-y-3 bg-[#F8FAFB] p-4">
-                                      <div className="ml-auto w-fit rounded-2xl rounded-br-sm bg-[#DCFCE7] px-3 py-2 text-sm text-[#111827]">Hi</div>
+                                    <div aria-live="polite" aria-atomic="true" className="space-y-3 bg-[#F8FAFB] p-3.5">
+                                      <div className="ml-auto w-fit max-w-[88%] rounded-2xl rounded-br-sm bg-[#DCFCE7] px-3 py-2 text-sm text-[#111827]">{previewLanguageCopy.customerGreeting}</div>
                                       <div className="w-fit max-w-[92%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm leading-6 text-[#111827] shadow-sm">
-                                        {welcomeMessage || "Hello! Welcome to our business. How can we help today?"}
+                                        {welcomeMessage || previewLanguageCopy.defaultWelcome}
                                       </div>
                                       <div className="w-fit max-w-[92%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm leading-6 text-[#111827] shadow-sm">
-                                        {awayMessage || "We will get back to you during business hours."}
+                                        {previewBusinessContext}
+                                      </div>
+                                      {previewFollowUp && <div className="w-fit max-w-[92%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm leading-6 text-[#111827] shadow-sm">{previewFollowUp}</div>}
+                                      <div className="ml-auto w-fit max-w-[88%] rounded-2xl rounded-br-sm bg-[#DCFCE7] px-3 py-2 text-sm text-[#111827]">{previewLanguageCopy.availabilityQuestion}</div>
+                                      <div className="w-fit max-w-[92%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm leading-6 text-[#111827] shadow-sm">
+                                        {awayMessage || `We’re available ${businessHours || "during business hours"}.`}
+                                      </div>
+                                      <div className="w-fit max-w-[92%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-xs leading-5 text-[#475569] shadow-sm">
+                                        {businessHours || "Available during business hours"} · {timezone}
                                       </div>
                                     </div>
                                   </div>
 
-                                  <div className="mt-4 flex flex-wrap gap-2" aria-label="Preview settings">
-                                    <span className="rounded-full bg-[#ECFDF5] px-3 py-1.5 text-xs font-semibold text-[#166534]">{personality}</span>
-                                    <span className="rounded-full bg-[#F3F4F6] px-3 py-1.5 text-xs font-semibold text-[#475569]">{primaryLanguage}</span>
-                                    {supportedLanguages.length > 1 && <span className="rounded-full bg-[#F3F4F6] px-3 py-1.5 text-xs font-semibold text-[#475569]">+{supportedLanguages.length - 1} language{supportedLanguages.length === 2 ? "" : "s"}</span>}
+                                  <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs text-[#64748B]" aria-label="Preview settings">
+                                    <span className="truncate">{businessInfo.website || "No website added"}</span>
+                                    <span className="truncate text-right">{businessInfo.phone || businessInfo.whatsapp || "No phone added"}</span>
+                                    <span className="truncate">{businessInfo.address || "No address added"}</span>
+                                    <span className="truncate text-right">{personality} voice</span>
+                                  </div>
+                                  <div className="mt-2 flex items-center justify-between gap-3 border-t border-[#F1F5F9] pt-2 text-[11px] text-[#64748B]">
+                                    <span className="truncate">{supportedLanguages.join(" · ") || primaryLanguage}</span>
+                                    <span className="shrink-0">{secondaryLanguage} secondary</span>
                                   </div>
                                 </div>
                               </details>
 
-                              <section className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                              <section className="pb-2">
                                 <div className="flex items-center gap-4">
                                   <div className="flex h-14 w-14 overflow-hidden items-center justify-center rounded-[16px] bg-[#E5F6EC] text-2xl font-semibold text-[#065F46]">
                                     {logoPreview ? (
@@ -3874,28 +3886,28 @@ export default function DashboardLayout() {
                                     )}
                                   </div>
                                   <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Business Logo</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">Give your AI a familiar face</p>
                                     <p className="mt-1 text-[16px] leading-7 text-[#6B7280]">
-                                      Add the logo customers recognise across your channels.
+                                      Add the logo your customers already know.
                                     </p>
                                   </div>
                                 </div>
 
-                                <div className="mt-4 rounded-[16px] border border-dashed border-[#CBD5E1] bg-[#F9FAFB] p-4">
+                                <div className="mt-4 rounded-2xl border border-dashed border-[#CBD5E1] bg-[#F9FAFB] p-3">
                                   {logoPreview ? (
-                                    <img src={logoPreview} alt="Uploaded business logo" className="mx-auto h-28 w-28 rounded-[16px] object-cover" />
+                                    <img src={logoPreview} alt="Uploaded business logo" className="mx-auto h-20 w-20 rounded-[16px] object-cover" />
                                   ) : (
-                                    <div className="mx-auto flex h-28 w-28 items-center justify-center rounded-[16px] bg-[#E5F6EC] text-3xl font-semibold text-[#065F46]">
+                                    <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-[16px] bg-[#E5F6EC] text-2xl font-semibold text-[#065F46]">
                                       {businessInfo.name.slice(0, 1) || "B"}
                                     </div>
                                   )}
-                                  <p className="mt-4 text-center text-sm text-[#64748B]">PNG, JPG or SVG · Maximum 5MB</p>
+                                  <p className="mt-3 text-center text-xs text-[#64748B]">PNG, JPG or SVG · Maximum 5MB</p>
                                 </div>
 
                                 <div className="mt-4 flex flex-wrap gap-2">
                                   <label className="inline-flex cursor-pointer items-center justify-center rounded-[16px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition-all duration-200 ease-out hover:-translate-y-px hover:bg-[#F3F4F6] hover:shadow-sm">
                                     <Image className="mr-2 h-4 w-4" />
-                                    Upload Logo
+                                    Add logo
                                     <input
                                       type="file"
                                       accept="image/png,image/jpeg,image/svg+xml"
@@ -3919,19 +3931,19 @@ export default function DashboardLayout() {
                                     />
                                   </label>
                                   <button type="button" onClick={() => { setLogoPreview(null); setLogoPreviewOpen(false); setAvatarFileName(""); setLogoError(""); setHasUnsavedChanges(true); }} disabled={!logoPreview} className="rounded-[16px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition-all duration-200 ease-out hover:-translate-y-px hover:bg-[#F3F4F6] hover:shadow-sm disabled:cursor-not-allowed disabled:text-[#94A3B8]">
-                                    Remove Logo
+                                    Remove
                                   </button>
                                   <button type="button" onClick={() => setLogoPreviewOpen(true)} disabled={!logoPreview} className="rounded-[16px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition-all duration-200 ease-out hover:-translate-y-px hover:bg-[#F3F4F6] hover:shadow-sm disabled:cursor-not-allowed disabled:text-[#94A3B8]">
-                                    Preview Logo
+                                    Preview
                                   </button>
                                 </div>
 
-                                <p className="mt-3 text-sm text-[#64748B]">{logoError || avatarFileName || "No logo uploaded"}</p>
+                                <p className="mt-3 text-sm text-[#64748B]">{logoError || avatarFileName || "No logo added yet"}</p>
 
                                 {logoPreviewOpen && logoPreview && (
                                   <div className="mt-4 rounded-[16px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
                                     <div className="flex items-center justify-between gap-3">
-                                      <p className="text-sm font-semibold text-[#111827]">Logo Preview</p>
+                                      <p className="text-sm font-semibold text-[#111827]">Your AI’s logo</p>
                                       <button type="button" onClick={() => setLogoPreviewOpen(false)} className="text-sm font-semibold text-[#475569] transition-colors duration-200 hover:text-[#111827]">Close</button>
                                     </div>
                                     <img src={logoPreview} alt="Business logo preview" className="mt-4 h-40 w-full rounded-[16px] bg-white object-contain" />
