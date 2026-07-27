@@ -3649,7 +3649,7 @@ export default function DashboardLayout() {
                                     </p>
                                   </div>
 
-                                  <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:items-start">
+                                  <div className="space-y-6">
                                     <div>
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="welcome-message">
                                         Welcome Message
@@ -3664,28 +3664,6 @@ export default function DashboardLayout() {
                                       />
                                     </div>
 
-                                    <div className="overflow-hidden rounded-[24px] border border-[#E5E7EB] bg-white shadow-sm">
-                                      <div className="flex items-center gap-2 border-b border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3">
-                                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#ECFDF5] text-sm font-semibold text-[#166534]">
-                                          {businessInfo.name.slice(0, 1) || "B"}
-                                        </div>
-                                        <div>
-                                          <p className="text-sm font-semibold text-[#111827]">{businessInfo.name || "Your business"}</p>
-                                          <p className="text-xs text-[#6B7280]">Online now</p>
-                                        </div>
-                                      </div>
-
-                                      <div className="space-y-3 bg-[#F8FAFB] p-4">
-                                        <div className="ml-auto w-fit rounded-2xl rounded-br-sm bg-[#DCFCE7] px-3 py-2 text-sm text-[#111827]">Hi</div>
-                                        <div className="w-fit max-w-[92%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm leading-6 text-[#111827] shadow-sm">
-                                          {welcomeMessage || "Hello! Welcome to our business. How can we help today?"}
-                                        </div>
-                                        <div className="pt-1 text-[11px] font-medium uppercase tracking-[0.14em] text-[#94A3B8]">Away message</div>
-                                        <div className="w-fit max-w-[92%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm leading-6 text-[#111827] shadow-sm">
-                                          {awayMessage || "We will get back to you during business hours."}
-                                        </div>
-                                      </div>
-                                    </div>
                                   </div>
                                   <div>
                                     <label className="block text-sm font-semibold text-[#111827]" htmlFor="away-message">Away Message</label>
@@ -3847,6 +3825,47 @@ export default function DashboardLayout() {
                             </div>
 
                             <div className="space-y-6">
+                              <details open className="group rounded-[24px] border border-[#E5E7EB] bg-white p-6 xl:sticky xl:top-6">
+                                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-[20px] font-semibold text-[#111827] [&::-webkit-details-marker]:hidden xl:hidden">
+                                  Live Preview
+                                  <ChevronDown className="h-5 w-5 transition group-open:rotate-180" />
+                                </summary>
+                                <div className="mt-5 xl:mt-0">
+                                  <div className="hidden xl:block">
+                                    <p className="text-[20px] font-semibold text-[#111827]">Live Preview</p>
+                                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">See the conversation customers experience on WhatsApp.</p>
+                                  </div>
+
+                                  <div className="mt-5 overflow-hidden rounded-[20px] border border-[#E5E7EB] bg-white shadow-sm">
+                                    <div className="flex items-center gap-3 border-b border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3">
+                                      <div className="flex h-10 w-10 overflow-hidden items-center justify-center rounded-full bg-[#ECFDF5] text-sm font-semibold text-[#166534]">
+                                        {logoPreview ? <img src={logoPreview} alt="Business logo" className="h-full w-full object-cover" /> : (businessInfo.name.slice(0, 1) || "B")}
+                                      </div>
+                                      <div className="min-w-0">
+                                        <p className="truncate text-sm font-semibold text-[#111827]">{businessInfo.name || "Your business"}</p>
+                                        <p className="text-xs text-[#6B7280]">Online now</p>
+                                      </div>
+                                    </div>
+
+                                    <div className="space-y-3 bg-[#F8FAFB] p-4">
+                                      <div className="ml-auto w-fit rounded-2xl rounded-br-sm bg-[#DCFCE7] px-3 py-2 text-sm text-[#111827]">Hi</div>
+                                      <div className="w-fit max-w-[92%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm leading-6 text-[#111827] shadow-sm">
+                                        {welcomeMessage || "Hello! Welcome to our business. How can we help today?"}
+                                      </div>
+                                      <div className="w-fit max-w-[92%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm leading-6 text-[#111827] shadow-sm">
+                                        {awayMessage || "We will get back to you during business hours."}
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div className="mt-4 flex flex-wrap gap-2" aria-label="Preview settings">
+                                    <span className="rounded-full bg-[#ECFDF5] px-3 py-1.5 text-xs font-semibold text-[#166534]">{personality}</span>
+                                    <span className="rounded-full bg-[#F3F4F6] px-3 py-1.5 text-xs font-semibold text-[#475569]">{primaryLanguage}</span>
+                                    {supportedLanguages.length > 1 && <span className="rounded-full bg-[#F3F4F6] px-3 py-1.5 text-xs font-semibold text-[#475569]">+{supportedLanguages.length - 1} language{supportedLanguages.length === 2 ? "" : "s"}</span>}
+                                  </div>
+                                </div>
+                              </details>
+
                               <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
                                 <div className="flex items-center gap-4">
                                   <div className="flex h-14 w-14 overflow-hidden items-center justify-center rounded-[20px] bg-[#E5F6EC] text-2xl font-semibold text-[#065F46]">
