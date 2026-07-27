@@ -3577,14 +3577,14 @@ export default function DashboardLayout() {
                                           type="button"
                                           aria-pressed={active}
                                           onClick={() => { setPersonality(personalityOption); setHasUnsavedChanges(true); }}
-                                          className={`group rounded-[16px] border p-4 text-left transition ${
+                                          className={`group rounded-[16px] border p-4 text-left transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 ${
                                             active
                                               ? "border-[#22C55E] bg-[#ECFDF5] text-[#111827] shadow-sm"
                                               : "border-[#E5E7EB] bg-[#F9FAFB] text-[#475569] hover:border-[#CBD5E1]"
                                           }`}
                                         >
                                           <div className="flex items-start gap-4">
-                                            <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-[12px] ${active ? "bg-[#22C55E] text-white" : "bg-white text-[#166534]"}`}>
+                                            <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-[12px] transition-all duration-200 ease-out group-hover:scale-105 ${active ? "bg-[#22C55E] text-white" : "bg-white text-[#166534]"}`}>
                                               <Icon className="h-5 w-5" />
                                             </div>
                                             <div>
@@ -3615,7 +3615,7 @@ export default function DashboardLayout() {
                                         return (
                                           <label
                                             key={option}
-                                            className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium transition ${
+                                            className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium transition-all duration-200 ease-out hover:-translate-y-px hover:shadow-sm ${
                                               checked
                                                 ? "border-[#22C55E] bg-[#ECFDF5] text-[#111827]"
                                                 : "border-[#E5E7EB] bg-white text-[#475569]"
@@ -3691,7 +3691,7 @@ export default function DashboardLayout() {
                                       </div>
                                       <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Primary language">
                                         {LANGUAGES.map((lang) => (
-                                          <button key={lang} type="button" aria-pressed={primaryLanguage === lang} onClick={() => { setPrimaryLanguage(lang); setHasUnsavedChanges(true); }} className={`rounded-full px-3 py-2 text-sm font-medium transition ${primaryLanguage === lang ? "bg-[#111827] text-white" : "border border-[#E5E7EB] bg-white text-[#475569]"}`}>
+                                          <button key={lang} type="button" aria-pressed={primaryLanguage === lang} onClick={() => { setPrimaryLanguage(lang); setHasUnsavedChanges(true); }} className={`rounded-full px-3 py-2 text-sm font-medium transition-all duration-200 ease-out hover:-translate-y-px hover:shadow-sm ${primaryLanguage === lang ? "bg-[#111827] text-white" : "border border-[#E5E7EB] bg-white text-[#475569]"}`}>
                                             {lang}
                                           </button>
                                         ))}
@@ -3702,7 +3702,7 @@ export default function DashboardLayout() {
                                       <p className="text-sm font-semibold text-[#111827]">Secondary Language</p>
                                       <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Secondary language">
                                         {LANGUAGES.map((lang) => (
-                                          <button key={lang} type="button" aria-pressed={secondaryLanguage === lang} onClick={() => { setSecondaryLanguage(lang); setHasUnsavedChanges(true); }} className={`rounded-full px-3 py-2 text-sm font-medium transition ${secondaryLanguage === lang ? "bg-[#111827] text-white" : "border border-[#E5E7EB] bg-white text-[#475569]"}`}>
+                                          <button key={lang} type="button" aria-pressed={secondaryLanguage === lang} onClick={() => { setSecondaryLanguage(lang); setHasUnsavedChanges(true); }} className={`rounded-full px-3 py-2 text-sm font-medium transition-all duration-200 ease-out hover:-translate-y-px hover:shadow-sm ${secondaryLanguage === lang ? "bg-[#111827] text-white" : "border border-[#E5E7EB] bg-white text-[#475569]"}`}>
                                             {lang}
                                           </button>
                                         ))}
@@ -3729,7 +3729,7 @@ export default function DashboardLayout() {
                                                 return [...current, language];
                                               });
                                             }}
-                                            className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                                            className={`rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 ease-out hover:-translate-y-px hover:shadow-sm ${
                                               selected
                                                 ? "bg-[#111827] text-white shadow-sm"
                                                 : "border border-[#E5E7EB] bg-white text-[#475569] hover:border-[#CBD5E1]"
@@ -3802,7 +3802,7 @@ export default function DashboardLayout() {
                                         const Icon = channel.icon;
 
                                         return (
-                                          <div key={channel.id} className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                          <div key={channel.id} className="rounded-[16px] border border-[#E5E7EB] bg-white p-4 transition-shadow duration-200 ease-out hover:shadow-sm">
                                             <div className="flex items-start justify-between gap-3">
                                               <div className="flex items-center gap-3">
                                                 <div className="flex h-10 w-10 items-center justify-center rounded-[12px] bg-[#E5F6EC] text-[#065F46]">
@@ -3897,7 +3897,7 @@ export default function DashboardLayout() {
                                 </div>
 
                                 <div className="mt-4 flex flex-wrap gap-2">
-                                  <label className="inline-flex cursor-pointer items-center justify-center rounded-[16px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6]">
+                                  <label className="inline-flex cursor-pointer items-center justify-center rounded-[16px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition-all duration-200 ease-out hover:-translate-y-px hover:bg-[#F3F4F6] hover:shadow-sm">
                                     <Image className="mr-2 h-4 w-4" />
                                     Upload Logo
                                     <input
@@ -3922,10 +3922,10 @@ export default function DashboardLayout() {
                                       }}
                                     />
                                   </label>
-                                  <button type="button" onClick={() => { setLogoPreview(null); setLogoPreviewOpen(false); setAvatarFileName(""); setLogoError(""); setHasUnsavedChanges(true); }} disabled={!logoPreview} className="rounded-[16px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6] disabled:cursor-not-allowed disabled:text-[#94A3B8]">
+                                  <button type="button" onClick={() => { setLogoPreview(null); setLogoPreviewOpen(false); setAvatarFileName(""); setLogoError(""); setHasUnsavedChanges(true); }} disabled={!logoPreview} className="rounded-[16px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition-all duration-200 ease-out hover:-translate-y-px hover:bg-[#F3F4F6] hover:shadow-sm disabled:cursor-not-allowed disabled:text-[#94A3B8]">
                                     Remove Logo
                                   </button>
-                                  <button type="button" onClick={() => setLogoPreviewOpen(true)} disabled={!logoPreview} className="rounded-[16px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6] disabled:cursor-not-allowed disabled:text-[#94A3B8]">
+                                  <button type="button" onClick={() => setLogoPreviewOpen(true)} disabled={!logoPreview} className="rounded-[16px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition-all duration-200 ease-out hover:-translate-y-px hover:bg-[#F3F4F6] hover:shadow-sm disabled:cursor-not-allowed disabled:text-[#94A3B8]">
                                     Preview Logo
                                   </button>
                                 </div>
@@ -3936,7 +3936,7 @@ export default function DashboardLayout() {
                                   <div className="mt-4 rounded-[16px] border border-[#E5E7EB] bg-[#F9FAFB] p-4">
                                     <div className="flex items-center justify-between gap-3">
                                       <p className="text-sm font-semibold text-[#111827]">Logo Preview</p>
-                                      <button type="button" onClick={() => setLogoPreviewOpen(false)} className="text-sm font-semibold text-[#475569]">Close</button>
+                                      <button type="button" onClick={() => setLogoPreviewOpen(false)} className="text-sm font-semibold text-[#475569] transition-colors duration-200 hover:text-[#111827]">Close</button>
                                     </div>
                                     <img src={logoPreview} alt="Business logo preview" className="mt-4 h-40 w-full rounded-[16px] bg-white object-contain" />
                                   </div>
