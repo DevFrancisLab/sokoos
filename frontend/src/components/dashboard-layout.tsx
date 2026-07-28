@@ -1282,11 +1282,9 @@ export default function DashboardLayout() {
   const [completedIdentitySteps, setCompletedIdentitySteps] = useState<number[]>([]);
   const [completionToast, setCompletionToast] = useState<string | null>(null);
   const [previewReplyVisible, setPreviewReplyVisible] = useState(true);
-  const [isOnboardingSticky, setIsOnboardingSticky] = useState(false);
   const [onboardingRestored, setOnboardingRestored] = useState(false);
   const identityLessonRef = useRef<HTMLDivElement>(null);
   const previewMessagesRef = useRef<HTMLDivElement>(null);
-  const onboardingDockTriggerRef = useRef<HTMLDivElement>(null);
   const identityLessons = ["Meet Your AI", "Teach Your AI", "Shape Personality", "First Impressions", "Languages", "Working Hours", "Workplaces", "Ready for Customers"];
   const identityLessonCompletionNames = ["Identity", "Knowledge", "Personality", "First Impressions", "Languages", "Working Hours", "Workplaces", "Customer Readiness"];
 
@@ -2342,7 +2340,6 @@ export default function DashboardLayout() {
     { label: "Availability", section: "Identity", complete: Boolean(businessHours) },
   ];
   const onboardingComplete = aiEmployeeLaunched || completedIdentitySteps.length >= identityLessons.length;
-  const shouldDockOnboarding = isOnboardingSticky && !onboardingComplete;
   const minutesRemaining = Math.max(0, 6 - completedIdentitySteps.length);
   const trainingPercent = Math.round((completedIdentitySteps.length / identityLessons.length) * 100);
   const aiReadiness = Math.round(18 + (completedIdentitySteps.length / identityLessons.length) * 82);
@@ -2412,18 +2409,6 @@ export default function DashboardLayout() {
       scrollY: window.scrollY,
     }));
   }, [activeIdentityStep, completedIdentitySteps, aiEmployeeLaunched, onboardingRestored]);
-  useEffect(() => {
-    if (activeWorkspaceSection !== "Identity" || onboardingComplete || !onboardingDockTriggerRef.current) {
-      setIsOnboardingSticky(false);
-      return;
-    }
-    const observer = new IntersectionObserver(
-      ([entry]) => setIsOnboardingSticky(!entry.isIntersecting),
-      { rootMargin: "-56px 0px 0px 0px", threshold: 0 },
-    );
-    observer.observe(onboardingDockTriggerRef.current);
-    return () => observer.disconnect();
-  }, [activeWorkspaceSection, onboardingComplete]);
   const [businessProfile, setBusinessProfile] = useState({
     name: "Sokoos Internet",
     industry: "Telecom & Connectivity",
@@ -3670,8 +3655,7 @@ export default function DashboardLayout() {
 
                 {activeWorkspaceSection === "Identity" && (
                   <>
-                  <div ref={onboardingDockTriggerRef} className="h-px" aria-hidden="true" />
-                  <section className={`${onboardingComplete ? "relative" : "sticky top-14"} z-20 border border-[#E5E7EB] bg-white transition-[padding,border-radius,box-shadow,border-color] duration-300 ease-in-out ${shouldDockOnboarding ? "-mx-4 rounded-none border-x-0 border-b-[#E2E8F0] border-t-0 px-4 py-2 shadow-[0_8px_18px_rgba(15,23,42,0.10)] lg:-mx-6 lg:px-6" : "rounded-xl p-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)] sm:p-5"}`} aria-label="AI employee onboarding progress">
+                  <section className="relative z-20 rounded-xl border border-[#E5E7EB] bg-white px-3 py-2.5 shadow-[0_6px_18px_rgba(15,23,42,0.04)]" aria-label="AI employee onboarding progress">
                     {onboardingComplete ? (
                       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between animate-in fade-in-0 zoom-in-95 duration-300">
                         <div className="flex items-start gap-3">
@@ -3686,11 +3670,11 @@ export default function DashboardLayout() {
                         </div>
                       </div>
                     ) : <>
-                    <div className="flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-2">
                       <p className="text-xs font-semibold text-[#475569]">Lessons</p>
-                      <p className="text-xs font-medium text-[#64748B]">Select a lesson to edit it.</p>
+                      <span className="text-xs text-[#94A3B8]">· Select one to edit</span>
                     </div>
-                    <div className="mt-2 flex gap-1 overflow-x-auto pb-1 sm:justify-between">
+                    <div className="mt-2 grid grid-cols-2 gap-1 sm:grid-cols-4 xl:grid-cols-8">
                       {[
                         { label: "Meet Your AI", Icon: User },
                         { label: "Teach Your AI", Icon: BookOpen },
@@ -3704,9 +3688,9 @@ export default function DashboardLayout() {
                         const active = activeIdentityStep === index;
                         const completed = completedIdentitySteps.includes(index);
                         return (
-                          <button key={label} type="button" onClick={() => focusIdentityLesson(index)} aria-current={active ? "step" : undefined} className={`group inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-2 text-xs font-semibold transition ${active ? "bg-[#111827] text-white shadow-sm" : completed ? "bg-[#ECFDF5] text-[#166534]" : "text-[#64748B] hover:bg-[#F8FAFC] hover:text-[#111827]"}`}>
-                            <span className={`flex h-5 w-5 items-center justify-center rounded-full ${active ? "bg-white/15" : completed ? "bg-[#22C55E] text-white" : "bg-[#F1F5F9] text-[#64748B] group-hover:bg-[#E2E8F0]"}`}>{completed ? <Check className="h-3 w-3" /> : <Icon className="h-3 w-3" />}</span>
-                            <span>{label}</span>
+                          <button key={label} type="button" onClick={() => focusIdentityLesson(index)} aria-current={active ? "step" : undefined} className={`group flex min-w-0 items-center justify-center gap-1.5 rounded-lg px-2 py-1.5 text-center text-[11px] font-semibold transition ${active ? "bg-[#111827] text-white shadow-sm" : completed ? "bg-[#ECFDF5] text-[#166534]" : "text-[#64748B] hover:bg-[#F8FAFC] hover:text-[#111827]"}`}>
+                            <span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full ${active ? "bg-white/15" : completed ? "bg-[#22C55E] text-white" : "bg-[#F1F5F9] text-[#64748B] group-hover:bg-[#E2E8F0]"}`}>{completed ? <Check className="h-2.5 w-2.5" /> : <Icon className="h-2.5 w-2.5" />}</span>
+                            <span className="truncate">{label}</span>
                           </button>
                         );
                       })}
@@ -3742,8 +3726,8 @@ export default function DashboardLayout() {
                     {activeWorkspaceSection === "Identity" && !onboardingComplete && (
                       <div className="space-y-5">
                         <div onChangeCapture={() => setHasUnsavedChanges(true)}>
-                          <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1.35fr)_minmax(300px,0.65fr)]">
-                            <div ref={identityLessonRef} className="space-y-4 scroll-mt-36 scroll-smooth xl:pr-4">
+                          <div>
+                            <div ref={identityLessonRef} className="space-y-4 scroll-mt-36 scroll-smooth">
                               <section className={activeIdentityStep === 0 ? identityLessonCardClass(0) : "hidden"}>
                                 <div className="space-y-5">
                                   <div className="flex gap-3">
@@ -4204,8 +4188,8 @@ export default function DashboardLayout() {
                               </section>
                             </div>
 
-                            <div className="space-y-4">
-                              <details className="group rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-[0_12px_32px_rgba(15,23,42,0.10)] transition-shadow duration-200 ease-out hover:shadow-[0_16px_36px_rgba(15,23,42,0.12)] xl:sticky xl:top-20">
+                            <div className="hidden" aria-hidden="true">
+                              <details className="group rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-[0_12px_32px_rgba(15,23,42,0.10)] transition-shadow duration-200 ease-out hover:shadow-[0_16px_36px_rgba(15,23,42,0.12)]">
                                 <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-base font-semibold text-[#111827] [&::-webkit-details-marker]:hidden xl:hidden">
                                   Live AI Preview
                                   <ChevronDown className="h-5 w-5 transition group-open:rotate-180" />
@@ -4275,23 +4259,7 @@ export default function DashboardLayout() {
                               </details>
 
                               <section className={activeIdentityStep === 0 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]" : "hidden"}>
-                                <div className="flex items-center gap-4">
-                                  <div className="flex h-14 w-14 overflow-hidden items-center justify-center rounded-[16px] bg-[#E5F6EC] text-2xl font-semibold text-[#065F46]">
-                                    {logoPreview ? (
-                                      <img src={logoPreview} alt="Business logo preview" className="h-full w-full object-cover" />
-                                    ) : (
-                                      businessInfo.name.slice(0, 1) || "B"
-                                    )}
-                                  </div>
-                                  <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Give your AI a familiar face</p>
-                                    <p className="mt-1 text-[16px] leading-7 text-[#6B7280]">
-                                      Add the logo your customers already know.
-                                    </p>
-                                  </div>
-                                </div>
-
-                                <div className="mt-4 rounded-2xl border border-dashed border-[#CBD5E1] bg-[#F9FAFB] p-3">
+                                <div className="rounded-2xl border border-dashed border-[#CBD5E1] bg-[#F9FAFB] p-3">
                                   {logoPreview ? (
                                     <img src={logoPreview} alt="Uploaded business logo" className="mx-auto h-20 w-20 rounded-[16px] object-cover" />
                                   ) : (
