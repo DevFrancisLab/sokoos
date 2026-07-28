@@ -37,6 +37,8 @@ import {
   Plug,
   BarChart3,
   CircleAlert,
+  Hash,
+  Mail,
 } from "lucide-react";
 import AiSummaryCard from "./ui/ai-summary-card";
 
@@ -1944,6 +1946,9 @@ export default function DashboardLayout() {
     instagram: false,
     facebookMessenger: false,
     googleBusinessMessages: false,
+    telegram: false,
+    slack: false,
+    email: false,
   });
   const [primaryLanguage, setPrimaryLanguage] = useState("English");
   const [secondaryLanguage, setSecondaryLanguage] = useState("Kiswahili");
@@ -2070,6 +2075,9 @@ export default function DashboardLayout() {
       instagram: false,
       facebookMessenger: false,
       googleBusinessMessages: false,
+      telegram: false,
+      slack: false,
+      email: false,
     });
     setBusinessInfo({
       name: "Sokoos Internet",
@@ -3885,36 +3893,30 @@ export default function DashboardLayout() {
                                     <p className="mt-2 text-sm leading-6 text-[#6B7280]">Choose where customers can start a conversation with your AI.</p>
                                     </div>
                                   </div>
-                                  <div className="rounded-xl bg-[#F9FAFB] p-4">
-                                    <div>
-                                      <p className="text-sm font-semibold text-[#111827]">Your AI’s workspaces</p>
-                                      <p className="mt-2 text-sm text-[#6B7280]">See where your AI is ready to help customers.</p>
+                                  <div>
+                                    <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+                                      <div><p className="text-sm font-semibold text-[#111827]">Your AI’s workspaces</p><p className="mt-1 text-sm text-[#6B7280]">Connect the channels where your AI should meet customers.</p></div>
+                                      <span className="text-xs font-medium text-[#64748B]">{Object.values(communicationChannels).filter(Boolean).length} connected</span>
                                     </div>
-                                    <div className="mt-4 space-y-2">
+                                    <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                                       {([
-                                        { id: "whatsapp", name: "WhatsApp", icon: MessageCircle },
-                                        { id: "websiteChat", name: "Website Chat", icon: Globe },
-                                        { id: "instagram", name: "Instagram", icon: Image },
-                                        { id: "facebookMessenger", name: "Facebook Messenger", icon: Users },
-                                        { id: "googleBusinessMessages", name: "Google Business Messages", icon: Search },
+                                        { id: "whatsapp", name: "WhatsApp", icon: MessageCircle, description: "Reply to customers on WhatsApp" },
+                                        { id: "websiteChat", name: "Website Chat", icon: Globe, description: "Help visitors while they browse" },
+                                        { id: "instagram", name: "Instagram", icon: Image, description: "Handle messages from your profile" },
+                                        { id: "facebookMessenger", name: "Facebook Messenger", icon: Users, description: "Answer conversations from Facebook" },
+                                        { id: "telegram", name: "Telegram", icon: Send, description: "Support your Telegram community" },
+                                        { id: "slack", name: "Slack", icon: Hash, description: "Route team requests in Slack" },
+                                        { id: "email", name: "Email", icon: Mail, description: "Turn inbox replies into help" },
+                                        { id: "googleBusinessMessages", name: "Google Business Messages", icon: Search, description: "Engage customers from Google" },
                                       ] as const).map((channel) => {
                                         const connected = communicationChannels[channel.id];
                                         const Icon = channel.icon;
-
-                                        return (
-                                          <div key={channel.id} className="flex min-h-10 items-center gap-2 rounded-lg bg-white px-2 py-2 transition-all duration-200 ease-out hover:-translate-y-px hover:shadow-sm">
-                                            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-[#E5F6EC] text-[#065F46]">
-                                                  <Icon className="h-4 w-4" />
-                                            </div>
-                                            <p className="min-w-0 flex-1 text-sm font-semibold text-[#111827]">{channel.name}</p>
-                                              <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${connected ? "bg-[#ECFDF5] text-[#166534]" : "bg-[#F3F4F6] text-[#6B7280]"}`}>
-                                                {connected ? "Connected" : "Not connected"}
-                                              </span>
-                                            <button type="button" disabled className="rounded-md border border-[#E5E7EB] bg-[#F8FAFC] px-2 py-1 text-[11px] font-semibold text-[#94A3B8] cursor-not-allowed">
-                                              Configure
-                                            </button>
-                                          </div>
-                                        );
+                                        return <article key={channel.id} className={`group rounded-xl border p-4 transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_10px_24px_rgba(15,23,42,0.10)] ${connected ? "border-[#86EFAC] bg-[#F7FEF9]" : "border-[#E5E7EB] bg-white hover:border-[#CBD5E1]"}`}>
+                                          <div className="flex items-start justify-between gap-3"><div className={`flex h-10 w-10 items-center justify-center rounded-xl ${connected ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#F1F5F9] text-[#64748B]"}`}><Icon className="h-5 w-5" /></div><span className={`rounded-full px-2 py-1 text-[10px] font-semibold ${connected ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#F3F4F6] text-[#64748B]"}`}>{connected ? "Connected" : "Not connected"}</span></div>
+                                          <p className="mt-4 text-sm font-semibold text-[#111827]">{channel.name}</p><p className="mt-1 min-h-10 text-xs leading-5 text-[#64748B]">{channel.description}</p>
+                                          <p className="mt-3 border-t border-black/[0.05] pt-3 text-[11px] text-[#64748B]">{connected ? "Last synced just now" : "Not connected yet"}</p>
+                                          <div className="mt-3 flex gap-2"><button type="button" onClick={() => { if (!connected) { setCommunicationChannels((current) => ({ ...current, [channel.id]: true })); setHasUnsavedChanges(true); } }} className={`flex-1 rounded-lg px-3 py-2 text-xs font-semibold transition ${connected ? "border border-[#BBF7D0] bg-white text-[#166534] hover:bg-[#ECFDF5]" : "bg-[#111827] text-white hover:bg-[#334155]"}`}>{connected ? "Configure" : "Connect"}</button><button type="button" className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#64748B] transition hover:bg-[#F8FAFC] hover:text-[#111827]">Learn more</button></div>
+                                        </article>;
                                       })}
                                     </div>
                                   </div>
