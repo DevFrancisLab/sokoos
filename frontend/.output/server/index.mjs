@@ -15,38 +15,38 @@ globalThis.__nitro_vite_envs__ = services;
 //#endregion
 //#region #nitro/virtual/public-assets-data
 var public_assets_data_default = {
-	"/assets/routes-D-ZzAuD5.js": {
+	"/assets/routes-gvLwZh-F.js": {
 		"type": "text/javascript; charset=utf-8",
-		"etag": "\"69f3-JS7XPd5ItPSAkRCcecKWb4xhJlY\"",
-		"mtime": "2026-07-07T19:18:46.716Z",
-		"size": 27123,
-		"path": "../public/assets/routes-D-ZzAuD5.js"
+		"etag": "\"8e06-/SdVy/Rro5gR8y8ijfI0QIzyMwI\"",
+		"mtime": "2026-07-28T11:23:45.438Z",
+		"size": 36358,
+		"path": "../public/assets/routes-gvLwZh-F.js"
 	},
-	"/assets/index-D5StuUWk.js": {
-		"type": "text/javascript; charset=utf-8",
-		"etag": "\"6a20f-EgkKwMRW9j9Cduz6xQE96wopHks\"",
-		"mtime": "2026-07-07T19:18:46.715Z",
-		"size": 434703,
-		"path": "../public/assets/index-D5StuUWk.js"
-	},
-	"/assets/styles-9IXDqi63.css": {
+	"/assets/styles-_-zDcgzj.css": {
 		"type": "text/css; charset=utf-8",
-		"etag": "\"175db-97QbiT2gZiihyePxPZTC7t1WWLE\"",
-		"mtime": "2026-07-07T19:18:46.718Z",
-		"size": 95707,
-		"path": "../public/assets/styles-9IXDqi63.css"
+		"etag": "\"1d099-Q4pgSjh2y5HobuooHV2AnukaPUA\"",
+		"mtime": "2026-07-28T11:23:45.440Z",
+		"size": 118937,
+		"path": "../public/assets/styles-_-zDcgzj.css"
+	},
+	"/assets/index-BzmAuJAk.js": {
+		"type": "text/javascript; charset=utf-8",
+		"etag": "\"901d1-xcXsTNiq7nPeA9UEfEYHsviryXg\"",
+		"mtime": "2026-07-28T11:23:45.437Z",
+		"size": 590289,
+		"path": "../public/assets/index-BzmAuJAk.js"
 	},
 	"/assets/hero-dashboard-D-CXLQyc.png": {
 		"type": "image/png",
 		"etag": "\"147362-41kBF9Vn5e/eKUEVeST+cDUDypM\"",
-		"mtime": "2026-07-07T19:18:46.716Z",
+		"mtime": "2026-07-28T11:23:45.438Z",
 		"size": 1340258,
 		"path": "../public/assets/hero-dashboard-D-CXLQyc.png"
 	},
 	"/assets/solution-dashboard-BITB5GZi.png": {
 		"type": "image/png",
 		"etag": "\"135e39-8KXujycB59ycXDtOjw6MRyzLXZs\"",
-		"mtime": "2026-07-07T19:18:46.717Z",
+		"mtime": "2026-07-28T11:23:45.439Z",
 		"size": 1269305,
 		"path": "../public/assets/solution-dashboard-BITB5GZi.png"
 	}

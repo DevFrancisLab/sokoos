@@ -1,7 +1,8 @@
 import { n as __toESM } from "../_runtime.mjs";
 import { n as require_jsx_runtime, r as require_react } from "../_libs/react+tanstack__react-query.mjs";
-import { A as Calendar, C as Database, F as ArrowRight, M as Boxes, O as Check, P as Bot, S as Facebook, T as Clock, c as Rocket, f as Plug, h as MessageCircle, i as Sparkles, j as Brain, k as ChartColumn, l as Repeat, m as MessageSquareOff, n as Users, p as Package, r as Star, u as RefreshCw, v as Linkedin, y as Inbox } from "../_libs/lucide-react.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-BwGrOj07.js
+import { h as Link } from "../_libs/@tanstack/react-router+[...].mjs";
+import { A as Heart, D as Inbox, E as Linkedin, G as Brain, H as Check, I as Database, J as Bot, K as Boxes, N as Facebook, R as Clock, S as MessageCircle, U as ChartColumn, W as Calendar, X as ArrowRight, _ as Plug, b as Package, h as RefreshCw, m as Repeat, n as Users, o as Star, p as Rocket, s as Sparkles, x as MessageSquareOff } from "../_libs/lucide-react.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-B5hGIAl8.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var hero_dashboard_default = "/assets/hero-dashboard-D-CXLQyc.png";
@@ -68,19 +69,299 @@ function Nav() {
 				}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 					className: "flex items-center gap-2",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("a", {
-						href: "/dashboard",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+						to: "/signin",
 						className: "hidden rounded-lg px-3 py-2 text-sm font-medium text-foreground hover:bg-secondary sm:inline-flex",
 						children: "Sign in"
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
-						href: "#cta",
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Link, {
+						to: "/sign-up",
 						className: "inline-flex items-center gap-1.5 rounded-lg bg-foreground px-3.5 py-2 text-sm font-semibold text-background transition-transform hover:-translate-y-0.5",
-						children: ["Start free", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowRight, { className: "h-3.5 w-3.5" })]
+						children: ["Get Started", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowRight, { className: "h-3.5 w-3.5" })]
 					})]
 				})
 			]
 		})
 	});
+}
+function FloatingSokoosAI() {
+	const STORAGE_KEY = "sokoos-ai-greeting-shown";
+	const [isGreetingVisible, setIsGreetingVisible] = (0, import_react.useState)(false);
+	const [isChatOpen, setIsChatOpen] = (0, import_react.useState)(false);
+	const [isChatClosing, setIsChatClosing] = (0, import_react.useState)(false);
+	const [message, setMessage] = (0, import_react.useState)("");
+	const [isTyping, setIsTyping] = (0, import_react.useState)(false);
+	const [messages, setMessages] = (0, import_react.useState)([{
+		id: 1,
+		role: "assistant",
+		content: "👋 Welcome! I’m your AI Employee. Ask me about pricing, features, WhatsApp, or growth pages."
+	}]);
+	const messagesEndRef = (0, import_react.useRef)(null);
+	const suggestedQuestions = [
+		"How much does Sokoos cost?",
+		"Can I connect WhatsApp?",
+		"Can I use Sokoos for my ISP?",
+		"How does the AI learn my business?"
+	];
+	(0, import_react.useEffect)(() => {
+		if (typeof window !== "undefined" && sessionStorage.getItem(STORAGE_KEY) === "true") return;
+		const timer = window.setTimeout(() => {
+			setIsGreetingVisible(true);
+			sessionStorage.setItem(STORAGE_KEY, "true");
+		}, 2500);
+		return () => window.clearTimeout(timer);
+	}, []);
+	(0, import_react.useEffect)(() => {
+		if (!isChatOpen) return;
+		const timer = window.setTimeout(() => {
+			messagesEndRef.current?.scrollIntoView({
+				behavior: "smooth",
+				block: "end"
+			});
+		}, 80);
+		return () => window.clearTimeout(timer);
+	}, [
+		messages,
+		isTyping,
+		isChatOpen
+	]);
+	const openChat = () => {
+		setIsGreetingVisible(false);
+		setIsChatClosing(false);
+		setIsChatOpen(true);
+		if (typeof window !== "undefined") sessionStorage.setItem(STORAGE_KEY, "true");
+	};
+	const closeGreeting = () => {
+		setIsGreetingVisible(false);
+		if (typeof window !== "undefined") sessionStorage.setItem(STORAGE_KEY, "true");
+	};
+	const closeChat = () => {
+		setIsChatClosing(true);
+		window.setTimeout(() => {
+			setIsChatOpen(false);
+			setIsChatClosing(false);
+		}, 220);
+	};
+	const getMockReply = (value) => {
+		const normalized = value.toLowerCase();
+		if (/(price|pricing|cost)/.test(normalized)) return "Our plans are designed for businesses of every size.";
+		if (/(isp|internet service provider)/.test(normalized)) return "Sokoos is perfect for Internet Service Providers.";
+		if (/school/.test(normalized)) return "Sokoos helps schools answer parent enquiries automatically.";
+		if (/restaurant/.test(normalized)) return "Sokoos helps restaurants automate customer conversations.";
+		if (/whatsapp/.test(normalized)) return "Sokoos connects directly with WhatsApp Business.";
+		return "That’s a great question. Once connected to the backend I’ll answer using the real AI.";
+	};
+	const sendMessage = (content) => {
+		const trimmed = content.trim();
+		if (!trimmed) return;
+		setMessages((prev) => [...prev, {
+			id: Date.now(),
+			role: "user",
+			content: trimmed
+		}]);
+		setMessage("");
+		setIsTyping(true);
+		window.setTimeout(() => {
+			const reply = getMockReply(trimmed);
+			setMessages((prev) => [...prev, {
+				id: Date.now() + 1,
+				role: "assistant",
+				content: reply
+			}]);
+			setIsTyping(false);
+		}, 700);
+	};
+	const handleSubmit = (event) => {
+		event.preventDefault();
+		sendMessage(message);
+	};
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+		/* @__PURE__ */ (0, import_jsx_runtime.jsx)("style", { children: `
+        @keyframes floatingPanelSlide {
+          from {
+            opacity: 0;
+            transform: translateY(20px) scale(0.96);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
+        }
+
+        @keyframes assistantPulse {
+          0%,
+          100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.28);
+          }
+          50% {
+            transform: scale(1.03);
+            box-shadow: 0 0 0 8px rgba(34, 197, 94, 0);
+          }
+        }
+      ` }),
+		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "fixed bottom-8 right-8 z-[100] flex flex-col items-end",
+			children: [!isChatOpen && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: `mb-3 w-[240px] rounded-[24px] border border-[#E5E7EB] bg-white p-4 text-left shadow-[0_20px_50px_rgba(15,23,42,0.16)] transition-all duration-300 ease-out ${isGreetingVisible ? "translate-y-0 scale-100 opacity-100" : "translate-y-2 scale-95 opacity-0"}`,
+				style: { transformOrigin: "bottom right" },
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+						type: "button",
+						onClick: closeGreeting,
+						"aria-label": "Close greeting",
+						className: "absolute right-3 top-3 rounded-full p-1 text-[#64748B] transition-colors hover:bg-[#F3F4F6] hover:text-[#111827]",
+						children: "×"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "pr-6 text-2xl leading-none",
+						children: "👋 Hi!"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "mt-2 text-sm font-semibold text-[#111827]",
+						children: "I'm Sokoos AI."
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "mt-1 text-sm leading-5 text-[#64748B]",
+						children: "Need help learning about Sokoos?"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+						type: "button",
+						onClick: openChat,
+						className: "mt-3 inline-flex items-center rounded-full bg-[#16A34A] px-3.5 py-2 text-sm font-semibold text-white shadow-sm transition-transform hover:-translate-y-0.5",
+						children: "Ask me"
+					})
+				]
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+				type: "button",
+				onClick: openChat,
+				className: "relative flex h-[72px] w-[72px] items-center justify-center rounded-full border border-[#EEF2F6] bg-white shadow-[0_20px_50px_rgba(15,23,42,0.16)] transition-transform duration-200 hover:scale-105",
+				style: { animation: "assistantPulse 2.4s ease-in-out infinite" },
+				"aria-label": "Open Sokoos AI",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "absolute inset-0 rounded-full border border-[#22C55E]/20" }),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "absolute -bottom-0.5 -right-0.5 h-4.5 w-4.5 rounded-full border-2 border-white bg-[#22C55E] shadow-sm" }),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+						className: "text-3xl",
+						children: "🤖"
+					})
+				]
+			})]
+		}),
+		isChatOpen && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+			className: "fixed inset-0 z-[110] flex items-end justify-end bg-black/10 p-4 backdrop-blur-[2px]",
+			onClick: closeChat,
+			children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: `w-full max-w-[420px] rounded-[28px] border border-[#EEF2F6] bg-white shadow-[0_24px_80px_rgba(15,23,42,0.16)] transition-all duration-300 ease-out ${isChatClosing ? "translate-y-5 scale-95 opacity-0" : "translate-y-0 scale-100 opacity-100"}`,
+				style: {
+					height: "560px",
+					animation: "floatingPanelSlide 0.25s ease-out"
+				},
+				onClick: (event) => event.stopPropagation(),
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-center justify-between border-b border-[#F3F4F6] px-5 py-4",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex items-center gap-3",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "flex h-11 w-11 items-center justify-center rounded-full border border-[#D1FAE5] bg-[#F0FDF4] text-xl",
+							children: "🤖"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center gap-2",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "font-semibold text-[#111827]",
+								children: "Sokoos AI"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "h-2.5 w-2.5 rounded-full bg-[#22C55E]" })]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "text-sm text-[#64748B]",
+							children: "AI Employee"
+						})] })]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+						type: "button",
+						onClick: closeChat,
+						"aria-label": "Close chat",
+						className: "rounded-full p-2 text-[#64748B] transition-colors hover:bg-[#F3F4F6] hover:text-[#111827]",
+						children: "×"
+					})]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex h-[calc(560px-88px)] flex-col px-5 py-5",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "flex-1 overflow-y-auto rounded-[24px] bg-[#F8FAFC] p-4",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "space-y-3",
+							children: [
+								messages.map((entry) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: `flex ${entry.role === "user" ? "justify-end" : "justify-start"}`,
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: `max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-6 shadow-sm ${entry.role === "user" ? "bg-[#16A34A] text-white" : "bg-white text-[#334155]"}`,
+										style: { animation: "floatingPanelSlide 0.25s ease-out" },
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "whitespace-pre-line",
+											children: entry.content
+										})
+									})
+								}, entry.id)),
+								messages.length === 1 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "flex justify-start",
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "max-w-full rounded-2xl bg-white p-3 shadow-sm",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-sm font-medium text-[#111827]",
+											children: "Try one of these:"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "mt-2 flex flex-wrap gap-2",
+											children: suggestedQuestions.map((suggestion) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+												type: "button",
+												onClick: () => sendMessage(suggestion),
+												className: "rounded-full border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-1.5 text-sm text-[#334155] transition-all hover:border-[#16A34A] hover:bg-[#ECFDF5] hover:text-[#166534]",
+												children: suggestion
+											}, suggestion))
+										})]
+									})
+								}),
+								isTyping && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "flex justify-start",
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "rounded-2xl bg-white px-3.5 py-2.5 shadow-sm",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex items-center gap-1.5",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "h-2 w-2 animate-bounce rounded-full bg-[#94A3B8]",
+													style: { animationDelay: "0ms" }
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "h-2 w-2 animate-bounce rounded-full bg-[#94A3B8]",
+													style: { animationDelay: "120ms" }
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "h-2 w-2 animate-bounce rounded-full bg-[#94A3B8]",
+													style: { animationDelay: "240ms" }
+												})
+											]
+										})
+									})
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { ref: messagesEndRef })
+							]
+						})
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
+						onSubmit: handleSubmit,
+						className: "mt-4 flex items-center gap-2 rounded-full border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-2 shadow-sm",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+							value: message,
+							onChange: (event) => setMessage(event.target.value),
+							placeholder: "Ask anything...",
+							className: "h-11 flex-1 border-0 bg-transparent text-sm text-[#111827] outline-none placeholder:text-[#94A3B8]"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+							type: "submit",
+							className: "flex h-11 w-11 items-center justify-center rounded-full bg-[#16A34A] text-white transition-transform hover:scale-105",
+							"aria-label": "Send message",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowRight, { className: "h-4 w-4" })
+						})]
+					})]
+				})]
+			})
+		})
+	] });
 }
 function Hero() {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("section", {
@@ -92,29 +373,63 @@ function Hero() {
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Reveal, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 					className: "mx-auto flex max-w-3xl flex-col items-center text-center",
 					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "inline-flex items-center rounded-full bg-[#ECFDF5] px-4 py-2 text-sm font-semibold text-[#166534] shadow-sm shadow-[#ECFDF5]/60",
+							children: "✨ Acquire • Convert • Retain"
+						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h1", {
 							className: "mt-6 text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl",
 							children: [
-								"Your AI Employee",
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("br", {}),
-								"on ",
+								"Never Miss a ",
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-									className: "text-primary",
-									children: "WhatsApp"
-								})
+									className: "text-[#16A34A]",
+									children: "Lead"
+								}),
+								" or Lose a",
+								" ",
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "text-[#16A34A]",
+									children: "Customer"
+								}),
+								" Again"
 							]
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 							className: "mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg",
-							children: "Sokoos helps businesses answer customers, close sales, schedule WhatsApp Status posts, and stay available 24/7—even when you're offline."
+							children: "Your AI employee that acquires customers, converts leads into sales, and retains customers across every channel."
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 							className: "mt-8 flex flex-col items-center gap-3 sm:flex-row",
-							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
-								href: "#cta",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Link, {
+								to: "/sign-up",
 								className: "group inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition-transform hover:-translate-y-0.5",
-								children: ["Start Free Trial", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowRight, { className: "h-4 w-4 transition-transform group-hover:translate-x-0.5" })]
+								children: ["Get Started", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowRight, { className: "h-4 w-4 transition-transform group-hover:translate-x-0.5" })]
 							})
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "mt-4 flex flex-col items-center gap-2 text-sm text-muted-foreground sm:flex-row",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+									className: "inline-flex items-center gap-2 text-[#166534]",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChartColumn, { className: "h-4 w-4 text-[#16A34A]" }), "Acquire Customers"]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "hidden sm:inline",
+									children: "→"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+									className: "inline-flex items-center gap-2 text-[#166534]",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MessageCircle, { className: "h-4 w-4 text-[#16A34A]" }), "Convert Leads"]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "hidden sm:inline",
+									children: "→"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+									className: "inline-flex items-center gap-2 text-[#166534]",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Heart, { className: "h-4 w-4 text-[#16A34A]" }), "Retain Customers"]
+								})
+							]
 						})
 					]
 				}) }),
@@ -126,7 +441,7 @@ function Hero() {
 							className: "overflow-hidden rounded-2xl border border-border bg-white shadow-[var(--shadow-elevated)]",
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
 								src: hero_dashboard_default,
-								alt: "Sokoos WhatsApp assistant dashboard showing conversations, AI responses, scheduled status posts and analytics",
+								alt: "Sokoos AI Employee dashboard showing conversations, customer responses, scheduled status posts and performance",
 								width: 1600,
 								height: 1120,
 								className: "h-auto w-full"
@@ -140,7 +455,7 @@ function Hero() {
 						className: "mx-auto mt-16 max-w-4xl",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 							className: "text-center text-xs font-medium uppercase tracking-wider text-muted-foreground",
-							children: "Trusted across industries"
+							children: "Helping Businesses Grow Across Industries"
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 							className: "mt-5 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-sm font-medium text-muted-foreground/80",
 							children: [
@@ -187,41 +502,41 @@ function Problem() {
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 			className: "container-page",
 			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Reveal, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SectionHeader, {
-				eyebrow: "The problem",
-				title: "Your Customers Should Never Wait",
-				subtitle: "Every unanswered message is a lost sale. Sokoos fixes the gaps that quietly cost you money."
+				eyebrow: "Why businesses struggle to grow",
+				title: "Why Growing Businesses Lose Customers",
+				subtitle: "Growing a business shouldn't mean losing customers. Slow responses, missed follow-ups, scattered conversations, and limited customer engagement quietly reduce sales every day."
 			}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 				className: "mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3",
 				children: [
 					{
 						icon: MessageSquareOff,
-						title: "Missed sales when you're offline",
-						desc: "Customers move on if no one replies within minutes."
+						title: "Missed Sales",
+						desc: "Potential customers move on when they don't receive a quick response."
 					},
 					{
 						icon: Clock,
-						title: "Delayed responses",
-						desc: "Slow replies mean lost trust and lost revenue."
+						title: "Slow Response Times",
+						desc: "Delayed replies reduce trust and lower your chances of closing sales."
 					},
 					{
 						icon: Repeat,
-						title: "Repetitive questions",
-						desc: "Your team answers the same things a hundred times a day."
+						title: "Repetitive Customer Questions",
+						desc: "Your team spends valuable time answering the same questions instead of growing the business."
 					},
 					{
 						icon: RefreshCw,
-						title: "Difficult follow-ups",
-						desc: "Leads slip through the cracks without a system."
+						title: "Missed Follow-ups",
+						desc: "Without consistent follow-ups, qualified leads are easily forgotten."
 					},
 					{
 						icon: Database,
-						title: "No customer management",
-						desc: "Conversations scattered across phones and staff."
+						title: "No Customer Visibility",
+						desc: "Customer conversations and information are scattered across different devices and team members."
 					},
 					{
 						icon: Users,
-						title: "Understaffed support",
-						desc: "Growth stalls because you can't hire fast enough."
+						title: "Limited Capacity",
+						desc: "Your business can only grow as fast as your team can respond to customers."
 					}
 				].map((it, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Reveal, {
 					delay: i * 60,
@@ -257,28 +572,28 @@ function Solution() {
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Reveal, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 						className: "text-xs font-semibold uppercase tracking-wider text-primary",
-						children: "The solution"
+						children: "How Sokoos helps you grow"
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h2", {
 						className: "mt-3 text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl",
-						children: ["Meet ", /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+						children: ["How ", /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 							className: "text-primary",
-							children: "Sokoos Chat"
+							children: "Sokoos Helps You Acquire, Convert & Retain Customers"
 						})]
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 						className: "mt-4 text-base leading-relaxed text-muted-foreground sm:text-lg",
-						children: "A smart WhatsApp assistant trained on your business. It talks to customers like your best salesperson would — and your team stays in full control."
+						children: "Sokoos brings together AI, WhatsApp, automation, and customer engagement tools to help your business attract new customers, convert more leads into sales, and build long-term customer relationships."
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
 						className: "mt-8 grid gap-3 sm:grid-cols-2",
 						children: [
-							"Answers customers instantly",
-							"Closes sales automatically",
-							"Humans can take over anytime",
-							"Works directly with WhatsApp",
-							"Supports multiple team members",
-							"Operates 24/7 — even offline"
+							"Acquire new customers through your digital channels",
+							"Respond instantly on WhatsApp with AI",
+							"Qualify leads and close more sales",
+							"Book appointments automatically",
+							"Follow up with customers without manual work",
+							"Retain customers with ongoing engagement and insights"
 						].map((b) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", {
 							className: "flex items-start gap-3",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
@@ -301,7 +616,7 @@ function Solution() {
 							className: "overflow-hidden rounded-2xl border border-border bg-white shadow-[var(--shadow-elevated)]",
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
 								src: solution_dashboard_default,
-								alt: "Sokoos unified WhatsApp inbox with AI assistant and product catalog",
+								alt: "Sokoos unified WhatsApp inbox with an AI Employee and product catalogue",
 								loading: "lazy",
 								width: 1408,
 								height: 1008,
@@ -322,45 +637,45 @@ function Features() {
 			className: "container-page",
 			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Reveal, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SectionHeader, {
 				eyebrow: "Features",
-				title: "Everything you need to run WhatsApp like a pro",
-				subtitle: "Purpose-built for African SMEs who want to sell more without hiring more."
+				title: "Everything You Need to Acquire, Convert & Retain Customers",
+				subtitle: "Sokoos gives growing businesses the tools to attract customers, automate conversations, close more sales, and build lasting customer relationships."
 			}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 				className: "mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3",
 				children: [
 					{
 						icon: Bot,
-						title: "AI WhatsApp Assistant",
-						desc: "Automatically responds to customers and helps close deals.",
+						title: "AI Employee",
+						desc: "Responds instantly, qualifies leads, and helps customers make buying decisions.",
 						emoji: "🤖"
 					},
 					{
 						icon: Inbox,
 						title: "Unified Inbox",
-						desc: "Reply from your phone or directly from the Sokoos dashboard.",
+						desc: "Manage every customer conversation from one shared workspace.",
 						emoji: "💬"
 					},
 					{
 						icon: Users,
 						title: "Human Takeover",
-						desc: "Your team can instantly take over any conversation.",
+						desc: "Jump into any conversation whenever your team wants to assist.",
 						emoji: "👥"
 					},
 					{
 						icon: Calendar,
-						title: "Status Scheduler",
-						desc: "Create and schedule WhatsApp Status marketing campaigns.",
+						title: "Marketing Automation",
+						desc: "Create and schedule WhatsApp marketing campaigns that keep customers engaged.",
 						emoji: "📅"
 					},
 					{
 						icon: Package,
 						title: "Product Catalog",
-						desc: "Manage products and services that power your AI assistant.",
+						desc: "Showcase products and services that your AI can recommend instantly.",
 						emoji: "📦"
 					},
 					{
 						icon: ChartColumn,
 						title: "Business Insights",
-						desc: "Track conversations, leads, and sales performance.",
+						desc: "Track customer engagement, conversions, and business growth from one dashboard.",
 						emoji: "📊"
 					}
 				].map((f, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Reveal, {
@@ -398,30 +713,30 @@ function HowItWorks() {
 			className: "container-page",
 			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Reveal, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SectionHeader, {
 				eyebrow: "How it works",
-				title: "Live in under 10 minutes",
-				subtitle: "No code. No complex setup. Just plug in and start selling."
+				title: "Start Growing in Minutes",
+				subtitle: "Set up Sokoos in minutes and let AI start helping your business acquire, convert, and retain customers."
 			}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 				className: "relative mt-16 grid gap-8 md:grid-cols-4",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "absolute left-8 right-8 top-6 hidden h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent md:block" }), [
 					{
 						icon: Plug,
-						title: "Connect Your WhatsApp",
-						desc: "Link your business number in minutes."
+						title: "Connect Your Business",
+						desc: "Connect your WhatsApp Business account and set up your workspace."
 					},
 					{
 						icon: Boxes,
-						title: "Add Products & Info",
-						desc: "Upload your catalog, hours, and policies."
+						title: "Train Your AI Employee",
+						desc: "Add products, services, FAQs, business hours and company information."
 					},
 					{
 						icon: Brain,
-						title: "Sokoos Learns Your Business",
-						desc: "The AI is trained on your data and tone."
+						title: "Launch Customer Automation",
+						desc: "Your AI starts responding, qualifying leads, booking appointments and supporting customers."
 					},
 					{
 						icon: Rocket,
-						title: "AI Serves Customers 24/7",
-						desc: "Sit back — Sokoos handles conversations."
+						title: "Grow With Insights",
+						desc: "Track conversations, leads, sales performance and continuously improve your business."
 					}
 				].map((s, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Reveal, {
 					delay: i * 100,
@@ -460,9 +775,9 @@ function Ecosystem() {
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 			className: "container-page",
 			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Reveal, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SectionHeader, {
-				eyebrow: "The ecosystem",
-				title: "More Than Just a Chatbot",
-				subtitle: "Sokoos is becoming the operating system for African businesses — one module at a time."
+				eyebrow: "The Sokoos Growth Platform",
+				title: "One Platform. Every Stage of Customer Growth.",
+				subtitle: "Sokoos helps businesses acquire customers, convert leads into sales, and retain loyal customers through AI-powered automation."
 			}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 				className: "relative mx-auto mt-16 max-w-5xl",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Reveal, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
@@ -484,54 +799,67 @@ function Ecosystem() {
 					className: "mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3",
 					children: [
 						{
-							name: "Chat",
-							status: "Available Now",
-							icon: MessageCircle
+							name: "AI Employee",
+							status: "Available Today",
+							desc: "Respond instantly and qualify leads 24/7.",
+							icon: Bot
+						},
+						{
+							name: "Landing Pages",
+							status: "Coming Soon",
+							desc: "Generate beautiful business websites in minutes.",
+							icon: Sparkles
 						},
 						{
 							name: "Marketing",
 							status: "Coming Soon",
-							icon: Sparkles
+							desc: "Launch campaigns across WhatsApp and social media.",
+							icon: MessageCircle
 						},
 						{
-							name: "POS",
+							name: "CRM",
 							status: "Coming Soon",
-							icon: Package
-						},
-						{
-							name: "Inventory",
-							status: "Coming Soon",
-							icon: Boxes
+							desc: "Manage customer relationships in one place.",
+							icon: Users
 						},
 						{
 							name: "Payments",
 							status: "Coming Soon",
-							icon: Repeat
+							desc: "Collect payments seamlessly from customers.",
+							icon: Package
 						},
 						{
 							name: "Analytics",
 							status: "Coming Soon",
+							desc: "Understand customer behaviour and business performance.",
 							icon: ChartColumn
 						}
 					].map((m, i) => {
-						const available = m.status === "Available Now";
+						const available = m.status === "Available Today";
 						return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Reveal, {
 							delay: i * 60,
 							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 								className: `group relative h-full rounded-2xl border p-5 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1 ${available ? "border-primary/30 bg-primary-soft" : "border-border bg-card"}`,
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "flex items-center justify-between",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-										className: `grid h-10 w-10 place-items-center rounded-xl ${available ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`,
-										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(m.icon, { className: "h-5 w-5" })
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										className: `rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider ${available ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`,
-										children: m.status
-									})]
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h3", {
-									className: "mt-4 text-lg font-semibold",
-									children: ["Sokoos ", m.name]
-								})]
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex items-center justify-between",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: `grid h-10 w-10 place-items-center rounded-xl ${available ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`,
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(m.icon, { className: "h-5 w-5" })
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: `rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider ${available ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`,
+											children: m.status
+										})]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+										className: "mt-4 text-lg font-semibold",
+										children: m.name
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "mt-1.5 text-sm leading-relaxed text-muted-foreground",
+										children: m.desc
+									})
+								]
 							})
 						}, m.name);
 					})
@@ -554,17 +882,17 @@ function Testimonials() {
 					{
 						name: "James",
 						role: "Internet Provider",
-						quote: "Sokoos responds to customers even when I'm asleep. We've closed more sales without hiring extra staff."
+						quote: "We went from losing leads to closing them. Instant responses mean more customers stay with us, and our sales doubled without hiring a team."
 					},
 					{
 						name: "Grace",
 						role: "Boutique Owner",
-						quote: "The status scheduler alone saves me hours every week. My WhatsApp finally feels like a real storefront."
+						quote: "I save 10 hours a week on customer responses. More time to grow the business, and customers love getting answers instantly. My revenue is up 40%."
 					},
 					{
 						name: "David",
 						role: "Hardware Store Manager",
-						quote: "Customers get instant quotes and product info. Our conversion rate has nearly doubled."
+						quote: "Customers get instant answers 24/7. Our close rate jumped by 60%, and I'm not spending my evenings answering the same questions."
 					}
 				].map((t, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Reveal, {
 					delay: i * 100,
@@ -611,8 +939,8 @@ function Pricing() {
 			className: "container-page",
 			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Reveal, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(SectionHeader, {
 				eyebrow: "Pricing",
-				title: "Simple pricing. Serious ROI.",
-				subtitle: "Start free for 14 days. No card required. Cancel anytime."
+				title: "Simple Pricing for Growing Businesses",
+				subtitle: "Choose a plan that grows with your business."
 			}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 				className: "mt-14 grid gap-5 md:grid-cols-3",
 				children: [
@@ -623,12 +951,12 @@ function Pricing() {
 						desc: "For solo owners just getting started.",
 						features: [
 							"1 WhatsApp number",
-							"AI Assistant (500 replies/mo)",
+							"AI Employee (500 replies/mo)",
 							"Unified inbox",
 							"Product catalog",
 							"Email support"
 						],
-						cta: "Start Free Trial",
+						cta: "Get Started",
 						highlight: false
 					},
 					{
@@ -638,13 +966,13 @@ function Pricing() {
 						desc: "For growing teams who sell every day.",
 						features: [
 							"1 WhatsApp number",
-							"AI Assistant (unlimited replies)",
+							"AI Employee (unlimited replies)",
 							"Human takeover for 5 team members",
 							"Status scheduler",
 							"Business insights dashboard",
 							"Priority support"
 						],
-						cta: "Start Free Trial",
+						cta: "Get Started",
 						highlight: true
 					},
 					{
@@ -698,8 +1026,12 @@ function Pricing() {
 									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: f })]
 								}, f))
 							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
-								href: "#cta",
+							t.cta === "Get Started" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Link, {
+								to: "/sign-up",
+								className: `mt-8 inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${t.highlight ? "bg-primary text-primary-foreground hover:bg-primary/90" : "bg-foreground text-background hover:bg-foreground/90"}`,
+								children: [t.cta, /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowRight, { className: "h-4 w-4" })]
+							}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
+								href: "#",
 								className: `mt-8 inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${t.highlight ? "bg-primary text-primary-foreground hover:bg-primary/90" : "bg-foreground text-background hover:bg-foreground/90"}`,
 								children: [t.cta, /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowRight, { className: "h-4 w-4" })]
 							})
@@ -726,23 +1058,19 @@ function FinalCTA() {
 						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
 								className: "text-3xl font-extrabold tracking-tight sm:text-5xl",
-								children: "Never Miss Another Customer Again"
+								children: "Start Growing Your Business with Sokoos"
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 								className: "mt-4 text-base leading-relaxed text-background/70 sm:text-lg",
-								children: "Let Sokoos handle your WhatsApp conversations while you focus on growing your business."
+								children: "From attracting new customers to closing sales and building customer loyalty, Sokoos helps your business grow with AI-powered automation."
 							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 								className: "mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
-									href: "#",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Link, {
+									to: "/sign-up",
 									className: "inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition-transform hover:-translate-y-0.5",
-									children: ["Start Free Trial", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowRight, { className: "h-4 w-4" })]
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("a", {
-									href: "#",
-									className: "inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/5 px-6 py-3.5 text-sm font-semibold text-background transition-colors hover:bg-white/10",
-									children: "Book Demo"
-								})]
+									children: ["Get Started", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowRight, { className: "h-4 w-4" })]
+								})
 							})
 						]
 					})
@@ -762,7 +1090,7 @@ function Footer() {
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Logo, {}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 						className: "mt-4 max-w-xs text-sm text-muted-foreground",
-						children: "The Operating System for African Businesses."
+						children: "Helping businesses acquire, convert, and retain customers."
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 						className: "mt-6 flex items-center gap-2",
@@ -820,7 +1148,7 @@ function Footer() {
 					"© ",
 					(/* @__PURE__ */ new Date()).getFullYear(),
 					" Sokoos. All rights reserved."
-				] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Made for African SMEs." })]
+				] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Made for modern businesses." })]
 			})]
 		})
 	});
@@ -830,6 +1158,7 @@ function Index() {
 		className: "min-h-screen bg-background text-foreground",
 		children: [
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Nav, {}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(FloatingSokoosAI, {}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", { children: [
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Hero, {}),
 				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Problem, {}),

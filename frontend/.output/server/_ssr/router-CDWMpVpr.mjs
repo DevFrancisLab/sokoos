@@ -1,0 +1,8482 @@
+import { n as __toESM } from "../_runtime.mjs";
+import { n as require_jsx_runtime, r as require_react, t as QueryClientProvider } from "../_libs/react+tanstack__react-query.mjs";
+import { c as HeadContent, d as Outlet, f as lazyRouteComponent, g as useRouter, h as Link, m as createRootRouteWithContext, p as createFileRoute, s as Scripts, u as createRouter } from "../_libs/@tanstack/react-router+[...].mjs";
+import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
+import { t as clsx } from "../_libs/clsx.mjs";
+import { t as twMerge } from "../_libs/tailwind-merge.mjs";
+import { B as ChevronRight, C as Menu, D as Inbox, F as EyeOff, H as Check, J as Bot, L as Cpu, M as Globe, O as Image, P as Eye, R as Clock, S as MessageCircle, T as Mail, U as ChartColumn, V as ChevronDown, W as Calendar, X as ArrowRight, Y as BookOpen, Z as Activity, _ as Plug, a as Tag, b as Package, c as Smile, d as Send, f as Search, g as Plus, i as Target, j as Hash, k as House, l as Shield, n as Users, q as Box, r as User, s as Sparkles, t as X, u as Settings, v as Phone, w as Megaphone, y as Paperclip, z as CircleAlert } from "../_libs/lucide-react.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/router-CDWMpVpr.js
+var import_react = /* @__PURE__ */ __toESM(require_react());
+var import_jsx_runtime = require_jsx_runtime();
+var styles_default = "/assets/styles-_-zDcgzj.css";
+function reportLovableError(error, context = {}) {
+	if (typeof window === "undefined") return;
+	window.__lovableEvents?.captureException?.(error, {
+		source: "react_error_boundary",
+		route: window.location.pathname,
+		...context
+	}, {
+		mechanism: "react_error_boundary",
+		handled: false,
+		severity: "error"
+	});
+}
+function ProtectedRoute() {
+	const router = useRouter();
+	const isAuthenticated = typeof window !== "undefined" && localStorage.getItem("sokoos-auth") === "true";
+	(0, import_react.useEffect)(() => {
+		if (!isAuthenticated) router.navigate({
+			to: "/signin",
+			replace: true
+		});
+	}, [isAuthenticated, router]);
+	if (!isAuthenticated) return null;
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Outlet, {});
+}
+function NotFoundComponent() {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+		className: "flex min-h-screen items-center justify-center bg-background px-4",
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "max-w-md text-center",
+			children: [
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+					className: "text-7xl font-bold text-foreground",
+					children: "404"
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+					className: "mt-4 text-xl font-semibold text-foreground",
+					children: "Page not found"
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+					className: "mt-2 text-sm text-muted-foreground",
+					children: "The page you're looking for doesn't exist or has been moved."
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "mt-6",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+						to: "/",
+						className: "inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90",
+						children: "Go home"
+					})
+				})
+			]
+		})
+	});
+}
+function ErrorComponent({ error, reset }) {
+	console.error(error);
+	const router = useRouter();
+	(0, import_react.useEffect)(() => {
+		reportLovableError(error, { boundary: "tanstack_root_error_component" });
+	}, [error]);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+		className: "flex min-h-screen items-center justify-center bg-background px-4",
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "max-w-md text-center",
+			children: [
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+					className: "text-xl font-semibold tracking-tight text-foreground",
+					children: "This page didn't load"
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+					className: "mt-2 text-sm text-muted-foreground",
+					children: "Something went wrong on our end. You can try refreshing or head back home."
+				}),
+				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "mt-6 flex flex-wrap justify-center gap-2",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+						onClick: () => {
+							router.invalidate();
+							reset();
+						},
+						className: "inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90",
+						children: "Try again"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("a", {
+						href: "/",
+						className: "inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent",
+						children: "Go home"
+					})]
+				})
+			]
+		})
+	});
+}
+var Route$10 = createRootRouteWithContext()({
+	head: () => ({
+		meta: [
+			{ charSet: "utf-8" },
+			{
+				name: "viewport",
+				content: "width=device-width, initial-scale=1"
+			},
+			{ title: "Sokoos — The Operating System for Growing Businesses" },
+			{
+				name: "description",
+				content: "Sokoos is an AI Employee that represents your business, serves customers, closes sales, and schedules Status posts 24/7."
+			},
+			{
+				property: "og:title",
+				content: "Sokoos — Your AI Employee on WhatsApp"
+			},
+			{
+				property: "og:description",
+				content: "An AI Employee for growing businesses. Never miss another customer again."
+			},
+			{
+				property: "og:type",
+				content: "website"
+			},
+			{
+				name: "twitter:card",
+				content: "summary_large_image"
+			}
+		],
+		links: [
+			{
+				rel: "stylesheet",
+				href: styles_default
+			},
+			{
+				rel: "icon",
+				href: "/favicon.ico",
+				type: "image/x-icon"
+			},
+			{
+				rel: "preconnect",
+				href: "https://fonts.googleapis.com"
+			},
+			{
+				rel: "preconnect",
+				href: "https://fonts.gstatic.com",
+				crossOrigin: "anonymous"
+			},
+			{
+				rel: "stylesheet",
+				href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+			}
+		]
+	}),
+	shellComponent: RootShell,
+	component: RootComponent,
+	notFoundComponent: NotFoundComponent,
+	errorComponent: ErrorComponent
+});
+function RootShell({ children }) {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("html", {
+		lang: "en",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("head", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(HeadContent, {}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("body", { children: [children, /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Scripts, {})] })]
+	});
+}
+function RootComponent() {
+	const { queryClient } = Route$10.useRouteContext();
+	const pathname = useRouter().state.location.pathname;
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(QueryClientProvider, {
+		client: queryClient,
+		children: pathname === "/dashboard" || pathname.startsWith("/dashboard/") ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ProtectedRoute, {}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Outlet, {})
+	});
+}
+function cn(...inputs) {
+	return twMerge(clsx(inputs));
+}
+var Card = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+	ref,
+	className: cn("rounded-xl border bg-card text-card-foreground shadow", className),
+	...props
+}));
+Card.displayName = "Card";
+var CardHeader = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+	ref,
+	className: cn("flex flex-col space-y-1.5 p-6", className),
+	...props
+}));
+CardHeader.displayName = "CardHeader";
+var CardTitle = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+	ref,
+	className: cn("font-semibold leading-none tracking-tight", className),
+	...props
+}));
+CardTitle.displayName = "CardTitle";
+var CardDescription = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+	ref,
+	className: cn("text-sm text-muted-foreground", className),
+	...props
+}));
+CardDescription.displayName = "CardDescription";
+var CardContent = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+	ref,
+	className: cn("p-6 pt-0", className),
+	...props
+}));
+CardContent.displayName = "CardContent";
+var CardFooter = import_react.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+	ref,
+	className: cn("flex items-center p-6 pt-0", className),
+	...props
+}));
+CardFooter.displayName = "CardFooter";
+function AuthCard({ children, footer, className }) {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Card, {
+		className: cn("w-full max-w-[480px] rounded-[28px] border border-[#E5E7EB] bg-white p-7 shadow-[0_30px_80px_rgba(15,23,42,0.08)] sm:p-8", className),
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CardContent, {
+			className: "p-0",
+			children
+		}), footer ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+			className: "mt-6 border-t border-[#E5E7EB] pt-5 text-sm text-[#64748B]",
+			children: footer
+		}) : null]
+	});
+}
+function AuthHeader({ eyebrow, title, description, className, children }) {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		className: cn("space-y-4", className),
+		children: [
+			eyebrow ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "inline-flex w-fit items-center gap-2 rounded-full border border-[#DCFCE7] bg-[#F0FDF4] px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-[#166534]",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "h-2 w-2 rounded-full bg-[#16A34A]" }), eyebrow]
+			}) : null,
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "space-y-2",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+					className: "text-3xl font-semibold tracking-tight text-[#111827]",
+					children: title
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+					className: "text-base leading-6 text-[#64748B]",
+					children: description
+				})]
+			}),
+			children ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				className: "pt-2",
+				children
+			}) : null
+		]
+	});
+}
+function AuthLayout({ children }) {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+		className: "min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(22,163,74,0.10),_transparent_32%),linear-gradient(135deg,_#f8fafc_0%,_#ffffff_100%)]",
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-6 sm:px-6 lg:px-8",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)(Link, {
+				to: "/",
+				className: "inline-flex w-fit items-center gap-2 rounded-full border border-[#E5E7EB] bg-white/80 px-3 py-2 text-sm font-medium text-[#111827] shadow-sm backdrop-blur",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground shadow-[var(--shadow-soft)]",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MessageCircle, {
+						className: "h-4 w-4",
+						strokeWidth: 2.5
+					})
+				}), "Sokoos"]
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				className: "flex flex-1 items-center justify-center py-10 sm:py-12",
+				children
+			})]
+		})
+	});
+}
+function Checkbox({ label, id, className, ...props }) {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+		htmlFor: id,
+		className: "flex items-start gap-3 rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC] p-4 text-sm text-[#64748B]",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+			className: "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded border border-[#CBD5E1] bg-white",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+				id,
+				type: "checkbox",
+				className: cn("peer sr-only", className),
+				...props
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, {
+				className: "hidden h-3 w-3 text-[#16A34A] peer-checked:block",
+				strokeWidth: 3
+			})]
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+			className: "leading-5",
+			children: label
+		})]
+	});
+}
+function PasswordInput({ label, id, className, ...props }) {
+	const [showPassword, setShowPassword] = (0, import_react.useState)(false);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		className: "space-y-2",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+			htmlFor: id,
+			className: "text-sm font-medium text-[#111827]",
+			children: label
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "relative",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+				id,
+				type: showPassword ? "text" : "password",
+				className: cn("h-11 w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 pr-12 text-sm text-[#111827] shadow-none outline-none transition-colors placeholder:text-[#94A3B8] focus:border-[#16A34A] focus:ring-2 focus:ring-[#16A34A]/10", className),
+				...props
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+				type: "button",
+				onClick: () => setShowPassword((prev) => !prev),
+				className: "absolute inset-y-0 right-3 flex items-center text-[#64748B] transition-colors hover:text-[#111827]",
+				"aria-label": showPassword ? "Hide password" : "Show password",
+				children: showPassword ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(EyeOff, { className: "h-4 w-4" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Eye, { className: "h-4 w-4" })
+			})]
+		})]
+	});
+}
+function PrimaryButton({ children, className, type = "button", ...props }) {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+		type,
+		className: cn("inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-[#16A34A] px-4 py-3 text-sm font-semibold text-white shadow-sm transition-transform hover:-translate-y-0.5 hover:bg-[#15803D] disabled:cursor-not-allowed disabled:opacity-60", className),
+		...props,
+		children: [children, /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowRight, { className: "h-4 w-4" })]
+	});
+}
+function TextInput({ label, id, className, ...props }) {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		className: "space-y-2",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+			htmlFor: id,
+			className: "text-sm font-medium text-[#111827]",
+			children: label
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+			id,
+			className: cn("h-11 w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 text-sm text-[#111827] shadow-none outline-none transition-colors placeholder:text-[#94A3B8] focus:border-[#16A34A] focus:ring-2 focus:ring-[#16A34A]/10", className),
+			...props
+		})]
+	});
+}
+function isAuthenticated() {
+	try {
+		return localStorage.getItem("mock_user") !== null;
+	} catch (e) {
+		return false;
+	}
+}
+function signInMock(user) {
+	try {
+		localStorage.setItem("mock_user", JSON.stringify(user));
+	} catch (e) {}
+}
+var Route$9 = createFileRoute("/sign-in")({ component: SignIn });
+function SignIn() {
+	const router = useRouter();
+	(0, import_react.useEffect)(() => {
+		if (typeof window !== "undefined" && localStorage.getItem("sokoos-auth") === "true") router.navigate({
+			to: "/dashboard",
+			replace: true
+		});
+	}, [router]);
+	const [email, setEmail] = (0, import_react.useState)("");
+	const [password, setPassword] = (0, import_react.useState)("");
+	const [touched, setTouched] = (0, import_react.useState)({
+		email: false,
+		password: false
+	});
+	const [authError, setAuthError] = (0, import_react.useState)("");
+	const emailError = !email.trim() ? "Email is required." : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? "Enter a valid email address." : "";
+	const passwordError = !password.trim() ? "Password is required." : "";
+	const isValid = !emailError && !passwordError;
+	const handleSubmit = (event) => {
+		event.preventDefault();
+		setTouched({
+			email: true,
+			password: true
+		});
+		if (!isValid) return;
+		if (email.trim() === "demo@sokoos.com" && password === "password123") {
+			localStorage.setItem("sokoos-auth", "true");
+			signInMock({
+				id: "demo",
+				name: "Demo User"
+			});
+			setAuthError("");
+			router.navigate({ to: "/dashboard" });
+			return;
+		}
+		setAuthError("Invalid email or password.");
+	};
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AuthLayout, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AuthCard, {
+		footer: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+			"New to Sokoos? ",
+			" ",
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+				to: "/sign-up",
+				className: "font-semibold text-[#111827] transition-colors hover:text-[#16A34A]",
+				children: "Create an account"
+			})
+		] }),
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "space-y-6",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(AuthHeader, {
+				eyebrow: "Preview access",
+				title: "Welcome back",
+				description: "Sign in to your Sokoos workspace."
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
+				className: "space-y-5",
+				onSubmit: handleSubmit,
+				noValidate: true,
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "space-y-1",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TextInput, {
+							id: "email",
+							label: "Email Address",
+							type: "email",
+							placeholder: "you@company.com",
+							value: email,
+							onChange: (event) => setEmail(event.target.value),
+							onBlur: () => setTouched((prev) => ({
+								...prev,
+								email: true
+							}))
+						}), touched.email && emailError ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "text-sm text-[#DC2626]",
+							children: emailError
+						}) : null]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "space-y-1",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PasswordInput, {
+							id: "password",
+							label: "Password",
+							placeholder: "Enter your password",
+							value: password,
+							onChange: (event) => setPassword(event.target.value),
+							onBlur: () => setTouched((prev) => ({
+								...prev,
+								password: true
+							}))
+						}), touched.password && passwordError ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "text-sm text-[#DC2626]",
+							children: passwordError
+						}) : null]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex items-center justify-between gap-3 text-sm",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Checkbox, {
+							id: "remember-me",
+							label: "Remember Me"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("a", {
+							href: "#",
+							className: "font-medium text-[#111827] transition-colors hover:text-[#16A34A]",
+							children: "Forgot Password?"
+						})]
+					}),
+					authError ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "text-sm font-medium text-[#DC2626]",
+						children: authError
+					}) : null,
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PrimaryButton, {
+						type: "submit",
+						disabled: !isValid,
+						children: "Sign In"
+					})
+				]
+			})]
+		})
+	}) });
+}
+var Route$8 = createFileRoute("/signin")({ component: SignIn });
+function SelectInput({ label, id, options, className, ...props }) {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		className: "space-y-2",
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+			htmlFor: id,
+			className: "text-sm font-medium text-[#111827]",
+			children: label
+		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("select", {
+			id,
+			className: cn("h-11 w-full rounded-2xl border border-[#E5E7EB] bg-white px-4 text-sm text-[#111827] shadow-none outline-none transition-colors focus:border-[#16A34A] focus:ring-2 focus:ring-[#16A34A]/10", className),
+			...props,
+			children: options.map((option) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+				value: option.value,
+				children: option.label
+			}, option.value))
+		})]
+	});
+}
+var Route$7 = createFileRoute("/sign-up")({ component: SignUp });
+function SignUp() {
+	const router = useRouter();
+	(0, import_react.useEffect)(() => {
+		if (typeof window !== "undefined" && localStorage.getItem("sokoos-auth") === "true") router.navigate({
+			to: "/dashboard",
+			replace: true
+		});
+	}, [router]);
+	const [formValues, setFormValues] = (0, import_react.useState)({
+		fullName: "",
+		businessEmail: "",
+		password: "",
+		confirmPassword: "",
+		businessName: "",
+		businessType: "",
+		phoneNumber: "",
+		country: "Kenya",
+		terms: false
+	});
+	const [touched, setTouched] = (0, import_react.useState)({
+		fullName: false,
+		businessEmail: false,
+		password: false,
+		confirmPassword: false,
+		businessName: false,
+		businessType: false,
+		phoneNumber: false,
+		country: false,
+		terms: false
+	});
+	const [isSubmitting, setIsSubmitting] = (0, import_react.useState)(false);
+	const [successMessage, setSuccessMessage] = (0, import_react.useState)("");
+	const errors = {
+		fullName: !formValues.fullName.trim() ? "Full name is required." : "",
+		businessEmail: !formValues.businessEmail.trim() ? "Business email is required." : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formValues.businessEmail) ? "Enter a valid email address." : "",
+		password: formValues.password.length < 8 ? "Password must be at least 8 characters." : "",
+		confirmPassword: !formValues.confirmPassword.trim() ? "Please confirm your password." : formValues.password !== formValues.confirmPassword ? "Passwords must match." : "",
+		businessName: !formValues.businessName.trim() ? "Business name is required." : "",
+		businessType: !formValues.businessType ? "Please select a business type." : "",
+		phoneNumber: !formValues.phoneNumber.trim() ? "Phone number is required." : "",
+		country: !formValues.country.trim() ? "Country is required." : "",
+		terms: !formValues.terms ? "You must agree to the terms." : ""
+	};
+	const isValid = Object.values(errors).every((error) => !error);
+	const handleSubmit = (event) => {
+		event.preventDefault();
+		setTouched({
+			fullName: true,
+			businessEmail: true,
+			password: true,
+			confirmPassword: true,
+			businessName: true,
+			businessType: true,
+			phoneNumber: true,
+			country: true,
+			terms: true
+		});
+		if (!isValid) return;
+		setIsSubmitting(true);
+		setSuccessMessage("");
+		window.setTimeout(() => {
+			setIsSubmitting(false);
+			setSuccessMessage("Workspace created successfully.");
+			signInMock({
+				id: "demo",
+				name: "Demo User"
+			});
+			window.setTimeout(() => {
+				router.navigate({ to: "/dashboard" });
+			}, 800);
+		}, 2e3);
+	};
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AuthLayout, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AuthCard, {
+		footer: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+			"Already have an account? ",
+			" ",
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Link, {
+				to: "/signin",
+				className: "font-semibold text-[#111827] transition-colors hover:text-[#16A34A]",
+				children: "Sign in"
+			})
+		] }),
+		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+			className: "space-y-6",
+			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(AuthHeader, {
+				eyebrow: "Preview access",
+				title: "Create your AI Employee",
+				description: "Create your Sokoos workspace in under a minute."
+			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
+				className: "space-y-4",
+				onSubmit: handleSubmit,
+				noValidate: true,
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "space-y-1",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TextInput, {
+							id: "full-name",
+							label: "Full Name",
+							placeholder: "Jane Doe",
+							value: formValues.fullName,
+							onChange: (event) => setFormValues((prev) => ({
+								...prev,
+								fullName: event.target.value
+							})),
+							onBlur: () => setTouched((prev) => ({
+								...prev,
+								fullName: true
+							}))
+						}), touched.fullName && errors.fullName ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "text-sm text-[#DC2626]",
+							children: errors.fullName
+						}) : null]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "space-y-1",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TextInput, {
+							id: "business-email",
+							label: "Business Email",
+							type: "email",
+							placeholder: "you@company.com",
+							value: formValues.businessEmail,
+							onChange: (event) => setFormValues((prev) => ({
+								...prev,
+								businessEmail: event.target.value
+							})),
+							onBlur: () => setTouched((prev) => ({
+								...prev,
+								businessEmail: true
+							}))
+						}), touched.businessEmail && errors.businessEmail ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "text-sm text-[#DC2626]",
+							children: errors.businessEmail
+						}) : null]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "grid gap-4 sm:grid-cols-2",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "space-y-1",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PasswordInput, {
+								id: "password",
+								label: "Password",
+								placeholder: "Create a password",
+								value: formValues.password,
+								onChange: (event) => setFormValues((prev) => ({
+									...prev,
+									password: event.target.value
+								})),
+								onBlur: () => setTouched((prev) => ({
+									...prev,
+									password: true
+								}))
+							}), touched.password && errors.password ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "text-sm text-[#DC2626]",
+								children: errors.password
+							}) : null]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "space-y-1",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PasswordInput, {
+								id: "confirm-password",
+								label: "Confirm Password",
+								placeholder: "Repeat password",
+								value: formValues.confirmPassword,
+								onChange: (event) => setFormValues((prev) => ({
+									...prev,
+									confirmPassword: event.target.value
+								})),
+								onBlur: () => setTouched((prev) => ({
+									...prev,
+									confirmPassword: true
+								}))
+							}), touched.confirmPassword && errors.confirmPassword ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "text-sm text-[#DC2626]",
+								children: errors.confirmPassword
+							}) : null]
+						})]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "space-y-1",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TextInput, {
+							id: "business-name",
+							label: "Business Name",
+							placeholder: "Sokoos Labs",
+							value: formValues.businessName,
+							onChange: (event) => setFormValues((prev) => ({
+								...prev,
+								businessName: event.target.value
+							})),
+							onBlur: () => setTouched((prev) => ({
+								...prev,
+								businessName: true
+							}))
+						}), touched.businessName && errors.businessName ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "text-sm text-[#DC2626]",
+							children: errors.businessName
+						}) : null]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "grid gap-4 sm:grid-cols-2",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "space-y-1",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(SelectInput, {
+								id: "business-type",
+								label: "Business Type",
+								value: formValues.businessType,
+								onChange: (event) => setFormValues((prev) => ({
+									...prev,
+									businessType: event.target.value
+								})),
+								onBlur: () => setTouched((prev) => ({
+									...prev,
+									businessType: true
+								})),
+								options: [
+									{
+										label: "Select type",
+										value: ""
+									},
+									{
+										label: "Retail",
+										value: "retail"
+									},
+									{
+										label: "Restaurant",
+										value: "restaurant"
+									},
+									{
+										label: "Service Business",
+										value: "service"
+									},
+									{
+										label: "Education",
+										value: "education"
+									},
+									{
+										label: "Healthcare",
+										value: "healthcare"
+									},
+									{
+										label: "Other",
+										value: "other"
+									}
+								]
+							}), touched.businessType && errors.businessType ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "text-sm text-[#DC2626]",
+								children: errors.businessType
+							}) : null]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "space-y-1",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TextInput, {
+								id: "phone-number",
+								label: "Phone Number",
+								placeholder: "0712 345 678",
+								value: formValues.phoneNumber,
+								onChange: (event) => setFormValues((prev) => ({
+									...prev,
+									phoneNumber: event.target.value
+								})),
+								onBlur: () => setTouched((prev) => ({
+									...prev,
+									phoneNumber: true
+								}))
+							}), touched.phoneNumber && errors.phoneNumber ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "text-sm text-[#DC2626]",
+								children: errors.phoneNumber
+							}) : null]
+						})]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "space-y-1",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(TextInput, {
+							id: "country",
+							label: "Country",
+							defaultValue: "Kenya",
+							value: formValues.country,
+							onChange: (event) => setFormValues((prev) => ({
+								...prev,
+								country: event.target.value
+							})),
+							onBlur: () => setTouched((prev) => ({
+								...prev,
+								country: true
+							}))
+						}), touched.country && errors.country ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "text-sm text-[#DC2626]",
+							children: errors.country
+						}) : null]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "space-y-1",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Checkbox, {
+							id: "terms",
+							label: "I agree to the Terms",
+							checked: formValues.terms,
+							onChange: (event) => setFormValues((prev) => ({
+								...prev,
+								terms: event.target.checked
+							})),
+							onBlur: () => setTouched((prev) => ({
+								...prev,
+								terms: true
+							}))
+						}), touched.terms && errors.terms ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "text-sm text-[#DC2626]",
+							children: errors.terms
+						}) : null]
+					}),
+					successMessage ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "rounded-2xl border border-[#DCFCE7] bg-[#F0FDF4] px-4 py-3 text-sm font-medium text-[#166534]",
+						children: successMessage
+					}) : null,
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(PrimaryButton, {
+						type: "submit",
+						disabled: !isValid || isSubmitting,
+						children: isSubmitting ? "Creating Workspace..." : "Create Workspace"
+					})
+				]
+			})]
+		})
+	}) });
+}
+var NAV_ITEMS = [
+	{
+		label: "Home",
+		href: "/dashboard",
+		Icon: House
+	},
+	{
+		label: "Inbox",
+		href: "/dashboard/inbox",
+		Icon: Inbox
+	},
+	{
+		label: "AI Employee",
+		href: "/dashboard/ai",
+		Icon: Cpu
+	},
+	{
+		label: "Growth Pages",
+		href: "/dashboard/pages",
+		Icon: Globe
+	},
+	{
+		label: "Marketing",
+		href: "/dashboard/marketing",
+		Icon: Megaphone
+	},
+	{
+		label: "Analytics",
+		href: "/dashboard/analytics",
+		Icon: Activity
+	},
+	{
+		label: "Integrations",
+		href: "/dashboard/integrations",
+		Icon: Bot
+	},
+	{
+		label: "Settings",
+		href: "/dashboard/settings",
+		Icon: Settings
+	}
+];
+var PERFORMANCE_METRICS = [
+	{
+		label: "Messages Handled",
+		value: "1,842",
+		trend: [
+			26,
+			38,
+			32,
+			46,
+			51,
+			58,
+			63
+		],
+		delta: "+26%",
+		progress: 82
+	},
+	{
+		label: "Resolution Rate",
+		value: "93%",
+		trend: [
+			72,
+			78,
+			82,
+			86,
+			91,
+			92,
+			93
+		],
+		delta: "+5 pts",
+		progress: 93
+	},
+	{
+		label: "Human Takeovers",
+		value: "84",
+		trend: [
+			90,
+			86,
+			80,
+			77,
+			78,
+			84,
+			84
+		],
+		delta: "-7%",
+		progress: 75
+	},
+	{
+		label: "Quotes Generated",
+		value: "312",
+		trend: [
+			24,
+			28,
+			34,
+			42,
+			48,
+			56,
+			62
+		],
+		delta: "+18%",
+		progress: 78
+	},
+	{
+		label: "Sales Closed",
+		value: "128",
+		trend: [
+			12,
+			15,
+			19,
+			24,
+			28,
+			32,
+			36
+		],
+		delta: "+14%",
+		progress: 68
+	},
+	{
+		label: "Revenue Influenced",
+		value: "$72.4k",
+		trend: [
+			42,
+			44,
+			52,
+			58,
+			64,
+			69,
+			72
+		],
+		delta: "+21%",
+		progress: 72
+	},
+	{
+		label: "Average Response Time",
+		value: "1.2m",
+		trend: [
+			1.8,
+			1.7,
+			1.6,
+			1.4,
+			1.3,
+			1.2,
+			1.2
+		],
+		delta: "-12%",
+		progress: 88
+	},
+	{
+		label: "Top Questions",
+		value: "8",
+		trend: [
+			4,
+			5,
+			6,
+			7,
+			8,
+			9,
+			8
+		],
+		delta: "+11%",
+		progress: 65
+	}
+];
+var KNOWLEDGE_USAGE = [
+	{
+		label: "FAQ Docs",
+		percent: 78
+	},
+	{
+		label: "Product Catalog",
+		percent: 63
+	},
+	{
+		label: "Policies",
+		percent: 52
+	},
+	{
+		label: "Service Guide",
+		percent: 41
+	}
+];
+var PERFORMANCE_TOP_QUESTIONS = [
+	"How much does delivery cost?",
+	"Can I get a discount?",
+	"What’s the lead time?",
+	"Do you offer installation?"
+];
+var MOST_VIEWED_PRODUCTS = [
+	{
+		name: "Smart POS Terminal",
+		views: 512
+	},
+	{
+		name: "AI Employee",
+		views: 438
+	},
+	{
+		name: "Service Plan",
+		views: 387
+	},
+	{
+		name: "Inventory Package",
+		views: 312
+	}
+];
+var RECENT_AI_ACTIVITY = [
+	{
+		type: "Reply",
+		title: "Answered pricing question",
+		time: "2m ago"
+	},
+	{
+		type: "Quote",
+		title: "Generated quote for 10 units",
+		time: "14m ago"
+	},
+	{
+		type: "Follow-up",
+		title: "Suggested follow-up message",
+		time: "42m ago"
+	},
+	{
+		type: "Support",
+		title: "Escalated to human agent",
+		time: "1h ago"
+	}
+];
+var KNOWLEDGE_HUB_SOURCES = [
+	{
+		title: "Business Information",
+		description: "Core company details used for greeting customers and explaining your services.",
+		status: "Live",
+		statusDetail: "Published",
+		lastUpdated: "Today"
+	},
+	{
+		title: "Products & Services",
+		description: "Product and service details your AI Employee can use in sales conversations.",
+		status: "Live",
+		statusDetail: "Updated recently",
+		lastUpdated: "2 hours ago"
+	},
+	{
+		title: "Frequently Asked Questions",
+		description: "Common customer questions and answers to improve response accuracy.",
+		status: "Draft",
+		statusDetail: "Needs review",
+		lastUpdated: "Yesterday"
+	},
+	{
+		title: "Business Policies",
+		description: "Company policies governing returns, delivery, and cancellations.",
+		status: "Live",
+		statusDetail: "Reviewed",
+		lastUpdated: "3 days ago"
+	},
+	{
+		title: "Locations",
+		description: "Store and service areas that help your AI Employee answer location requests.",
+		status: "Live",
+		statusDetail: "Published",
+		lastUpdated: "1 week ago"
+	},
+	{
+		title: "Business Hours",
+		description: "Opening and closing times used for responding to time-based questions.",
+		status: "Live",
+		statusDetail: "Published",
+		lastUpdated: "Today"
+	},
+	{
+		title: "Pricing",
+		description: "Current pricing details for plans, packages, and add-ons.",
+		status: "Draft",
+		statusDetail: "Pending approval",
+		lastUpdated: "Today"
+	},
+	{
+		title: "Payment Methods",
+		description: "Payment options available to customers, including mobile money and bank transfer.",
+		status: "Live",
+		statusDetail: "Published",
+		lastUpdated: "Yesterday"
+	},
+	{
+		title: "Documents",
+		description: "Important documents such as contracts, invoices, and onboarding guides.",
+		status: "Draft",
+		statusDetail: "Add missing files",
+		lastUpdated: "4 days ago"
+	},
+	{
+		title: "Website",
+		description: "Web content and links your AI Employee can use for customer support.",
+		status: "Live",
+		statusDetail: "Published",
+		lastUpdated: "2 days ago"
+	}
+];
+var TRANSITION = "transition-all duration-200 ease-out";
+var TRANSITION_FAST = "transition-all duration-150 ease-out";
+var GLOBAL_RADIUS = "rounded-[24px]";
+var SUBTLE_BORDER = "border-[#EEF2F6]";
+var CARD = `${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transform transition-all duration-200 ease-out hover:-translate-y-1`;
+var AI_WORKSPACE_SECTION = "rounded-[24px] border border-[#E5E7EB] bg-white p-6";
+var AI_WORKSPACE_SUBTLE = "rounded-[24px] border border-[#E5E7EB] bg-[#FCFCFD] p-6";
+var buildMockAiSummary = () => ({
+	customerIntent: "Looking for pricing and comparing internet plans before making a purchase.",
+	buyingProbability: 92,
+	sentiment: {
+		label: "Positive",
+		icon: "😊",
+		badgeClassName: "border-[#A7F3D0] bg-[#ECFDF5] text-[#166534]"
+	},
+	buyingSignals: [
+		"Asked for pricing",
+		"Asked about the free trial",
+		"Replied quickly",
+		"Comparing plans"
+	],
+	recommendedNextAction: "Recommend the Business Package and mention the free trial to encourage conversion.",
+	suggestedReply: [
+		"Hi Aisha 👋",
+		"Thanks for your interest.",
+		"Our Business Package includes priority support, flexible upgrades, and a free trial so you can explore the plan with confidence."
+	],
+	knowledgeSources: [
+		"Pricing Catalog",
+		"FAQ",
+		"Business Policies",
+		"Product Database"
+	]
+});
+var BUTTON_PRIMARY = "inline-flex items-center justify-center rounded-[24px] bg-[#22C55E] px-4 py-3 text-[15px] font-semibold text-white shadow-none transition-all duration-150 ease-out transform-gpu hover:-translate-y-0.5 active:scale-[0.98] hover:bg-[#16A34A]";
+var BUTTON_SECONDARY = `inline-flex items-center justify-center rounded-[24px] border ${SUBTLE_BORDER} bg-white px-4 py-3 text-[15px] font-semibold text-[#111827] transition-all duration-150 ease-out transform-gpu hover:-translate-y-0.5 active:scale-[0.98] hover:bg-[#F3F4F6]`;
+var BUTTON_TERTIARY = "inline-flex items-center justify-center rounded-[24px] bg-[#F3F4F6] px-4 py-3 text-[15px] font-semibold text-[#374151] transition-all duration-150 ease-out transform-gpu hover:-translate-y-0.5 active:scale-[0.98] hover:bg-[#E5E7EB]";
+var INPUT_FIELD = `mt-3 w-full ${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-[#F9FAFB] px-4 py-3 text-[15px] text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7] transition-all duration-200 ease-out focus:shadow-none`;
+var INPUT_FIELD_WHITE = `mt-3 w-full ${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-white px-4 py-3 text-[15px] text-[#111827] shadow-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7] transition-all duration-200 ease-out focus:shadow-none`;
+var AI_TRAINING_FIELD = "mt-2 h-12 w-full rounded-xl border border-[#E2E8F0] bg-white px-3.5 pr-10 text-sm text-[#111827] shadow-sm outline-none transition placeholder:text-[#94A3B8] focus:border-[#22C55E] focus:ring-4 focus:ring-[#DCFCE7]/70";
+var AI_TRAINING_TEXTAREA = "mt-2 min-h-[96px] w-full rounded-xl border border-[#E2E8F0] bg-white px-3.5 py-3 text-sm text-[#111827] shadow-sm outline-none transition placeholder:text-[#94A3B8] focus:border-[#22C55E] focus:ring-4 focus:ring-[#DCFCE7]/70";
+var PANEL_TITLE = "text-[24px] font-semibold text-[#111827]";
+var SECTION_HEADING = "text-[12px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]";
+var CARD_TITLE = "text-[28px] font-semibold mb-6 text-[#0F172A]";
+var CUSTOMER_NAME = "text-[28px] font-semibold text-[#111827]";
+var SECONDARY = "text-[12px] text-[#64748B]";
+var TIME_LABEL = "text-[12px] text-[#64748B]";
+var BADGE = "inline-flex h-7 items-center gap-1.5 rounded-full px-3 text-[12px] font-medium tracking-[0.02em] transition-colors duration-200 ease";
+var STATUS_CHIP = "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium flex-shrink-0 transition-all duration-150 ease-out transform hover:scale-[1.02]";
+var SCHEDULED_POSTS = [
+	{
+		id: "p1",
+		caption: "Launch the new summer bundle with a discount offer.",
+		date: "Jul 08, 2026",
+		time: "09:00 AM",
+		image: "Summer bundle"
+	},
+	{
+		id: "p2",
+		caption: "Share a customer success story to drive engagement.",
+		date: "Jul 10, 2026",
+		time: "04:00 PM",
+		image: "Customer testimonial"
+	},
+	{
+		id: "p3",
+		caption: "Publish a flash sale reminder for weekend shoppers.",
+		date: "Jul 12, 2026",
+		time: "07:30 PM",
+		image: "Flash sale"
+	}
+];
+var CUSTOMERS = [
+	{
+		id: "u1",
+		avatar: "AM",
+		name: "Aisha Mwangi",
+		phone: "+254 712 345 678",
+		leadStatus: "Hot lead",
+		interestedProduct: "20 Mbps",
+		lastInteraction: "Today, 11:20 AM"
+	},
+	{
+		id: "u2",
+		avatar: "JN",
+		name: "James Njoroge",
+		phone: "+254 700 123 456",
+		leadStatus: "Warm lead",
+		interestedProduct: "Business Package",
+		lastInteraction: "Yesterday, 04:15 PM"
+	},
+	{
+		id: "u3",
+		avatar: "GR",
+		name: "Grace Wanjiru",
+		phone: "+254 733 987 654",
+		leadStatus: "New lead",
+		interestedProduct: "10 Mbps",
+		lastInteraction: "Jul 02, 2026"
+	},
+	{
+		id: "u4",
+		avatar: "MK",
+		name: "Moses Kimani",
+		phone: "+254 711 222 333",
+		leadStatus: "Hot lead",
+		interestedProduct: "Business Package",
+		lastInteraction: "Jul 03, 2026"
+	},
+	{
+		id: "u5",
+		avatar: "SR",
+		name: "Susan Rono",
+		phone: "+254 714 555 777",
+		leadStatus: "Cold lead",
+		interestedProduct: "10 Mbps",
+		lastInteraction: "Jul 01, 2026"
+	}
+];
+var PRODUCTS = [
+	{
+		id: "prod1",
+		name: "10 Mbps",
+		price: "KSh 1500",
+		active: true
+	},
+	{
+		id: "prod2",
+		name: "20 Mbps",
+		price: "KSh 2500",
+		active: true
+	},
+	{
+		id: "prod3",
+		name: "Business Package",
+		price: "KSh 5000",
+		active: false
+	}
+];
+var ANALYTICS_METRICS = [
+	{
+		label: "Messages",
+		value: "13.4k",
+		delta: "+12%",
+		description: "Compared to last week"
+	},
+	{
+		label: "Leads",
+		value: "1,280",
+		delta: "+8%",
+		description: "Warm and new leads"
+	},
+	{
+		label: "Sales",
+		value: "KSh 4.2M",
+		delta: "+18%",
+		description: "Revenue from campaigns"
+	},
+	{
+		label: "AI Resolution",
+		value: "78%",
+		delta: "+6%",
+		description: "Handled without human support"
+	}
+];
+var INTEGRATION_SECTIONS = [
+	{
+		section: "Communication",
+		items: [
+			{
+				id: "whatsapp",
+				name: "WhatsApp Business",
+				Icon: MessageCircle,
+				description: "Allow Sokoos AI to reply to customers directly inside WhatsApp.",
+				status: "Connected"
+			},
+			{
+				id: "facebook",
+				name: "Facebook Messenger",
+				Icon: MessageCircle,
+				description: "Allow Sokoos AI to reply to customers on Facebook Messenger.",
+				status: "Not Connected"
+			},
+			{
+				id: "instagram",
+				name: "Instagram",
+				Icon: Image,
+				description: "Allow Sokoos AI to respond to Instagram messages and DMs.",
+				status: "Not Connected"
+			},
+			{
+				id: "telegram",
+				name: "Telegram",
+				Icon: Send,
+				description: "Allow Sokoos AI to manage Telegram conversations.",
+				status: "Not Connected"
+			},
+			{
+				id: "email",
+				name: "Email",
+				Icon: Send,
+				description: "Allow Sokoos AI to read and send business emails.",
+				status: "Connected"
+			}
+		]
+	},
+	{
+		section: "Payments",
+		items: [
+			{
+				id: "mpesa",
+				name: "M-Pesa",
+				Icon: Phone,
+				description: "Enable mobile money payments and reconciliation.",
+				status: "Not Connected"
+			},
+			{
+				id: "stripe",
+				name: "Stripe",
+				Icon: Tag,
+				description: "Allow the AI to generate payment links.",
+				status: "Not Connected"
+			},
+			{
+				id: "paypal",
+				name: "PayPal",
+				Icon: Tag,
+				description: "Allow the AI to generate PayPal payment links.",
+				status: "Not Connected"
+			},
+			{
+				id: "flutterwave",
+				name: "Flutterwave",
+				Icon: Globe,
+				description: "Allow the AI to process payments across Africa and generate payment links.",
+				status: "Coming Soon"
+			}
+		]
+	},
+	{
+		section: "E-commerce",
+		items: [
+			{
+				id: "shopify",
+				name: "Shopify",
+				Icon: Box,
+				description: "Allow the AI to answer product questions using your store catalog.",
+				status: "Connected"
+			},
+			{
+				id: "woocommerce",
+				name: "WooCommerce",
+				Icon: Box,
+				description: "Allow the AI to access your WooCommerce product catalog and orders.",
+				status: "Not Connected"
+			},
+			{
+				id: "custom_api",
+				name: "Custom Website API",
+				Icon: Globe,
+				description: "Allow the AI to query your site's product and order APIs.",
+				status: "Not Connected"
+			}
+		]
+	},
+	{
+		section: "Business",
+		items: [
+			{
+				id: "google_business",
+				name: "Google Business Profile",
+				Icon: Globe,
+				description: "Allow the AI to update and read your business profile and respond to reviews.",
+				status: "Not Connected"
+			},
+			{
+				id: "google_calendar",
+				name: "Google Calendar",
+				Icon: Calendar,
+				description: "Allow the AI to schedule appointments.",
+				status: "Connected"
+			},
+			{
+				id: "outlook",
+				name: "Microsoft Outlook",
+				Icon: Calendar,
+				description: "Allow the AI to schedule meetings and manage business email/calendar.",
+				status: "Not Connected"
+			},
+			{
+				id: "gdrive",
+				name: "Google Drive",
+				Icon: Paperclip,
+				description: "Allow the AI to access business documents and knowledge files.",
+				status: "Connected"
+			},
+			{
+				id: "dropbox",
+				name: "Dropbox",
+				Icon: Paperclip,
+				description: "Allow the AI to access business documents stored in Dropbox.",
+				status: "Not Connected"
+			},
+			{
+				id: "onedrive",
+				name: "OneDrive",
+				Icon: Paperclip,
+				description: "Allow the AI to access business documents stored in OneDrive.",
+				status: "Not Connected"
+			}
+		]
+	},
+	{
+		section: "Marketing",
+		items: [
+			{
+				id: "meta_ads",
+				name: "Meta Ads",
+				Icon: Megaphone,
+				description: "Allow the AI to sync campaign data and create audiences.",
+				status: "Not Connected"
+			},
+			{
+				id: "google_ads",
+				name: "Google Ads",
+				Icon: Globe,
+				description: "Allow the AI to pull campaign performance and recommend optimizations.",
+				status: "Not Connected"
+			},
+			{
+				id: "tiktok",
+				name: "TikTok",
+				Icon: Globe,
+				description: "Allow the AI to manage TikTok ad campaigns and creatives.",
+				status: "Coming Soon"
+			},
+			{
+				id: "mailchimp",
+				name: "Mailchimp",
+				Icon: Send,
+				description: "Allow the AI to sync contact lists and send marketing campaigns.",
+				status: "Connected"
+			},
+			{
+				id: "brevo",
+				name: "Brevo",
+				Icon: Send,
+				description: "Allow the AI to send campaigns and sync contact lists.",
+				status: "Not Connected"
+			}
+		]
+	}
+];
+var INTEGRATION_CAPABILITIES = {
+	whatsapp: [
+		"Read messages",
+		"Send replies",
+		"Send images",
+		"Send PDFs",
+		"Send quotations",
+		"Send invoices",
+		"Read delivery status",
+		"Human takeover"
+	],
+	facebook: ["Read messages", "Send replies"],
+	instagram: ["Read DMs", "Send replies"],
+	telegram: ["Read messages", "Send replies"],
+	email: ["Read emails", "Send emails"],
+	mpesa: ["Initiate payments", "Reconcile transactions"],
+	stripe: ["Create payment links", "Refunds"],
+	paypal: ["Create payment links"],
+	flutterwave: ["Create payment links"],
+	shopify: [
+		"Read products",
+		"Sync orders",
+		"Update inventory"
+	],
+	woocommerce: ["Read products", "Sync orders"],
+	custom_api: ["Query products", "Read orders"],
+	google_business: ["Read profile", "Respond to reviews"],
+	google_calendar: ["Read events", "Create events"],
+	outlook: ["Read calendar", "Create events"],
+	gdrive: ["Read files", "Upload files"],
+	dropbox: ["Read files"],
+	onedrive: ["Read files"],
+	meta_ads: ["Read campaigns", "Create audiences"],
+	google_ads: ["Read campaigns"],
+	tiktok: ["Read campaigns"],
+	mailchimp: ["Sync contacts", "Send campaigns"],
+	brevo: ["Sync contacts"]
+};
+var CAPABILITY_FEATURES = [
+	{
+		id: "receive_whatsapp",
+		title: "Receive WhatsApp messages",
+		requires: ["whatsapp"]
+	},
+	{
+		id: "send_quotations",
+		title: "Send quotations",
+		requires: [
+			"whatsapp",
+			"shopify",
+			"custom_api",
+			"woocommerce"
+		].filter(Boolean)
+	},
+	{
+		id: "schedule_appointments",
+		title: "Schedule appointments",
+		requires: ["google_calendar"]
+	},
+	{
+		id: "collect_payments",
+		title: "Collect payments",
+		requires: ["mpesa", "stripe"]
+	},
+	{
+		id: "send_invoices",
+		title: "Send invoices",
+		requires: [
+			"mpesa",
+			"stripe",
+			"shopify",
+			"custom_api"
+		].filter(Boolean)
+	},
+	{
+		id: "product_recommendations",
+		title: "Generate product recommendations",
+		requires: [
+			"shopify",
+			"custom_api",
+			"woocommerce",
+			"gdrive"
+		]
+	},
+	{
+		id: "read_business_documents",
+		title: "Read business documents",
+		requires: ["gdrive", "dropbox"]
+	},
+	{
+		id: "reply_facebook",
+		title: "Reply on Facebook",
+		requires: ["facebook"]
+	},
+	{
+		id: "reply_instagram",
+		title: "Reply on Instagram",
+		requires: ["instagram"]
+	}
+];
+var ANALYTICS_CHART = [
+	{
+		label: "Mon",
+		value: 48
+	},
+	{
+		label: "Tue",
+		value: 62
+	},
+	{
+		label: "Wed",
+		value: 55
+	},
+	{
+		label: "Thu",
+		value: 71
+	},
+	{
+		label: "Fri",
+		value: 85
+	},
+	{
+		label: "Sat",
+		value: 53
+	},
+	{
+		label: "Sun",
+		value: 60
+	}
+];
+var ANALYTICS_TOP_QUESTIONS = [
+	{
+		question: "How do I upgrade my plan?",
+		volume: "320"
+	},
+	{
+		question: "What are your business hours?",
+		volume: "290"
+	},
+	{
+		question: "Can I get a trial?",
+		volume: "215"
+	}
+];
+var POPULAR_PRODUCTS = [
+	{
+		name: "20 Mbps",
+		sales: "520"
+	},
+	{
+		name: "Business Package",
+		sales: "320"
+	},
+	{
+		name: "10 Mbps",
+		sales: "270"
+	}
+];
+var LANGUAGE_OPTIONS = [
+	"English",
+	"Kiswahili",
+	"French",
+	"Arabic",
+	"German",
+	"Spanish",
+	"Portuguese",
+	"Somali",
+	"Amharic",
+	"Hindi",
+	"Chinese",
+	"Italian"
+];
+var PERSONALITIES = [
+	"Professional",
+	"Friendly",
+	"Luxury",
+	"Casual",
+	"Technical",
+	"Playful"
+];
+var BRAND_VOICE_DETAILS = {
+	Professional: {
+		description: "Clear, polished and dependable.",
+		example: "Thank you for reaching out. How may we assist you today?"
+	},
+	Friendly: {
+		description: "Warm, helpful and approachable.",
+		example: "Hello 👋 We’re happy to help. What can we do for you?"
+	},
+	Luxury: {
+		description: "Refined, attentive and elevated.",
+		example: "Welcome. We would be delighted to assist you."
+	},
+	Casual: {
+		description: "Relaxed, simple and conversational.",
+		example: "Hi! What can we help you with today?"
+	},
+	Technical: {
+		description: "Precise, informative and direct.",
+		example: "Hello. Please share the details and we’ll help you resolve it."
+	},
+	Playful: {
+		description: "Upbeat, lively and full of personality.",
+		example: "Hey there! Let’s find exactly what you need ✨"
+	}
+};
+var LOGO_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Crect width='240' height='240' rx='32' fill='%23E5F6EC'/%3E%3Cpath d='M73 91h94v58H73z' rx='8' fill='%2322C55E'/%3E%3Cpath d='M91 72h58v19H91z' fill='%23065F46'/%3E%3Ccircle cx='120' cy='120' r='17' fill='white'/%3E%3C/svg%3E";
+var INBOX_CONVERSATIONS = [
+	{
+		id: "c1",
+		name: "Aisha from Nairobi",
+		phone: "+254712345678",
+		message: "Can you share the latest pricing?",
+		time: "2m",
+		badge: 3,
+		source: "owner",
+		isSaved: true,
+		avatar: "AM"
+	},
+	{
+		id: "c2",
+		name: "James - Tech Store",
+		phone: "+254700123456",
+		message: "How do I update product availability?",
+		time: "14m",
+		badge: 0,
+		source: "ai_handling",
+		isSaved: true,
+		avatar: "J"
+	},
+	{
+		id: "c3",
+		name: "Grace",
+		phone: "+254733987654",
+		message: "Thanks for the quick response!",
+		time: "37m",
+		badge: 1,
+		source: "needs_attention",
+		needsAttention: true,
+		isSaved: true,
+		avatar: "G"
+	},
+	{
+		id: "c4",
+		name: "Michael",
+		phone: "+254711222333",
+		message: "Please pause the AI for tonight.",
+		time: "1h",
+		badge: 0,
+		source: "ai_handled",
+		isSaved: true,
+		avatar: "M"
+	},
+	{
+		id: "c5",
+		name: null,
+		phone: "+254712345678",
+		message: "I’m interested in your business package — can you share details?",
+		time: "Yesterday",
+		badge: 0,
+		source: "owner",
+		isSaved: false,
+		avatar: "UC"
+	},
+	{
+		id: "c6",
+		name: "Samuel Kipkemboi",
+		phone: "+254722888999",
+		message: "Your 20 Mbps plan is perfect for our office. Let's proceed with the order.",
+		time: "3h ago",
+		badge: 0,
+		source: "owner",
+		isSaved: true,
+		avatar: "SK"
+	},
+	{
+		id: "c7",
+		name: "Fatima Hassan",
+		phone: "+254744555666",
+		message: "Thank you! I'll set up the installation for next Monday.",
+		time: "5h ago",
+		badge: 0,
+		source: "owner",
+		isSaved: true,
+		avatar: "FH"
+	},
+	{
+		id: "c8",
+		name: "Peter Ochieng",
+		phone: "+254701333222",
+		message: "We've received your payment. Service activation starts tomorrow morning.",
+		time: "Yesterday",
+		badge: 0,
+		source: "owner",
+		isSaved: true,
+		avatar: "PO"
+	}
+];
+var formatConversationTime = (time) => time || "Unknown";
+var INBOX_TAB_ITEMS = [
+	"All",
+	"AI Active",
+	"Human",
+	"Needs Reply"
+];
+var INBOX_MESSAGES = {
+	c1: [
+		{
+			from: "customer",
+			text: "Can you share the latest pricing?",
+			time: "2:13 PM"
+		},
+		{
+			from: "agent",
+			text: "Sure — our starter plan is available from $29/month.",
+			time: "2:14 PM"
+		},
+		{
+			from: "customer",
+			text: "Great, and is there a free trial?",
+			time: "2:15 PM"
+		}
+	],
+	c2: [{
+		from: "agent",
+		text: "You can edit availability in Catalog > Products.",
+		time: "1:35 PM"
+	}, {
+		from: "customer",
+		text: "Got it, thanks!",
+		time: "1:36 PM"
+	}],
+	c3: [{
+		from: "customer",
+		text: "Thanks for the quick response!",
+		time: "12:05 PM"
+	}, {
+		from: "agent",
+		text: "Happy to help — let me know if you need anything else.",
+		time: "12:06 PM"
+	}],
+	c4: [{
+		from: "customer",
+		text: "Please pause the AI for tonight.",
+		time: "11:20 AM"
+	}, {
+		from: "agent",
+		text: "Sure, I’ll pause it from 9PM tonight.",
+		time: "11:21 AM"
+	}],
+	c5: [{
+		from: "customer",
+		text: "I’m interested in your business package — can you share details?",
+		time: "4:10 PM"
+	}, {
+		from: "agent",
+		text: "Absolutely — I’ll send you the package details now.",
+		time: "4:12 PM"
+	}],
+	c6: [
+		{
+			from: "customer",
+			text: "What's the fastest plan you have?",
+			time: "2:30 PM"
+		},
+		{
+			from: "agent",
+			text: "Our 20 Mbps plan is ideal for offices. Would you like more details?",
+			time: "2:32 PM"
+		},
+		{
+			from: "customer",
+			text: "Your 20 Mbps plan is perfect for our office. Let's proceed with the order.",
+			time: "2:45 PM"
+		}
+	],
+	c7: [
+		{
+			from: "customer",
+			text: "How long will installation take?",
+			time: "11:00 AM"
+		},
+		{
+			from: "agent",
+			text: "Installation usually takes 2-3 hours. We can schedule it for next week.",
+			time: "11:02 AM"
+		},
+		{
+			from: "customer",
+			text: "Thank you! I'll set up the installation for next Monday.",
+			time: "11:15 AM"
+		}
+	],
+	c8: [{
+		from: "customer",
+		text: "I've sent the payment. When does service start?",
+		time: "9:00 AM"
+	}, {
+		from: "agent",
+		text: "We've received your payment. Service activation starts tomorrow morning.",
+		time: "9:05 AM"
+	}]
+};
+var CUSTOMER_PROFILES = {
+	c1: {
+		name: "Aisha Mwangi",
+		company: "Nairobi Essentials",
+		phone: "+254 712 345 678",
+		email: "aisha@nairobiessentials.co.ke",
+		location: "Nairobi, Kenya",
+		tags: [
+			"VIP",
+			"Retail",
+			"High priority"
+		],
+		status: "Active",
+		lastOrder: "2 days ago",
+		leadStatus: "Hot lead",
+		interestedProducts: [
+			"10 Mbps",
+			"20 Mbps",
+			"Business Package"
+		]
+	},
+	c2: {
+		name: "James Njoroge",
+		company: "Tech Store",
+		phone: "+254 700 123 456",
+		email: "james@techstore.co.ke",
+		location: "Thika, Kenya",
+		tags: [
+			"Team",
+			"Wholesale",
+			"Priority"
+		],
+		status: "Active",
+		lastOrder: "Yesterday",
+		leadStatus: "Warm lead",
+		interestedProducts: ["Business Package", "20 Mbps"]
+	},
+	c3: {
+		name: "Grace Wanjiru",
+		company: "Wanjiru Boutique",
+		phone: "+254 733 987 654",
+		email: "grace@wanjiruboutique.co.ke",
+		location: "Nairobi, Kenya",
+		tags: [
+			"New lead",
+			"Fashion",
+			"Important"
+		],
+		status: "Active",
+		lastOrder: "3 days ago",
+		leadStatus: "New lead",
+		interestedProducts: ["10 Mbps", "20 Mbps"]
+	},
+	c4: {
+		name: "Michael",
+		company: "Service Solutions",
+		phone: "+254 711 222 333",
+		email: "michael@servicesolutions.co.ke",
+		location: "Mombasa, Kenya",
+		tags: [
+			"AI",
+			"Support",
+			"Follow-up"
+		],
+		status: "Active",
+		lastOrder: "Today",
+		leadStatus: "Hot lead",
+		interestedProducts: ["Business Package", "20 Mbps"]
+	},
+	c5: {
+		name: "Unknown Customer",
+		company: "New Inquiry",
+		phone: "+254 712 345 678",
+		email: "",
+		location: "Nairobi, Kenya",
+		tags: [
+			"New lead",
+			"Unknown",
+			"Needs follow-up"
+		],
+		status: "New",
+		lastOrder: "N/A",
+		leadStatus: "New lead",
+		interestedProducts: ["Business Package"]
+	}
+};
+var OWNER_NAMES = {
+	c1: "You",
+	c3: "You"
+};
+function DashboardLayout() {
+	const [mobileOpen, setMobileOpen] = (0, import_react.useState)(false);
+	const [selected, setSelected] = (0, import_react.useState)("Home");
+	const [integrationStates, setIntegrationStates] = (0, import_react.useState)(() => {
+		try {
+			const raw = typeof window !== "undefined" ? window.localStorage.getItem("sokoos.integrationStates") : null;
+			if (raw) return JSON.parse(raw);
+		} catch (e) {}
+		const map = {};
+		INTEGRATION_SECTIONS.forEach((section) => {
+			section.items.forEach((it) => {
+				map[it.id] = { status: it.status };
+			});
+		});
+		return map;
+	});
+	const [connectModalOpen, setConnectModalOpen] = (0, import_react.useState)(false);
+	const [connectModalId, setConnectModalId] = (0, import_react.useState)(null);
+	const [connectForm, setConnectForm] = (0, import_react.useState)({
+		email: "",
+		businessName: "",
+		phone: ""
+	});
+	const [drawerOpen, setDrawerOpen] = (0, import_react.useState)(false);
+	const [drawerIntegrationId, setDrawerIntegrationId] = (0, import_react.useState)(null);
+	const openDrawer = (id) => {
+		setDrawerIntegrationId(id);
+		setDrawerOpen(true);
+	};
+	const closeDrawer = () => {
+		setDrawerOpen(false);
+		setDrawerIntegrationId(null);
+	};
+	const handleDisconnect = (id) => {
+		setIntegrationStates((s) => ({
+			...s,
+			[id]: { status: "Not Connected" }
+		}));
+		closeDrawer();
+	};
+	const handleSyncNow = (id) => {
+		setIntegrationStates((s) => ({
+			...s,
+			[id]: {
+				...s[id] || {},
+				status: "Connected",
+				lastSynced: "Just now"
+			}
+		}));
+	};
+	const handleReconnect = (id) => {
+		setConnectModalId(id);
+		setConnectForm({
+			email: "",
+			businessName: "",
+			phone: ""
+		});
+		setConnectModalOpen(true);
+	};
+	(0, import_react.useEffect)(() => {
+		try {
+			if (typeof window !== "undefined") window.localStorage.setItem("sokoos.integrationStates", JSON.stringify(integrationStates));
+		} catch (e) {}
+	}, [integrationStates]);
+	const getIntegrationName = (id) => {
+		if (!id) return "Integration";
+		for (const section of INTEGRATION_SECTIONS) {
+			const found = section.items.find((i) => i.id === id);
+			if (found) return found.name;
+		}
+		return id;
+	};
+	const handleModalConnect = () => {
+		if (!connectModalId) return;
+		const name = getIntegrationName(connectModalId);
+		setIntegrationStates((s) => ({
+			...s,
+			[connectModalId]: {
+				status: "Connected",
+				accountName: connectForm.businessName || connectForm.email || `${name} Account`,
+				lastSynced: "Just now"
+			}
+		}));
+		setConnectModalOpen(false);
+		setConnectModalId(null);
+	};
+	const [activeWorkspaceSection, setActiveWorkspaceSection] = (0, import_react.useState)("Identity");
+	const [activeIdentityStep, setActiveIdentityStep] = (0, import_react.useState)(0);
+	const [completedIdentitySteps, setCompletedIdentitySteps] = (0, import_react.useState)([]);
+	const [completionToast, setCompletionToast] = (0, import_react.useState)(null);
+	const [previewReplyVisible, setPreviewReplyVisible] = (0, import_react.useState)(true);
+	const identityLessonRef = (0, import_react.useRef)(null);
+	const previewMessagesRef = (0, import_react.useRef)(null);
+	const identityLessons = [
+		"Meet",
+		"Teach",
+		"Personality",
+		"Greetings",
+		"Languages",
+		"Hours",
+		"Workplaces",
+		"Graduation"
+	];
+	const focusIdentityLesson = (step) => {
+		setActiveIdentityStep(step);
+		window.setTimeout(() => {
+			identityLessonRef.current?.scrollIntoView({
+				behavior: "smooth",
+				block: "start"
+			});
+		}, 0);
+	};
+	const completeIdentityLesson = (step) => {
+		setCompletedIdentitySteps((current) => current.includes(step) ? current : [...current, step]);
+		setCompletionToast(`${identityLessons[step]} completed`);
+		window.setTimeout(() => setCompletionToast(null), 2200);
+		if (step < identityLessons.length - 1) window.setTimeout(() => focusIdentityLesson(step + 1), 500);
+	};
+	(0, import_react.useEffect)(() => {
+		document.getElementById("ai-workspace-content")?.scrollIntoView({
+			behavior: "smooth",
+			block: "start"
+		});
+	}, [activeWorkspaceSection]);
+	const CATALOG_ITEMS = [
+		{
+			id: "p-restaurant-001",
+			name: "Ginger Citrus Salad",
+			category: "Restaurant",
+			price: "$8.50",
+			description: "Fresh mixed greens, candied ginger, citrus segments, and sesame vinaigrette.",
+			availability: "In stock",
+			imagesCount: 3,
+			documentsCount: 0,
+			image: "/assets/sample/food-salad.jpg"
+		},
+		{
+			id: "p-retail-001",
+			name: "Everyday Cotton Tee",
+			category: "Retail",
+			price: "$19.99",
+			description: "Soft 100% cotton tee available in multiple colors and sizes.",
+			availability: "Low stock",
+			imagesCount: 4,
+			documentsCount: 1,
+			image: "/assets/sample/tee.jpg"
+		},
+		{
+			id: "p-clinic-001",
+			name: "Adult Wellness Check",
+			category: "Clinic",
+			price: "$65.00",
+			description: "Comprehensive check-up including vitals and basic blood work.",
+			availability: "By appointment",
+			imagesCount: 1,
+			documentsCount: 2,
+			image: "/assets/sample/clinic.jpg"
+		},
+		{
+			id: "p-school-001",
+			name: "Primary Math Workbook",
+			category: "School",
+			price: "$12.00",
+			description: "Grade 3 math workbook with exercises and answer key.",
+			availability: "In stock",
+			imagesCount: 2,
+			documentsCount: 1,
+			image: "/assets/sample/workbook.jpg"
+		},
+		{
+			id: "p-realestate-001",
+			name: "2-Bedroom Riverside Apartment",
+			category: "Real Estate",
+			price: "$250,000",
+			description: "Modern apartment with river views, 2 bed, 2 bath, parking included.",
+			availability: "Available",
+			imagesCount: 8,
+			documentsCount: 3,
+			image: "/assets/sample/apartment.jpg"
+		},
+		{
+			id: "p-salon-001",
+			name: "Deluxe Hair Treatment",
+			category: "Salon",
+			price: "$45.00",
+			description: "Repairing deep-conditioning treatment with scalp massage.",
+			availability: "In stock",
+			imagesCount: 2,
+			documentsCount: 0,
+			image: "/assets/sample/salon.jpg"
+		},
+		{
+			id: "p-electronics-001",
+			name: "Noise-Cancelling Headphones",
+			category: "Electronics",
+			price: "$129.99",
+			description: "Wireless over-ear headphones with 30h battery life.",
+			availability: "In stock",
+			imagesCount: 5,
+			documentsCount: 2,
+			image: "/assets/sample/headphones.jpg"
+		}
+	];
+	const [catalogueSubsection, setCatalogueSubsection] = (0, import_react.useState)("Products & Services");
+	const [mediaAssets, setMediaAssets] = (0, import_react.useState)([
+		{
+			id: "m-img-1",
+			name: "Ginger Citrus Salad.jpg",
+			fileType: "Image",
+			uploadDate: (/* @__PURE__ */ new Date()).toLocaleString(),
+			size: "128 KB",
+			url: "/assets/sample/food-salad.jpg",
+			mime: "image/jpeg"
+		},
+		{
+			id: "m-pdf-1",
+			name: "Restaurant Menu.pdf",
+			fileType: "PDF",
+			uploadDate: (/* @__PURE__ */ new Date()).toLocaleString(),
+			size: "320 KB",
+			url: "/assets/sample/menu.pdf",
+			mime: "application/pdf"
+		},
+		{
+			id: "m-video-1",
+			name: "Salon Promo.mp4",
+			fileType: "Video",
+			uploadDate: (/* @__PURE__ */ new Date()).toLocaleString(),
+			size: "6.2 MB",
+			url: "/assets/sample/promo.mp4",
+			mime: "video/mp4"
+		},
+		{
+			id: "m-logo-1",
+			name: "Clinic Logo.png",
+			fileType: "Logo",
+			uploadDate: (/* @__PURE__ */ new Date()).toLocaleString(),
+			size: "48 KB",
+			url: "/assets/sample/clinic.jpg",
+			mime: "image/png"
+		}
+	]);
+	const fileInputRef = (0, import_react.useRef)(null);
+	const handleFiles = (files) => {
+		if (!files || files.length === 0) return;
+		const arr = Array.from(files).map((f) => ({
+			id: `asset-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+			name: f.name,
+			fileType: f.type.split("/")[0] || "file",
+			uploadDate: (/* @__PURE__ */ new Date()).toLocaleString(),
+			size: `${Math.round(f.size / 1024)} KB`,
+			url: URL.createObjectURL(f),
+			mime: f.type
+		}));
+		setMediaAssets((prev) => [...arr, ...prev]);
+		if (fileInputRef.current) fileInputRef.current.value = "";
+	};
+	const onDrop = (e) => {
+		e.preventDefault();
+		handleFiles(e.dataTransfer.files);
+	};
+	const onDragOver = (e) => e.preventDefault();
+	const viewAsset = (asset) => {
+		window.open(asset.url, "_blank");
+	};
+	const renameAsset = (id) => {
+		const a = mediaAssets.find((m) => m.id === id);
+		if (!a) return;
+		const newName = window.prompt("Rename file", a.name);
+		if (newName) setMediaAssets((prev) => prev.map((m) => m.id === id ? {
+			...m,
+			name: newName
+		} : m));
+	};
+	const deleteAsset = (id) => {
+		const a = mediaAssets.find((m) => m.id === id);
+		if (!a) return;
+		if (!window.confirm(`Delete ${a.name}?`)) return;
+		try {
+			if (a.url.startsWith("blob:")) URL.revokeObjectURL(a.url);
+		} catch (e) {}
+		setMediaAssets((prev) => prev.filter((m) => m.id !== id));
+	};
+	const IMPORT_TYPES = [
+		"Excel",
+		"CSV",
+		"PDF Catalogues",
+		"Website Import"
+	];
+	const [importState, setImportState] = (0, import_react.useState)(() => IMPORT_TYPES.reduce((acc, t) => {
+		acc[t] = {
+			progress: 0,
+			status: "idle"
+		};
+		return acc;
+	}, {}));
+	const simulateImport = (type, file) => {
+		setImportState((s) => ({
+			...s,
+			[type]: {
+				progress: 0,
+				status: "uploading"
+			}
+		}));
+		let progress = 0;
+		const id = setInterval(() => {
+			progress += Math.floor(Math.random() * 12) + 8;
+			if (progress >= 100) progress = 100;
+			setImportState((s) => ({
+				...s,
+				[type]: {
+					...s[type] || {
+						progress: 0,
+						status: "uploading"
+					},
+					progress
+				}
+			}));
+			if (progress >= 100) {
+				clearInterval(id);
+				const productsImported = Math.floor(Math.random() * 90) + 10;
+				const duplicatesFound = Math.floor(Math.random() * 5);
+				const warnings = [];
+				if (Math.random() > .7) warnings.push("Some rows had missing prices");
+				if (Math.random() > .85) warnings.push("Invalid category mappings for 2 items");
+				const message = `Imported ${productsImported} products successfully.`;
+				setImportState((s) => ({
+					...s,
+					[type]: {
+						progress: 100,
+						status: "done",
+						result: {
+							productsImported,
+							duplicatesFound,
+							warnings,
+							message
+						}
+					}
+				}));
+			}
+		}, 400 + Math.random() * 300);
+	};
+	const [quoteTemplates, setQuoteTemplates] = (0, import_react.useState)([{
+		id: "t-1",
+		companyLogo: "/assets/sample/clinic.jpg",
+		companyName: "Acme Services Ltd",
+		header: "Quote",
+		footer: "Thank you for your business.",
+		terms: "Payment due within 30 days.",
+		currency: "USD",
+		tax: "16%",
+		signature: "Authorized Signatory",
+		primaryColor: "#065F46"
+	}, {
+		id: "t-2",
+		companyLogo: "/assets/sample/tee.jpg",
+		companyName: "Everyday Retail Co.",
+		header: "Sales Quote",
+		footer: "All sales subject to terms.",
+		terms: "Return within 14 days.",
+		currency: "KES",
+		tax: "0%",
+		signature: "Store Manager",
+		primaryColor: "#0F172A"
+	}]);
+	const [selectedTemplateId, setSelectedTemplateId] = (0, import_react.useState)(quoteTemplates[0].id);
+	const addQuoteTemplate = () => {
+		const newT = {
+			id: `t-${Date.now()}`,
+			companyName: "New Company",
+			header: "Quote",
+			footer: "",
+			terms: "",
+			currency: "USD",
+			tax: "0%",
+			signature: "",
+			primaryColor: "#065F46"
+		};
+		setQuoteTemplates((s) => [newT, ...s]);
+		setSelectedTemplateId(newT.id);
+	};
+	const updateTemplate = (id, patch) => {
+		setQuoteTemplates((s) => s.map((t) => t.id === id ? {
+			...t,
+			...patch
+		} : t));
+	};
+	const duplicateTemplate = (id) => {
+		const t = quoteTemplates.find((x) => x.id === id);
+		if (!t) return;
+		const copy = {
+			...t,
+			id: `t-${Date.now()}`
+		};
+		setQuoteTemplates((s) => [copy, ...s]);
+		setSelectedTemplateId(copy.id);
+	};
+	const deleteTemplate = (id) => {
+		if (!window.confirm("Delete this template?")) return;
+		setQuoteTemplates((s) => s.filter((t) => t.id !== id));
+		setSelectedTemplateId((prev) => prev === id ? quoteTemplates[0]?.id ?? null : prev);
+	};
+	const uploadLogoForTemplate = (id, f) => {
+		if (!f) return;
+		updateTemplate(id, { companyLogo: URL.createObjectURL(f) });
+	};
+	const [playbooks, setPlaybooks] = (0, import_react.useState)([{
+		id: "p-1",
+		title: "Pricing & Quote Flow",
+		steps: [
+			"Customer asks about pricing",
+			"Recommend suitable product",
+			"Suggest upgrade",
+			"Offer discount if available",
+			"Collect customer details",
+			"Generate quotation",
+			"Ask to proceed"
+		],
+		allowed: true
+	}]);
+	const [editingPlaybookId, setEditingPlaybookId] = (0, import_react.useState)(null);
+	const addPlaybook = () => {
+		const p = {
+			id: `p-${Date.now()}`,
+			title: "New Playbook",
+			steps: ["Start"],
+			allowed: false
+		};
+		setPlaybooks((s) => [p, ...s]);
+		setEditingPlaybookId(p.id);
+	};
+	const updatePlaybook = (id, patch) => {
+		setPlaybooks((s) => s.map((x) => x.id === id ? {
+			...x,
+			...patch
+		} : x));
+	};
+	const duplicatePlaybook = (id) => {
+		const p = playbooks.find((x) => x.id === id);
+		if (!p) return;
+		const copy = {
+			...p,
+			id: `p-${Date.now()}`,
+			title: `${p.title} (copy)`
+		};
+		setPlaybooks((s) => [copy, ...s]);
+	};
+	const deletePlaybook = (id) => {
+		if (!window.confirm("Delete this playbook?")) return;
+		setPlaybooks((s) => s.filter((x) => x.id !== id));
+		if (editingPlaybookId === id) setEditingPlaybookId(null);
+	};
+	const addStep = (id, afterIndex = -1) => {
+		setPlaybooks((s) => s.map((p) => {
+			if (p.id !== id) return p;
+			const steps = [...p.steps];
+			steps.splice(afterIndex + 1, 0, "New step");
+			return {
+				...p,
+				steps
+			};
+		}));
+	};
+	const updateStep = (id, index, text) => {
+		setPlaybooks((s) => s.map((p) => {
+			if (p.id !== id) return p;
+			const steps = [...p.steps];
+			steps[index] = text;
+			return {
+				...p,
+				steps
+			};
+		}));
+	};
+	const removeStep = (id, index) => {
+		setPlaybooks((s) => s.map((p) => {
+			if (p.id !== id) return p;
+			const steps = [...p.steps];
+			steps.splice(index, 1);
+			return {
+				...p,
+				steps
+			};
+		}));
+	};
+	const [skills, setSkills] = (0, import_react.useState)([
+		{
+			id: "s-1",
+			name: "Answer Questions",
+			icon: "💬",
+			description: "Respond to customer queries with helpful answers.",
+			enabled: true,
+			status: "Active"
+		},
+		{
+			id: "s-2",
+			name: "Recommend Products",
+			icon: "🛍️",
+			description: "Suggest products based on customer needs.",
+			enabled: true,
+			status: "Active"
+		},
+		{
+			id: "s-3",
+			name: "Upsell Customers",
+			icon: "⬆️",
+			description: "Recommend higher tier or add-ons.",
+			enabled: false,
+			status: "Disabled"
+		},
+		{
+			id: "s-4",
+			name: "Cross-sell",
+			icon: "🔗",
+			description: "Suggest complementary products.",
+			enabled: false,
+			status: "Disabled"
+		},
+		{
+			id: "s-5",
+			name: "Generate Quotes",
+			icon: "🧾",
+			description: "Create quotations based on selected items.",
+			enabled: true,
+			status: "Active"
+		},
+		{
+			id: "s-6",
+			name: "Book Appointments",
+			icon: "📅",
+			description: "Schedule appointments with customers.",
+			enabled: false,
+			status: "Disabled"
+		},
+		{
+			id: "s-7",
+			name: "Collect Leads",
+			icon: "📇",
+			description: "Capture lead details for follow-up.",
+			enabled: true,
+			status: "Active"
+		},
+		{
+			id: "s-8",
+			name: "Generate Invoices",
+			icon: "💳",
+			description: "Produce invoices for completed sales.",
+			enabled: false,
+			status: "Disabled"
+		},
+		{
+			id: "s-9",
+			name: "Follow-up Customers",
+			icon: "🔔",
+			description: "Send follow-ups or reminders.",
+			enabled: false,
+			status: "Idle"
+		},
+		{
+			id: "s-10",
+			name: "Translate Messages",
+			icon: "🌐",
+			description: "Translate customer messages to preferred language.",
+			enabled: true,
+			status: "Active"
+		}
+	]);
+	const toggleSkill = (id) => {
+		setSkills((s) => s.map((k) => k.id === id ? {
+			...k,
+			enabled: !k.enabled,
+			status: k.enabled ? "Disabled" : "Active"
+		} : k));
+	};
+	const [policySections, setPolicySections] = (0, import_react.useState)([
+		{
+			id: "pol-1",
+			title: "Business Rules",
+			content: "Business rules that govern pricing, discounts, and who can approve special offers."
+		},
+		{
+			id: "pol-2",
+			title: "Refund Policy",
+			content: "Refunds processed within 30 days with receipt and original packaging."
+		},
+		{
+			id: "pol-3",
+			title: "Cancellation Policy",
+			content: "Orders can be cancelled within 2 hours of placement; after that contact support."
+		},
+		{
+			id: "pol-4",
+			title: "Delivery Policy",
+			content: "Standard delivery in 3-5 business days. Express options available."
+		},
+		{
+			id: "pol-5",
+			title: "Escalation Rules",
+			content: "Escalate to manager for refunds over $1000 or repeated complaints."
+		},
+		{
+			id: "pol-6",
+			title: "Outside Business Hours",
+			content: "Outside hours, log requests and respond next business day."
+		},
+		{
+			id: "pol-7",
+			title: "Allowed AI Actions",
+			content: "AI may suggest products and collect basic contact info; it must not provide legal advice."
+		}
+	]);
+	const togglePolicy = (id) => setPolicySections((s) => s.map((p) => p.id === id ? {
+		...p,
+		expanded: !p.expanded
+	} : p));
+	const updatePolicyContent = (id, value) => setPolicySections((s) => s.map((p) => p.id === id ? {
+		...p,
+		content: value
+	} : p));
+	const SAMPLE_PROMPTS = [
+		"What is your return policy?",
+		"Recommend a product for a small restaurant",
+		"Offer an upgrade for this customer",
+		"Generate a quote for 10 units of Item X"
+	];
+	const [conversations, setConversations] = (0, import_react.useState)([{
+		id: "c-1",
+		title: "Pricing test",
+		messages: [{
+			id: "m-1",
+			role: "user",
+			text: "How much does Product A cost?",
+			time: (/* @__PURE__ */ new Date()).toLocaleTimeString()
+		}, {
+			id: "m-2",
+			role: "ai",
+			text: "Product A is $99. Would you like a bulk discount?",
+			time: (/* @__PURE__ */ new Date()).toLocaleTimeString()
+		}]
+	}, {
+		id: "c-2",
+		title: "Booking flow",
+		messages: [{
+			id: "m-1",
+			role: "user",
+			text: "Can I book an installation?",
+			time: (/* @__PURE__ */ new Date()).toLocaleTimeString()
+		}]
+	}]);
+	const [selectedConversationId, setSelectedConversationId] = (0, import_react.useState)(conversations[0]?.id ?? null);
+	const [inputText, setInputText] = (0, import_react.useState)("");
+	const [aiAnalysis, setAiAnalysis] = (0, import_react.useState)(null);
+	const createConversation = (title) => {
+		const c = {
+			id: `c-${Date.now()}`,
+			title: title ?? `Conversation ${conversations.length + 1}`,
+			messages: []
+		};
+		setConversations((s) => [c, ...s]);
+		setSelectedConversationId(c.id);
+	};
+	const addMessage = (convId, role, text) => {
+		const msg = {
+			id: `m-${Date.now()}`,
+			role,
+			text,
+			time: (/* @__PURE__ */ new Date()).toLocaleTimeString()
+		};
+		setConversations((s) => s.map((c) => c.id === convId ? {
+			...c,
+			messages: [...c.messages, msg]
+		} : c));
+		return msg;
+	};
+	const generateMockAnalysis = (userText, aiText) => {
+		const intents = [
+			"Pricing Query",
+			"Booking",
+			"Upgrade Request",
+			"General Inquiry"
+		];
+		const actions = [
+			"Recommend product",
+			"Generate quote",
+			"Schedule appointment",
+			"Collect contact info"
+		];
+		return {
+			intent: intents[Math.floor(Math.random() * intents.length)],
+			confidence: `${Math.floor(70 + Math.random() * 30)}%`,
+			knowledgeUsed: [
+				"Product DB",
+				"Pricing Rules",
+				"FAQ"
+			].slice(0, 1 + Math.floor(Math.random() * 3)),
+			suggestedActions: actions.slice(0, 1 + Math.floor(Math.random() * actions.length)),
+			responseTime: `${Math.floor(100 + Math.random() * 400)}ms`,
+			generatedReply: aiText,
+			knowledgeSources: ["Products API", "Pricing Table"].slice(0, 1 + Math.floor(Math.random() * 2))
+		};
+	};
+	const simulateAiResponse = (convId, userText) => {
+		addMessage(convId, "user", userText);
+		setInputText("");
+		setAiAnalysis(null);
+		setTimeout(() => {
+			setAiAnalysis(generateMockAnalysis(userText, addMessage(convId, "ai", `Mock reply to: "${userText}"`).text));
+		}, 600 + Math.random() * 400);
+	};
+	const [assistantTab, setAssistantTab] = (0, import_react.useState)("Business Knowledge");
+	const [activeConversation, setActiveConversation] = (0, import_react.useState)("c1");
+	const [searchQuery, setSearchQuery] = (0, import_react.useState)("");
+	const [customerSearch, setCustomerSearch] = (0, import_react.useState)("");
+	const [activeTab, setActiveTab] = (0, import_react.useState)("All");
+	const [summaryGenerated, setSummaryGenerated] = (0, import_react.useState)(false);
+	const [summaryVisible, setSummaryVisible] = (0, import_react.useState)(false);
+	const [aiSummary, setAiSummary] = (0, import_react.useState)(null);
+	const activeConversationData = INBOX_CONVERSATIONS.find((item) => item.id === activeConversation);
+	const activeCustomerProfile = CUSTOMER_PROFILES[activeConversation] ?? CUSTOMER_PROFILES.c1;
+	const activeMessages = INBOX_MESSAGES[activeConversation] ?? [];
+	const inboxCounts = {
+		All: INBOX_CONVERSATIONS.length,
+		"AI Active": INBOX_CONVERSATIONS.filter((item) => item.source === "ai_handling").length,
+		Human: INBOX_CONVERSATIONS.filter((item) => item.source === "owner").length,
+		"Needs Reply": INBOX_CONVERSATIONS.filter((item) => item.source === "needs_attention").length
+	};
+	const [sourceOverrides, setSourceOverrides] = (0, import_react.useState)({});
+	const getEffectiveSource = (id, original) => sourceOverrides[id] ?? original ?? "owner";
+	const [messageInput, setMessageInput] = (0, import_react.useState)("");
+	const textareaRef = (0, import_react.useRef)(null);
+	const [sidebarHovered, setSidebarHovered] = (0, import_react.useState)(false);
+	const [customerPanelFading, setCustomerPanelFading] = (0, import_react.useState)(false);
+	(0, import_react.useEffect)(() => {
+		const textarea = textareaRef.current;
+		if (!textarea) return;
+		textarea.style.height = "auto";
+		const height = Math.min(textarea.scrollHeight, 120);
+		textarea.style.height = `${height}px`;
+		textarea.style.overflowY = textarea.scrollHeight > 120 ? "auto" : "hidden";
+	}, [messageInput]);
+	(0, import_react.useEffect)(() => {
+		setCustomerPanelFading(true);
+		const timer = window.setTimeout(() => setCustomerPanelFading(false), 10);
+		return () => window.clearTimeout(timer);
+	}, [activeConversation]);
+	CUSTOMERS.filter((customer) => {
+		const query = customerSearch.toLowerCase();
+		return customer.name.toLowerCase().includes(query) || customer.phone.toLowerCase().includes(query) || customer.interestedProduct.toLowerCase().includes(query) || customer.leadStatus.toLowerCase().includes(query);
+	});
+	const [scheduledPosts, setScheduledPosts] = (0, import_react.useState)(SCHEDULED_POSTS);
+	const [newPost, setNewPost] = (0, import_react.useState)({
+		image: "",
+		caption: "",
+		date: "",
+		time: "",
+		source: "ai",
+		needsAttention: true
+	});
+	const [products, setProducts] = (0, import_react.useState)(PRODUCTS);
+	const chartMax = Math.max(...ANALYTICS_CHART.map((point) => point.value));
+	const [aiEnabled, setAiEnabled] = (0, import_react.useState)(true);
+	const [businessHours, setBusinessHours] = (0, import_react.useState)("Mon–Fri, 8:00 AM - 6:00 PM");
+	const [humanTakeover, setHumanTakeover] = (0, import_react.useState)(true);
+	const [language, setLanguage] = (0, import_react.useState)("English");
+	const [personality, setPersonality] = (0, import_react.useState)("Friendly");
+	const [testAiInput, setTestAiInput] = (0, import_react.useState)("How much is the Business Package?");
+	const [testAiMessages, setTestAiMessages] = (0, import_react.useState)([{
+		id: "m1",
+		role: "user",
+		text: "How much is your Business Package?"
+	}, {
+		id: "m2",
+		role: "ai",
+		text: "Our Business Package costs KES 5,000/month.",
+		source: "Products & Services → Business Package"
+	}]);
+	const testAiScrollRef = (0, import_react.useRef)(null);
+	(0, import_react.useEffect)(() => {
+		if (!testAiScrollRef.current) return;
+		testAiScrollRef.current.scrollTop = testAiScrollRef.current.scrollHeight;
+	}, [testAiMessages]);
+	const [escalateOnLiveRequest, setEscalateOnLiveRequest] = (0, import_react.useState)(true);
+	const [escalateOutsideHours, setEscalateOutsideHours] = (0, import_react.useState)(true);
+	const [escalateUnanswered, setEscalateUnanswered] = (0, import_react.useState)(false);
+	const [escalateComplaints, setEscalateComplaints] = (0, import_react.useState)(true);
+	const [escalateRefunds, setEscalateRefunds] = (0, import_react.useState)(true);
+	const [escalateLegalQuestions, setEscalateLegalQuestions] = (0, import_react.useState)(true);
+	const [escalateHumanRequested, setEscalateHumanRequested] = (0, import_react.useState)(true);
+	const [escalateUnknownQuestions, setEscalateUnknownQuestions] = (0, import_react.useState)(true);
+	const [escalateNegotiationsAbove10k, setEscalateNegotiationsAbove10k] = (0, import_react.useState)(true);
+	const [policyKeepShort, setPolicyKeepShort] = (0, import_react.useState)(true);
+	const [policyUseProfessionalTone, setPolicyUseProfessionalTone] = (0, import_react.useState)(true);
+	const [policyRespectHours, setPolicyRespectHours] = (0, import_react.useState)(true);
+	const [outsideHoursMode, setOutsideHoursMode] = (0, import_react.useState)("collect");
+	const [maxAiMessages, setMaxAiMessages] = (0, import_react.useState)(10);
+	const [allowCloseSales, setAllowCloseSales] = (0, import_react.useState)(true);
+	const [allowScheduleAppointments, setAllowScheduleAppointments] = (0, import_react.useState)(true);
+	const [welcomeMessage, setWelcomeMessage] = (0, import_react.useState)("Hello 👋 How can we help?");
+	const [awayMessage, setAwayMessage] = (0, import_react.useState)("Thanks for your message. We’re away right now, but we’ll get back to you during working hours.");
+	const [closingMessage, setClosingMessage] = (0, import_react.useState)("Thanks for reaching out. We’re here whenever you need us.");
+	const [aiEmployeeLaunched, setAiEmployeeLaunched] = (0, import_react.useState)(false);
+	const [communicationChannels, setCommunicationChannels] = (0, import_react.useState)({
+		whatsapp: true,
+		websiteChat: true,
+		instagram: false,
+		facebookMessenger: false,
+		googleBusinessMessages: false,
+		telegram: false,
+		slack: false,
+		email: false
+	});
+	const [primaryLanguage, setPrimaryLanguage] = (0, import_react.useState)("English");
+	const [secondaryLanguage, setSecondaryLanguage] = (0, import_react.useState)("Kiswahili");
+	const [supportedLanguages, setSupportedLanguages] = (0, import_react.useState)(["English", "Kiswahili"]);
+	const [languageSearch, setLanguageSearch] = (0, import_react.useState)("");
+	const filteredLanguageOptions = LANGUAGE_OPTIONS.filter((language) => language.toLowerCase().includes(languageSearch.trim().toLowerCase()));
+	const [tone, setTone] = (0, import_react.useState)("Friendly");
+	const [writingStyleOptions, setWritingStyleOptions] = (0, import_react.useState)({
+		"Use emojis": false,
+		"Keep replies short": true,
+		"Explain simply": true,
+		"Ask follow-up questions": false,
+		"Personalize responses": true
+	});
+	const [timezone, setTimezone] = (0, import_react.useState)("East Africa Time (EAT)");
+	const [avatarFileName, setAvatarFileName] = (0, import_react.useState)("");
+	const [logoPreview, setLogoPreview] = (0, import_react.useState)(null);
+	const [logoPreviewOpen, setLogoPreviewOpen] = (0, import_react.useState)(false);
+	const [logoError, setLogoError] = (0, import_react.useState)("");
+	const [hasUnsavedChanges, setHasUnsavedChanges] = (0, import_react.useState)(true);
+	const [saveState, setSaveState] = (0, import_react.useState)("idle");
+	const [upsellProducts, setUpsellProducts] = (0, import_react.useState)(true);
+	const [recommendAlternatives, setRecommendAlternatives] = (0, import_react.useState)(true);
+	const [closeSalesAutomatically, setCloseSalesAutomatically] = (0, import_react.useState)(false);
+	const [businessInfo, setBusinessInfo] = (0, import_react.useState)({
+		name: "Sokoos Internet",
+		type: "Telecom & Connectivity",
+		about: "We help local businesses stay online with reliable internet plans, fast support, and easy onboarding.",
+		website: "https://sokoos.com",
+		address: "Nairobi, Kenya",
+		phone: "+254 700 000 000",
+		whatsapp: "+254 700 000 000",
+		hours: "Mon–Fri, 8:00 AM - 6:00 PM",
+		serviceAreas: "Nairobi, Kiambu, Thika",
+		paymentMethods: "Mobile Money, Bank Transfer, Cash"
+	});
+	const previewLanguageCopy = primaryLanguage === "Kiswahili" ? {
+		customerGreeting: "Habari",
+		pricingQuestion: "Intaneti yenu ni bei gani?",
+		availabilityQuestion: "Nahitaji kufungiwa intaneti leo jioni.",
+		defaultWelcome: "Habari! Tunawezaje kukusaidia leo?"
+	} : {
+		customerGreeting: "Hi",
+		pricingQuestion: "How much is your internet?",
+		availabilityQuestion: "I need internet installed this evening.",
+		defaultWelcome: "Hello 👋 How can we help?"
+	};
+	const previewPersonalityReply = {
+		Professional: "Our internet packages start from KES 2,500/month. Which area are you in?",
+		Friendly: `Our internet packages start from KES 2,500/month. Which area are you in${writingStyleOptions["Use emojis"] ? "? 😊" : "?"}`,
+		Luxury: "Our internet packages begin at KES 2,500/month. Which area would you like us to serve?",
+		Casual: "Our internet packages start from KES 2,500/month. Which area are you in?",
+		Technical: "Our internet packages start from KES 2,500/month. Which area are you in so we can check coverage?",
+		Playful: `Our internet packages start from KES 2,500/month. Which area are you in${writingStyleOptions["Use emojis"] ? "? ✨" : "?"}`
+	}[personality];
+	const previewBusinessContext = writingStyleOptions["Keep replies short"] ? previewPersonalityReply : `${previewPersonalityReply} ${businessInfo.about || "We’re here to help."}`;
+	const previewFollowUp = writingStyleOptions["Ask follow-up questions"] ? primaryLanguage === "Kiswahili" ? "Ungependa kujua nini hasa?" : "What would you like to know first?" : null;
+	const [previewQuestion, setPreviewQuestion] = (0, import_react.useState)(null);
+	const [previewRefreshKey, setPreviewRefreshKey] = (0, import_react.useState)(0);
+	(0, import_react.useEffect)(() => {
+		setPreviewReplyVisible(false);
+		const replyTimer = window.setTimeout(() => {
+			setPreviewRefreshKey((current) => current + 1);
+			setPreviewReplyVisible(true);
+			previewMessagesRef.current?.scrollTo({
+				top: previewMessagesRef.current.scrollHeight,
+				behavior: "smooth"
+			});
+		}, 500);
+		return () => window.clearTimeout(replyTimer);
+	}, [
+		businessHours,
+		businessInfo,
+		personality,
+		primaryLanguage,
+		supportedLanguages,
+		welcomeMessage,
+		awayMessage,
+		previewQuestion
+	]);
+	const previewQuestionReply = previewQuestion?.toLowerCase().includes("located") ? `We’re based in ${businessInfo.address || "your area"}.` : previewQuestion?.toLowerCase().includes("hours") ? `We’re available ${businessHours || "during business hours"}.` : previewQuestion?.toLowerCase().includes("hello") ? welcomeMessage || previewLanguageCopy.defaultWelcome : previewBusinessContext;
+	const [knowledgeProducts, setKnowledgeProducts] = (0, import_react.useState)([
+		{
+			id: "kp1",
+			name: "10 Mbps Internet",
+			price: "KES 2,500/month"
+		},
+		{
+			id: "kp2",
+			name: "20 Mbps Internet",
+			price: "KES 3,500/month"
+		},
+		{
+			id: "kp3",
+			name: "Business Package",
+			price: "KES 5,000/month"
+		}
+	]);
+	const [personalContacts, setPersonalContacts] = (0, import_react.useState)([{
+		id: "pc1",
+		name: "Mary Wanjiku",
+		relationship: "Wife",
+		phone: "+254712345678"
+	}, {
+		id: "pc2",
+		name: "Peter Mwangi",
+		relationship: "Supplier",
+		phone: "+254733222222"
+	}]);
+	const [newContact, setNewContact] = (0, import_react.useState)({
+		name: "",
+		relationship: "",
+		phone: ""
+	});
+	const handleSaveChanges = () => {
+		if (saveState === "saving") return;
+		setSaveState("saving");
+		window.setTimeout(() => {
+			setHasUnsavedChanges(false);
+			setSaveState("saved");
+			window.setTimeout(() => setSaveState("idle"), 1200);
+		}, 650);
+	};
+	const handleResetChanges = () => {
+		setWelcomeMessage("Hello 👋 How can we help?");
+		setAwayMessage("Thanks for your message. We’re away right now, but we’ll get back to you during working hours.");
+		setClosingMessage("Thanks for reaching out. We’re here whenever you need us.");
+		setAiEmployeeLaunched(false);
+		setCommunicationChannels({
+			whatsapp: true,
+			websiteChat: true,
+			instagram: false,
+			facebookMessenger: false,
+			googleBusinessMessages: false,
+			telegram: false,
+			slack: false,
+			email: false
+		});
+		setBusinessInfo({
+			name: "Sokoos Internet",
+			type: "Telecom & Connectivity",
+			about: "We help local businesses stay online with reliable internet plans, fast support, and easy onboarding.",
+			website: "https://sokoos.com",
+			address: "Nairobi, Kenya",
+			phone: "+254 700 000 000",
+			whatsapp: "+254 700 000 000",
+			hours: "Mon–Fri, 8:00 AM - 6:00 PM",
+			serviceAreas: "Nairobi, Kiambu, Thika",
+			paymentMethods: "Mobile Money, Bank Transfer, Cash"
+		});
+		setPrimaryLanguage("English");
+		setSecondaryLanguage("Kiswahili");
+		setSupportedLanguages(["English", "Kiswahili"]);
+		setPersonality("Friendly");
+		setWritingStyleOptions({
+			"Use emojis": false,
+			"Keep replies short": true,
+			"Explain simply": true,
+			"Ask follow-up questions": false,
+			"Personalize responses": true
+		});
+		setTone("Friendly");
+		setBusinessHours("Mon–Fri, 8:00 AM - 6:00 PM");
+		setTimezone("East Africa Time (EAT)");
+		setAvatarFileName("");
+		setLogoPreview(null);
+		setLogoPreviewOpen(false);
+		setLogoError("");
+		setHasUnsavedChanges(false);
+		setSaveState("idle");
+	};
+	const addPersonalContact = () => {
+		const name = newContact.name.trim();
+		const phone = newContact.phone.trim();
+		const relationship = newContact.relationship.trim();
+		if (!name || !phone) return;
+		setPersonalContacts((c) => [...c, {
+			id: `pc-${Date.now()}`,
+			name,
+			relationship: relationship || "Contact",
+			phone
+		}]);
+		setNewContact({
+			name: "",
+			relationship: "",
+			phone: ""
+		});
+	};
+	const isPersonalByPhone = (phone) => !!phone && personalContacts.some((pc) => pc.phone === phone);
+	const isPersonalActive = isPersonalByPhone(activeConversationData?.phone ?? null);
+	const activePersonalEntry = personalContacts.find((pc) => pc.phone === activeConversationData?.phone);
+	activePersonalEntry && [
+		"wife",
+		"husband",
+		"spouse",
+		"family"
+	].some((k) => activePersonalEntry.relationship.toLowerCase().includes(k));
+	const effectiveActiveSource = isPersonalActive ? "personal" : getEffectiveSource(activeConversation, activeConversationData?.source);
+	const activeAgentName = isPersonalActive ? "Personal" : String(effectiveActiveSource).startsWith("ai") ? "Sokoos AI" : OWNER_NAMES[activeConversation] ?? "You";
+	const getConversationStatusBadge = (source, isPersonal) => {
+		if (isPersonal) return {
+			emoji: "🏠",
+			label: "Personal",
+			bg: "bg-[#F1F5F9]",
+			text: "text-[#334155]"
+		};
+		switch (source) {
+			case "ai_handling": return {
+				emoji: "🤖",
+				label: "AI Active",
+				bg: "bg-[#ECFDF5]",
+				text: "text-[#059669]"
+			};
+			case "ai_handled": return {
+				emoji: "✅",
+				label: "AI Resolved",
+				bg: "bg-[#F0FDF4]",
+				text: "text-[#166534]"
+			};
+			case "needs_attention": return {
+				emoji: "🔴",
+				label: "Needs Reply",
+				bg: "bg-[#FEF2F2]",
+				text: "text-[#B91C1C]"
+			};
+			default: return {
+				emoji: "👤",
+				label: "Human",
+				bg: "bg-[#EFF6FF]",
+				text: "text-[#1E3A8A]"
+			};
+		}
+	};
+	const toggleAiForActive = () => {
+		if (isPersonalActive) return;
+		const current = sourceOverrides[activeConversation] ?? activeConversationData?.source ?? "";
+		if (String(current).startsWith("ai")) setSourceOverrides((s) => ({
+			...s,
+			[activeConversation]: "owner"
+		}));
+		else setSourceOverrides((s) => ({
+			...s,
+			[activeConversation]: "ai_handling"
+		}));
+	};
+	const [faqItems, setFaqItems] = (0, import_react.useState)([{
+		id: "faq1",
+		question: "Do you offer installation?",
+		answer: "Yes, installation costs KES 2,000."
+	}]);
+	const [policies, setPolicies] = (0, import_react.useState)({
+		returnPolicy: "Customers may return services within 7 days if there is a technical issue requiring a fix.",
+		deliveryPolicy: "We deliver service activation details via WhatsApp within 24 hours of payment.",
+		cancellationPolicy: "Cancel anytime with 48 hours notice before the next billing cycle."
+	});
+	const aiSetupChecklist = [
+		{
+			label: "Business Identity",
+			section: "Identity",
+			complete: Boolean(businessInfo.name && businessInfo.type && businessInfo.about)
+		},
+		{
+			label: "Personality",
+			section: "Identity",
+			complete: Boolean(personality)
+		},
+		{
+			label: "Knowledge",
+			section: "Knowledge Hub",
+			complete: faqItems.length > 0
+		},
+		{
+			label: "Playbooks",
+			section: "Sales Playbooks",
+			complete: upsellProducts || recommendAlternatives,
+			recommended: true
+		},
+		{
+			label: "Availability",
+			section: "Identity",
+			complete: Boolean(businessHours)
+		}
+	];
+	const onboardingComplete = aiEmployeeLaunched || completedIdentitySteps.length >= 7;
+	const activeSetupItem = aiSetupChecklist.find((item) => item.section === activeWorkspaceSection);
+	const [businessProfile, setBusinessProfile] = (0, import_react.useState)({
+		name: "Sokoos Internet",
+		industry: "Telecom & Connectivity",
+		description: "We help local businesses stay online with reliable internet plans, fast support, and easy onboarding.",
+		phone: "+254 20 3949 0101",
+		email: "support@sokoos.co.ke",
+		location: "Nairobi, Kenya",
+		businessHours: "Mon–Fri, 8:00 AM - 6:00 PM",
+		serviceAreas: "Nairobi, Kiambu, Thika",
+		paymentMethods: {
+			mPesa: true,
+			cash: true,
+			bankTransfer: true
+		}
+	});
+	const [imageLabel, setImageLabel] = (0, import_react.useState)("No file selected");
+	const [customerCollapsed, setCustomerCollapsed] = (0, import_react.useState)(false);
+	const router = useRouter();
+	const handleLogout = () => {
+		localStorage.removeItem("sokoos-auth");
+		router.navigate({
+			to: "/signin",
+			replace: true
+		});
+	};
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		className: "h-screen min-h-screen overflow-hidden bg-[#FFFFFF] text-[#111827]",
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				className: "hidden md:block",
+				onMouseEnter: () => setSidebarHovered(true),
+				onMouseLeave: () => setSidebarHovered(false),
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("aside", {
+					className: "md:fixed md:inset-y-0 md:left-0 md:flex md:flex-col md:pt-4 bg-[#FFFFFF] border-r border-[#E5E7EB]/10 w-[72px] z-20",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "px-4 pb-4",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center justify-between gap-3",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-center gap-3",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "h-8 w-8 rounded-[20px] bg-[#22C55E] flex items-center justify-center text-white font-semibold",
+										children: "S"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "sr-only",
+										children: "Sokoos"
+									})]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "h-10 w-10" })]
+							})
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("nav", {
+							className: "flex-1 px-1.5 overflow-hidden",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
+								className: "space-y-2",
+								children: NAV_ITEMS.map(({ label, href, Icon }) => {
+									const active = selected === label;
+									return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+										onClick: () => {
+											setSelected(label);
+											if (typeof window !== "undefined") window.history.pushState({}, "", href);
+										},
+										title: label,
+										"aria-label": label,
+										className: `w-full flex items-center justify-center rounded-[20px] p-2 text-sm font-medium transition duration-200 ${active ? "bg-[#ECFDF5] text-[#047857] shadow-sm" : "text-[#6B7280] hover:bg-[#EFF6FF]"}`,
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Icon, { className: `h-4 w-4 ${active ? "text-[#059669] opacity-100" : "text-[#6B7280] opacity-90"}` }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "sr-only",
+											children: label
+										})]
+									}) }, href);
+								})
+							})
+						}),
+						sidebarHovered && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "fixed inset-y-0 left-0 z-50 w-64 min-w-[248px] bg-[#FFFFFF] border-r border-[#E5E7EB]/10 shadow-[0_18px_48px_rgba(15,23,42,0.12)] transition-all duration-200 ease-out",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "h-full flex flex-col pt-4",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "px-4 pb-4",
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex items-center gap-3",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "h-8 w-8 rounded-[20px] bg-[#22C55E] flex items-center justify-center text-white font-semibold",
+											children: "S"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "text-lg font-semibold",
+											children: "Sokoos"
+										})]
+									})
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("nav", {
+									className: "flex-1 overflow-y-auto px-4",
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
+										className: "space-y-2",
+										children: NAV_ITEMS.map(({ label, href, Icon }) => {
+											const active = selected === label;
+											return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+												onClick: () => {
+													setSelected(label);
+													if (typeof window !== "undefined") window.history.pushState({}, "", href);
+												},
+												title: label,
+												"aria-label": label,
+												className: `w-full text-left flex items-center gap-3 rounded-full px-3 py-2 text-sm font-medium transition duration-200 ${active ? "bg-[#ECFDF5] text-[#047857]" : "text-[#475569] hover:bg-[#EFF6FF]"}`,
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Icon, { className: `h-5 w-5 ${active ? "text-[#059669]" : "text-[#6B7280]"}` }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: label })]
+											}) }, href);
+										})
+									})
+								})]
+							})
+						})
+					]
+				})
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", {
+				className: "md:hidden fixed top-0 left-0 right-0 h-14 bg-[#FFFFFF] border-b border-[#E5E7EB]/20 flex items-center px-4 z-30",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+					"aria-label": "Open menu",
+					onClick: () => setMobileOpen(true),
+					className: "mr-3 inline-flex items-center justify-center rounded-[20px] p-2 text-[#111827] hover:bg-[#F3F4F6]",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Menu, { className: "h-5 w-5" })
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-center gap-3",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "h-8 w-8 rounded-[20px] bg-[#22C55E] flex items-center justify-center text-white font-semibold",
+						children: "S"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+						className: "font-semibold",
+						children: "Sokoos"
+					})]
+				})]
+			}),
+			mobileOpen && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "fixed inset-0 z-40 md:hidden",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "absolute inset-0 bg-black/40",
+					onClick: () => setMobileOpen(false)
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "absolute left-0 top-0 bottom-0 w-72 bg-[#FFFFFF] border-r border-[#E5E7EB]/10 p-4 overflow-y-auto",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex items-center justify-between mb-4",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center gap-3",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "h-8 w-8 rounded-[20px] bg-[#22C55E] flex items-center justify-center text-white font-semibold",
+								children: "S"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: "font-semibold",
+								children: "Sokoos"
+							})]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+							onClick: () => setMobileOpen(false),
+							className: "p-2 rounded-[20px] hover:bg-[#F3F4F6]",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X, { className: "h-5 w-5" })
+						})]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("nav", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
+						className: "space-y-1",
+						children: NAV_ITEMS.map(({ label, href, Icon }) => {
+							return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								onClick: () => {
+									setSelected(label);
+									setMobileOpen(false);
+									if (typeof window !== "undefined") window.history.pushState({}, "", href);
+								},
+								className: `w-full text-left flex items-center gap-2.5 rounded-[20px] px-3 py-2 text-sm font-medium transition duration-200 ${selected === label ? "bg-[#F0FDF4] text-[#065F46] shadow-sm ring-1 ring-[#D1FAE5]/40" : "text-[#475569] hover:bg-[#EFF6FF] hover:text-[#111827]"}`,
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Icon, { className: "h-4 w-4" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: label })]
+							}) }, href);
+						})
+					}) })]
+				})]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("main", {
+				className: "h-full overflow-x-hidden pt-14 md:pt-0 md:pl-[72px]",
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "max-w-7xl mx-auto h-full p-4 overflow-x-hidden",
+					children: [
+						selected === "Home" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "h-full overflow-y-auto space-y-6 pr-2",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "relative overflow-hidden rounded-[32px] border border-[#DCFCE7] bg-gradient-to-br from-[#F0FDF4] via-white to-[#ECFDF5] p-8 shadow-sm",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "absolute right-[-60px] top-[-60px] h-56 w-56 rounded-full bg-[#22C55E]/10 blur-3xl" }),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "absolute bottom-[-80px] left-[-80px] h-72 w-72 rounded-full bg-[#16A34A]/10 blur-3xl" }),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex-1",
+												children: [
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: "text-sm font-semibold uppercase tracking-[0.2em] text-[#16A34A]",
+														children: "AI Growth Dashboard"
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+														className: "mt-3 text-4xl font-bold text-[#111827]",
+														children: "Good morning, Francis 👋 Your AI Employee is already at work."
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: "mt-3 max-w-3xl text-lg text-[#64748B] leading-8",
+														children: "Your AI is responding to customers, qualifying leads, booking appointments and following up automatically. Here's how your business is growing today."
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "mt-8 flex flex-wrap gap-3",
+														children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																className: "rounded-xl bg-[#16A34A] px-5 py-3 font-semibold text-white hover:bg-[#15803D] transition",
+																children: "Open Inbox"
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																className: "rounded-xl border border-[#E5E7EB] bg-white px-5 py-3 font-semibold text-[#111827] hover:bg-[#F9FAFB] transition",
+																children: "Chat with AI Employee"
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																className: "rounded-xl border border-[#E5E7EB] bg-white px-5 py-3 font-semibold text-[#111827] hover:bg-[#F9FAFB] transition",
+																children: "Create Campaign"
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																type: "button",
+																onClick: handleLogout,
+																className: "rounded-xl border border-[#E5E7EB] bg-white px-5 py-3 font-semibold text-[#111827] hover:bg-[#F9FAFB] transition",
+																children: "Logout"
+															})
+														]
+													})
+												]
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "grid w-full max-w-md grid-cols-2 gap-4",
+												children: [
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm",
+														children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-sm text-[#64748B]",
+																children: "AI Conversations"
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "mt-2 text-3xl font-bold text-[#111827]",
+																children: "124"
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "mt-1 text-sm text-[#16A34A]",
+																children: "↑ 18 today"
+															})
+														]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm",
+														children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-sm text-[#64748B]",
+																children: "Qualified Leads"
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "mt-2 text-3xl font-bold text-[#111827]",
+																children: "27"
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "mt-1 text-sm text-[#16A34A]",
+																children: "AI identified today"
+															})
+														]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm",
+														children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-sm text-[#64748B]",
+																children: "Appointments"
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "mt-2 text-3xl font-bold text-[#111827]",
+																children: "8"
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "mt-1 text-sm text-[#16A34A]",
+																children: "Booked automatically"
+															})
+														]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm",
+														children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-sm text-[#64748B]",
+																children: "Customer Rating"
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "mt-2 text-3xl font-bold text-[#111827]",
+																children: "★ 4.9"
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "mt-1 text-sm text-[#16A34A]",
+																children: "Based on AI conversations"
+															})
+														]
+													})
+												]
+											})]
+										})
+									]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+									className: CARD,
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex items-center justify-between",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: SECTION_HEADING,
+											children: "Ask Sokoos"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+											className: CARD_TITLE,
+											children: "Your AI Employee is ready"
+										})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Bot, { className: "h-7 w-7 text-[#22C55E]" })]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "mt-6",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] px-5 py-4",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+												type: "text",
+												placeholder: "Ask your AI Employee anything...",
+												className: "w-full bg-transparent text-[15px] outline-none placeholder:text-[#94A3B8]"
+											})
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "mt-5 flex flex-wrap gap-3",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													className: "rounded-full border border-[#E5E7EB] px-4 py-2 text-sm hover:bg-[#F9FAFB]",
+													children: "Create Campaign"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													className: "rounded-full border border-[#E5E7EB] px-4 py-2 text-sm hover:bg-[#F9FAFB]",
+													children: "Generate Quote"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													className: "rounded-full border border-[#E5E7EB] px-4 py-2 text-sm hover:bg-[#F9FAFB]",
+													children: "Build Landing Page"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													className: "rounded-full border border-[#E5E7EB] px-4 py-2 text-sm hover:bg-[#F9FAFB]",
+													children: "Show Today's Leads"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													className: "rounded-full border border-[#E5E7EB] px-4 py-2 text-sm hover:bg-[#F9FAFB]",
+													children: "Train on PDF"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													className: "rounded-full border border-[#E5E7EB] px-4 py-2 text-sm hover:bg-[#F9FAFB]",
+													children: "Summarize Conversations"
+												})
+											]
+										})]
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+											className: CARD,
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "flex items-center justify-between",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: SECTION_HEADING,
+														children: "AI Command Center"
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+														className: CARD_TITLE,
+														children: "AI Employee Status"
+													})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Bot, { className: "h-8 w-8 text-[#22C55E]" })]
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "mt-6 space-y-5",
+													children: [
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex justify-between",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "AI Confidence" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "96%" })]
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex justify-between",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Currently Replying" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "17 customers" })]
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex justify-between",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Human Takeovers" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "4" })]
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex justify-between",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Average Response" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "6 sec" })]
+														})
+													]
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													className: "mt-8 w-full rounded-xl bg-[#16A34A] py-3 font-semibold text-white hover:bg-[#15803D]",
+													children: "Train AI Employee"
+												})
+											]
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+											className: CARD,
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "flex items-center justify-between",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: SECTION_HEADING,
+														children: "Business Knowledge"
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+														className: CARD_TITLE,
+														children: "Manage Knowledge"
+													})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+														className: "text-3xl",
+														children: "📚"
+													})]
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "mt-6 space-y-5",
+													children: [
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex justify-between",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Products" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "12" })]
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex justify-between",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "FAQs" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "18" })]
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex justify-between",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Policies" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "7" })]
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex justify-between",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Training Score" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
+																className: "text-[#16A34A]",
+																children: "92%"
+															})]
+														})
+													]
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													className: "mt-8 w-full rounded-xl border border-[#E5E7EB] py-3 font-semibold hover:bg-[#F9FAFB]",
+													children: "Improve Knowledge"
+												})
+											]
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+											className: CARD,
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "flex items-center justify-between",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: SECTION_HEADING,
+														children: "Customer Growth"
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+														className: CARD_TITLE,
+														children: "Growth Today"
+													})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+														className: "text-3xl",
+														children: "💰"
+													})]
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "mt-6 space-y-5",
+													children: [
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex justify-between",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Qualified Leads" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "24" })]
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex justify-between",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Quotes Sent" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "11" })]
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex justify-between",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Follow-ups Sent" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "8" })]
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex justify-between",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Conversions" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
+																className: "text-[#16A34A]",
+																children: "8 customers"
+															})]
+														})
+													]
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													className: "mt-8 w-full rounded-xl border border-[#E5E7EB] py-3 font-semibold hover:bg-[#F9FAFB]",
+													children: "View Customers"
+												})
+											]
+										})
+									]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "grid gap-6 lg:grid-cols-[1.8fr_1fr]",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+										className: CARD,
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex items-center justify-between",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: SECTION_HEADING,
+												children: "Recent AI Activity"
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+												className: CARD_TITLE,
+												children: "What your AI Employee has been doing"
+											})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "rounded-full bg-[#ECFDF5] px-3 py-1 text-sm font-semibold text-[#15803D]",
+												children: "Live"
+											})]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "mt-8 space-y-5",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "flex items-start gap-4",
+													children: [
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "flex h-10 w-10 items-center justify-center rounded-full bg-[#ECFDF5]",
+															children: "🤖"
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex-1",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "font-semibold",
+																children: "AI answered a pricing enquiry"
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-sm text-[#64748B]",
+																children: "James asked about installation pricing and received an instant reply."
+															})]
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "text-sm text-[#94A3B8]",
+															children: "2 min ago"
+														})
+													]
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "flex items-start gap-4",
+													children: [
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "flex h-10 w-10 items-center justify-center rounded-full bg-[#EFF6FF]",
+															children: "📅"
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex-1",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "font-semibold",
+																children: "Appointment booked"
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-sm text-[#64748B]",
+																children: "Site installation scheduled automatically for tomorrow."
+															})]
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "text-sm text-[#94A3B8]",
+															children: "12 min ago"
+														})
+													]
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "flex items-start gap-4",
+													children: [
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "flex h-10 w-10 items-center justify-center rounded-full bg-[#FEF3C7]",
+															children: "💬"
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex-1",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "font-semibold",
+																children: "Follow-up sent"
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-sm text-[#64748B]",
+																children: "AI followed up with a customer who requested a quotation yesterday."
+															})]
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "text-sm text-[#94A3B8]",
+															children: "21 min ago"
+														})
+													]
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "flex items-start gap-4",
+													children: [
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "flex h-10 w-10 items-center justify-center rounded-full bg-[#FEF2F2]",
+															children: "👤"
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex-1",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "font-semibold",
+																children: "Human takeover requested"
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-sm text-[#64748B]",
+																children: "AI detected a negotiation and asked you to continue the conversation."
+															})]
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "text-sm text-[#94A3B8]",
+															children: "37 min ago"
+														})
+													]
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "flex items-start gap-4",
+													children: [
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "flex h-10 w-10 items-center justify-center rounded-full bg-[#FDF4FF]",
+															children: "⭐"
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex-1",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "font-semibold",
+																children: "Customer left a 5-star rating"
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-sm text-[#64748B]",
+																children: "\"Fast replies and excellent service.\""
+															})]
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "text-sm text-[#94A3B8]",
+															children: "1 hour ago"
+														})
+													]
+												})
+											]
+										})]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+										className: CARD,
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: SECTION_HEADING,
+												children: "WhatsApp Overview"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+												className: CARD_TITLE,
+												children: "Current Inbox Status"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "mt-8 space-y-5",
+												children: [
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex justify-between",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "text-[#64748B]",
+															children: "Unread Conversations"
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "3" })]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex justify-between",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "text-[#64748B]",
+															children: "AI Handling"
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
+															className: "text-[#16A34A]",
+															children: "17"
+														})]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex justify-between",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "text-[#64748B]",
+															children: "Waiting For You"
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
+															className: "text-[#DC2626]",
+															children: "2"
+														})]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex justify-between",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "text-[#64748B]",
+															children: "Resolved Today"
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "36" })]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex justify-between",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "text-[#64748B]",
+															children: "Average Response"
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
+															className: "text-[#16A34A]",
+															children: "6 sec"
+														})]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+														className: "mt-6 w-full rounded-xl bg-[#16A34A] py-3 font-semibold text-white transition hover:bg-[#15803D]",
+														children: "Open Inbox"
+													})
+												]
+											})
+										]
+									})]
+								})
+							]
+						}),
+						selected === "Inbox" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: `grid gap-6 px-6 py-6 transition-all duration-300 ease-out items-stretch h-full grid-cols-1 ${customerCollapsed ? "md:grid-cols-[320px_1fr]" : "md:grid-cols-[320px_1fr_minmax(330px,360px)]"}`,
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+									className: `${CARD} w-full h-full min-h-0 flex flex-col min-w-0`,
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "border-b border-[#ECECEC] px-5 py-2",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "flex items-center justify-between gap-3",
+												children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+													className: PANEL_TITLE,
+													children: "Conversations"
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: `${SECONDARY} mt-0`,
+													children: "Recent messages and active chats"
+												})] })
+											})
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "flex items-center gap-3 overflow-x-auto px-5 py-2 flex-nowrap custom-scrollbar",
+											children: INBOX_TAB_ITEMS.map((tab) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+												onClick: () => setActiveTab(tab),
+												className: `whitespace-nowrap rounded-full px-4 py-1 text-xs transform flex-shrink-0 ${TRANSITION} ${activeTab === tab ? "bg-[#22C55E] text-white font-medium shadow-sm" : "bg-[#F3F4F6] text-[#475569] font-medium"} hover:shadow-sm active:scale-[0.98]`,
+												children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+													className: "inline-flex items-center gap-2",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: tab }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+														className: "inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-white px-2 text-[11px] font-semibold text-[#475569] shadow-sm",
+														children: inboxCounts[tab]
+													})]
+												})
+											}, tab))
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex min-h-0 flex-1 flex-col px-5 py-2 gap-2",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "rounded-[20px] bg-[#F9FAFB] px-4 py-2.5 shadow-none ring-1 ring-[#ECECEC] transition duration-150 ease-out focus-within:ring-2 focus-within:ring-[#22C55E] focus-within:border-[#22C55E] border border-[#E5E7EB]",
+												children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "flex h-[44px] items-center gap-3 w-full text-[#94A3B8]",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, { className: "h-4 w-4 flex-shrink-0" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+														type: "search",
+														placeholder: "Search conversations",
+														value: searchQuery,
+														onChange: (event) => setSearchQuery(event.target.value),
+														className: `w-full h-full bg-transparent text-sm text-[#111827] placeholder:text-[#94A3B8] placeholder:font-regular outline-none ${TRANSITION_FAST}`
+													})]
+												})
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "flex-1 min-h-0 space-y-1.5 overflow-y-auto pr-2 scroll-smooth custom-scrollbar",
+												children: INBOX_CONVERSATIONS.filter((conversation) => {
+													const src = sourceOverrides[conversation.id] ?? conversation.source;
+													if (activeTab === "Needs Reply") return src === "needs_attention";
+													if (activeTab === "AI Active") return src === "ai_handling";
+													if (activeTab === "Human") return src === "owner";
+													return true;
+												}).filter((conversation) => (conversation.name ?? "").toLowerCase().includes(searchQuery.toLowerCase()) || (conversation.phone ?? "").toLowerCase().includes(searchQuery.toLowerCase()) || conversation.message.toLowerCase().includes(searchQuery.toLowerCase())).map((conversation) => {
+													const active = conversation.id === activeConversation;
+													const effectiveSourceRaw = sourceOverrides[conversation.id] ?? conversation.source;
+													const isPersonal = personalContacts.some((pc) => pc.phone === conversation.phone);
+													const effectiveSource = isPersonal ? "personal" : effectiveSourceRaw;
+													return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+														onClick: () => setActiveConversation(conversation.id),
+														className: `w-full overflow-hidden rounded-[20px] px-5 py-3 min-h-[92px] text-left ${TRANSITION} transform-gpu active:scale-[0.98] flex flex-col gap-4 ${active ? "bg-[#F3FDF7] border border-[#22C55E]/20 ring-1 ring-[#22C55E]/20 shadow-[0_12px_36px_rgba(15,23,42,0.08)]" : "bg-white border border-transparent hover:bg-[#FBFFF8] hover:shadow-[0_10px_30px_rgba(15,23,42,0.06)] hover:-translate-y-0.5"}`,
+														children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																className: "flex items-center justify-between gap-3",
+																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																	className: "flex items-center gap-3 min-w-0 flex-1",
+																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																		className: "flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#E5E7EB] to-[#D1D5DB] text-sm font-semibold text-[#64748B]",
+																		children: conversation.avatar
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																		className: "min-w-0 flex-1 space-y-1",
+																		children: conversation.isSaved && conversation.name ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																			className: "text-[16px] font-semibold truncate",
+																			title: conversation.name,
+																			children: conversation.name
+																		}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																			className: "text-[16px] font-semibold truncate",
+																			title: conversation.phone ?? "Unknown Customer",
+																			children: conversation.phone ?? "Unknown Customer"
+																		})
+																	})]
+																}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																	className: "flex items-start gap-2 flex-shrink-0",
+																	children: [conversation.badge > 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																		className: `inline-flex min-w-[18px] h-4 items-center justify-center rounded-full bg-[#22C55E] text-white text-[10px] font-semibold transform-gpu transition duration-200 ease-out px-2`,
+																		children: conversation.badge
+																	}) : null, /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																		className: `${TIME_LABEL} whitespace-nowrap text-[11px] text-[#94A3B8]`,
+																		children: formatConversationTime(conversation.time)
+																	})]
+																})]
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																className: "min-w-0",
+																children: (() => {
+																	const badge = getConversationStatusBadge(effectiveSource, isPersonal);
+																	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+																		className: `${STATUS_CHIP} ${badge.bg} ${badge.text} text-xs px-2 py-1`,
+																		children: [
+																			badge.emoji,
+																			" ",
+																			badge.label
+																		]
+																	});
+																})()
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: `${SECONDARY} text-[14px] leading-5 min-w-0 truncate`,
+																title: conversation.message,
+																children: conversation.message
+															})
+														]
+													}, conversation.id);
+												})
+											})]
+										})
+									]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+									className: `${CARD} w-full h-full min-h-0 flex flex-col min-w-0`,
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "border-b border-[#ECECEC] px-6 py-4 mb-2 flex-shrink-0",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "flex flex-col gap-3",
+												children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "flex items-start justify-between gap-3",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "min-w-0 flex-1",
+														children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+																className: `${CUSTOMER_NAME} truncate`,
+																children: INBOX_CONVERSATIONS.find((item) => item.id === activeConversation)?.name
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																className: "mt-1 flex flex-wrap items-center gap-2 text-sm text-[#64748B]",
+																children: [
+																	/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																		className: "truncate",
+																		children: activeConversationData?.phone ?? "Unknown phone"
+																	}),
+																	/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																		className: "text-[#94A3B8]",
+																		children: "•"
+																	}),
+																	(() => {
+																		const badge = getConversationStatusBadge(effectiveActiveSource, isPersonalActive);
+																		return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+																			className: `${badge.bg} ${badge.text} rounded-full px-2 py-0.5 text-[11px] font-semibold inline-flex items-center gap-1`,
+																			children: [
+																				badge.emoji,
+																				" ",
+																				badge.label
+																			]
+																		});
+																	})()
+																]
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																className: "mt-2 flex flex-col gap-2 text-sm text-[#475569]",
+																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																	className: "flex items-center justify-between gap-3",
+																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																		className: "font-medium text-[#111827]",
+																		children: "AI Confidence"
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																		className: "text-[#16A34A] font-semibold",
+																		children: "94%"
+																	})]
+																}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																	className: "h-2 w-full overflow-hidden rounded-full bg-[#DCFCE7]",
+																	children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "h-full w-[94%] rounded-full bg-[#22C55E]" })
+																})]
+															})
+														]
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex items-center gap-2 flex-shrink-0",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+															type: "button",
+															onClick: toggleAiForActive,
+															disabled: isPersonalActive,
+															"aria-label": "AI Assist",
+															className: `inline-flex h-9 rounded-full border px-3.5 text-[10px] font-semibold items-center justify-center ${TRANSITION_FAST} active:scale-[0.98] ${isPersonalActive ? "border-[#E5E7EB] bg-white text-[#9CA3AF] cursor-not-allowed" : "border-[#22C55E] bg-white text-[#166534] hover:bg-[#ECFDF5]"}`,
+															title: isPersonalActive ? "Cannot toggle mode for personal contacts" : "AI Assist",
+															children: "✨ AI Assist"
+														}), customerCollapsed && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+															type: "button",
+															onClick: () => setCustomerCollapsed(false),
+															className: `inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#ECECEC] bg-white text-[#64748B] ${TRANSITION} hover:bg-[#F9FAFB] hover:text-[#111827] flex-shrink-0`,
+															"aria-label": "Expand customer panel",
+															title: "Expand customer panel",
+															children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronRight, { className: "h-3 w-3" })
+														})]
+													})]
+												})
+											})
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "flex-1 min-h-0 overflow-y-auto custom-scrollbar px-6 pt-3 pb-6 flex flex-col justify-end bg-[#F8FCF7]",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "space-y-5 flex flex-col",
+												children: activeMessages.map((message, index) => {
+													const originalWasAi = String(activeConversationData?.source).startsWith("ai");
+													if (message.from === "agent" && originalWasAi && !String(effectiveActiveSource).startsWith("ai")) return null;
+													const isAgent = message.from === "agent";
+													const isAi = isAgent && String(effectiveActiveSource).startsWith("ai");
+													const senderLabel = isAi ? "Sokoos AI" : activeAgentName;
+													return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: `${TRANSITION_FAST} transition-opacity`,
+														children: [isAgent ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "flex items-center gap-1 text-[10px] font-semibold text-[#94A3B8] mb-0.5",
+															children: isAi ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																className: "inline-flex h-3 w-3 items-center justify-center rounded-full bg-[#ECFDF5] text-[#0C7A4D]",
+																children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Bot, { className: "h-1.5 w-1.5" })
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: senderLabel })] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: senderLabel })
+														}) : null, /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: `flex ${isAgent ? "justify-start" : "justify-end"}`,
+															children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																className: `rounded-[28px] px-3 py-2 text-sm break-words max-w-[70%] ${isAgent ? "bg-[#F0FDF4] text-[#166534] border border-[#DCFCE7]" : "bg-white text-[#111827] border border-[#E5E7EB]"} ${TRANSITION_FAST} transition-shadow transform-gpu`,
+																children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																	className: "flex flex-col gap-2",
+																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																		className: "leading-relaxed text-sm",
+																		children: message.text
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																		className: `self-end text-[9px] ${isAgent ? "text-[#16A34A]/30" : "text-[#64748B]/30"} font-normal`,
+																		children: message.time
+																	})]
+																})
+															})
+														})]
+													}, `${message.time}-${index}`);
+												})
+											})
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "shrink-0 border-t border-[#E5E7EB] bg-white px-6 py-3",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: `rounded-[20px] bg-[#F9FAFB] border border-[#E5E7EB] flex items-center gap-3 min-h-[52px] px-4 ${TRANSITION}`,
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
+													ref: textareaRef,
+													value: messageInput,
+													onChange: (event) => setMessageInput(event.target.value),
+													placeholder: "Type a message...",
+													className: `min-w-0 flex-1 resize-none overflow-y-auto overflow-x-hidden custom-scrollbar bg-transparent text-sm leading-5 text-[#111827] outline-none placeholder:text-[#CBD5E1] placeholder:font-regular ${TRANSITION_FAST}`,
+													rows: 1,
+													style: {
+														minHeight: 40,
+														maxHeight: 80
+													}
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													type: "button",
+													className: "inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white transition duration-150 ease-out transform hover:bg-[#16A34A] active:scale-95",
+													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Send, { className: "h-4 w-4" })
+												})]
+											})
+										})
+									]
+								}),
+								!customerCollapsed && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+									className: `${CARD} w-full h-full min-h-0 flex flex-col transition-all duration-300 ease-out ${customerPanelFading ? "opacity-80 translate-y-1" : "opacity-100 translate-y-0"} min-w-[330px] max-w-[360px]`,
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex items-start justify-between gap-3 shrink-0 px-5 py-4 border-b border-[#ECECEC]",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+												className: `${CUSTOMER_NAME} mt-1`,
+												children: activeCustomerProfile.name
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: `${SECONDARY} mt-2`,
+												children: activeCustomerProfile.company
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "mt-3 inline-flex items-center gap-2",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "inline-flex h-3.5 w-3.5 shrink-0 rounded-full bg-[#22C55E]" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: `${STATUS_CHIP} bg-[#ECFDF5] text-[#166534] border border-[#D1FAE5]`,
+													children: activeCustomerProfile.leadStatus
+												})]
+											})
+										] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "button",
+											onClick: () => setCustomerCollapsed(true),
+											className: `inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#ECECEC] bg-white text-[#64748B] ${TRANSITION_FAST} hover:bg-[#F9FAFB] hover:text-[#111827] active:scale-95 shrink-0`,
+											"aria-label": "Collapse customer panel",
+											title: "Collapse customer panel",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronRight, { className: "h-3 w-3 rotate-180" })
+										})]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "flex-1 min-h-0 overflow-hidden px-5 py-4",
+										children: summaryGenerated ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: `h-full overflow-y-auto pr-2 transition-all duration-300 ease-out ${summaryVisible ? "opacity-100" : "opacity-0"} [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-[#F3F4F6] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#CBD5E1] [&::-webkit-scrollbar-thumb:hover]:bg-[#22C55E]`,
+											style: {
+												scrollbarWidth: "thin",
+												scrollbarColor: "#CBD5E1 transparent"
+											},
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "space-y-4 pb-2",
+												children: [
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex items-start justify-between gap-3",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: SECTION_HEADING,
+																children: "✨ AI Summary"
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+																className: "mt-2 text-[18px] font-semibold text-[#111827]",
+																children: "AI Employee snapshot"
+															})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																className: "rounded-full bg-[#ECFDF5] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#16A34A]",
+																children: "Mock data"
+															})]
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-4 h-px bg-[#E5E7EB]/80" })]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: SECTION_HEADING,
+															children: "Customer Intent"
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: "mt-2 text-[15px] leading-6 text-[#475569]",
+															children: aiSummary?.customerIntent
+														})]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: SECTION_HEADING,
+															children: "Buying Probability"
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "mt-3 flex items-center gap-3",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+																className: "text-[24px] font-semibold text-[#111827]",
+																children: [aiSummary?.buyingProbability, "%"]
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																className: "h-2.5 flex-1 overflow-hidden rounded-full bg-[#E5E7EB]",
+																children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																	className: "h-full rounded-full bg-[#22C55E]",
+																	style: { width: `${aiSummary?.buyingProbability ?? 0}%` }
+																})
+															})]
+														})]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: SECTION_HEADING,
+															children: "Customer Sentiment"
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "mt-3",
+															children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+																className: `inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[13px] font-semibold ${aiSummary?.sentiment.badgeClassName}`,
+																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: aiSummary?.sentiment.icon }), aiSummary?.sentiment.label]
+															})
+														})]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: SECTION_HEADING,
+															children: "Buying Signals"
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
+															className: "mt-3 space-y-2 text-[15px] text-[#475569]",
+															children: aiSummary?.buyingSignals.map((signal) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", {
+																className: "flex items-start gap-2",
+																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full bg-[#22C55E]" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: signal })]
+															}, signal))
+														})]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "rounded-[24px] border border-[#D1FAE5] bg-[#F0FDF4] p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: SECTION_HEADING,
+															children: "Recommended Next Action"
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: "mt-2 text-[15px] leading-6 font-semibold text-[#166534]",
+															children: aiSummary?.recommendedNextAction
+														})]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]",
+														children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: SECTION_HEADING,
+																children: "Suggested Reply"
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																className: "mt-3 rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4",
+																children: aiSummary?.suggestedReply.map((line, index) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																	className: `text-[14px] leading-6 text-[#334155] ${index === 0 ? "font-semibold text-[#111827]" : ""}`,
+																	children: line
+																}, `${line}-${index}`))
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																type: "button",
+																className: "mt-4 inline-flex items-center justify-center rounded-[24px] bg-[#22C55E] px-4 py-2.5 text-[14px] font-semibold text-white transition-all duration-200 ease-out hover:bg-[#16A34A]",
+																children: "Insert Reply"
+															})
+														]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: SECTION_HEADING,
+															children: "Knowledge Used"
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "mt-3 flex flex-wrap gap-2",
+															children: aiSummary?.knowledgeSources.map((source) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+																className: "inline-flex items-center gap-2 rounded-full border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-1.5 text-[12px] font-semibold text-[#166534]",
+																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																	className: "text-[11px]",
+																	children: "✓"
+																}), source]
+															}, source))
+														})]
+													})
+												]
+											})
+										}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex h-full min-h-[220px] flex-col items-start justify-center gap-4 px-1",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "w-full max-w-[280px] space-y-2 text-left",
+													children: [
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: SECTION_HEADING,
+															children: "✨ AI Insights"
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+															className: "text-[17px] font-semibold leading-6 text-[#111827]",
+															children: "Understand this conversation instantly."
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: "text-[13px] leading-5 text-[#475569]",
+															children: "Generate a summary to reveal:"
+														})
+													]
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "flex w-full max-w-[280px] flex-col gap-2 text-left text-[13px] text-[#475569]",
+													children: [
+														"Conversation Summary",
+														"Customer Intent",
+														"Buying Signals",
+														"Suggested Reply",
+														"Recommended Next Action"
+													].map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex items-start gap-2.5",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "mt-0.5 inline-flex h-4 w-4 items-center justify-center rounded-full bg-[#DCFCE7] text-[9px] font-semibold text-[#166534]",
+															children: "✓"
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "font-semibold text-[#111827]",
+															children: item
+														})]
+													}, item))
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "mt-2 w-full max-w-[280px]",
+													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+														type: "button",
+														onClick: () => {
+															setSummaryGenerated(true);
+															setSummaryVisible(false);
+															setAiSummary(buildMockAiSummary());
+															window.setTimeout(() => setSummaryVisible(true), 20);
+														},
+														className: "w-full rounded-[24px] bg-[#22C55E] px-4 py-2.5 text-[13px] font-semibold text-white shadow-sm transition-all duration-200 ease-out hover:bg-[#16A34A] hover:shadow-sm active:scale-[0.98]",
+														children: "Generate AI Summary"
+													})
+												})
+											]
+										})
+									})]
+								})
+							]
+						}),
+						selected === "AI Employee" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "mx-auto w-full max-w-[1280px] space-y-6 px-4 pb-10 lg:px-6",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "border-b border-[#E5E7EB] pb-5",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex flex-col gap-5",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "max-w-3xl",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "text-[12px] font-semibold uppercase tracking-[0.24em] text-[#6B7280]",
+													children: "Your new teammate"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+													className: "mt-2 text-[24px] font-semibold tracking-[-0.02em] text-[#111827] lg:text-[26px]",
+													children: "Hire and train your AI Employee."
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "mt-2 text-sm leading-6 text-[#6B7280]",
+													children: "Give your new teammate the context, voice, and tools it needs to do great work from day one."
+												})
+											]
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+											className: "rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)]",
+											"aria-label": "AI setup score",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex items-center gap-4",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: `flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-center text-lg font-semibold text-white shadow-sm ${onboardingComplete ? "bg-[#22C55E]" : "bg-[#111827]"}`,
+													children: onboardingComplete ? "🎉" : `${completedIdentitySteps.length + 1}/8`
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "text-sm font-semibold text-[#111827]",
+													children: onboardingComplete ? "AI Employee Ready" : "AI Employee onboarding"
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "mt-0.5 text-xs text-[#64748B]",
+													children: onboardingComplete ? "Your AI employee is fully trained and ready to serve customers." : "Guide your AI through a few meaningful lessons, one at a time."
+												})] })]
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-5",
+												children: aiSetupChecklist.map((item) => {
+													const status = item.complete ? "Completed" : item.recommended ? "Recommended" : "Missing information";
+													return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+														type: "button",
+														onClick: () => setActiveWorkspaceSection(item.section),
+														className: `flex items-center gap-2 rounded-lg border px-3 py-2 text-left transition hover:-translate-y-px hover:shadow-sm ${item.complete ? "border-[#BBF7D0] bg-[#F7FEF9]" : item.recommended ? "border-[#BFDBFE] bg-[#EFF6FF]" : "border-[#FDE68A] bg-[#FFFBEB]"}`,
+														children: [item.complete ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, { className: "h-4 w-4 shrink-0 text-[#16A34A]" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleAlert, { className: `h-4 w-4 shrink-0 ${item.recommended ? "text-[#2563EB]" : "text-[#D97706]"}` }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+															className: "min-w-0",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																className: "block truncate text-xs font-semibold text-[#111827]",
+																children: item.label
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+																className: `block truncate text-[10px] font-medium ${item.complete ? "text-[#166534]" : item.recommended ? "text-[#1D4ED8]" : "text-[#B45309]"}`,
+																children: [status, item.complete ? " ✓" : ""]
+															})]
+														})]
+													}, item.label);
+												})
+											})]
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("nav", {
+											"aria-label": "AI employee workspace sections",
+											className: "sticky top-0 z-30 -mx-4 border-y border-[#E5E7EB] bg-white/95 px-4 py-3 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur lg:-mx-6 lg:px-6",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "grid grid-cols-3 gap-1.5 sm:grid-cols-5 lg:grid-cols-9",
+												children: [
+													{
+														label: "Identity",
+														section: "Identity",
+														Icon: User,
+														status: activeIdentityStep === 7 ? "complete" : "warning"
+													},
+													{
+														label: "Knowledge",
+														section: "Knowledge Hub",
+														Icon: BookOpen,
+														status: "warning"
+													},
+													{
+														label: "Catalogue",
+														section: "Catalogue",
+														Icon: Package,
+														status: "complete"
+													},
+													{
+														label: "Playbooks",
+														section: "Sales Playbooks",
+														Icon: Target,
+														status: "complete"
+													},
+													{
+														label: "Skills",
+														section: "Skills",
+														Icon: Sparkles,
+														status: "warning"
+													},
+													{
+														label: "Policies",
+														section: "Policies",
+														Icon: Shield,
+														status: "warning"
+													},
+													{
+														label: "Integrations",
+														section: "Integrations",
+														Icon: Plug,
+														status: "warning"
+													},
+													{
+														label: "Test",
+														section: "Test AI",
+														Icon: Bot,
+														status: "complete"
+													},
+													{
+														label: "Performance",
+														section: "Performance",
+														Icon: ChartColumn,
+														status: "complete"
+													}
+												].map((tab) => {
+													const active = activeWorkspaceSection === tab.section;
+													return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+														type: "button",
+														onClick: () => setActiveWorkspaceSection(tab.section),
+														"aria-current": active ? "page" : void 0,
+														className: `relative flex min-w-0 items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-xs font-semibold transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 ${active ? "bg-[#111827] text-white shadow-sm" : "text-[#64748B] hover:bg-[#F3F4F6] hover:text-[#111827]"}`,
+														children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)(tab.Icon, { className: "h-3.5 w-3.5 shrink-0" }),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																className: "truncate",
+																children: tab.label
+															}),
+															tab.status === "complete" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, { className: `h-3.5 w-3.5 shrink-0 ${active ? "text-[#86EFAC]" : "text-[#16A34A]"}` }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleAlert, { className: `h-3.5 w-3.5 shrink-0 ${active ? "text-[#FDE68A]" : "text-[#F59E0B]"}` })
+														]
+													}, tab.label);
+												})
+											})
+										})
+									]
+								})
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", {
+								className: "space-y-5 pb-28",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex flex-col gap-3 border-b border-[#E5E7EB] pb-4 lg:flex-row lg:items-center lg:justify-between",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "max-w-3xl",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "text-[12px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]",
+												children: activeWorkspaceSection === "Identity" ? "Identity training" : "AI Employee workspace"
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "mt-1 text-sm text-[#475569]",
+												children: activeWorkspaceSection === "Identity" ? "Onboard your AI employee one focused decision at a time." : "Train and manage your AI employee."
+											})]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex flex-wrap items-center gap-2",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "text-xs font-medium text-[#6B7280]",
+													children: "Status"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#166534]",
+													children: "Online"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "rounded-full bg-[#F3F4F6] px-3 py-1 text-xs font-semibold text-[#6B7280]",
+													children: "AI enabled"
+												}),
+												activeSetupItem && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: `rounded-full px-3 py-1 text-xs font-semibold ${activeSetupItem.complete ? "bg-[#ECFDF5] text-[#166534]" : activeSetupItem.recommended ? "bg-[#EFF6FF] text-[#1D4ED8]" : "bg-[#FFFBEB] text-[#B45309]"}`,
+													children: activeSetupItem.complete ? "Completed ✓" : activeSetupItem.recommended ? "Recommended" : "Missing information"
+												})
+											]
+										})]
+									}),
+									activeWorkspaceSection === "Identity" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+										className: "sticky top-16 z-20 rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-[0_10px_28px_rgba(15,23,42,0.10)] transition-shadow sm:p-5",
+										"aria-label": "AI employee onboarding progress",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex items-start justify-between gap-4",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex items-center gap-2",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "flex h-6 w-6 items-center justify-center rounded-md bg-[#ECFDF5] text-[#166534]",
+															children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Bot, { className: "h-3.5 w-3.5" })
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: "text-sm font-semibold text-[#111827]",
+															children: "Onboard your AI employee"
+														})]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+														className: "mt-1 text-xs text-[#64748B]",
+														children: [
+															"Step ",
+															activeIdentityStep + 1,
+															" of 8"
+														]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: "mt-1 text-xs text-[#64748B]",
+														children: activeIdentityStep === 0 ? "Let’s start by introducing your AI employee to your business." : "One meaningful lesson at a time."
+													})
+												] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+													className: "shrink-0 rounded-full bg-[#ECFDF5] px-2.5 py-1 text-xs font-semibold text-[#166534]",
+													children: [completedIdentitySteps.length, " completed"]
+												})]
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "mt-4 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]",
+												children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "h-full rounded-full bg-[#22C55E] transition-all duration-300",
+													style: { width: `${(activeIdentityStep + 1) / 8 * 100}%` }
+												})
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "mt-4 flex gap-1 overflow-x-auto pb-1 sm:justify-between",
+												children: [
+													{
+														label: "Meet",
+														Icon: User
+													},
+													{
+														label: "Teach",
+														Icon: BookOpen
+													},
+													{
+														label: "Personality",
+														Icon: Smile
+													},
+													{
+														label: "Greetings",
+														Icon: MessageCircle
+													},
+													{
+														label: "Languages",
+														Icon: Globe
+													},
+													{
+														label: "Hours",
+														Icon: Clock
+													},
+													{
+														label: "Workplaces",
+														Icon: Plug
+													},
+													{
+														label: "Graduation",
+														Icon: Check
+													}
+												].map(({ label, Icon }, index) => {
+													const active = activeIdentityStep === index;
+													const completed = completedIdentitySteps.includes(index);
+													return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+														type: "button",
+														onClick: () => focusIdentityLesson(index),
+														"aria-current": active ? "step" : void 0,
+														className: `group inline-flex shrink-0 items-center gap-2 rounded-lg px-2.5 py-2 text-xs font-semibold transition ${active ? "bg-[#111827] text-white shadow-sm" : completed ? "bg-[#ECFDF5] text-[#166534]" : "text-[#64748B] hover:bg-[#F8FAFC] hover:text-[#334155]"}`,
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: `flex h-5 w-5 items-center justify-center rounded-full ${active ? "bg-white/15" : completed ? "bg-[#22C55E] text-white" : "bg-[#F1F5F9] text-[#64748B] group-hover:bg-[#E2E8F0]"}`,
+															children: completed ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, { className: "h-3 w-3" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Icon, { className: "h-3 w-3" })
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: completed ? `${label} Completed` : label })]
+													}, label);
+												})
+											})
+										]
+									}),
+									completionToast && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										role: "status",
+										className: "fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-xl border border-[#BBF7D0] bg-white px-4 py-3 text-sm font-semibold text-[#166534] shadow-[0_14px_32px_rgba(15,23,42,0.14)] animate-in fade-in-0 slide-in-from-bottom-2 duration-300",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "flex h-5 w-5 items-center justify-center rounded-full bg-[#22C55E] text-white",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, { className: "h-3.5 w-3.5" })
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: completionToast })]
+									}),
+									(hasUnsavedChanges || saveState !== "idle") && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "fixed inset-x-0 bottom-5 z-50 flex justify-center px-4 animate-in fade-in-0 slide-in-from-bottom-4 duration-300",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex w-full max-w-xl items-center justify-between gap-3 rounded-2xl border border-white/70 bg-white/90 p-2 pl-4 shadow-[0_18px_48px_rgba(15,23,42,0.18)] backdrop-blur-xl",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex min-w-0 items-center gap-2.5",
+												children: [saveState === "saved" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, { className: "h-4 w-4 shrink-0 text-[#16A34A]" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: `h-2 w-2 shrink-0 rounded-full ${saveState === "saving" ? "animate-pulse bg-[#F59E0B]" : "bg-[#22C55E]"}` }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "truncate text-sm font-semibold text-[#111827]",
+													children: saveState === "saving" ? "Saving..." : saveState === "saved" ? "Saved ✓" : "Unsaved changes"
+												})]
+											}), saveState !== "saved" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex shrink-0 items-center gap-1.5",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													type: "button",
+													onClick: handleResetChanges,
+													disabled: saveState === "saving",
+													className: "rounded-xl px-3 py-2 text-sm font-semibold text-[#64748B] transition hover:bg-[#F3F4F6] hover:text-[#111827] disabled:cursor-not-allowed disabled:opacity-50",
+													children: "Discard"
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													type: "button",
+													onClick: handleSaveChanges,
+													disabled: saveState === "saving",
+													className: "rounded-xl bg-[#111827] px-3.5 py-2 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-80",
+													children: saveState === "saving" ? "Saving..." : "Save changes"
+												})]
+											})]
+										})
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										id: "ai-workspace-content",
+										className: "w-full scroll-mt-28",
+										children: activeWorkspaceSection === "Identity" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "space-y-5",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												onChangeCapture: () => setHasUnsavedChanges(true),
+												children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "grid items-start gap-8 xl:grid-cols-[minmax(0,1.35fr)_minmax(300px,0.65fr)]",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														ref: identityLessonRef,
+														className: "space-y-4 scroll-mt-36 scroll-smooth xl:pr-4",
+														children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("section", {
+																className: activeIdentityStep === 0 ? `rounded-xl border bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-300 sm:p-6 ${completedIdentitySteps.includes(0) ? "border-[#86EFAC] animate-[pulse_350ms_ease-out]" : "border-[#E5E7EB]"}` : "hidden",
+																children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																	className: "space-y-5",
+																	children: [
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "flex gap-3",
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																				className: "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]",
+																				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(User, { className: "h-5 w-5" })
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																				className: "text-[20px] font-semibold text-[#111827]",
+																				children: "Start with your business"
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																				className: "mt-2 text-sm leading-6 text-[#6B7280]",
+																				children: "Give your AI the essentials it needs to represent you well."
+																			})] })]
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "grid gap-4 md:grid-cols-2",
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																				className: "relative",
+																				children: [
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+																						className: "block text-sm font-semibold text-[#111827]",
+																						htmlFor: "business-name",
+																						children: "Business name"
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																						id: "business-name",
+																						autoComplete: "organization",
+																						value: businessInfo.name,
+																						onChange: (event) => setBusinessInfo((current) => ({
+																							...current,
+																							name: event.target.value
+																						})),
+																						placeholder: "Your business name",
+																						className: AI_TRAINING_FIELD
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, {
+																						className: "pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]",
+																						"aria-label": "Business name is ready"
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																						className: "mt-1.5 text-xs text-[#64748B]",
+																						children: "Shown to customers in every conversation."
+																					})
+																				]
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																				className: "relative",
+																				children: [
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+																						className: "block text-sm font-semibold text-[#111827]",
+																						htmlFor: "industry",
+																						children: "Business type"
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																						id: "industry",
+																						value: businessInfo.type,
+																						onChange: (event) => setBusinessInfo((current) => ({
+																							...current,
+																							type: event.target.value
+																						})),
+																						placeholder: "e.g. Retail, Hospitality, Services",
+																						className: AI_TRAINING_FIELD
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, {
+																						className: "pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]",
+																						"aria-label": "Business type is ready"
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																						className: "mt-1.5 text-xs text-[#64748B]",
+																						children: "Helps your AI use the right context."
+																					})
+																				]
+																			})]
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "relative",
+																			children: [
+																				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+																					className: "block text-sm font-semibold text-[#111827]",
+																					htmlFor: "business-description",
+																					children: "Teach your AI about your business"
+																				}),
+																				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
+																					id: "business-description",
+																					value: businessInfo.about,
+																					onChange: (event) => setBusinessInfo((current) => ({
+																						...current,
+																						about: event.target.value
+																					})),
+																					rows: 2,
+																					className: `${AI_TRAINING_TEXTAREA} resize-none`
+																				}),
+																				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																					className: "mt-1.5 text-xs text-[#64748B]",
+																					children: "A short summary is enough—your AI uses this to introduce your business."
+																				})
+																			]
+																		})
+																	]
+																})
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("section", {
+																className: activeIdentityStep === 0 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden",
+																children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																	className: "space-y-5",
+																	children: [
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "flex gap-3",
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																				className: "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F8FAFC] text-[#475569]",
+																				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Phone, { className: "h-5 w-5" })
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																				className: "text-[20px] font-semibold text-[#111827]",
+																				children: "How can customers reach you?"
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																				className: "mt-2 text-sm leading-6 text-[#6B7280]",
+																				children: "Give your AI the right places to send people."
+																			})] })]
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "grid gap-4 md:grid-cols-2",
+																			children: [
+																				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+																						className: "block text-sm font-semibold text-[#111827]",
+																						htmlFor: "business-website",
+																						children: "Website"
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																						id: "business-website",
+																						type: "url",
+																						autoComplete: "url",
+																						value: businessInfo.website,
+																						onChange: (event) => setBusinessInfo((current) => ({
+																							...current,
+																							website: event.target.value
+																						})),
+																						placeholder: "https://yourbusiness.com",
+																						className: AI_TRAINING_FIELD
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																						className: "mt-1.5 text-xs text-[#64748B]",
+																						children: "Optional—shared when customers ask for more details."
+																					})
+																				] }),
+																				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+																						className: "block text-sm font-semibold text-[#111827]",
+																						htmlFor: "business-phone",
+																						children: "Phone number"
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																						id: "business-phone",
+																						type: "tel",
+																						autoComplete: "tel",
+																						value: businessInfo.phone,
+																						onChange: (event) => setBusinessInfo((current) => ({
+																							...current,
+																							phone: event.target.value
+																						})),
+																						placeholder: "+254 700 000 000",
+																						className: AI_TRAINING_FIELD
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																						className: "mt-1.5 text-xs text-[#64748B]",
+																						children: "For customers who prefer to call."
+																					})
+																				] }),
+																				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+																						className: "block text-sm font-semibold text-[#111827]",
+																						htmlFor: "physical-address",
+																						children: "Location"
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																						id: "physical-address",
+																						autoComplete: "street-address",
+																						value: businessInfo.address,
+																						onChange: (event) => setBusinessInfo((current) => ({
+																							...current,
+																							address: event.target.value
+																						})),
+																						placeholder: "e.g. Nairobi, Kenya",
+																						className: AI_TRAINING_FIELD
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																						className: "mt-1.5 text-xs text-[#64748B]",
+																						children: "Helps your AI answer location questions."
+																					})
+																				] }),
+																				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+																						className: "block text-sm font-semibold text-[#111827]",
+																						htmlFor: "whatsapp-number",
+																						children: "WhatsApp number"
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																						id: "whatsapp-number",
+																						type: "tel",
+																						autoComplete: "tel",
+																						value: businessInfo.whatsapp,
+																						onChange: (event) => setBusinessInfo((current) => ({
+																							...current,
+																							whatsapp: event.target.value
+																						})),
+																						placeholder: "+254 700 000 000",
+																						className: AI_TRAINING_FIELD
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																						className: "mt-1.5 text-xs text-[#64748B]",
+																						children: "Used for direct customer follow-up."
+																					})
+																				] })
+																			]
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																			className: "flex justify-end border-t border-[#EEF2F6] pt-4",
+																			children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+																				type: "button",
+																				onClick: () => completeIdentityLesson(0),
+																				className: "inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]",
+																				children: ["Continue to training ", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronRight, { className: "h-4 w-4" })]
+																			})
+																		})
+																	]
+																})
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("section", {
+																className: activeIdentityStep === 1 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden",
+																children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																	className: "space-y-5",
+																	children: [
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "flex gap-3",
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																				className: "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EFF6FF] text-[#1D4ED8]",
+																				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(BookOpen, { className: "h-5 w-5" })
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																				className: "text-[20px] font-semibold text-[#111827]",
+																				children: "Teach your Employee"
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																				className: "mt-2 text-sm leading-6 text-[#6B7280]",
+																				children: "Give your new teammate the answers, offers, and guardrails it needs to help customers with confidence."
+																			})] })]
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																			className: "grid gap-3 sm:grid-cols-3",
+																			children: [
+																				{
+																					label: "Knowledge",
+																					value: `${businessInfo.about ? "Business context added" : "Add context"}`,
+																					Icon: BookOpen,
+																					section: "Knowledge Hub"
+																				},
+																				{
+																					label: "Products",
+																					value: `${knowledgeProducts.length} offers ready`,
+																					Icon: Package,
+																					section: "Catalogue"
+																				},
+																				{
+																					label: "FAQs & policies",
+																					value: `${faqItems.length} FAQ${faqItems.length === 1 ? "" : "s"} added`,
+																					Icon: Shield,
+																					section: "Knowledge Hub"
+																				}
+																			].map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+																				type: "button",
+																				onClick: () => setActiveWorkspaceSection(item.section),
+																				className: "rounded-xl border border-[#E5E7EB] bg-[#FCFCFD] p-4 text-left transition hover:-translate-y-px hover:border-[#86EFAC] hover:shadow-sm",
+																				children: [
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(item.Icon, { className: "h-5 w-5 text-[#166534]" }),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																						className: "mt-3 text-sm font-semibold text-[#111827]",
+																						children: item.label
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																						className: "mt-1 text-xs text-[#64748B]",
+																						children: item.value
+																					})
+																				]
+																			}, item.label))
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																			className: "rounded-xl bg-[#F8FAFC] p-4 text-sm leading-6 text-[#475569]",
+																			children: "Your Employee will use these sources to answer common questions, recommend the right products, and follow your business policies."
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "flex items-center justify-between border-t border-[#EEF2F6] pt-4",
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																				type: "button",
+																				onClick: () => focusIdentityLesson(0),
+																				className: "text-sm font-semibold text-[#64748B] transition hover:text-[#111827]",
+																				children: "Back"
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+																				type: "button",
+																				onClick: () => completeIdentityLesson(1),
+																				className: "inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]",
+																				children: ["Choose personality ", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronRight, { className: "h-4 w-4" })]
+																			})]
+																		})
+																	]
+																})
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("section", {
+																className: activeIdentityStep === 2 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden",
+																children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																	className: "space-y-5",
+																	children: [
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "flex gap-3",
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																				className: "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF7ED] text-[#C2410C]",
+																				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Smile, { className: "h-5 w-5" })
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																				className: "text-[20px] font-semibold text-[#111827]",
+																				children: "How should your AI sound?"
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																				className: "mt-2 text-sm leading-6 text-[#6B7280]",
+																				children: "Choose a personality that feels right for your customers."
+																			})] })]
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																			className: "grid gap-3 sm:grid-cols-2 xl:grid-cols-3",
+																			children: PERSONALITIES.map((personalityOption) => {
+																				const active = personality === personalityOption;
+																				const voice = BRAND_VOICE_DETAILS[personalityOption];
+																				return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																					type: "button",
+																					"aria-pressed": active,
+																					onClick: () => {
+																						setPersonality(personalityOption);
+																						setHasUnsavedChanges(true);
+																					},
+																					className: `group relative min-h-[178px] rounded-xl border p-4 text-left transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] ${active ? "z-10 scale-[1.025] border-[#22C55E] bg-[#F7FEF9] text-[#111827] shadow-[0_10px_28px_rgba(34,197,94,0.20)]" : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#A7F3D0]"}`,
+																					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																						className: "flex h-full flex-col",
+																						children: [
+																							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																								className: "flex items-start justify-between gap-3",
+																								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																									className: `flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition-all duration-300 ease-out group-hover:scale-110 ${active ? "bg-[#22C55E] text-white shadow-[0_6px_16px_rgba(34,197,94,0.25)]" : "bg-[#F0FDF4] text-[#166534]"}`,
+																									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(personalityOption === "Professional" ? User : personalityOption === "Friendly" ? Smile : personalityOption === "Luxury" ? Sparkles : personalityOption === "Technical" ? Cpu : personalityOption === "Playful" ? MessageCircle : Globe, { className: "h-6 w-6" })
+																								}), active && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																									className: "flex h-6 w-6 shrink-0 animate-in zoom-in-50 duration-200 items-center justify-center rounded-full bg-[#22C55E] text-white",
+																									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, { className: "h-3.5 w-3.5" })
+																								})]
+																							}),
+																							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																								className: "mt-3",
+																								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																									className: "text-sm font-semibold text-[#111827]",
+																									children: personalityOption
+																								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																									className: "mt-1 text-xs leading-5 text-[#64748B]",
+																									children: voice.description
+																								})]
+																							}),
+																							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																								className: `mt-3 rounded-lg px-3 py-2 text-xs leading-5 ${active ? "bg-white text-[#166534] shadow-sm" : "bg-[#F8FAFC] text-[#64748B]"}`,
+																								children: [
+																									"“",
+																									voice.example,
+																									"”"
+																								]
+																							})
+																						]
+																					})
+																				}, personalityOption);
+																			})
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "overflow-hidden rounded-xl border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] to-white p-4",
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																				className: "flex items-center gap-2",
+																				children: [
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																						className: "flex h-6 w-6 items-center justify-center rounded-full bg-[#22C55E] text-white",
+																						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, { className: "h-3.5 w-3.5" })
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																						className: "text-sm font-semibold text-[#166534]",
+																						children: "Your AI will sound like this"
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																						className: "ml-auto rounded-full bg-white px-2 py-1 text-[10px] font-semibold text-[#166534]",
+																						children: personality
+																					})
+																				]
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																				className: "mt-3 flex items-end gap-2 animate-in fade-in-0 slide-in-from-bottom-2 duration-300",
+																				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																					className: "flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-[10px] font-bold text-white",
+																					children: "AI"
+																				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																					className: "max-w-[85%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm leading-5 text-[#111827] shadow-sm",
+																					children: BRAND_VOICE_DETAILS[personality].example
+																				})]
+																			}, personality)]
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "border-t border-[#E5E7EB] pt-4",
+																			children: [
+																				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																					className: "text-sm font-semibold text-[#111827]",
+																					children: "How should your AI reply?"
+																				}),
+																				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																					className: "mt-2 text-sm leading-6 text-[#6B7280]",
+																					children: "Pick a few habits to make every reply feel natural."
+																				}),
+																				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																					className: "mt-4 flex flex-wrap gap-2",
+																					children: [
+																						"Use emojis",
+																						"Keep replies short",
+																						"Explain simply",
+																						"Ask follow-up questions",
+																						"Personalize responses"
+																					].map((option) => {
+																						const checked = writingStyleOptions[option];
+																						return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+																							className: `inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium transition-all duration-200 ease-out hover:-translate-y-px hover:shadow-sm ${checked ? "border-[#22C55E] bg-[#ECFDF5] text-[#111827]" : "border-[#E5E7EB] bg-white text-[#475569]"}`,
+																							children: [
+																								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																									type: "checkbox",
+																									checked,
+																									onChange: () => setWritingStyleOptions((current) => ({
+																										...current,
+																										[option]: !current[option]
+																									})),
+																									className: "sr-only"
+																								}),
+																								checked && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, { className: "h-4 w-4" }),
+																								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: option.replace("Personalize responses", "Personalized").replace("Keep replies short", "Short Replies").replace("Ask follow-up questions", "Ask Follow-up Questions").replace("Explain simply", "Explain Simply").replace("Use emojis", "Use Emojis") })
+																							]
+																						}, option);
+																					})
+																				})
+																			]
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "flex items-center justify-between border-t border-[#EEF2F6] pt-4",
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																				type: "button",
+																				onClick: () => setActiveIdentityStep(1),
+																				className: "text-sm font-semibold text-[#64748B] transition hover:text-[#111827]",
+																				children: "Back"
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+																				type: "button",
+																				onClick: () => completeIdentityLesson(2),
+																				className: "inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]",
+																				children: ["Continue to greetings ", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronRight, { className: "h-4 w-4" })]
+																			})]
+																		})
+																	]
+																})
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("section", {
+																className: activeIdentityStep === 3 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden",
+																children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																	className: "space-y-5",
+																	children: [
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "flex gap-3",
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																				className: "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EFF6FF] text-[#1D4ED8]",
+																				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MessageCircle, { className: "h-5 w-5" })
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																				className: "text-[20px] font-semibold text-[#111827]",
+																				children: "Set the first impression"
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																				className: "mt-2 text-sm leading-6 text-[#6B7280]",
+																				children: "Teach your AI what to say at the start of a conversation."
+																			})] })]
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "grid gap-4 md:grid-cols-2",
+																			children: [
+																				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																					className: "relative",
+																					children: [
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+																							className: "block text-sm font-semibold text-[#111827]",
+																							htmlFor: "welcome-message",
+																							children: "Welcome message"
+																						}),
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
+																							id: "welcome-message",
+																							value: welcomeMessage,
+																							onChange: (event) => setWelcomeMessage(event.target.value),
+																							rows: 2,
+																							placeholder: "Hello! Welcome to our business. How can we help today?",
+																							className: `${AI_TRAINING_TEXTAREA} resize-none`
+																						}),
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, {
+																							className: "pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]",
+																							"aria-label": "Welcome message is ready"
+																						}),
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																							className: "mt-1.5 text-xs text-[#64748B]",
+																							children: "Sent when a customer starts a conversation."
+																						})
+																					]
+																				}),
+																				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																					className: "relative",
+																					children: [
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+																							className: "block text-sm font-semibold text-[#111827]",
+																							htmlFor: "away-message",
+																							children: "Away message"
+																						}),
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
+																							id: "away-message",
+																							value: awayMessage,
+																							onChange: (event) => setAwayMessage(event.target.value),
+																							rows: 2,
+																							placeholder: "Thanks for your message. We’ll get back to you soon.",
+																							className: `${AI_TRAINING_TEXTAREA} resize-none`
+																						}),
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, {
+																							className: "pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]",
+																							"aria-label": "Away message is ready"
+																						}),
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																							className: "mt-1.5 text-xs text-[#64748B]",
+																							children: "Used when your team is unavailable."
+																						})
+																					]
+																				}),
+																				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																					className: "relative md:col-span-2",
+																					children: [
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+																							className: "block text-sm font-semibold text-[#111827]",
+																							htmlFor: "closing-message",
+																							children: "Closing message"
+																						}),
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
+																							id: "closing-message",
+																							value: closingMessage,
+																							onChange: (event) => setClosingMessage(event.target.value),
+																							rows: 2,
+																							placeholder: "Thanks for reaching out. We’re here whenever you need us.",
+																							className: `${AI_TRAINING_TEXTAREA} resize-none`
+																						}),
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																							className: "mt-1.5 text-xs text-[#64748B]",
+																							children: "A warm sign-off after your AI has resolved a customer’s question."
+																						})
+																					]
+																				})
+																			]
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "flex items-center justify-between border-t border-[#EEF2F6] pt-4",
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																				type: "button",
+																				onClick: () => setActiveIdentityStep(2),
+																				className: "text-sm font-semibold text-[#64748B] transition hover:text-[#111827]",
+																				children: "Back"
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+																				type: "button",
+																				onClick: () => completeIdentityLesson(3),
+																				className: "inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]",
+																				children: ["Continue to languages ", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronRight, { className: "h-4 w-4" })]
+																			})]
+																		})
+																	]
+																})
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("section", {
+																className: activeIdentityStep === 4 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden",
+																children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																	className: "space-y-5",
+																	children: [
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "flex gap-3",
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																				className: "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F5F3FF] text-[#6D28D9]",
+																				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Globe, { className: "h-5 w-5" })
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																				className: "text-[20px] font-semibold text-[#111827]",
+																				children: "Which languages should your AI speak?"
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																				className: "mt-2 text-sm leading-6 text-[#6B7280]",
+																				children: "Choose the languages your AI can use with customers."
+																			})] })]
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "relative",
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, { className: "pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#94A3B8]" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																				value: languageSearch,
+																				onChange: (event) => setLanguageSearch(event.target.value),
+																				placeholder: "Search languages…",
+																				className: "h-11 w-full rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] pl-10 pr-3 text-sm outline-none transition placeholder:text-[#94A3B8] focus:border-[#22C55E] focus:bg-white focus:ring-4 focus:ring-[#DCFCE7]/70"
+																			})]
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "grid gap-4 md:grid-cols-2",
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																				className: "rounded-xl border border-[#E5E7EB] bg-[#FCFCFD] p-4",
+																				children: [
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																						className: "text-sm font-semibold text-[#111827]",
+																						children: "Primary language"
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																						className: "mt-1 text-xs leading-5 text-[#64748B]",
+																						children: "The default language your AI uses when a customer starts a conversation."
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																						className: "mt-3 flex flex-wrap gap-2",
+																						role: "group",
+																						"aria-label": "Primary language",
+																						children: filteredLanguageOptions.map((language) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+																							type: "button",
+																							"aria-pressed": primaryLanguage === language,
+																							onClick: () => {
+																								setPrimaryLanguage(language);
+																								setHasUnsavedChanges(true);
+																							},
+																							className: `rounded-full px-3 py-1.5 text-xs font-semibold transition ${primaryLanguage === language ? "bg-[#111827] text-white shadow-sm" : "border border-[#CBD5E1] bg-white text-[#475569] hover:border-[#22C55E] hover:text-[#166534]"}`,
+																							children: [primaryLanguage === language && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, { className: "mr-1 inline h-3 w-3" }), language]
+																						}, language))
+																					})
+																				]
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																				className: "rounded-xl border border-[#E5E7EB] bg-[#FCFCFD] p-4",
+																				children: [
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																						className: "text-sm font-semibold text-[#111827]",
+																						children: "Secondary language"
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																						className: "mt-1 text-xs leading-5 text-[#64748B]",
+																						children: "A second preferred language for customers who switch mid-conversation."
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																						className: "mt-3 flex flex-wrap gap-2",
+																						role: "group",
+																						"aria-label": "Secondary language",
+																						children: filteredLanguageOptions.map((language) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+																							type: "button",
+																							"aria-pressed": secondaryLanguage === language,
+																							onClick: () => {
+																								setSecondaryLanguage(language);
+																								setHasUnsavedChanges(true);
+																							},
+																							className: `rounded-full px-3 py-1.5 text-xs font-semibold transition ${secondaryLanguage === language ? "bg-[#111827] text-white shadow-sm" : "border border-[#CBD5E1] bg-white text-[#475569] hover:border-[#22C55E] hover:text-[#166534]"}`,
+																							children: [secondaryLanguage === language && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, { className: "mr-1 inline h-3 w-3" }), language]
+																						}, language))
+																					})
+																				]
+																			})]
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "rounded-xl border border-[#E5E7EB] bg-[#FCFCFD] p-4",
+																			children: [
+																				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																					className: "flex items-start justify-between gap-3",
+																					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																						className: "text-sm font-semibold text-[#111827]",
+																						children: "Languages AI understands"
+																					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																						className: "mt-1 text-xs leading-5 text-[#64748B]",
+																						children: "Add languages your AI can recognize and respond to, even when they are not preferred."
+																					})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+																						className: "rounded-full bg-[#ECFDF5] px-2.5 py-1 text-xs font-semibold text-[#166534]",
+																						children: [supportedLanguages.length, " selected"]
+																					})]
+																				}),
+																				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																					className: "mt-4 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]",
+																					children: "Suggested languages"
+																				}),
+																				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																					className: "mt-2 flex flex-wrap gap-2",
+																					children: [filteredLanguageOptions.map((language) => {
+																						const selected = supportedLanguages.includes(language);
+																						return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+																							type: "button",
+																							"aria-pressed": selected,
+																							onClick: () => {
+																								setHasUnsavedChanges(true);
+																								setSupportedLanguages((current) => current.includes(language) ? current.filter((item) => item !== language) : [...current, language]);
+																							},
+																							className: `rounded-full px-3 py-1.5 text-xs font-semibold transition ${selected ? "bg-[#22C55E] text-white shadow-sm" : "border border-[#CBD5E1] bg-white text-[#475569] hover:border-[#22C55E] hover:text-[#166534]"}`,
+																							children: [selected && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, { className: "mr-1 inline h-3 w-3" }), language]
+																						}, language);
+																					}), filteredLanguageOptions.length === 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+																						className: "py-2 text-sm text-[#64748B]",
+																						children: [
+																							"No languages match “",
+																							languageSearch,
+																							"”."
+																						]
+																					})]
+																				})
+																			]
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "flex items-center justify-between border-t border-[#EEF2F6] pt-4",
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																				type: "button",
+																				onClick: () => setActiveIdentityStep(3),
+																				className: "text-sm font-semibold text-[#64748B] transition hover:text-[#111827]",
+																				children: "Back"
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+																				type: "button",
+																				onClick: () => completeIdentityLesson(4),
+																				className: "inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]",
+																				children: ["Continue to working hours ", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronRight, { className: "h-4 w-4" })]
+																			})]
+																		})
+																	]
+																})
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("section", {
+																className: activeIdentityStep === 5 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden",
+																children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																	className: "space-y-5",
+																	children: [
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "flex gap-3",
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																				className: "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF7ED] text-[#C2410C]",
+																				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Clock, { className: "h-5 w-5" })
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																				className: "text-[20px] font-semibold text-[#111827]",
+																				children: "When should your AI be available?"
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																				className: "mt-2 text-sm leading-6 text-[#6B7280]",
+																				children: "Help your AI set the right expectations about your hours."
+																			})] })]
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "grid gap-4 md:grid-cols-2",
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																				className: "relative",
+																				children: [
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+																						className: "block text-sm font-semibold text-[#111827]",
+																						htmlFor: "business-hours",
+																						children: "Business hours"
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																						id: "business-hours",
+																						value: businessHours,
+																						onChange: (event) => setBusinessHours(event.target.value),
+																						placeholder: "Mon–Fri, 8:00 AM - 6:00 PM",
+																						className: AI_TRAINING_FIELD
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, {
+																						className: "pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]",
+																						"aria-label": "Business hours are ready"
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																						className: "mt-1.5 text-xs text-[#64748B]",
+																						children: "Your AI uses this to set customer expectations."
+																					})
+																				]
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																				className: "relative",
+																				children: [
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+																						className: "block text-sm font-semibold text-[#111827]",
+																						htmlFor: "timezone",
+																						children: "Time zone"
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", {
+																						id: "timezone",
+																						value: timezone,
+																						onChange: (event) => setTimezone(event.target.value),
+																						className: AI_TRAINING_FIELD,
+																						children: [
+																							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: "East Africa Time (EAT)" }),
+																							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: "West Africa Time (WAT)" }),
+																							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: "Central Africa Time (CAT)" }),
+																							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", { children: "UTC" })
+																						]
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, {
+																						className: "pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]",
+																						"aria-label": "Time zone is ready"
+																					}),
+																					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																						className: "mt-1.5 text-xs text-[#64748B]",
+																						children: "Keeps hours accurate for every customer."
+																					})
+																				]
+																			})]
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+																			className: `flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${escalateOutsideHours ? "border-[#BBF7D0] bg-[#F7FEF9]" : "border-[#E5E7EB] bg-[#FCFCFD]"}`,
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																				type: "checkbox",
+																				checked: escalateOutsideHours,
+																				onChange: (event) => {
+																					setEscalateOutsideHours(event.target.checked);
+																					setHasUnsavedChanges(true);
+																				},
+																				className: "mt-0.5 h-4 w-4 rounded border-[#CBD5E1] text-[#22C55E] focus:ring-[#22C55E]"
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																				className: "block text-sm font-semibold text-[#111827]",
+																				children: "Escalate urgent messages outside working hours"
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																				className: "mt-1 block text-xs leading-5 text-[#64748B]",
+																				children: "Your Employee collects the details and flags urgent requests for your team."
+																			})] })]
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "flex items-center justify-between border-t border-[#EEF2F6] pt-4",
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																				type: "button",
+																				onClick: () => setActiveIdentityStep(4),
+																				className: "text-sm font-semibold text-[#64748B] transition hover:text-[#111827]",
+																				children: "Back"
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+																				type: "button",
+																				onClick: () => completeIdentityLesson(5),
+																				className: "inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]",
+																				children: ["Assign workplaces ", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronRight, { className: "h-4 w-4" })]
+																			})]
+																		})
+																	]
+																})
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("section", {
+																className: activeIdentityStep === 6 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden",
+																children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																	className: "space-y-5",
+																	children: [
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "flex gap-3",
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																				className: "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]",
+																				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plug, { className: "h-5 w-5" })
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																				className: "text-[20px] font-semibold text-[#111827]",
+																				children: "Where should your AI work?"
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																				className: "mt-2 text-sm leading-6 text-[#6B7280]",
+																				children: "Choose where customers can start a conversation with your AI."
+																			})] })]
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between",
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																				className: "text-sm font-semibold text-[#111827]",
+																				children: "Your AI’s workspaces"
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																				className: "mt-1 text-sm text-[#6B7280]",
+																				children: "Connect the channels where your AI should meet customers."
+																			})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+																				className: "text-xs font-medium text-[#64748B]",
+																				children: [Object.values(communicationChannels).filter(Boolean).length, " connected"]
+																			})]
+																		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																			className: "mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3",
+																			children: [
+																				{
+																					id: "whatsapp",
+																					name: "WhatsApp",
+																					icon: MessageCircle,
+																					description: "Reply to customers on WhatsApp"
+																				},
+																				{
+																					id: "websiteChat",
+																					name: "Website Chat",
+																					icon: Globe,
+																					description: "Help visitors while they browse"
+																				},
+																				{
+																					id: "instagram",
+																					name: "Instagram",
+																					icon: Image,
+																					description: "Handle messages from your profile"
+																				},
+																				{
+																					id: "facebookMessenger",
+																					name: "Facebook Messenger",
+																					icon: Users,
+																					description: "Answer conversations from Facebook"
+																				},
+																				{
+																					id: "telegram",
+																					name: "Telegram",
+																					icon: Send,
+																					description: "Support your Telegram community"
+																				},
+																				{
+																					id: "slack",
+																					name: "Slack",
+																					icon: Hash,
+																					description: "Route team requests in Slack"
+																				},
+																				{
+																					id: "email",
+																					name: "Email",
+																					icon: Mail,
+																					description: "Turn inbox replies into help"
+																				},
+																				{
+																					id: "googleBusinessMessages",
+																					name: "Google Business Messages",
+																					icon: Search,
+																					description: "Engage customers from Google"
+																				}
+																			].map((channel) => {
+																				const connected = communicationChannels[channel.id];
+																				const Icon = channel.icon;
+																				return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", {
+																					className: `group rounded-xl border p-4 transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_10px_24px_rgba(15,23,42,0.10)] ${connected ? "border-[#86EFAC] bg-[#F7FEF9]" : "border-[#E5E7EB] bg-white hover:border-[#CBD5E1]"}`,
+																					children: [
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																							className: "flex items-start justify-between gap-3",
+																							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																								className: `flex h-10 w-10 items-center justify-center rounded-xl ${connected ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#F1F5F9] text-[#64748B]"}`,
+																								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Icon, { className: "h-5 w-5" })
+																							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																								className: `rounded-full px-2 py-1 text-[10px] font-semibold ${connected ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#F3F4F6] text-[#64748B]"}`,
+																								children: connected ? "Connected" : "Not connected"
+																							})]
+																						}),
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																							className: "mt-4 text-sm font-semibold text-[#111827]",
+																							children: channel.name
+																						}),
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																							className: "mt-1 min-h-10 text-xs leading-5 text-[#64748B]",
+																							children: channel.description
+																						}),
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																							className: "mt-3 border-t border-black/[0.05] pt-3 text-[11px] text-[#64748B]",
+																							children: connected ? "Last synced just now" : "Not connected yet"
+																						}),
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																							className: "mt-3 flex gap-2",
+																							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																								type: "button",
+																								onClick: () => {
+																									if (!connected) {
+																										setCommunicationChannels((current) => ({
+																											...current,
+																											[channel.id]: true
+																										}));
+																										setHasUnsavedChanges(true);
+																									}
+																								},
+																								className: `flex-1 rounded-lg px-3 py-2 text-xs font-semibold transition ${connected ? "border border-[#BBF7D0] bg-white text-[#166534] hover:bg-[#ECFDF5]" : "bg-[#111827] text-white hover:bg-[#334155]"}`,
+																								children: connected ? "Configure" : "Connect"
+																							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																								type: "button",
+																								className: "rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#64748B] transition hover:bg-[#F8FAFC] hover:text-[#111827]",
+																								children: "Learn more"
+																							})]
+																						})
+																					]
+																				}, channel.id);
+																			})
+																		})] }),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "flex items-center justify-between border-t border-[#EEF2F6] pt-4",
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																				type: "button",
+																				onClick: () => setActiveIdentityStep(5),
+																				className: "text-sm font-semibold text-[#64748B] transition hover:text-[#111827]",
+																				children: "Back"
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+																				type: "button",
+																				onClick: () => completeIdentityLesson(6),
+																				className: "inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]",
+																				children: ["Go to graduation ", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronRight, { className: "h-4 w-4" })]
+																			})]
+																		})
+																	]
+																})
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+																className: activeIdentityStep === 7 ? "rounded-xl border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] to-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden",
+																children: [
+																	/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																		className: "flex gap-3",
+																		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																			className: "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#22C55E] text-white",
+																			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, { className: "h-5 w-5" })
+																		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																			className: "text-[20px] font-semibold text-[#111827]",
+																			children: "Graduation day"
+																		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																			className: "mt-2 text-sm leading-6 text-[#475569]",
+																			children: "Review what you taught your new teammate, then launch them with confidence."
+																		})] })]
+																	}),
+																	aiEmployeeLaunched && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																		className: "mt-5 rounded-xl border border-[#BBF7D0] bg-white p-5 text-center animate-in zoom-in-95 fade-in-0 duration-500",
+																		children: [
+																			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																				className: "text-4xl animate-bounce",
+																				children: "🎉"
+																			}),
+																			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																				className: "mt-2 text-lg font-semibold text-[#166534]",
+																				children: "Your AI Employee is officially on the team!"
+																			}),
+																			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																				className: "mt-1 text-sm text-[#64748B]",
+																				children: "It’s ready to represent your business across its assigned workplaces."
+																			})
+																		]
+																	}),
+																	/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																		className: "mt-6 grid gap-3 sm:grid-cols-2",
+																		children: [
+																			["Business", businessInfo.name || "Not added"],
+																			["Personality", personality],
+																			["Greetings", welcomeMessage || "Not added"],
+																			["Languages", supportedLanguages.join(" · ") || primaryLanguage],
+																			["Availability", businessHours || "Not added"]
+																		].map(([label, value]) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+																			type: "button",
+																			onClick: () => setActiveIdentityStep({
+																				Business: 0,
+																				Personality: 2,
+																				Greetings: 3,
+																				Languages: 4,
+																				Availability: 5
+																			}[label] ?? 0),
+																			className: "rounded-lg border border-[#E5E7EB] bg-white px-4 py-3 text-left transition hover:border-[#86EFAC] hover:shadow-sm",
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																				className: "text-xs font-medium text-[#64748B]",
+																				children: label
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																				className: "mt-1 truncate text-sm font-semibold text-[#111827]",
+																				children: value
+																			})]
+																		}, label))
+																	}),
+																	/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																		className: "mt-6 flex items-center justify-between border-t border-[#D1FAE5] pt-4",
+																		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																			type: "button",
+																			onClick: () => setActiveIdentityStep(6),
+																			className: "text-sm font-semibold text-[#64748B] transition hover:text-[#111827]",
+																			children: "Back"
+																		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+																			type: "button",
+																			onClick: () => {
+																				completeIdentityLesson(7);
+																				setAiEmployeeLaunched(true);
+																				handleSaveChanges();
+																			},
+																			className: "inline-flex items-center gap-2 rounded-lg bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]",
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Sparkles, { className: "h-4 w-4" }), aiEmployeeLaunched ? "Launched" : "Launch AI Employee"]
+																		})]
+																	})
+																]
+															})
+														]
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "space-y-4",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("details", {
+															className: "group rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-[0_12px_32px_rgba(15,23,42,0.10)] transition-shadow duration-200 ease-out hover:shadow-[0_16px_36px_rgba(15,23,42,0.12)] xl:sticky xl:top-20",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("summary", {
+																className: "flex cursor-pointer list-none items-center justify-between gap-3 text-base font-semibold text-[#111827] [&::-webkit-details-marker]:hidden xl:hidden",
+																children: ["See what your AI would say", /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronDown, { className: "h-5 w-5 transition group-open:rotate-180" })]
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																className: "max-h-0 overflow-hidden opacity-0 transition-[max-height,opacity] duration-200 ease-out group-open:max-h-[720px] group-open:opacity-100 xl:mt-0 xl:max-h-[720px] xl:opacity-100",
+																children: [
+																	/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																		className: "hidden xl:flex items-center justify-between gap-3",
+																		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																			className: "text-base font-semibold text-[#111827]",
+																			children: "See what your AI would say"
+																		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																			className: "mt-0.5 text-xs text-[#6B7280]",
+																			children: "This updates as you teach your AI."
+																		})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+																			className: "inline-flex items-center gap-1.5 rounded-full bg-[#ECFDF5] px-2.5 py-1 text-[11px] font-semibold text-[#166534]",
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "h-1.5 w-1.5 rounded-full bg-[#22C55E]" }), " Live"]
+																		})]
+																	}),
+																	/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																		className: "mx-auto mt-4 w-full max-w-[326px] rounded-[32px] bg-[#111827] p-2 shadow-[0_18px_42px_rgba(15,23,42,0.22)]",
+																		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "overflow-hidden rounded-[25px] bg-[#F8FAFB]",
+																			children: [
+																				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																					className: "flex items-center justify-between bg-[#111827] px-5 py-2 text-[10px] font-semibold text-white",
+																					children: [
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "9:41" }),
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "h-3 w-16 rounded-full bg-white/90" }),
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "●●●" })
+																					]
+																				}),
+																				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																					className: "flex items-center gap-3 border-b border-[#E5E7EB] bg-white px-3.5 py-3",
+																					children: [
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																							className: "flex h-9 w-9 overflow-hidden items-center justify-center rounded-full bg-[#ECFDF5] text-sm font-semibold text-[#166534]",
+																							children: logoPreview ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+																								src: logoPreview,
+																								alt: "Business logo",
+																								className: "h-full w-full object-cover"
+																							}) : businessInfo.name.slice(0, 1) || "B"
+																						}),
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																							className: "min-w-0 flex-1",
+																							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																								className: "truncate text-sm font-semibold text-[#111827]",
+																								children: businessInfo.name || "Your business"
+																							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																								className: "text-[11px] text-[#16A34A]",
+																								children: "Online · replies instantly"
+																							})]
+																						}),
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MessageCircle, { className: "h-4 w-4 text-[#94A3B8]" })
+																					]
+																				}),
+																				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																					ref: previewMessagesRef,
+																					"aria-live": "polite",
+																					"aria-atomic": "true",
+																					className: "max-h-[330px] min-h-[286px] space-y-2.5 overflow-y-auto bg-[#F8FAFB] p-3 animate-in fade-in-0 slide-in-from-bottom-1 duration-300",
+																					children: [
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																							className: "text-center text-[10px] font-medium text-[#94A3B8]",
+																							children: "Today"
+																						}),
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																							className: "ml-auto w-fit max-w-[86%] rounded-2xl rounded-br-sm bg-[#DCFCE7] px-3 py-2 text-[12px] text-[#111827]",
+																							children: previewLanguageCopy.customerGreeting
+																						}),
+																						previewReplyVisible ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																							className: "w-fit max-w-[91%] animate-in fade-in-0 slide-in-from-bottom-1 duration-300 rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-[12px] leading-5 text-[#111827] shadow-sm",
+																							children: welcomeMessage || previewLanguageCopy.defaultWelcome
+																						}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																							className: "flex w-fit items-center gap-1 rounded-2xl rounded-bl-sm bg-white px-3 py-3 shadow-sm",
+																							"aria-label": "AI is typing",
+																							children: [
+																								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "h-1.5 w-1.5 animate-bounce rounded-full bg-[#94A3B8]" }),
+																								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "h-1.5 w-1.5 animate-bounce rounded-full bg-[#94A3B8] [animation-delay:120ms]" }),
+																								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "h-1.5 w-1.5 animate-bounce rounded-full bg-[#94A3B8] [animation-delay:240ms]" })
+																							]
+																						}),
+																						previewQuestion && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																							className: "ml-auto w-fit max-w-[86%] rounded-2xl rounded-br-sm bg-[#DCFCE7] px-3 py-2 text-[12px] text-[#111827]",
+																							children: previewQuestion
+																						}), previewReplyVisible && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																							className: "w-fit max-w-[91%] animate-in fade-in-0 slide-in-from-bottom-1 duration-300 rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-[12px] leading-5 text-[#111827] shadow-sm",
+																							children: previewQuestionReply
+																						})] }),
+																						!previewQuestion && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [
+																							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																								className: "ml-auto w-fit max-w-[86%] rounded-2xl rounded-br-sm bg-[#DCFCE7] px-3 py-2 text-[12px] text-[#111827]",
+																								children: previewLanguageCopy.pricingQuestion
+																							}),
+																							previewReplyVisible && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																								className: "w-fit max-w-[91%] animate-in fade-in-0 slide-in-from-bottom-1 duration-300 rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-[12px] leading-5 text-[#111827] shadow-sm",
+																								children: previewBusinessContext
+																							}),
+																							previewReplyVisible && previewFollowUp && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																								className: "w-fit max-w-[91%] animate-in fade-in-0 duration-300 rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-[12px] leading-5 text-[#111827] shadow-sm",
+																								children: previewFollowUp
+																							})
+																						] })
+																					]
+																				}, `${previewRefreshKey}-${previewQuestion ?? "default"}`),
+																				/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																					className: "flex items-center gap-2 border-t border-[#E5E7EB] bg-white px-3 py-2.5",
+																					children: [
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-4 w-4 text-[#94A3B8]" }),
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																							className: "flex-1 rounded-full bg-[#F1F5F9] px-3 py-1.5 text-[11px] text-[#94A3B8]",
+																							children: "Message"
+																						}),
+																						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Send, { className: "h-4 w-4 text-[#22C55E]" })
+																					]
+																				})
+																			]
+																		})
+																	}),
+																	/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																		className: "mt-4 grid grid-cols-3 gap-2",
+																		children: [
+																			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																				type: "button",
+																				onClick: () => setPreviewQuestion("Hello"),
+																				className: "rounded-lg border border-[#E5E7EB] bg-white px-2 py-2 text-[11px] font-semibold text-[#475569] transition hover:border-[#86EFAC] hover:text-[#166534]",
+																				children: "Test greeting"
+																			}),
+																			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																				type: "button",
+																				onClick: () => setPreviewQuestion("How much is your service?"),
+																				className: "rounded-lg border border-[#E5E7EB] bg-white px-2 py-2 text-[11px] font-semibold text-[#475569] transition hover:border-[#86EFAC] hover:text-[#166534]",
+																				children: "Ask question"
+																			}),
+																			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																				type: "button",
+																				onClick: () => setPreviewQuestion(null),
+																				className: "rounded-lg border border-[#E5E7EB] bg-white px-2 py-2 text-[11px] font-semibold text-[#475569] transition hover:border-[#CBD5E1] hover:text-[#111827]",
+																				children: "Reset"
+																			})
+																		]
+																	}),
+																	/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																		className: "mt-3",
+																		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																			className: "text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]",
+																			children: "Try a quick prompt"
+																		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																			className: "mt-2 flex flex-wrap gap-1.5",
+																			children: [
+																				"How much is your service?",
+																				"Where are you located?",
+																				"What are your hours?"
+																			].map((prompt) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																				type: "button",
+																				onClick: () => setPreviewQuestion(prompt),
+																				className: "rounded-full bg-[#F1F5F9] px-2.5 py-1.5 text-[11px] font-medium text-[#475569] transition hover:bg-[#ECFDF5] hover:text-[#166534]",
+																				children: prompt
+																			}, prompt))
+																		})]
+																	}),
+																	/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																		className: "mt-4 border-t border-[#EEF2F6] pt-3",
+																		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																			className: "text-xs font-semibold text-[#111827]",
+																			children: "What changed"
+																		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																			className: "mt-2 grid gap-1.5 text-[11px] text-[#64748B]",
+																			children: [
+																				"Greeting updated",
+																				`${personality} personality`,
+																				supportedLanguages.join(" + ") || primaryLanguage,
+																				`Available ${businessHours || "not set"}`
+																			].map((change) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+																				className: "flex items-center gap-2",
+																				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, { className: "h-3.5 w-3.5 shrink-0 text-[#22C55E]" }), change]
+																			}, change))
+																		})]
+																	})
+																]
+															})]
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+															className: activeIdentityStep === 0 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]" : "hidden",
+															children: [
+																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																	className: "flex items-center gap-4",
+																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																		className: "flex h-14 w-14 overflow-hidden items-center justify-center rounded-[16px] bg-[#E5F6EC] text-2xl font-semibold text-[#065F46]",
+																		children: logoPreview ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+																			src: logoPreview,
+																			alt: "Business logo preview",
+																			className: "h-full w-full object-cover"
+																		}) : businessInfo.name.slice(0, 1) || "B"
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																		className: "text-[20px] font-semibold text-[#111827]",
+																		children: "Give your AI a familiar face"
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																		className: "mt-1 text-[16px] leading-7 text-[#6B7280]",
+																		children: "Add the logo your customers already know."
+																	})] })]
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																	className: "mt-4 rounded-2xl border border-dashed border-[#CBD5E1] bg-[#F9FAFB] p-3",
+																	children: [logoPreview ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+																		src: logoPreview,
+																		alt: "Uploaded business logo",
+																		className: "mx-auto h-20 w-20 rounded-[16px] object-cover"
+																	}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																		className: "mx-auto flex h-20 w-20 items-center justify-center rounded-[16px] bg-[#E5F6EC] text-2xl font-semibold text-[#065F46]",
+																		children: businessInfo.name.slice(0, 1) || "B"
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																		className: "mt-3 text-center text-xs text-[#64748B]",
+																		children: "PNG, JPG or SVG · Maximum 5MB"
+																	})]
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																	className: "mt-4 flex flex-wrap gap-2",
+																	children: [
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+																			className: "inline-flex cursor-pointer items-center justify-center rounded-[16px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition-all duration-200 ease-out hover:-translate-y-px hover:bg-[#F3F4F6] hover:shadow-sm",
+																			children: [
+																				/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Image, { className: "mr-2 h-4 w-4" }),
+																				"Add logo",
+																				/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																					type: "file",
+																					accept: "image/png,image/jpeg,image/svg+xml",
+																					className: "hidden",
+																					onChange: (event) => {
+																						const file = event.target.files?.[0];
+																						if (!file) return;
+																						if (![
+																							"image/png",
+																							"image/jpeg",
+																							"image/svg+xml"
+																						].includes(file.type)) {
+																							setLogoError("Please upload a PNG, JPG or SVG file.");
+																							return;
+																						}
+																						if (file.size > 5 * 1024 * 1024) {
+																							setLogoError("Logo files must be 5MB or smaller.");
+																							return;
+																						}
+																						setAvatarFileName(file.name);
+																						setLogoPreview(LOGO_PLACEHOLDER);
+																						setLogoError("");
+																					}
+																				})
+																			]
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																			type: "button",
+																			onClick: () => {
+																				setLogoPreview(null);
+																				setLogoPreviewOpen(false);
+																				setAvatarFileName("");
+																				setLogoError("");
+																				setHasUnsavedChanges(true);
+																			},
+																			disabled: !logoPreview,
+																			className: "rounded-[16px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition-all duration-200 ease-out hover:-translate-y-px hover:bg-[#F3F4F6] hover:shadow-sm disabled:cursor-not-allowed disabled:text-[#94A3B8]",
+																			children: "Remove"
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																			type: "button",
+																			onClick: () => setLogoPreviewOpen(true),
+																			disabled: !logoPreview,
+																			className: "rounded-[16px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition-all duration-200 ease-out hover:-translate-y-px hover:bg-[#F3F4F6] hover:shadow-sm disabled:cursor-not-allowed disabled:text-[#94A3B8]",
+																			children: "Preview"
+																		})
+																	]
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																	className: "mt-3 text-sm text-[#64748B]",
+																	children: logoError || avatarFileName || "No logo added yet"
+																}),
+																logoPreviewOpen && logoPreview && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																	className: "mt-4 rounded-[16px] border border-[#E5E7EB] bg-[#F9FAFB] p-4",
+																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																		className: "flex items-center justify-between gap-3",
+																		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																			className: "text-sm font-semibold text-[#111827]",
+																			children: "Your AI’s logo"
+																		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																			type: "button",
+																			onClick: () => setLogoPreviewOpen(false),
+																			className: "text-sm font-semibold text-[#475569] transition-colors duration-200 hover:text-[#111827]",
+																			children: "Close"
+																		})]
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+																		src: logoPreview,
+																		alt: "Business logo preview",
+																		className: "mt-4 h-40 w-full rounded-[16px] bg-white object-contain"
+																	})]
+																})
+															]
+														})]
+													})]
+												})
+											})
+										})
+									}),
+									activeWorkspaceSection === "Knowledge Hub" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "space-y-6",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "space-y-6",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: "text-sm uppercase tracking-[0.2em] text-[#6B7280]",
+														children: "Knowledge Hub"
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+														className: "mt-2 text-2xl font-semibold text-[#111827]",
+														children: "What your AI Employee knows"
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: "mt-2 text-sm text-[#6B7280]",
+														children: "Keep the business knowledge your AI Employee uses up to date."
+													})
+												] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													className: "inline-flex items-center justify-center rounded-[20px] bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "mr-2 h-4 w-4" }), "Add Knowledge Source"]
+												})]
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "grid gap-4 xl:grid-cols-2",
+												children: KNOWLEDGE_HUB_SOURCES.map((source) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: `${AI_WORKSPACE_SECTION} p-5`,
+													children: [
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex items-start justify-between gap-4",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-sm font-semibold text-[#111827]",
+																children: source.title
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "mt-2 text-sm text-[#64748B]",
+																children: source.description
+															})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																className: "rounded-full border border-[#E5E7EB] bg-[#F8FAFB] px-3 py-1 text-xs font-semibold text-[#475569]",
+																children: source.status
+															})]
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "mt-5 grid gap-3 sm:grid-cols-2",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																className: "rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFB] p-3",
+																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																	className: "text-xs uppercase tracking-[0.2em] text-[#6B7280]",
+																	children: "Last updated"
+																}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																	className: "mt-2 text-sm font-semibold text-[#111827]",
+																	children: source.lastUpdated
+																})]
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																className: "rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFB] p-3",
+																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																	className: "text-xs uppercase tracking-[0.2em] text-[#6B7280]",
+																	children: "Knowledge status"
+																}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																	className: "mt-2 text-sm font-semibold text-[#111827]",
+																	children: source.statusDetail
+																})]
+															})]
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "mt-5 flex justify-end",
+															children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																type: "button",
+																className: "rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F3F4F6]",
+																children: "Edit"
+															})
+														})
+													]
+												}, source.title))
+											}) })]
+										})
+									}),
+									activeWorkspaceSection === "Catalogue" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "space-y-6",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "grid gap-5 xl:grid-cols-[260px_minmax(0,1fr)] items-start",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("aside", {
+												className: "rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 xl:sticky xl:top-6",
+												children: [
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: "text-sm font-semibold text-[#111827]",
+														children: "What your AI Employee sells"
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: "mt-2 text-sm text-[#6B7280]",
+														children: "Manage the products and services it can offer customers."
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+														className: "mt-4 space-y-1 text-sm text-[#475569]",
+														children: [
+															"Products & Services",
+															"Categories",
+															"Collections",
+															"Media Library",
+															"Documents",
+															"Price Lists",
+															"Quote Templates",
+															"Imports"
+														].map((item) => {
+															return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+																type: "button",
+																onClick: () => setCatalogueSubsection(item),
+																className: `flex w-full items-center justify-between rounded-[12px] px-3 py-2 text-left text-sm font-medium transition ${catalogueSubsection === item ? "bg-[#ECFDF5] text-[#065F46]" : "hover:bg-[#EFF6FF]"}`,
+																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: item }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronRight, { className: "h-4 w-4 text-[#94A3B8]" })]
+															}, item);
+														})
+													})
+												]
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "flex flex-wrap gap-2",
+													children: [
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+															type: "button",
+															className: "inline-flex items-center gap-2 rounded-[12px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white",
+															children: "Add Item"
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+															type: "button",
+															className: "inline-flex items-center gap-2 rounded-[12px] border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-semibold",
+															children: "Upload Files"
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+															type: "button",
+															className: "inline-flex items-center gap-2 rounded-[12px] border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-semibold",
+															children: "Import Excel"
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+															type: "button",
+															className: "inline-flex items-center gap-2 rounded-[12px] border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-semibold",
+															children: "Import CSV"
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+															type: "button",
+															className: "inline-flex items-center gap-2 rounded-[12px] border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-semibold",
+															children: "Upload PDF"
+														})
+													]
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "text-sm text-[#64748B]",
+													children: [
+														"Showing ",
+														CATALOG_ITEMS.length,
+														" items"
+													]
+												})]
+											}), catalogueSubsection === "Media Library" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												onDrop,
+												onDragOver,
+												className: "rounded-[12px] border-dashed border-2 border-[#E5E7EB] bg-[#FAFAFB] p-6 text-center mb-4",
+												children: [
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: "text-sm font-semibold text-[#111827]",
+														children: "Drag & drop files here"
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: "mt-2 text-sm text-[#64748B]",
+														children: "Images, PDFs, videos, logos, brochures, flyers, certificates, menus, floor plans"
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "mt-4",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+															ref: fileInputRef,
+															type: "file",
+															multiple: true,
+															className: "hidden",
+															onChange: (e) => handleFiles(e.target.files)
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+															type: "button",
+															onClick: () => fileInputRef.current?.click(),
+															className: "inline-flex items-center gap-2 rounded-[12px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white",
+															children: "Upload files"
+														})]
+													})
+												]
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
+												children: mediaAssets.map((asset) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "rounded-[12px] border border-[#EEF2F6] bg-white p-3",
+													children: [
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "h-36 w-full mb-3 flex items-center justify-center bg-[#F8FAFB] rounded-md overflow-hidden",
+															children: asset.mime?.startsWith("image") ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+																src: asset.url,
+																alt: asset.name,
+																className: "object-cover h-full w-full"
+															}) : asset.mime?.startsWith("video") ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("video", {
+																src: asset.url,
+																controls: true,
+																className: "h-full w-full object-cover"
+															}) : asset.mime?.includes("pdf") ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																className: "flex flex-col items-center justify-center text-sm text-[#475569]",
+																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("svg", {
+																	width: "40",
+																	height: "40",
+																	viewBox: "0 0 24 24",
+																	fill: "none",
+																	xmlns: "http://www.w3.org/2000/svg",
+																	children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", {
+																		d: "M6 2h7l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z",
+																		stroke: "#64748B",
+																		strokeWidth: "1.5",
+																		strokeLinecap: "round",
+																		strokeLinejoin: "round"
+																	})
+																}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																	className: "mt-2",
+																	children: "PDF"
+																})]
+															}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																className: "text-sm text-[#475569]",
+																children: asset.fileType
+															})
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: "text-sm font-semibold text-[#111827] truncate",
+															children: asset.name
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+															className: "text-xs text-[#6B7280]",
+															children: [
+																asset.fileType,
+																" • ",
+																asset.size
+															]
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: "text-xs text-[#94A3B8]",
+															children: asset.uploadDate
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "mt-3 flex justify-end gap-2",
+															children: [
+																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																	type: "button",
+																	onClick: () => viewAsset(asset),
+																	className: "rounded-[8px] border border-[#E5E7EB] bg-white px-2 py-1 text-xs font-semibold",
+																	children: "View"
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																	type: "button",
+																	onClick: () => renameAsset(asset.id),
+																	className: "rounded-[8px] border border-[#E5E7EB] bg-white px-2 py-1 text-xs font-semibold",
+																	children: "Rename"
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																	type: "button",
+																	onClick: () => deleteAsset(asset.id),
+																	className: "rounded-[8px] border border-[#FECACA] bg-white px-2 py-1 text-xs font-semibold text-[#B91C1C]",
+																	children: "Delete"
+																})
+															]
+														})
+													]
+												}, asset.id))
+											})] }) : catalogueSubsection === "Imports" ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "grid gap-4 sm:grid-cols-2 lg:grid-cols-4",
+												children: IMPORT_TYPES.map((t) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "rounded-[12px] border border-[#EEF2F6] bg-white p-4",
+													children: [
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: "text-sm font-semibold text-[#111827]",
+															children: t
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+															className: "mt-1 text-xs text-[#64748B]",
+															children: [
+																t === "Excel" && "Imports products, SKUs, prices, categories, and stock levels from an .xlsx file.",
+																t === "CSV" && "Imports simple product lists and pricing from CSV files.",
+																t === "PDF Catalogues" && "Extracts product listings from PDF catalogs (best-effort parsing).",
+																t === "Website Import" && "Fetches product pages from a website URL and converts into product entries."
+															]
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "mt-4",
+															children: t === "Website Import" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																className: "flex gap-2",
+																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																	placeholder: "https://example.com/catalog",
+																	className: "flex-1 rounded-md border border-[#E5E7EB] px-3 py-2 text-sm",
+																	id: `url-${t}`
+																}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																	type: "button",
+																	onClick: () => simulateImport(t, null),
+																	className: "rounded-[10px] bg-[#22C55E] px-3 py-2 text-xs font-semibold text-white",
+																	children: "Start"
+																})]
+															}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																className: "flex items-center gap-2",
+																children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																	type: "file",
+																	accept: t === "Excel" ? ".xlsx, .xls" : ".csv",
+																	onChange: (e) => simulateImport(t, e.target.files?.[0] ?? null),
+																	className: "text-sm"
+																})
+															})
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "mt-3",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																className: "h-2 w-full bg-[#F1F5F9] rounded-full overflow-hidden",
+																children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																	className: "h-2 bg-[#22C55E]",
+																	style: { width: `${importState[t]?.progress ?? 0}%` }
+																})
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "mt-1 text-xs text-[#64748B]",
+																children: importState[t]?.status === "uploading" ? `Uploading (${importState[t]?.progress ?? 0}%)` : importState[t]?.status === "done" ? "Completed" : "Idle"
+															})]
+														}),
+														importState[t]?.status === "done" && importState[t]?.result && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "mt-3 rounded-[8px] bg-[#F8FAFB] p-3 text-sm",
+															children: [
+																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																	className: "font-semibold text-[#111827]",
+																	children: importState[t].result.message
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+																	className: "mt-1 text-xs text-[#64748B]",
+																	children: ["Products imported: ", importState[t].result.productsImported]
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+																	className: "mt-1 text-xs text-[#F59E0B]",
+																	children: ["Duplicates found: ", importState[t].result.duplicatesFound]
+																}),
+																importState[t].result.warnings.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																	className: "mt-2 text-xs text-[#F59E0B]",
+																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																		className: "font-semibold",
+																		children: "Warnings:"
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
+																		className: "list-disc ml-4",
+																		children: importState[t].result.warnings.map((w, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { children: w }, i))
+																	})]
+																})
+															]
+														})
+													]
+												}, t))
+											}) }) : catalogueSubsection === "Quote Templates" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "grid gap-6 lg:grid-cols-[1fr_420px]",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "mb-4 flex items-center justify-between",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: "text-sm font-semibold text-[#111827]",
+														children: "Quote Templates"
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex gap-2",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+															type: "button",
+															onClick: addQuoteTemplate,
+															className: "rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white",
+															children: "Create Template"
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+															type: "button",
+															onClick: () => {
+																const t = quoteTemplates.find((x) => x.id === selectedTemplateId);
+																if (t) alert(`Create Quote from template: ${t.companyName}`);
+															},
+															className: "rounded-[10px] border border-[#E5E7EB] px-3 py-2 text-sm font-semibold",
+															children: "Create Quote"
+														})]
+													})]
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "space-y-3",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+														className: "flex gap-3 overflow-x-auto pb-2",
+														children: quoteTemplates.map((t) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+															onClick: () => setSelectedTemplateId(t.id),
+															className: `min-w-[160px] flex-shrink-0 rounded-[10px] border p-3 text-left ${selectedTemplateId === t.id ? "border-[#22C55E] bg-[#ECFDF5]" : "bg-white"}`,
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-sm font-semibold",
+																children: t.companyName
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-xs text-[#64748B] truncate",
+																children: t.header
+															})]
+														}, t.id))
+													}), selectedTemplateId && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+														className: "rounded-[12px] border border-[#EEF2F6] bg-white p-4",
+														children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "grid gap-3",
+															children: [
+																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																	className: "flex items-center gap-3",
+																	children: [
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																			className: "h-12 w-12 rounded-md overflow-hidden bg-[#F8FAFB] flex items-center justify-center",
+																			children: quoteTemplates.find((q) => q.id === selectedTemplateId)?.companyLogo ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+																				src: quoteTemplates.find((q) => q.id === selectedTemplateId).companyLogo,
+																				alt: "logo",
+																				className: "h-full w-full object-cover"
+																			}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																				className: "text-xs text-[#94A3B8]",
+																				children: "Logo"
+																			})
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																			className: "flex-1",
+																			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																				value: quoteTemplates.find((q) => q.id === selectedTemplateId)?.companyName || "",
+																				onChange: (e) => updateTemplate(selectedTemplateId, { companyName: e.target.value }),
+																				className: "w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm"
+																			})
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "flex flex-col gap-2",
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+																				className: "text-xs text-[#6B7280]",
+																				children: "Logo"
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																				type: "file",
+																				accept: "image/*",
+																				onChange: (e) => uploadLogoForTemplate(selectedTemplateId, e.target.files?.[0] ?? null)
+																			})]
+																		})
+																	]
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+																	className: "text-xs text-[#6B7280]",
+																	children: "Header"
+																}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																	value: quoteTemplates.find((q) => q.id === selectedTemplateId)?.header || "",
+																	onChange: (e) => updateTemplate(selectedTemplateId, { header: e.target.value }),
+																	className: "mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm"
+																})] }),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+																	className: "text-xs text-[#6B7280]",
+																	children: "Footer"
+																}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																	value: quoteTemplates.find((q) => q.id === selectedTemplateId)?.footer || "",
+																	onChange: (e) => updateTemplate(selectedTemplateId, { footer: e.target.value }),
+																	className: "mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm"
+																})] }),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+																	className: "text-xs text-[#6B7280]",
+																	children: "Terms & Conditions"
+																}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
+																	value: quoteTemplates.find((q) => q.id === selectedTemplateId)?.terms || "",
+																	onChange: (e) => updateTemplate(selectedTemplateId, { terms: e.target.value }),
+																	className: "mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm min-h-[80px]"
+																})] }),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																	className: "grid grid-cols-2 gap-3",
+																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+																		className: "text-xs text-[#6B7280]",
+																		children: "Currency"
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																		value: quoteTemplates.find((q) => q.id === selectedTemplateId)?.currency || "",
+																		onChange: (e) => updateTemplate(selectedTemplateId, { currency: e.target.value }),
+																		className: "mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm"
+																	})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+																		className: "text-xs text-[#6B7280]",
+																		children: "Tax"
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																		value: quoteTemplates.find((q) => q.id === selectedTemplateId)?.tax || "",
+																		onChange: (e) => updateTemplate(selectedTemplateId, { tax: e.target.value }),
+																		className: "mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm"
+																	})] })]
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+																	className: "text-xs text-[#6B7280]",
+																	children: "Signature"
+																}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																	value: quoteTemplates.find((q) => q.id === selectedTemplateId)?.signature || "",
+																	onChange: (e) => updateTemplate(selectedTemplateId, { signature: e.target.value }),
+																	className: "mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm"
+																})] }),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+																	className: "text-xs text-[#6B7280]",
+																	children: "Primary Color"
+																}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																	type: "color",
+																	value: quoteTemplates.find((q) => q.id === selectedTemplateId)?.primaryColor || "#065F46",
+																	onChange: (e) => updateTemplate(selectedTemplateId, { primaryColor: e.target.value }),
+																	className: "mt-1 h-10 w-20 p-0 border-none"
+																})] }),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																	className: "flex justify-end gap-2",
+																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																		type: "button",
+																		onClick: () => duplicateTemplate(selectedTemplateId),
+																		className: "rounded-[8px] border border-[#E5E7EB] px-3 py-2 text-sm",
+																		children: "Duplicate"
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																		type: "button",
+																		onClick: () => deleteTemplate(selectedTemplateId),
+																		className: "rounded-[8px] border border-[#FECACA] px-3 py-2 text-sm text-[#B91C1C]",
+																		children: "Delete"
+																	})]
+																})
+															]
+														})
+													})]
+												})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: `${AI_WORKSPACE_SUBTLE}`,
+													children: [
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex items-center justify-between",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																className: "flex items-center gap-3",
+																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																	className: "h-12 w-12 rounded-md overflow-hidden bg-[#F8FAFB] flex items-center justify-center",
+																	children: quoteTemplates.find((q) => q.id === selectedTemplateId)?.companyLogo ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+																		src: quoteTemplates.find((q) => q.id === selectedTemplateId).companyLogo,
+																		alt: "logo",
+																		className: "h-full w-full object-cover"
+																	}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																		className: "text-xs text-[#94A3B8]",
+																		children: "Logo"
+																	})
+																}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																	className: "text-sm font-semibold",
+																	children: quoteTemplates.find((q) => q.id === selectedTemplateId)?.companyName
+																}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																	className: "text-xs text-[#64748B]",
+																	children: quoteTemplates.find((q) => q.id === selectedTemplateId)?.header
+																})] })]
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																className: "text-sm text-[#6B7280]",
+																children: quoteTemplates.find((q) => q.id === selectedTemplateId)?.currency
+															})]
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "mt-4 border-t pt-4",
+															children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+																className: "text-sm text-[#475569]",
+																children: ["Item lines would appear here in a real quote. Tax: ", quoteTemplates.find((q) => q.id === selectedTemplateId)?.tax]
+															})
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "mt-6 border-t pt-4",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-sm text-[#64748B]",
+																children: "Terms"
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "mt-1 text-sm text-[#475569]",
+																children: quoteTemplates.find((q) => q.id === selectedTemplateId)?.terms
+															})]
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "mt-6 flex items-center justify-between",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-sm font-semibold",
+																children: quoteTemplates.find((q) => q.id === selectedTemplateId)?.signature
+															}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																type: "button",
+																className: "rounded-[10px] bg-white border border-[#E5E7EB] px-3 py-2 text-sm",
+																children: "Preview"
+															}) })]
+														})
+													]
+												}) })]
+											}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "rounded-[16px] border border-[#E5E7EB] bg-white p-4",
+												children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
+													children: CATALOG_ITEMS.map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "rounded-[12px] border border-[#EEF2F6] bg-white p-4 min-h-[160px] flex flex-col justify-between",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex items-start gap-4",
+															children: [
+																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+																	src: item.image,
+																	alt: item.name,
+																	className: "h-20 w-28 flex-shrink-0 rounded-lg object-cover"
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																	className: "flex-1",
+																	children: [
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																			className: "text-sm font-semibold text-[#111827]",
+																			children: item.name
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+																			className: "mt-1 text-xs text-[#6B7280]",
+																			children: [
+																				item.category,
+																				" • ",
+																				item.imagesCount,
+																				" images • ",
+																				item.documentsCount,
+																				" docs"
+																			]
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																			className: "mt-2 text-sm text-[#475569] line-clamp-3",
+																			children: item.description
+																		})
+																	]
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																	className: "text-right ml-2",
+																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																		className: "text-sm font-semibold text-[#111827]",
+																		children: item.price
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																		className: `mt-2 text-xs ${item.availability === "In stock" || item.availability === "Available" ? "text-[#16A34A]" : "text-[#F59E0B]"}`,
+																		children: item.availability
+																	})]
+																})
+															]
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "mt-3 flex justify-end gap-2",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																type: "button",
+																className: "rounded-[10px] border border-[#E5E7EB] bg-white px-3 py-1 text-sm font-semibold",
+																children: "Edit"
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																type: "button",
+																className: "rounded-[10px] border border-[#FECACA] bg-white px-3 py-1 text-sm font-semibold text-[#B91C1C]",
+																children: "Delete"
+															})]
+														})]
+													}, item.id))
+												})
+											})] })]
+										})
+									}),
+									activeWorkspaceSection === "Sales Playbooks" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "space-y-6",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex flex-col gap-4 rounded-[24px] border border-[#E5E7EB] bg-white p-5 sm:flex-row sm:items-center sm:justify-between",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "text-sm font-semibold text-[#111827]",
+												children: "Sales playbooks"
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "mt-2 text-sm text-[#6B7280]",
+												children: "Define how your AI Employee sells in customer conversations."
+											})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "flex gap-2",
+												children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													type: "button",
+													onClick: addPlaybook,
+													className: "rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white",
+													children: "Create Playbook"
+												})
+											})]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "grid gap-5 lg:grid-cols-[320px_minmax(0,1fr)]",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "space-y-2",
+												children: playbooks.map((p) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "rounded-[16px] border border-[#E5E7EB] bg-white p-4",
+													children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex items-center justify-between",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: "text-sm font-semibold",
+															children: p.title
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+															className: "text-xs text-[#64748B]",
+															children: [p.steps.length, " steps"]
+														})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex items-center gap-2",
+															children: [
+																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																	onClick: () => updatePlaybook(p.id, { allowed: !p.allowed }),
+																	className: `rounded-[8px] px-2 py-1 text-sm ${p.allowed ? "bg-[#ECFDF5] border border-[#22C55E] text-[#065F46]" : "border border-[#E5E7EB] bg-white"}`,
+																	children: p.allowed ? "Allowed" : "Allow"
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																	onClick: () => {
+																		setEditingPlaybookId(p.id);
+																	},
+																	className: "rounded-[8px] border border-[#E5E7EB] px-2 py-1 text-sm",
+																	children: "Edit"
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																	onClick: () => duplicatePlaybook(p.id),
+																	className: "rounded-[8px] border border-[#E5E7EB] px-2 py-1 text-sm",
+																	children: "Duplicate"
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																	onClick: () => deletePlaybook(p.id),
+																	className: "rounded-[8px] border border-[#FECACA] px-2 py-1 text-sm text-[#B91C1C]",
+																	children: "Delete"
+																})
+															]
+														})]
+													})
+												}, p.id))
+											}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: editingPlaybookId ? (() => {
+												const p = playbooks.find((x) => x.id === editingPlaybookId);
+												return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "space-y-4",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "rounded-[12px] border border-[#EEF2F6] bg-white p-4",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex items-center justify-between",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																value: p.title,
+																onChange: (e) => updatePlaybook(p.id, { title: e.target.value }),
+																className: "text-lg font-semibold w-full rounded-md border border-transparent px-2 py-1"
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																className: "flex gap-2 ml-4",
+																children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																	onClick: () => {
+																		setEditingPlaybookId(null);
+																	},
+																	className: "rounded-[8px] border border-[#E5E7EB] px-3 py-1 text-sm",
+																	children: "Done"
+																})
+															})]
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "mt-4 overflow-auto",
+															children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																className: "flex items-center gap-2",
+																children: p.steps.map((s, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																	className: "flex items-center",
+																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																		className: "rounded-[8px] border border-[#E5E7EB] bg-white px-3 py-2 min-w-[160px]",
+																		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																			value: s,
+																			onChange: (e) => updateStep(p.id, i, e.target.value),
+																			className: "w-full text-sm"
+																		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																			className: "mt-2 flex gap-1",
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																				onClick: () => addStep(p.id, i),
+																				className: "text-xs rounded px-2 py-1 border border-[#E5E7EB]",
+																				children: "+ Add after"
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																				onClick: () => removeStep(p.id, i),
+																				className: "text-xs rounded px-2 py-1 border border-[#FECACA] text-[#B91C1C]",
+																				children: "Remove"
+																			})]
+																		})]
+																	}), i < p.steps.length - 1 && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																		className: "mx-2 flex items-center",
+																		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", {
+																			width: "30",
+																			height: "24",
+																			viewBox: "0 0 24 24",
+																			fill: "none",
+																			xmlns: "http://www.w3.org/2000/svg",
+																			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", {
+																				d: "M3 12h14",
+																				stroke: "#9CA3AF",
+																				strokeWidth: "1.5",
+																				strokeLinecap: "round",
+																				strokeLinejoin: "round"
+																			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", {
+																				d: "M14 5l7 7-7 7",
+																				stroke: "#9CA3AF",
+																				strokeWidth: "1.5",
+																				strokeLinecap: "round",
+																				strokeLinejoin: "round"
+																			})]
+																		})
+																	})]
+																}, i))
+															})
+														})]
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "rounded-[12px] border border-[#EEF2F6] bg-white p-4",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: "text-sm text-[#64748B]",
+															children: "Preview"
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "mt-3 flex items-center gap-3 overflow-auto",
+															children: p.steps.map((s, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																className: "flex items-center",
+																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																	className: "rounded-[8px] bg-[#F8FAFB] px-4 py-2 text-sm",
+																	children: s
+																}), i < p.steps.length - 1 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", {
+																	className: "mx-2",
+																	width: "24",
+																	height: "24",
+																	viewBox: "0 0 24 24",
+																	fill: "none",
+																	xmlns: "http://www.w3.org/2000/svg",
+																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", {
+																		d: "M3 12h14",
+																		stroke: "#9CA3AF",
+																		strokeWidth: "1.5",
+																		strokeLinecap: "round",
+																		strokeLinejoin: "round"
+																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("path", {
+																		d: "M14 5l7 7-7 7",
+																		stroke: "#9CA3AF",
+																		strokeWidth: "1.5",
+																		strokeLinecap: "round",
+																		strokeLinejoin: "round"
+																	})]
+																})]
+															}, i))
+														})]
+													})]
+												});
+											})() : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "rounded-[12px] border border-[#EEF2F6] bg-white p-6",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "text-sm text-[#64748B]",
+													children: "Select a playbook to edit or create a new one."
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "mt-4",
+													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+														className: "flex gap-2",
+														children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+															onClick: () => {
+																if (playbooks[0]) setEditingPlaybookId(playbooks[0].id);
+															},
+															className: "rounded-[8px] border border-[#E5E7EB] px-3 py-2 text-sm",
+															children: "Edit first"
+														})
+													})
+												})]
+											}) })]
+										})]
+									}),
+									activeWorkspaceSection === "Skills" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "space-y-6",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex flex-col gap-4 rounded-[24px] border border-[#E5E7EB] bg-white p-5 sm:flex-row sm:items-center sm:justify-between",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "text-sm font-semibold text-[#111827]",
+												children: "Skills"
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "mt-2 text-sm text-[#6B7280]",
+												children: "Choose the actions your AI Employee can perform."
+											})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex gap-2",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													onClick: () => setSkills(skills.map((s) => ({
+														...s,
+														enabled: true,
+														status: "Active"
+													}))),
+													className: "rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white",
+													children: "Enable All"
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													onClick: () => setSkills(skills.map((s) => ({
+														...s,
+														enabled: false,
+														status: "Disabled"
+													}))),
+													className: "rounded-[10px] border border-[#E5E7EB] px-3 py-2 text-sm font-semibold",
+													children: "Disable All"
+												})]
+											})]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "grid gap-4 sm:grid-cols-2 xl:grid-cols-3",
+											children: skills.map((sk) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex items-start gap-4 rounded-[20px] border border-[#E5E7EB] bg-white p-5",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "h-12 w-12 rounded-md bg-[#F8FAFB] flex items-center justify-center text-2xl",
+													children: sk.icon
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "flex-1",
+													children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex items-start justify-between gap-3",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: "text-sm font-semibold",
+															children: sk.name
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: "mt-1 text-xs text-[#64748B]",
+															children: sk.description
+														})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "text-right",
+															children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																className: "inline-flex items-center gap-2",
+																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																	className: `text-xs font-medium ${sk.status === "Active" ? "text-[#16A34A]" : sk.status === "Idle" ? "text-[#F59E0B]" : "text-[#B91C1C]"}`,
+																	children: sk.status
+																}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+																	className: "relative inline-flex items-center cursor-pointer",
+																	children: [
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																			type: "checkbox",
+																			checked: sk.enabled,
+																			onChange: () => toggleSkill(sk.id),
+																			className: "sr-only peer"
+																		}),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "w-11 h-6 bg-[#E5E7EB] peer-checked:bg-[#22C55E] rounded-full peer-focus:ring-2 peer-focus:ring-[#22C55E] transition-colors" }),
+																		/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "absolute left-0.5 top-0.5 bg-white w-5 h-5 rounded-full peer-checked:translate-x-5 transform transition-transform" })
+																	]
+																})]
+															})
+														})]
+													})
+												})]
+											}, sk.id))
+										})]
+									}),
+									activeWorkspaceSection === "Policies" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "space-y-6",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "rounded-[24px] border border-[#E5E7EB] bg-white p-5",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "text-sm font-semibold text-[#111827]",
+												children: "Policies"
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "mt-3 text-sm text-[#6B7280]",
+												children: "Set what your AI Employee can and cannot do for your business."
+											})]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "space-y-2",
+											children: policySections.map((sec) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "rounded-[16px] border border-[#E5E7EB] bg-white",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													onClick: () => togglePolicy(sec.id),
+													className: "flex w-full items-center justify-between px-5 py-4 text-left",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: "text-sm font-semibold",
+														children: sec.title
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: "text-xs text-[#94A3B8]",
+														children: "Click to expand and edit"
+													})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+														className: "text-xs text-[#64748B]",
+														children: sec.expanded ? "Collapse" : "Expand"
+													})]
+												}), sec.expanded && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "px-4 pb-4",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
+														value: sec.content,
+														onChange: (e) => updatePolicyContent(sec.id, e.target.value),
+														className: "mt-2 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm min-h-[120px]"
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+														className: "mt-2 flex justify-end gap-2",
+														children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+															onClick: () => togglePolicy(sec.id),
+															className: "rounded-[8px] border border-[#E5E7EB] px-3 py-2 text-sm",
+															children: "Done"
+														})
+													})]
+												})]
+											}, sec.id))
+										})]
+									}),
+									activeWorkspaceSection === "Integrations" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,0.06)]",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex items-start gap-3",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]",
+												children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plug, { className: "h-5 w-5" })
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "text-lg font-semibold text-[#111827]",
+												children: "Connect your AI’s tools"
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "mt-1 text-sm leading-6 text-[#64748B]",
+												children: "Give your AI Employee access to the systems it needs to serve customers well."
+											})] })]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "mt-5 flex flex-wrap items-center gap-3 rounded-xl border border-[#FEF3C7] bg-[#FFFBEB] p-4 text-sm text-[#92400E]",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleAlert, { className: "h-4 w-4 shrink-0" }),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "flex-1",
+													children: "Some tools still need to be connected."
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													type: "button",
+													onClick: () => setSelected("Integrations"),
+													className: "rounded-lg bg-white px-3 py-2 text-xs font-semibold text-[#92400E] shadow-sm transition hover:bg-[#FEF3C7]",
+													children: "Manage integrations"
+												})
+											]
+										})]
+									}),
+									activeWorkspaceSection === "Test AI" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "space-y-6",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex flex-col gap-4 rounded-[24px] border border-[#E5E7EB] bg-white p-5 sm:flex-row sm:items-center sm:justify-between",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "text-sm font-semibold text-[#111827]",
+												children: "Test your AI Employee"
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "mt-2 text-sm text-[#6B7280]",
+												children: "Run mock conversations and review AI analysis."
+											})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "flex gap-2",
+												children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													onClick: () => createConversation(),
+													className: "rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white",
+													children: "New Conversation"
+												})
+											})]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "grid gap-5 lg:grid-cols-[320px_minmax(0,1fr)]",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "rounded-[20px] border border-[#E5E7EB] bg-white p-4",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "text-sm font-semibold",
+													children: "Conversations"
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "mt-3 space-y-2",
+													children: conversations.map((c) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+														onClick: () => setSelectedConversationId(c.id),
+														className: `w-full text-left rounded-[8px] p-3 ${selectedConversationId === c.id ? "bg-[#ECFDF5] border border-[#22C55E]" : "bg-white border border-[#EEF2F6]"}`,
+														children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex items-center justify-between",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-sm font-semibold",
+																children: c.title
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-xs text-[#64748B] truncate",
+																children: c.messages[c.messages.length - 1]?.text || "No messages yet"
+															})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																className: "text-xs text-[#94A3B8]",
+																children: c.messages.length
+															})]
+														})
+													}, c.id))
+												})]
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "mt-4 rounded-[20px] border border-[#E5E7EB] bg-white p-4",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "text-sm font-semibold",
+													children: "Suggested prompts"
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "mt-3 flex flex-wrap gap-2",
+													children: SAMPLE_PROMPTS.map((p) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+														onClick: () => {
+															if (selectedConversationId) simulateAiResponse(selectedConversationId, p);
+															else {
+																createConversation("New");
+																setTimeout(() => simulateAiResponse(conversations[0]?.id ?? "", p), 100);
+															}
+														},
+														className: "rounded-full border border-[#E5E7EB] bg-white px-3 py-1 text-sm",
+														children: p
+													}, p))
+												})]
+											})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "rounded-[20px] border border-[#E5E7EB] bg-white p-5",
+												children: [
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex items-center justify-between",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: "text-sm font-semibold",
+															children: "Chat"
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "text-xs text-[#94A3B8]",
+															children: conversations.find((c) => c.id === selectedConversationId)?.title
+														})]
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+														className: "mt-3 max-h-[320px] overflow-auto space-y-3",
+														children: (conversations.find((c) => c.id === selectedConversationId)?.messages ?? []).map((m) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: `rounded-[12px] p-3 ${m.role === "ai" ? "bg-[#F8FAFB]" : "bg-[#ECFDF5] text-right"}`,
+															children: [
+																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																	className: "text-xs text-[#64748B]",
+																	children: m.role === "ai" ? "AI" : "You"
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																	className: "mt-1 text-sm",
+																	children: m.text
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																	className: "mt-1 text-xs text-[#94A3B8]",
+																	children: m.time
+																})
+															]
+														}, m.id))
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+														className: "mt-4",
+														children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex gap-2",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+																value: inputText,
+																onChange: (e) => setInputText(e.target.value),
+																placeholder: "Type a test prompt",
+																className: "flex-1 rounded-md border border-[#E5E7EB] px-3 py-2 text-sm"
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																onClick: () => {
+																	if (selectedConversationId && inputText.trim()) simulateAiResponse(selectedConversationId, inputText.trim());
+																},
+																className: "rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white",
+																children: "Send"
+															})]
+														})
+													})
+												]
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "mt-4 rounded-[20px] border border-[#E5E7EB] bg-white p-5",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "text-sm font-semibold",
+													children: "AI Analysis"
+												}), aiAnalysis ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "mt-3 text-sm text-[#475569] space-y-2",
+													children: [
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																className: "font-semibold",
+																children: "Intent:"
+															}),
+															" ",
+															aiAnalysis.intent
+														] }),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																className: "font-semibold",
+																children: "Confidence:"
+															}),
+															" ",
+															aiAnalysis.confidence
+														] }),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																className: "font-semibold",
+																children: "Knowledge Used:"
+															}),
+															" ",
+															aiAnalysis.knowledgeUsed.join(", ")
+														] }),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																className: "font-semibold",
+																children: "Suggested Actions:"
+															}),
+															" ",
+															aiAnalysis.suggestedActions.join(", ")
+														] }),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																className: "font-semibold",
+																children: "Response Time:"
+															}),
+															" ",
+															aiAnalysis.responseTime
+														] }),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																className: "font-semibold",
+																children: "Generated Reply:"
+															}),
+															" ",
+															aiAnalysis.generatedReply
+														] }),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", { children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																className: "font-semibold",
+																children: "Knowledge Sources:"
+															}),
+															" ",
+															aiAnalysis.knowledgeSources.join(", ")
+														] })
+													]
+												}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "mt-3 text-sm text-[#94A3B8]",
+													children: "No analysis yet. Send a prompt to generate a mock response and analysis."
+												})]
+											})] })]
+										})]
+									}),
+									activeWorkspaceSection === "Performance" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "space-y-6",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "grid gap-4 sm:grid-cols-2 xl:grid-cols-4",
+												children: PERFORMANCE_METRICS.slice(0, 4).map((metric) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "rounded-[20px] border border-[#E5E7EB] bg-white p-5",
+													children: [
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex items-center justify-between gap-3",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-sm font-semibold text-[#111827]",
+																children: metric.label
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																className: "rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#16A34A]",
+																children: metric.delta
+															})]
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: "mt-5 text-3xl font-semibold text-[#111827]",
+															children: metric.value
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "mt-5 flex items-center gap-2",
+															children: metric.trend.map((point, index) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																className: "h-2 rounded-full bg-[#22C55E]",
+																style: { width: `${Math.max(8, point)}%` }
+															}, index))
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "mt-4 h-2 w-full rounded-full bg-[#E5E7EB]",
+															children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																className: "h-2 rounded-full bg-[#22C55E]",
+																style: { width: `${metric.progress}%` }
+															})
+														})
+													]
+												}, metric.label))
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "grid gap-4 xl:grid-cols-4",
+												children: PERFORMANCE_METRICS.slice(4).map((metric) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "rounded-[20px] border border-[#E5E7EB] bg-white p-5",
+													children: [
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex items-center justify-between gap-3",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-sm font-semibold text-[#111827]",
+																children: metric.label
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																className: "text-sm text-[#6B7280]",
+																children: metric.delta
+															})]
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: "mt-5 text-3xl font-semibold text-[#111827]",
+															children: metric.value
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "mt-4 h-2 w-full rounded-full bg-[#E5E7EB]",
+															children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																className: "h-2 rounded-full bg-[#2563EB]",
+																style: { width: `${metric.progress}%` }
+															})
+														})
+													]
+												}, metric.label))
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "grid gap-4 xl:grid-cols-[1.1fr_0.9fr]",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "rounded-[20px] border border-[#E5E7EB] bg-white p-5",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex items-start justify-between gap-4",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: "text-sm font-semibold text-[#111827]",
+															children: "Knowledge Usage"
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: "mt-2 text-sm text-[#6B7280]",
+															children: "How often the AI referred to internal knowledge sources."
+														})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+															className: "rounded-full bg-[#F3F4F6] px-3 py-1 text-xs font-semibold text-[#6B7280]",
+															children: "Mock data"
+														})]
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+														className: "mt-6 space-y-4",
+														children: KNOWLEDGE_USAGE.map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex items-center justify-between text-sm text-[#475569]",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: item.label }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [item.percent, "%"] })]
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "mt-2 h-2 w-full rounded-full bg-[#E5E7EB]",
+															children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																className: "h-2 rounded-full bg-[#2563EB]",
+																style: { width: `${item.percent}%` }
+															})
+														})] }, item.label))
+													})]
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "grid gap-4",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "rounded-[20px] border border-[#E5E7EB] bg-white p-5",
+														children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-sm font-semibold text-[#111827]",
+																children: "Top Questions"
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "mt-2 text-sm text-[#6B7280]",
+																children: "Most asked questions this week."
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																className: "mt-4 space-y-3",
+																children: PERFORMANCE_TOP_QUESTIONS.map((question) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																	className: "rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFB] px-4 py-3 text-sm text-[#111827]",
+																	children: question
+																}, question))
+															})
+														]
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "rounded-[20px] border border-[#E5E7EB] bg-white p-5",
+														children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-sm font-semibold text-[#111827]",
+																children: "Most Viewed Products"
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "mt-2 text-sm text-[#6B7280]",
+																children: "Products the AI referenced most in conversations."
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																className: "mt-4 space-y-3",
+																children: MOST_VIEWED_PRODUCTS.map((product) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																	className: "flex items-center justify-between text-sm text-[#475569]",
+																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: product.name }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																		className: "font-semibold text-[#111827]",
+																		children: product.views
+																	})]
+																}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																	className: "mt-2 h-2 w-full rounded-full bg-[#E5E7EB]",
+																	children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																		className: "h-2 rounded-full bg-[#22C55E]",
+																		style: { width: `${Math.min(100, product.views / 512 * 100)}%` }
+																	})
+																})] }, product.name))
+															})
+														]
+													})]
+												})]
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "rounded-[20px] border border-[#E5E7EB] bg-white p-5",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "flex items-center justify-between",
+													children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: "text-sm font-semibold text-[#111827]",
+														children: "Recent AI Activity"
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: "mt-2 text-sm text-[#6B7280]",
+														children: "Timeline of the latest AI Employee actions."
+													})] })
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "mt-6 space-y-4",
+													children: RECENT_AI_ACTIVITY.map((activity) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+														className: "rounded-[20px] border border-[#F3F4F6] bg-[#F8FAFB] p-4",
+														children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex items-center justify-between gap-2",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-sm font-semibold text-[#111827]",
+																children: activity.title
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-xs text-[#6B7280]",
+																children: activity.type
+															})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+																className: "text-xs text-[#94A3B8]",
+																children: activity.time
+															})]
+														})
+													}, activity.title))
+												})]
+											})
+										]
+									})
+								]
+							})]
+						}),
+						selected === "Marketing" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: `space-y-6 ${CARD}`,
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "text-sm font-medium text-[#6B7280]",
+									children: "Status Scheduler"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "mt-1 text-sm text-[#6B7280]",
+									children: "Plan and publish status posts ahead of time. Use AI to generate copy, then schedule images and captions for the week."
+								})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									className: "inline-flex items-center gap-2 rounded-[20px] bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-4 w-4" }), "Create Status Post"]
+								})]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "grid gap-6 xl:grid-cols-[1.2fr_0.8fr]",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+									className: CARD,
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex items-center justify-between",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]",
+											children: "Scheduled posts"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+											className: "mt-2 text-lg font-semibold text-[#111827]",
+											children: "Upcoming posts"
+										})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "rounded-full bg-[#F3F4F6] px-3 py-1 text-xs font-semibold text-[#6B7280]",
+											children: "Mock data"
+										})]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "mt-6 space-y-4",
+										children: scheduledPosts.map((post) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "rounded-[24px] border border-[#E5E7EB]/70 bg-[#F8FAFC]/70 p-4",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "min-w-0",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: "text-sm font-semibold text-[#111827]",
+														children: post.caption
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: "mt-2 text-sm text-[#6B7280]",
+														children: post.image
+													})]
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "text-right text-sm text-[#6B7280]",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: "font-semibold text-[#111827]",
+														children: post.date
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: post.time })]
+												})]
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "mt-4 flex flex-wrap items-center gap-2 text-[13px] text-[#6B7280]",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "rounded-full bg-white px-3 py-1 border border-[#E5E7EB]",
+													children: "Scheduled"
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "rounded-full bg-[#ECFDF5] px-3 py-1 text-[#16A34A]",
+													children: "Status"
+												})]
+											})]
+										}, post.id))
+									})]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+									className: CARD,
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "mb-6",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]",
+											children: "New status post"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+											className: "mt-2 text-lg font-semibold text-[#111827]",
+											children: "Create your post"
+										})]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "space-y-5",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+												className: "block text-sm font-medium text-[#111827]",
+												children: [
+													"Upload Image",
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+														type: "file",
+														accept: "image/*",
+														className: "mt-2 w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] file:mr-4 file:rounded-full file:border-0 file:bg-[#22C55E] file:px-4 file:py-2 file:text-sm file:text-white",
+														onChange: (event) => {
+															const fileName = event.target.files?.[0]?.name;
+															setNewPost((prev) => ({
+																...prev,
+																image: fileName ?? ""
+															}));
+															setImageLabel(fileName ?? "No file selected");
+														}
+													}),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: "mt-2 text-xs text-[#6B7280]",
+														children: imageLabel
+													})
+												]
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+												className: "block text-sm font-medium text-[#111827]",
+												children: ["Caption", /* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
+													value: newPost.caption,
+													onChange: (event) => setNewPost((prev) => ({
+														...prev,
+														caption: event.target.value
+													})),
+													placeholder: "Write a short caption for this status post",
+													className: "mt-2 h-32 w-full rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]"
+												})]
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "grid gap-4 sm:grid-cols-2",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+													className: "block text-sm font-medium text-[#111827]",
+													children: ["Date", /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+														type: "date",
+														value: newPost.date,
+														onChange: (event) => setNewPost((prev) => ({
+															...prev,
+															date: event.target.value
+														})),
+														className: INPUT_FIELD
+													})]
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+													className: "block text-sm font-medium text-[#111827]",
+													children: ["Time", /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+														type: "time",
+														value: newPost.time,
+														onChange: (event) => setNewPost((prev) => ({
+															...prev,
+															time: event.target.value
+														})),
+														className: INPUT_FIELD
+													})]
+												})]
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													className: `${BUTTON_SECONDARY} gap-2 sm:w-auto`,
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Image, { className: "h-4 w-4" }), "Generate With AI"]
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													type: "button",
+													className: `${BUTTON_PRIMARY} sm:w-auto`,
+													children: "Schedule Post"
+												})]
+											})
+										]
+									})]
+								})]
+							})]
+						}),
+						selected === "Analytics" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: `space-y-6 ${CARD}`,
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between",
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]",
+											children: "Analytics"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+											className: "mt-2 text-2xl font-semibold text-[#111827]",
+											children: "Business performance overview"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl",
+											children: "Monitor messaging trends, lead growth, sales performance and how AI is resolving customer requests."
+										})
+									] })
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "grid gap-4 sm:grid-cols-2 xl:grid-cols-4",
+									children: ANALYTICS_METRICS.map((metric) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-5 shadow-sm",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "text-sm font-medium text-[#6B7280]",
+												children: metric.label
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "mt-4 flex items-end justify-between gap-4",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "text-3xl font-semibold text-[#111827]",
+													children: metric.value
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#166534]",
+													children: metric.delta
+												})]
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "mt-3 text-sm text-[#6B7280]",
+												children: metric.description
+											})
+										]
+									}, metric.label))
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "grid gap-6 lg:grid-cols-[1.4fr_0.9fr]",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+										className: "rounded-[24px] border border-[#E5E7EB] bg-[#FFFFFF] p-6 shadow-sm",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex items-center justify-between",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "text-sm font-medium text-[#6B7280]",
+												children: "Weekly messages"
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "mt-2 text-sm text-[#6B7280]",
+												children: "Volume of incoming messages per day."
+											})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "rounded-full bg-[#F3F4F6] px-3 py-1 text-xs font-semibold text-[#6B7280]",
+												children: "Mock trends"
+											})]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "mt-6 space-y-4",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "flex items-end gap-3",
+												children: ANALYTICS_CHART.map((point) => {
+													return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex-1 text-center",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "mx-auto h-40 w-full max-w-12 rounded-4xl bg-[#F3F4F6] p-1",
+															children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+																className: "mx-auto h-full rounded-4xl bg-[#22C55E]",
+																style: {
+																	height: `${point.value / chartMax * 160}px`,
+																	width: "100%"
+																}
+															})
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: "mt-3 text-sm text-[#6B7280]",
+															children: point.label
+														})]
+													}, point.label);
+												})
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "rounded-[24px] bg-[#F9FAFB] p-4 text-sm text-[#6B7280]",
+												children: "This chart shows weekly engagement across your WhatsApp campaign messages."
+											})]
+										})]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+										className: "space-y-6 rounded-[24px] border border-[#E5E7EB] bg-[#FFFFFF] p-6 shadow-sm",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-sm font-semibold text-[#111827]",
+											children: "Top Questions"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "mt-4 space-y-3",
+											children: ANALYTICS_TOP_QUESTIONS.map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "font-medium text-[#111827]",
+													children: item.question
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+													className: "mt-2 text-sm text-[#6B7280]",
+													children: [item.volume, " requests"]
+												})]
+											}, item.question))
+										})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-sm font-semibold text-[#111827]",
+											children: "Popular Products"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "mt-4 space-y-3",
+											children: POPULAR_PRODUCTS.map((product) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex items-center justify-between rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "font-medium text-[#111827]",
+													children: product.name
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "text-sm text-[#6B7280]",
+													children: "Top choice for new customers"
+												})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+													className: "rounded-full bg-[#E0F2FE] px-3 py-1 text-xs font-semibold text-[#0C4A6E]",
+													children: [product.sales, " sold"]
+												})]
+											}, product.name))
+										})] })]
+									})]
+								})
+							]
+						}),
+						selected === "Integrations" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "h-full overflow-y-auto overflow-x-hidden space-y-6 pr-2",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: `${CARD}`,
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "flex items-center justify-between",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]",
+												children: "Integrations"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+												className: "mt-2 text-2xl font-semibold text-[#111827]",
+												children: "Integrations"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl",
+												children: "Connect the systems your AI Employee can access across your business."
+											})
+										] })
+									})
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: `${CARD} flex items-center justify-between gap-6`,
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "flex items-center gap-6",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex items-center gap-4",
+											children: [(() => {
+												const totalIntegrations = INTEGRATION_SECTIONS.reduce((a, s) => a + s.items.length, 0);
+												const connectedCount = Object.values(integrationStates).filter((v) => v.status === "Connected").length;
+												const percent = totalIntegrations === 0 ? 0 : Math.round(connectedCount / totalIntegrations * 100);
+												const radius = 36;
+												const circumference = 2 * Math.PI * radius;
+												const offset = Math.max(0, circumference * (1 - percent / 100));
+												return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "flex items-center gap-4",
+													children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("svg", {
+														width: "88",
+														height: "88",
+														viewBox: "0 0 88 88",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("defs", {}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("g", {
+															transform: "translate(44,44)",
+															children: [
+																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", {
+																	r: radius,
+																	stroke: "#F3F4F6",
+																	strokeWidth: "8",
+																	fill: "none"
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("circle", {
+																	r: radius,
+																	stroke: "#22C55E",
+																	strokeWidth: "8",
+																	strokeLinecap: "round",
+																	fill: "none",
+																	strokeDasharray: circumference,
+																	strokeDashoffset: offset,
+																	transform: "rotate(-90)",
+																	style: { transition: "stroke-dashoffset 300ms ease-out" }
+																}),
+																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("text", {
+																	x: "0",
+																	y: "4",
+																	textAnchor: "middle",
+																	className: "text-[20px] font-semibold",
+																	fill: "#0F172A",
+																	children: [percent, "%"]
+																})
+															]
+														})]
+													})
+												});
+											})(), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "text-sm font-semibold",
+													children: "AI Employee Readiness"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "mt-1 text-sm text-[#6B7280]",
+													children: "Connected integrations and capability readiness"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "mt-3 grid grid-cols-4 gap-3 text-sm",
+													children: (() => {
+														return [
+															{
+																label: "Communication",
+																reqs: [
+																	"whatsapp",
+																	"facebook",
+																	"instagram",
+																	"telegram",
+																	"email"
+																]
+															},
+															{
+																label: "Payments",
+																reqs: [
+																	"mpesa",
+																	"stripe",
+																	"paypal",
+																	"flutterwave"
+																]
+															},
+															{
+																label: "Knowledge",
+																reqs: [
+																	"gdrive",
+																	"dropbox",
+																	"onedrive"
+																]
+															},
+															{
+																label: "Scheduling",
+																reqs: ["google_calendar", "outlook"]
+															}
+														].map((m) => {
+															const connected = m.reqs.filter((r) => (integrationStates[r] || { status: "Not Connected" }).status === "Connected").length;
+															const status = connected === 0 ? "Missing" : connected < m.reqs.length ? "Partial" : "Ready";
+															const statusClass = status === "Ready" ? "text-[#16A34A]" : status === "Partial" ? "text-[#B45309]" : "text-[#B91C1C]";
+															return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+																className: "flex flex-col items-start",
+																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																	className: "text-xs text-[#6B7280]",
+																	children: m.label
+																}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																	className: `text-sm font-semibold ${statusClass}`,
+																	children: status
+																})]
+															}, m.label);
+														});
+													})()
+												})
+											] })]
+										})
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "ml-auto text-right",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "text-sm text-[#6B7280]",
+												children: "Connected integrations"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "text-2xl font-semibold",
+												children: [
+													Object.values(integrationStates).filter((v) => v.status === "Connected").length,
+													" / ",
+													INTEGRATION_SECTIONS.reduce((a, s) => a + s.items.length, 0)
+												]
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "mt-2 text-sm text-[#6B7280]",
+												children: "AI capabilities unlocked"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "text-2xl font-semibold",
+												children: CAPABILITY_FEATURES.filter((cap) => cap.requires.every((r) => (integrationStates[r] || { status: "Not Connected" }).status === "Connected")).length
+											})
+										]
+									})]
+								}),
+								INTEGRATION_SECTIONS.map((section) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+									className: "text-sm font-semibold text-[#6B7280] mb-3",
+									children: section.section
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4",
+									children: section.items.map((it) => {
+										const state = integrationStates[it.id] || { status: it.status };
+										const isConnected = state.status === "Connected";
+										const isComing = state.status === "Coming Soon" || state.status === "ComingSoon";
+										const isDisconnected = !isConnected && !isComing;
+										const badgeClass = isConnected ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#166534]" : isComing ? "border-[#E9D5FF] bg-[#F5F3FF] text-[#6D28D9]" : "border-[#F3F4F6] bg-[#F3F4F6] text-[#6B7280]";
+										const iconWrapClass = isConnected ? "h-12 w-12 rounded-[12px] bg-[#ECFDF5] flex items-center justify-center text-[#166534]" : isComing ? "h-12 w-12 rounded-[12px] bg-[#F9FAFB] flex items-center justify-center text-[#94A3B8] opacity-80" : "h-12 w-12 rounded-[12px] bg-[#F3F4F6] flex items-center justify-center text-[#9CA3AF]";
+										const cardStateClass = isComing ? "opacity-70 grayscale" : "opacity-100";
+										const onConnect = () => {
+											if (isComing) return;
+											setConnectModalId(it.id);
+											setConnectForm({
+												email: "",
+												businessName: "",
+												phone: ""
+											});
+											setConnectModalOpen(true);
+										};
+										const onManage = () => {
+											openDrawer(it.id);
+										};
+										return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: `${CARD} flex flex-col justify-between ${cardStateClass} transition-all duration-300 ease-out transform-gpu`,
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex items-start justify-between gap-4",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "flex items-center gap-4",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+														className: iconWrapClass,
+														children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(it.Icon, { className: `h-6 w-6 ${isDisconnected ? "opacity-60" : ""}` })
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+															className: `text-sm font-semibold ${isComing ? "text-[#6B7280]" : "text-[#111827]"}`,
+															children: [" ", it.name]
+														}),
+														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: "mt-1 text-sm text-[#6B7280]",
+															children: it.description
+														}),
+														isConnected && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "mt-2 flex items-center gap-3 text-sm text-[#6B7280]",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+																className: "inline-flex items-center gap-2 text-[13px] text-[#374151]",
+																children: [
+																	/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, { className: "h-4 w-4 text-[#16A34A]" }),
+																	" ",
+																	state.accountName
+																]
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+																className: "text-[12px] text-[#94A3B8]",
+																children: ["Last synced ", state.lastSynced]
+															})]
+														})
+													] })]
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: `${BADGE} ${badgeClass} ${isComing ? "text-[11px]" : ""}`,
+													children: isConnected ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+														className: "inline-flex items-center gap-2",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, { className: "h-3 w-3 text-[#16A34A]" }), " Connected"]
+													}) : isComing ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Coming Soon" }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Disconnected" })
+												}) })]
+											}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "mt-6",
+												children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "transition-all duration-250 ease-out transform",
+													children: [
+														isConnected && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_jsx_runtime.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+															onClick: onManage,
+															className: `${BUTTON_SECONDARY} w-full`,
+															children: "Manage"
+														}) }),
+														isDisconnected && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+															onClick: onConnect,
+															className: `${BUTTON_PRIMARY} w-full`,
+															children: "Connect"
+														}),
+														isComing && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+															className: `${BUTTON_TERTIARY} w-full opacity-60 pointer-events-none`,
+															children: "Coming Soon"
+														})
+													]
+												})
+											})]
+										}, it.id);
+									})
+								})] }, section.section)),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "mt-8",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+										className: "text-sm font-semibold text-[#6B7280] mb-3",
+										children: "What your AI Employee can do"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4",
+										children: CAPABILITY_FEATURES.map((cap) => {
+											const missing = cap.requires.filter((r) => (integrationStates[r] || { status: "Not Connected" }).status !== "Connected");
+											const enabled = missing.length === 0;
+											const badgeClass = enabled ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#166534]" : "border-[#F3F4F6] bg-[#F3F4F6] text-[#6B7280]";
+											return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: `${AI_WORKSPACE_SUBTLE}`,
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "flex items-center justify-between",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: "text-sm font-semibold text-[#111827]",
+														children: cap.title
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+														className: "mt-1 text-sm text-[#6B7280]",
+														children: ["Requires: ", cap.requires.map((r) => getIntegrationName(r)).join(", ")]
+													})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+														className: `${BADGE} ${badgeClass}`,
+														children: enabled ? "Enabled" : "Disabled"
+													}) })]
+												}), !enabled && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "mt-4 text-sm text-[#374151]",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: "font-medium mb-2",
+														children: "Missing integrations"
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
+														className: "list-none space-y-2",
+														children: missing.map((mid) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", {
+															className: "flex items-center gap-3",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																className: "inline-flex h-4 w-4 items-center justify-center rounded-full bg-[#FEE2E2] text-[#B91C1C]",
+																children: "×"
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: getIntegrationName(mid) })]
+														}, mid))
+													})]
+												})]
+											}, cap.id);
+										})
+									})]
+								}),
+								connectModalOpen && connectModalId && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "fixed inset-0 z-50 flex items-center justify-center",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "absolute inset-0 bg-black/40",
+										onClick: () => setConnectModalOpen(false)
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										onClick: (e) => e.stopPropagation(),
+										className: `${GLOBAL_RADIUS} bg-white p-6 z-10 w-full max-w-md transform transition-all duration-200 ease-out shadow-lg scale-100`,
+										role: "dialog",
+										"aria-modal": "true",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h3", {
+												className: "text-lg font-semibold mb-1",
+												children: ["Connect ", getIntegrationName(connectModalId)]
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+												className: "text-sm text-[#6B7280] mb-4",
+												children: [
+													"Connect your ",
+													getIntegrationName(connectModalId),
+													" account."
+												]
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+												className: "text-sm font-medium",
+												children: "Account Email"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+												type: "email",
+												value: connectForm.email,
+												onChange: (e) => setConnectForm((s) => ({
+													...s,
+													email: e.target.value
+												})),
+												className: INPUT_FIELD_WHITE,
+												placeholder: "you@business.com"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+												className: "mt-3 text-sm font-medium",
+												children: "Business Name"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+												type: "text",
+												value: connectForm.businessName,
+												onChange: (e) => setConnectForm((s) => ({
+													...s,
+													businessName: e.target.value
+												})),
+												className: INPUT_FIELD_WHITE,
+												placeholder: "Business Name"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+												className: "mt-3 text-sm font-medium",
+												children: "Phone Number"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+												type: "tel",
+												value: connectForm.phone,
+												onChange: (e) => setConnectForm((s) => ({
+													...s,
+													phone: e.target.value
+												})),
+												className: INPUT_FIELD_WHITE,
+												placeholder: "+254 7xx xxx xxx"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "mt-4 flex justify-end gap-3",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													onClick: () => setConnectModalOpen(false),
+													className: BUTTON_TERTIARY,
+													children: "Cancel"
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+													onClick: handleModalConnect,
+													className: BUTTON_PRIMARY,
+													children: "Connect"
+												})]
+											})
+										]
+									})]
+								}),
+								drawerOpen && drawerIntegrationId && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "fixed inset-0 z-40 pointer-events-none",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "absolute inset-0 bg-black/20 backdrop-blur-sm",
+										onClick: closeDrawer
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("aside", {
+										className: "pointer-events-auto fixed right-0 top-0 h-full w-[420px] z-50 bg-white shadow-lg transform transition-transform duration-200 ease-out",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "p-6 flex flex-col h-full",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "flex items-start justify-between",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex items-center gap-4",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "h-12 w-12 rounded-[12px] bg-[#F3F4F6] flex items-center justify-center text-[#111827]",
+															children: (() => {
+																const id = drawerIntegrationId;
+																for (const s of INTEGRATION_SECTIONS) {
+																	const found = s.items.find((i) => i.id === id);
+																	if (found) return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(found.Icon, { className: "h-6 w-6" });
+																}
+																return null;
+															})()
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: "text-lg font-semibold",
+															children: getIntegrationName(drawerIntegrationId)
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: "text-sm text-[#6B7280]",
+															children: (integrationStates[drawerIntegrationId] || {}).accountName || "Connected account"
+														})] })]
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+														onClick: closeDrawer,
+														className: "rounded-full p-2 text-[#6B7280] hover:bg-[#F3F4F6]",
+														children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X, { className: "h-5 w-5" })
+													})]
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "mt-4 rounded-md border border-[#E5E7EB] p-4",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex items-center justify-between",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "flex items-center gap-3",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																className: "text-sm font-medium",
+																children: "Connection status"
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																className: "text-sm text-[#6B7280]",
+																children: (integrationStates[drawerIntegrationId] || {}).status
+															})]
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+															className: "text-sm text-[#94A3B8]",
+															children: ["Last sync: ", (integrationStates[drawerIntegrationId] || {}).lastSynced || "—"]
+														})]
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "mt-3 flex gap-2",
+														children: [
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																onClick: () => handleReconnect(drawerIntegrationId),
+																className: BUTTON_TERTIARY,
+																children: "Reconnect"
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																onClick: () => handleDisconnect(drawerIntegrationId),
+																className: BUTTON_SECONDARY,
+																children: "Disconnect"
+															}),
+															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+																onClick: () => handleSyncNow(drawerIntegrationId),
+																className: BUTTON_PRIMARY,
+																children: "Sync Now"
+															})
+														]
+													})]
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+													className: "mt-6 flex-1 overflow-y-auto",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: "text-sm font-semibold text-[#111827] mb-3",
+														children: "Permissions granted"
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
+														className: "space-y-2",
+														children: (INTEGRATION_CAPABILITIES[drawerIntegrationId] || []).map((cap) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", {
+															className: "flex items-center gap-3 text-sm text-[#374151]",
+															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+																className: "inline-flex h-4 w-4 items-center justify-center rounded-full bg-[#ECFDF5] text-[#16A34A]",
+																children: "✓"
+															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: cap })]
+														}, cap))
+													})]
+												})
+											]
+										})
+									})]
+								})
+							]
+						}),
+						selected === "Settings" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "space-y-6",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: `${CARD}`,
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "flex items-center justify-between",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]",
+												children: "Settings"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+												className: "mt-2 text-2xl font-semibold text-[#111827]",
+												children: "Business Profile"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl",
+												children: "This information is used by your AI Employee when communicating with customers."
+											})
+										] })
+									})
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "grid gap-6 lg:grid-cols-2",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+										className: "rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-sm font-semibold text-[#111827]",
+											children: "Business Details"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "mt-4 space-y-4",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+													className: "text-sm font-semibold text-[#111827]",
+													children: "Business Name"
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+													type: "text",
+													value: businessProfile.name,
+													onChange: (e) => setBusinessProfile((s) => ({
+														...s,
+														name: e.target.value
+													})),
+													className: "mt-2 w-full rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none",
+													placeholder: "e.g., Sokoos Internet"
+												})] }),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+													className: "text-sm font-semibold text-[#111827]",
+													children: "Industry"
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+													type: "text",
+													value: businessProfile.industry,
+													onChange: (e) => setBusinessProfile((s) => ({
+														...s,
+														industry: e.target.value
+													})),
+													className: "mt-2 w-full rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none",
+													placeholder: "e.g., Telecom & Connectivity"
+												})] }),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+													className: "text-sm font-semibold text-[#111827]",
+													children: "Description"
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
+													value: businessProfile.description,
+													onChange: (e) => setBusinessProfile((s) => ({
+														...s,
+														description: e.target.value
+													})),
+													className: "mt-2 w-full rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none",
+													placeholder: "What does your business do?",
+													rows: 4
+												})] })
+											]
+										})]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+										className: "rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-sm font-semibold text-[#111827]",
+											children: "Contact Information"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "mt-4 space-y-4",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+													className: "text-sm font-semibold text-[#111827]",
+													children: "Phone"
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+													type: "tel",
+													value: businessProfile.phone,
+													onChange: (e) => setBusinessProfile((s) => ({
+														...s,
+														phone: e.target.value
+													})),
+													className: "mt-2 w-full rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none",
+													placeholder: "e.g., +254 20 3949 0101"
+												})] }),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+													className: "text-sm font-semibold text-[#111827]",
+													children: "Email"
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+													type: "email",
+													value: businessProfile.email,
+													onChange: (e) => setBusinessProfile((s) => ({
+														...s,
+														email: e.target.value
+													})),
+													className: "mt-2 w-full rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none",
+													placeholder: "e.g., support@sokoos.co.ke"
+												})] }),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+													className: "text-sm font-semibold text-[#111827]",
+													children: "Location"
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+													type: "text",
+													value: businessProfile.location,
+													onChange: (e) => setBusinessProfile((s) => ({
+														...s,
+														location: e.target.value
+													})),
+													className: "mt-2 w-full rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none",
+													placeholder: "e.g., Nairobi, Kenya"
+												})] })
+											]
+										})]
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "grid gap-6 lg:grid-cols-2",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+										className: "rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-sm font-semibold text-[#111827]",
+											children: "Operations"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "mt-4 space-y-4",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+												className: "text-sm font-semibold text-[#111827]",
+												children: "Business Hours"
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+												type: "text",
+												value: businessProfile.businessHours,
+												onChange: (e) => setBusinessProfile((s) => ({
+													...s,
+													businessHours: e.target.value
+												})),
+												className: "mt-2 w-full rounded-[24px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none",
+												placeholder: "e.g., Mon–Fri, 8:00 AM - 6:00 PM"
+											})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+												className: "text-sm font-semibold text-[#111827]",
+												children: "Service Areas"
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+												type: "text",
+												value: businessProfile.serviceAreas,
+												onChange: (e) => setBusinessProfile((s) => ({
+													...s,
+													serviceAreas: e.target.value
+												})),
+												className: "mt-2 w-full rounded-[24px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none",
+												placeholder: "e.g., Nairobi, Kiambu, Thika"
+											})] })]
+										})]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+										className: "rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-sm font-semibold text-[#111827]",
+											children: "Payment Methods"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "mt-4 space-y-3",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+													className: "flex items-center gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+														type: "checkbox",
+														checked: businessProfile.paymentMethods.mPesa,
+														onChange: () => setBusinessProfile((s) => ({
+															...s,
+															paymentMethods: {
+																...s.paymentMethods,
+																mPesa: !s.paymentMethods.mPesa
+															}
+														})),
+														className: "w-4 h-4"
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+														className: "text-sm font-semibold text-[#111827]",
+														children: "M-Pesa"
+													})]
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+													className: "flex items-center gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+														type: "checkbox",
+														checked: businessProfile.paymentMethods.cash,
+														onChange: () => setBusinessProfile((s) => ({
+															...s,
+															paymentMethods: {
+																...s.paymentMethods,
+																cash: !s.paymentMethods.cash
+															}
+														})),
+														className: "w-4 h-4"
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+														className: "text-sm font-semibold text-[#111827]",
+														children: "Cash"
+													})]
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+													className: "flex items-center gap-3 cursor-pointer rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 hover:bg-white transition",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+														type: "checkbox",
+														checked: businessProfile.paymentMethods.bankTransfer,
+														onChange: () => setBusinessProfile((s) => ({
+															...s,
+															paymentMethods: {
+																...s.paymentMethods,
+																bankTransfer: !s.paymentMethods.bankTransfer
+															}
+														})),
+														className: "w-4 h-4"
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+														className: "text-sm font-semibold text-[#111827]",
+														children: "Bank Transfer"
+													})]
+												})
+											]
+										})]
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: `${CARD}`,
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "flex items-center justify-between",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]",
+												children: "Settings"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+												className: "mt-2 text-2xl font-semibold text-[#111827]",
+												children: "Personal Contacts"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl",
+												children: "Manage personal contacts the business owner may need quick access to."
+											})
+										] })
+									})
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "grid gap-6 lg:grid-cols-[1.4fr_0.6fr]",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+										className: "rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-sm",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "text-sm font-semibold text-[#111827]",
+												children: "Contacts"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "mt-1 text-sm text-[#6B7280]",
+												children: "Card view of personal contacts stored for quick reference."
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "mt-4 grid gap-4 sm:grid-cols-2",
+												children: personalContacts.map((pc) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-4",
+													children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+														className: "flex items-center justify-between",
+														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: "text-lg font-semibold text-[#111827]",
+															children: pc.name
+														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+															className: "mt-1 text-sm text-[#6B7280]",
+															children: pc.relationship
+														})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+															className: "text-sm text-[#111827]",
+															children: pc.phone
+														})]
+													})
+												}, pc.id))
+											})
+										]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("aside", {
+										className: "rounded-[24px] border border-[#E5E7EB] bg-[#F9FAFB] p-6 shadow-sm",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "text-sm font-semibold text-[#111827]",
+												children: "Add Contact"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+												className: "mt-1 text-sm text-[#6B7280]",
+												children: "Add a personal contact for quick access."
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "mt-4 space-y-3",
+												children: [
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+														className: "text-sm font-semibold text-[#111827]",
+														children: "Name"
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+														type: "text",
+														value: newContact.name,
+														onChange: (e) => setNewContact((s) => ({
+															...s,
+															name: e.target.value
+														})),
+														className: "mt-2 w-full rounded-[24px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none",
+														placeholder: "e.g., Mary Wanjiku"
+													})] }),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+														className: "text-sm font-semibold text-[#111827]",
+														children: "Relationship"
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+														type: "text",
+														value: newContact.relationship,
+														onChange: (e) => setNewContact((s) => ({
+															...s,
+															relationship: e.target.value
+														})),
+														className: "mt-2 w-full rounded-[24px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none",
+														placeholder: "e.g., Wife, Supplier"
+													})] }),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("label", {
+														className: "text-sm font-semibold text-[#111827]",
+														children: "Phone Number"
+													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+														type: "tel",
+														value: newContact.phone,
+														onChange: (e) => setNewContact((s) => ({
+															...s,
+															phone: e.target.value
+														})),
+														className: "mt-2 w-full rounded-[24px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm focus:border-[#22C55E] focus:outline-none",
+														placeholder: "e.g., +254712345678"
+													})] }),
+													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+														className: "flex items-center justify-end",
+														children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+															type: "button",
+															onClick: addPersonalContact,
+															className: "inline-flex items-center justify-center rounded-[24px] bg-[#22C55E] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#16A34A]",
+															children: "Add contact"
+														})
+													})
+												]
+											})
+										]
+									})]
+								})
+							]
+						})
+					]
+				})
+			})
+		]
+	});
+}
+var Route$6 = createFileRoute("/dashboard")({ component: Dashboard });
+function Dashboard() {
+	const router = useRouter();
+	const authenticated = isAuthenticated();
+	(0, import_react.useEffect)(() => {
+		if (!authenticated) router.navigate({
+			to: "/signin",
+			replace: true
+		});
+	}, [authenticated, router]);
+	if (!authenticated) return null;
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DashboardLayout, {});
+}
+var $$splitComponentImporter = () => import("./routes-B5hGIAl8.mjs");
+var Route$5 = createFileRoute("/")({ component: lazyRouteComponent($$splitComponentImporter, "component") });
+var Route$4 = createFileRoute("/dashboard/settings")({ component: SettingsRoute });
+function SettingsRoute() {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DashboardLayout, {});
+}
+var Route$3 = createFileRoute("/dashboard/integrations")({ component: IntegrationsRoute });
+function IntegrationsRoute() {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DashboardLayout, {});
+}
+var Route$2 = createFileRoute("/dashboard/inbox")({ component: InboxRoute });
+function InboxRoute() {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DashboardLayout, {});
+}
+var Route$1 = createFileRoute("/dashboard/customers")({ component: CustomersRoute });
+function CustomersRoute() {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DashboardLayout, {});
+}
+var Route = createFileRoute("/dashboard/catalog")({ component: CatalogRoute });
+function CatalogRoute() {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DashboardLayout, {});
+}
+var SigninRoute = Route$8.update({
+	id: "/signin",
+	path: "/signin",
+	getParentRoute: () => Route$10
+});
+var SignUpRoute = Route$7.update({
+	id: "/sign-up",
+	path: "/sign-up",
+	getParentRoute: () => Route$10
+});
+var SignInRoute = Route$9.update({
+	id: "/sign-in",
+	path: "/sign-in",
+	getParentRoute: () => Route$10
+});
+var DashboardRoute = Route$6.update({
+	id: "/dashboard",
+	path: "/dashboard",
+	getParentRoute: () => Route$10
+});
+var IndexRoute = Route$5.update({
+	id: "/",
+	path: "/",
+	getParentRoute: () => Route$10
+});
+var DashboardSettingsRoute = Route$4.update({
+	id: "/settings",
+	path: "/settings",
+	getParentRoute: () => DashboardRoute
+});
+var DashboardIntegrationsRoute = Route$3.update({
+	id: "/integrations",
+	path: "/integrations",
+	getParentRoute: () => DashboardRoute
+});
+var DashboardInboxRoute = Route$2.update({
+	id: "/inbox",
+	path: "/inbox",
+	getParentRoute: () => DashboardRoute
+});
+var DashboardCustomersRoute = Route$1.update({
+	id: "/customers",
+	path: "/customers",
+	getParentRoute: () => DashboardRoute
+});
+var DashboardRouteChildren = {
+	DashboardCatalogRoute: Route.update({
+		id: "/catalog",
+		path: "/catalog",
+		getParentRoute: () => DashboardRoute
+	}),
+	DashboardCustomersRoute,
+	DashboardInboxRoute,
+	DashboardIntegrationsRoute,
+	DashboardSettingsRoute
+};
+var rootRouteChildren = {
+	IndexRoute,
+	DashboardRoute: DashboardRoute._addFileChildren(DashboardRouteChildren),
+	SignInRoute,
+	SignUpRoute,
+	SigninRoute
+};
+var routeTree = Route$10._addFileChildren(rootRouteChildren)._addFileTypes();
+var getRouter = () => {
+	return createRouter({
+		routeTree,
+		context: { queryClient: new QueryClient() },
+		scrollRestoration: true,
+		defaultPreloadStaleTime: 0
+	});
+};
+//#endregion
+export { getRouter };
