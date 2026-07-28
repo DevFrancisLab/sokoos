@@ -1279,6 +1279,29 @@ export default function DashboardLayout() {
       | "Performance"
     >("Identity");
   const [activeIdentityStep, setActiveIdentityStep] = useState(0);
+  const [completedIdentitySteps, setCompletedIdentitySteps] = useState<number[]>([]);
+  const [completionToast, setCompletionToast] = useState<string | null>(null);
+  const [previewReplyVisible, setPreviewReplyVisible] = useState(true);
+  const identityLessonRef = useRef<HTMLDivElement>(null);
+  const previewMessagesRef = useRef<HTMLDivElement>(null);
+  const identityLessons = ["Meet", "Teach", "Personality", "Greetings", "Languages", "Hours", "Workplaces", "Graduation"];
+
+  const focusIdentityLesson = (step: number) => {
+    setActiveIdentityStep(step);
+    window.setTimeout(() => {
+      identityLessonRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 0);
+  };
+
+  const completeIdentityLesson = (step: number) => {
+    setCompletedIdentitySteps((current) => current.includes(step) ? current : [...current, step]);
+    setCompletionToast(`${identityLessons[step]} completed`);
+    window.setTimeout(() => setCompletionToast(null), 2200);
+    if (step < identityLessons.length - 1) {
+      window.setTimeout(() => focusIdentityLesson(step + 1), 500);
+    }
+  };
+  const identityLessonCardClass = (step: number) => `rounded-xl border bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-300 sm:p-6 ${completedIdentitySteps.includes(step) ? "border-[#86EFAC] animate-[pulse_350ms_ease-out]" : "border-[#E5E7EB]"}`;
   useEffect(() => {
     document.getElementById("ai-workspace-content")?.scrollIntoView({
       behavior: "smooth",
@@ -2027,8 +2050,14 @@ export default function DashboardLayout() {
   const [previewQuestion, setPreviewQuestion] = useState<string | null>(null);
   const [previewRefreshKey, setPreviewRefreshKey] = useState(0);
   useEffect(() => {
-    setPreviewRefreshKey((current) => current + 1);
-  }, [businessHours, businessInfo.name, personality, primaryLanguage, supportedLanguages, welcomeMessage, awayMessage]);
+    setPreviewReplyVisible(false);
+    const replyTimer = window.setTimeout(() => {
+      setPreviewRefreshKey((current) => current + 1);
+      setPreviewReplyVisible(true);
+      previewMessagesRef.current?.scrollTo({ top: previewMessagesRef.current.scrollHeight, behavior: "smooth" });
+    }, 500);
+    return () => window.clearTimeout(replyTimer);
+  }, [businessHours, businessInfo, personality, primaryLanguage, supportedLanguages, welcomeMessage, awayMessage, previewQuestion]);
   const previewQuestionReply = previewQuestion?.toLowerCase().includes("located")
     ? `We’re based in ${businessInfo.address || "your area"}.`
     : previewQuestion?.toLowerCase().includes("hours")
@@ -2240,7 +2269,7 @@ export default function DashboardLayout() {
     { label: "Playbooks", section: "Sales Playbooks", complete: upsellProducts || recommendAlternatives, recommended: true },
     { label: "Availability", section: "Identity", complete: Boolean(businessHours) },
   ];
-  const aiSetupScore = Math.round((aiSetupChecklist.filter((item) => item.complete).length / aiSetupChecklist.length) * 100);
+  const onboardingComplete = aiEmployeeLaunched || completedIdentitySteps.length >= 7;
   const activeSetupItem = aiSetupChecklist.find((item) => item.section === activeWorkspaceSection);
   const [businessProfile, setBusinessProfile] = useState({
     name: "Sokoos Internet",
@@ -3423,8 +3452,8 @@ export default function DashboardLayout() {
 
                   <section className="rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)]" aria-label="AI setup score">
                     <div className="flex items-center gap-4">
-                      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#111827] text-center text-lg font-semibold text-white shadow-sm">{aiSetupScore}%</div>
-                      <div><p className="text-sm font-semibold text-[#111827]">AI Setup Score</p><p className="mt-0.5 text-xs text-[#64748B]">Complete the essentials so your AI can represent your business with confidence.</p></div>
+                      <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-center text-lg font-semibold text-white shadow-sm ${onboardingComplete ? "bg-[#22C55E]" : "bg-[#111827]"}`}>{onboardingComplete ? "🎉" : `${completedIdentitySteps.length + 1}/8`}</div>
+                      <div><p className="text-sm font-semibold text-[#111827]">{onboardingComplete ? "AI Employee Ready" : "AI Employee onboarding"}</p><p className="mt-0.5 text-xs text-[#64748B]">{onboardingComplete ? "Your AI employee is fully trained and ready to serve customers." : "Guide your AI through a few meaningful lessons, one at a time."}</p></div>
                     </div>
                     <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
                       {aiSetupChecklist.map((item) => {
@@ -3440,7 +3469,7 @@ export default function DashboardLayout() {
                   <nav aria-label="AI employee workspace sections" className="sticky top-0 z-30 -mx-4 border-y border-[#E5E7EB] bg-white/95 px-4 py-3 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur lg:-mx-6 lg:px-6">
                     <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-5 lg:grid-cols-9">
                     {([
-                      { label: "Business", section: "Identity" as const, Icon: User, status: activeIdentityStep === 7 ? "complete" : "warning" },
+                      { label: "Identity", section: "Identity" as const, Icon: User, status: activeIdentityStep === 7 ? "complete" : "warning" },
                       { label: "Knowledge", section: "Knowledge Hub" as const, Icon: BookOpen, status: "warning" },
                       { label: "Catalogue", section: "Catalogue" as const, Icon: Package, status: "complete" },
                       { label: "Playbooks", section: "Sales Playbooks" as const, Icon: Target, status: "complete" },
@@ -3491,16 +3520,17 @@ export default function DashboardLayout() {
                 </div>
 
                 {activeWorkspaceSection === "Identity" && (
-                  <section className="rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)] sm:p-5" aria-label="AI employee onboarding progress">
+                  <section className="sticky top-16 z-20 rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-[0_10px_28px_rgba(15,23,42,0.10)] transition-shadow sm:p-5" aria-label="AI employee onboarding progress">
                     <div className="flex items-start justify-between gap-4">
                       <div>
                         <div className="flex items-center gap-2">
                           <span className="flex h-6 w-6 items-center justify-center rounded-md bg-[#ECFDF5] text-[#166534]"><Bot className="h-3.5 w-3.5" /></span>
                           <p className="text-sm font-semibold text-[#111827]">Onboard your AI employee</p>
                         </div>
-                        <p className="mt-1 text-xs text-[#64748B]">Step {activeIdentityStep + 1} of 8 · one meaningful lesson at a time</p>
+                        <p className="mt-1 text-xs text-[#64748B]">Step {activeIdentityStep + 1} of 8</p>
+                        <p className="mt-1 text-xs text-[#64748B]">{activeIdentityStep === 0 ? "Let’s start by introducing your AI employee to your business." : "One meaningful lesson at a time."}</p>
                       </div>
-                      <span className="shrink-0 rounded-full bg-[#ECFDF5] px-2.5 py-1 text-xs font-semibold text-[#166534]">{Math.round(((activeIdentityStep + 1) / 8) * 100)}%</span>
+                      <span className="shrink-0 rounded-full bg-[#ECFDF5] px-2.5 py-1 text-xs font-semibold text-[#166534]">{completedIdentitySteps.length} completed</span>
                     </div>
                     <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]">
                       <div className="h-full rounded-full bg-[#22C55E] transition-all duration-300" style={{ width: `${((activeIdentityStep + 1) / 8) * 100}%` }} />
@@ -3517,16 +3547,23 @@ export default function DashboardLayout() {
                         { label: "Graduation", Icon: Check },
                       ].map(({ label, Icon }, index) => {
                         const active = activeIdentityStep === index;
-                        const completed = activeIdentityStep > index;
+                        const completed = completedIdentitySteps.includes(index);
                         return (
-                          <button key={label} type="button" onClick={() => setActiveIdentityStep(index)} aria-current={active ? "step" : undefined} className={`group inline-flex shrink-0 items-center gap-2 rounded-lg px-2.5 py-2 text-xs font-semibold transition ${active ? "bg-[#111827] text-white shadow-sm" : completed ? "bg-[#ECFDF5] text-[#166534]" : "text-[#64748B] hover:bg-[#F8FAFC] hover:text-[#334155]"}`}>
+                          <button key={label} type="button" onClick={() => focusIdentityLesson(index)} aria-current={active ? "step" : undefined} className={`group inline-flex shrink-0 items-center gap-2 rounded-lg px-2.5 py-2 text-xs font-semibold transition ${active ? "bg-[#111827] text-white shadow-sm" : completed ? "bg-[#ECFDF5] text-[#166534]" : "text-[#64748B] hover:bg-[#F8FAFC] hover:text-[#334155]"}`}>
                             <span className={`flex h-5 w-5 items-center justify-center rounded-full ${active ? "bg-white/15" : completed ? "bg-[#22C55E] text-white" : "bg-[#F1F5F9] text-[#64748B] group-hover:bg-[#E2E8F0]"}`}>{completed ? <Check className="h-3 w-3" /> : <Icon className="h-3 w-3" />}</span>
-                            <span>{label}</span>
+                            <span>{completed ? `${label} Completed` : label}</span>
                           </button>
                         );
                       })}
                     </div>
                   </section>
+                )}
+
+                {completionToast && (
+                  <div role="status" className="fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-xl border border-[#BBF7D0] bg-white px-4 py-3 text-sm font-semibold text-[#166534] shadow-[0_14px_32px_rgba(15,23,42,0.14)] animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#22C55E] text-white"><Check className="h-3.5 w-3.5" /></span>
+                    <span>{completionToast}</span>
+                  </div>
                 )}
 
                 {(hasUnsavedChanges || saveState !== "idle") && (
@@ -3549,8 +3586,8 @@ export default function DashboardLayout() {
                       <div className="space-y-5">
                         <div onChangeCapture={() => setHasUnsavedChanges(true)}>
                           <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1.35fr)_minmax(300px,0.65fr)]">
-                            <div className="space-y-4 scroll-smooth xl:pr-4">
-                              <section className={activeIdentityStep === 0 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
+                            <div ref={identityLessonRef} className="space-y-4 scroll-mt-36 scroll-smooth xl:pr-4">
+                              <section className={activeIdentityStep === 0 ? identityLessonCardClass(0) : "hidden"}>
                                 <div className="space-y-5">
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><User className="h-5 w-5" /></div>
@@ -3643,12 +3680,12 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
                                   <div className="flex justify-end border-t border-[#EEF2F6] pt-4">
-                                    <button type="button" onClick={() => setActiveIdentityStep(1)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to training <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" onClick={() => completeIdentityLesson(0)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to training <ChevronRight className="h-4 w-4" /></button>
                                   </div>
                                 </div>
                               </section>
 
-                              <section className={activeIdentityStep === 1 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
+                              <section className={activeIdentityStep === 1 ? identityLessonCardClass(1) : "hidden"}>
                                 <div className="space-y-5">
                                   <div className="flex gap-3"><div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EFF6FF] text-[#1D4ED8]"><BookOpen className="h-5 w-5" /></div><div><p className="text-[20px] font-semibold text-[#111827]">Teach your Employee</p><p className="mt-2 text-sm leading-6 text-[#6B7280]">Give your new teammate the answers, offers, and guardrails it needs to help customers with confidence.</p></div></div>
                                   <div className="grid gap-3 sm:grid-cols-3">
@@ -3659,11 +3696,11 @@ export default function DashboardLayout() {
                                     ].map((item) => <button key={item.label} type="button" onClick={() => setActiveWorkspaceSection(item.section)} className="rounded-xl border border-[#E5E7EB] bg-[#FCFCFD] p-4 text-left transition hover:-translate-y-px hover:border-[#86EFAC] hover:shadow-sm"><item.Icon className="h-5 w-5 text-[#166534]" /><p className="mt-3 text-sm font-semibold text-[#111827]">{item.label}</p><p className="mt-1 text-xs text-[#64748B]">{item.value}</p></button>)}
                                   </div>
                                   <div className="rounded-xl bg-[#F8FAFC] p-4 text-sm leading-6 text-[#475569]">Your Employee will use these sources to answer common questions, recommend the right products, and follow your business policies.</div>
-                                  <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4"><button type="button" onClick={() => setActiveIdentityStep(0)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button><button type="button" onClick={() => setActiveIdentityStep(2)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Choose personality <ChevronRight className="h-4 w-4" /></button></div>
+                                  <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4"><button type="button" onClick={() => focusIdentityLesson(0)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button><button type="button" onClick={() => completeIdentityLesson(1)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Choose personality <ChevronRight className="h-4 w-4" /></button></div>
                                 </div>
                               </section>
 
-                              <section className={activeIdentityStep === 2 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
+                              <section className={activeIdentityStep === 2 ? identityLessonCardClass(2) : "hidden"}>
                                 <div className="space-y-5">
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF7ED] text-[#C2410C]"><Smile className="h-5 w-5" /></div>
@@ -3777,12 +3814,12 @@ export default function DashboardLayout() {
                                   </div>
                                   <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
                                     <button type="button" onClick={() => setActiveIdentityStep(1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" onClick={() => setActiveIdentityStep(3)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to greetings <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" onClick={() => completeIdentityLesson(2)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to greetings <ChevronRight className="h-4 w-4" /></button>
                                   </div>
                                 </div>
                               </section>
 
-                              <section className={activeIdentityStep === 3 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
+                              <section className={activeIdentityStep === 3 ? identityLessonCardClass(3) : "hidden"}>
                                 <div className="space-y-5">
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EFF6FF] text-[#1D4ED8]"><MessageCircle className="h-5 w-5" /></div>
@@ -3824,12 +3861,12 @@ export default function DashboardLayout() {
                                   </div>
                                   <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
                                     <button type="button" onClick={() => setActiveIdentityStep(2)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" onClick={() => setActiveIdentityStep(4)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to languages <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" onClick={() => completeIdentityLesson(3)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to languages <ChevronRight className="h-4 w-4" /></button>
                                   </div>
                                 </div>
                               </section>
 
-                              <section className={activeIdentityStep === 4 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
+                              <section className={activeIdentityStep === 4 ? identityLessonCardClass(4) : "hidden"}>
                                 <div className="space-y-5">
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F5F3FF] text-[#6D28D9]"><Globe className="h-5 w-5" /></div>
@@ -3880,12 +3917,12 @@ export default function DashboardLayout() {
                                   </div>
                                   <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
                                     <button type="button" onClick={() => setActiveIdentityStep(3)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" onClick={() => setActiveIdentityStep(5)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to working hours <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" onClick={() => completeIdentityLesson(4)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to working hours <ChevronRight className="h-4 w-4" /></button>
                                   </div>
                                 </div>
                               </section>
 
-                              <section className={activeIdentityStep === 5 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
+                              <section className={activeIdentityStep === 5 ? identityLessonCardClass(5) : "hidden"}>
                                 <div className="space-y-5">
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF7ED] text-[#C2410C]"><Clock className="h-5 w-5" /></div>
@@ -3933,12 +3970,12 @@ export default function DashboardLayout() {
                                   <label className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${escalateOutsideHours ? "border-[#BBF7D0] bg-[#F7FEF9]" : "border-[#E5E7EB] bg-[#FCFCFD]"}`}><input type="checkbox" checked={escalateOutsideHours} onChange={(event) => { setEscalateOutsideHours(event.target.checked); setHasUnsavedChanges(true); }} className="mt-0.5 h-4 w-4 rounded border-[#CBD5E1] text-[#22C55E] focus:ring-[#22C55E]" /><span><span className="block text-sm font-semibold text-[#111827]">Escalate urgent messages outside working hours</span><span className="mt-1 block text-xs leading-5 text-[#64748B]">Your Employee collects the details and flags urgent requests for your team.</span></span></label>
                                   <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
                                     <button type="button" onClick={() => setActiveIdentityStep(4)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" onClick={() => setActiveIdentityStep(6)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Assign workplaces <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" onClick={() => completeIdentityLesson(5)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Assign workplaces <ChevronRight className="h-4 w-4" /></button>
                                   </div>
                                 </div>
                               </section>
 
-                              <section className={activeIdentityStep === 6 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
+                              <section className={activeIdentityStep === 6 ? identityLessonCardClass(6) : "hidden"}>
                                 <div className="space-y-5">
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><Plug className="h-5 w-5" /></div>
@@ -3976,7 +4013,7 @@ export default function DashboardLayout() {
                                   </div>
                                   <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
                                     <button type="button" onClick={() => setActiveIdentityStep(5)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" onClick={() => setActiveIdentityStep(7)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Go to graduation <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" onClick={() => completeIdentityLesson(6)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Go to graduation <ChevronRight className="h-4 w-4" /></button>
                                   </div>
                                 </div>
                               </section>
@@ -4005,7 +4042,7 @@ export default function DashboardLayout() {
                                 </div>
                                 <div className="mt-6 flex items-center justify-between border-t border-[#D1FAE5] pt-4">
                                   <button type="button" onClick={() => setActiveIdentityStep(6)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                  <button type="button" onClick={() => { setAiEmployeeLaunched(true); handleSaveChanges(); }} className="inline-flex items-center gap-2 rounded-lg bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"><Sparkles className="h-4 w-4" />{aiEmployeeLaunched ? "Launched" : "Launch AI Employee"}</button>
+                                  <button type="button" onClick={() => { completeIdentityLesson(7); setAiEmployeeLaunched(true); handleSaveChanges(); }} className="inline-flex items-center gap-2 rounded-lg bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"><Sparkles className="h-4 w-4" />{aiEmployeeLaunched ? "Launched" : "Launch AI Employee"}</button>
                                 </div>
                               </section>
                             </div>
@@ -4042,18 +4079,18 @@ export default function DashboardLayout() {
                                         </div>
                                         <MessageCircle className="h-4 w-4 text-[#94A3B8]" />
                                       </div>
-                                      <div key={`${previewRefreshKey}-${previewQuestion ?? "default"}`} aria-live="polite" aria-atomic="true" className="min-h-[286px] space-y-2.5 bg-[#F8FAFB] p-3 animate-in fade-in-0 slide-in-from-bottom-1 duration-300">
+                                      <div ref={previewMessagesRef} key={`${previewRefreshKey}-${previewQuestion ?? "default"}`} aria-live="polite" aria-atomic="true" className="max-h-[330px] min-h-[286px] space-y-2.5 overflow-y-auto bg-[#F8FAFB] p-3 animate-in fade-in-0 slide-in-from-bottom-1 duration-300">
                                         <p className="text-center text-[10px] font-medium text-[#94A3B8]">Today</p>
                                         <div className="ml-auto w-fit max-w-[86%] rounded-2xl rounded-br-sm bg-[#DCFCE7] px-3 py-2 text-[12px] text-[#111827]">{previewLanguageCopy.customerGreeting}</div>
-                                        <div className="w-fit max-w-[91%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-[12px] leading-5 text-[#111827] shadow-sm">{welcomeMessage || previewLanguageCopy.defaultWelcome}</div>
+                                        {previewReplyVisible ? <div className="w-fit max-w-[91%] animate-in fade-in-0 slide-in-from-bottom-1 duration-300 rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-[12px] leading-5 text-[#111827] shadow-sm">{welcomeMessage || previewLanguageCopy.defaultWelcome}</div> : <div className="flex w-fit items-center gap-1 rounded-2xl rounded-bl-sm bg-white px-3 py-3 shadow-sm" aria-label="AI is typing"><span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#94A3B8]" /><span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#94A3B8] [animation-delay:120ms]" /><span className="h-1.5 w-1.5 animate-bounce rounded-full bg-[#94A3B8] [animation-delay:240ms]" /></div>}
                                         {previewQuestion && <>
                                           <div className="ml-auto w-fit max-w-[86%] rounded-2xl rounded-br-sm bg-[#DCFCE7] px-3 py-2 text-[12px] text-[#111827]">{previewQuestion}</div>
-                                          <div className="w-fit max-w-[91%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-[12px] leading-5 text-[#111827] shadow-sm">{previewQuestionReply}</div>
+                                          {previewReplyVisible && <div className="w-fit max-w-[91%] animate-in fade-in-0 slide-in-from-bottom-1 duration-300 rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-[12px] leading-5 text-[#111827] shadow-sm">{previewQuestionReply}</div>}
                                         </>}
                                         {!previewQuestion && <>
                                           <div className="ml-auto w-fit max-w-[86%] rounded-2xl rounded-br-sm bg-[#DCFCE7] px-3 py-2 text-[12px] text-[#111827]">{previewLanguageCopy.pricingQuestion}</div>
-                                          <div className="w-fit max-w-[91%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-[12px] leading-5 text-[#111827] shadow-sm">{previewBusinessContext}</div>
-                                          {previewFollowUp && <div className="w-fit max-w-[91%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-[12px] leading-5 text-[#111827] shadow-sm">{previewFollowUp}</div>}
+                                          {previewReplyVisible && <div className="w-fit max-w-[91%] animate-in fade-in-0 slide-in-from-bottom-1 duration-300 rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-[12px] leading-5 text-[#111827] shadow-sm">{previewBusinessContext}</div>}
+                                          {previewReplyVisible && previewFollowUp && <div className="w-fit max-w-[91%] animate-in fade-in-0 duration-300 rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-[12px] leading-5 text-[#111827] shadow-sm">{previewFollowUp}</div>}
                                         </>}
                                       </div>
                                       <div className="flex items-center gap-2 border-t border-[#E5E7EB] bg-white px-3 py-2.5"><Plus className="h-4 w-4 text-[#94A3B8]" /><div className="flex-1 rounded-full bg-[#F1F5F9] px-3 py-1.5 text-[11px] text-[#94A3B8]">Message</div><Send className="h-4 w-4 text-[#22C55E]" /></div>
