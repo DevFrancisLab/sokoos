@@ -1305,7 +1305,7 @@ export default function DashboardLayout() {
       window.setTimeout(() => focusIdentityLesson(step + 1), 500);
     }
   };
-  const identityLessonCardClass = (step: number) => `rounded-xl border bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-300 sm:p-6 ${completedIdentitySteps.includes(step) ? "border-[#86EFAC] animate-[pulse_350ms_ease-out]" : "border-[#E5E7EB]"}`;
+  const identityLessonCardClass = (step: number) => `rounded-xl border bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-300 sm:p-6 ${trainingCompletedSteps.includes(step) ? "border-[#86EFAC] animate-[pulse_350ms_ease-out]" : "border-[#E5E7EB]"}`;
   useEffect(() => {
     document.getElementById("ai-workspace-content")?.scrollIntoView({
       behavior: "smooth",
@@ -1890,7 +1890,7 @@ export default function DashboardLayout() {
   const chartMax = Math.max(...ANALYTICS_CHART.map((point) => point.value));
   const [aiEnabled, setAiEnabled] = useState(true);
   const [businessHours, setBusinessHours] = useState(
-    "Mon–Fri, 8:00 AM - 6:00 PM",
+    "",
   );
   const [humanTakeover, setHumanTakeover] = useState(true);
   const [language, setLanguage] =
@@ -2023,17 +2023,16 @@ export default function DashboardLayout() {
   const [recommendAlternatives, setRecommendAlternatives] = useState(true);
   const [closeSalesAutomatically, setCloseSalesAutomatically] = useState(false);
   const [businessInfo, setBusinessInfo] = useState({
-    name: "Sokoos Internet",
-    type: "Telecom & Connectivity",
-    about:
-      "We help local businesses stay online with reliable internet plans, fast support, and easy onboarding.",
-    website: "https://sokoos.com",
-    address: "Nairobi, Kenya",
-    phone: "+254 700 000 000",
-    whatsapp: "+254 700 000 000",
-    hours: "Mon–Fri, 8:00 AM - 6:00 PM",
-    serviceAreas: "Nairobi, Kiambu, Thika",
-    paymentMethods: "Mobile Money, Bank Transfer, Cash",
+    name: "",
+    type: "",
+    about: "",
+    website: "",
+    address: "",
+    phone: "",
+    whatsapp: "",
+    hours: "",
+    serviceAreas: "",
+    paymentMethods: "",
   });
   const previewLanguageCopy = primaryLanguage === "Kiswahili"
     ? {
@@ -2347,10 +2346,12 @@ export default function DashboardLayout() {
     { label: "Playbooks", section: "Sales Playbooks", complete: upsellProducts || recommendAlternatives, recommended: true },
     { label: "Availability", section: "Identity", complete: Boolean(businessHours) },
   ];
-  const onboardingComplete = aiEmployeeLaunched || completedIdentitySteps.length >= identityLessons.length;
-  const minutesRemaining = Math.max(0, 6 - completedIdentitySteps.length);
-  const trainingPercent = Math.round((completedIdentitySteps.length / identityLessons.length) * 100);
-  const aiReadiness = Math.round(18 + (completedIdentitySteps.length / identityLessons.length) * 82);
+  const identityFieldsComplete = Boolean(businessInfo.name.trim() && businessInfo.type.trim() && businessInfo.about.trim() && businessInfo.website.trim() && businessInfo.phone.trim() && businessInfo.address.trim() && businessInfo.whatsapp.trim());
+  const trainingCompletedSteps = identityFieldsComplete ? completedIdentitySteps : [];
+  const onboardingComplete = aiEmployeeLaunched || trainingCompletedSteps.length >= identityLessons.length;
+  const minutesRemaining = Math.max(0, 6 - trainingCompletedSteps.length);
+  const trainingPercent = Math.round((trainingCompletedSteps.length / identityLessons.length) * 100);
+  const aiReadiness = Math.round(18 + (trainingCompletedSteps.length / identityLessons.length) * 82);
   const knowledgeSourceSummary = [
     { label: "Website", value: "42 pages", Icon: Globe, ready: websiteImportStatus !== "syncing" },
     { label: "FAQ", value: `${faqItems.length} items`, Icon: MessageCircle, ready: faqItems.length > 0 },
@@ -2383,7 +2384,7 @@ export default function DashboardLayout() {
           ? { title: "No website pages yet", description: "Import your website to give your AI a fast, trusted starting point.", action: "Import website" }
           : { title: "No knowledge items yet", description: "Add a focused FAQ, product, policy, or website page to start teaching your AI.", action: "Add knowledge" };
   const workspaceNavigatorItems = [
-    { title: "Identity", description: "Who your AI represents", section: "Identity" as const, Icon: User, complete: completedIdentitySteps.length >= 1 },
+    { title: "Identity", description: "Who your AI represents", section: "Identity" as const, Icon: User, complete: trainingCompletedSteps.length >= 1 },
     { title: "Knowledge", description: "What it can answer", section: "Knowledge Hub" as const, Icon: BookOpen, complete: faqItems.length > 0 },
     { title: "Catalogue", description: "Offers it can recommend", section: "Catalogue" as const, Icon: Package, complete: knowledgeProducts.length > 0 },
     { title: "Sales Playbooks", description: "How it handles selling", section: "Sales Playbooks" as const, Icon: Target, complete: upsellProducts || recommendAlternatives },
@@ -2394,29 +2395,33 @@ export default function DashboardLayout() {
   ];
   const activeSetupItem = aiSetupChecklist.find((item) => item.section === activeWorkspaceSection);
   useEffect(() => {
-    const saved = window.localStorage.getItem("sokoos-ai-training-progress");
+    const saved = window.localStorage.getItem("sokoos-ai-training-progress-v2");
     if (saved) {
       try {
-        const progress = JSON.parse(saved) as { step?: number; completed?: number[]; launched?: boolean; scrollY?: number };
+        const progress = JSON.parse(saved) as { step?: number; completed?: number[]; launched?: boolean; scrollY?: number; businessInfo?: typeof businessInfo; businessHours?: string };
+        if (progress.businessInfo) setBusinessInfo(progress.businessInfo);
+        if (typeof progress.businessHours === "string") setBusinessHours(progress.businessHours);
         if (typeof progress.step === "number") setActiveIdentityStep(progress.step);
         if (Array.isArray(progress.completed)) setCompletedIdentitySteps(progress.completed);
         if (progress.launched) setAiEmployeeLaunched(true);
         if (typeof progress.scrollY === "number") window.requestAnimationFrame(() => window.scrollTo({ top: progress.scrollY, behavior: "auto" }));
       } catch {
-        window.localStorage.removeItem("sokoos-ai-training-progress");
+        window.localStorage.removeItem("sokoos-ai-training-progress-v2");
       }
     }
     setOnboardingRestored(true);
   }, []);
   useEffect(() => {
     if (!onboardingRestored) return;
-    window.localStorage.setItem("sokoos-ai-training-progress", JSON.stringify({
+    window.localStorage.setItem("sokoos-ai-training-progress-v2", JSON.stringify({
       step: activeIdentityStep,
       completed: completedIdentitySteps,
       launched: aiEmployeeLaunched,
       scrollY: window.scrollY,
+      businessInfo,
+      businessHours,
     }));
-  }, [activeIdentityStep, completedIdentitySteps, aiEmployeeLaunched, onboardingRestored]);
+  }, [activeIdentityStep, completedIdentitySteps, aiEmployeeLaunched, businessHours, businessInfo, onboardingRestored]);
   const [businessProfile, setBusinessProfile] = useState({
     name: "Sokoos Internet",
     industry: "Telecom & Connectivity",
@@ -3598,7 +3603,7 @@ export default function DashboardLayout() {
 
                   <section className="rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)]" aria-label="AI setup score">
                     <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-center">
-                      <div className="flex gap-3"><span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-lg shadow-sm ${onboardingComplete ? "bg-[#22C55E] text-white" : "bg-[#ECFDF5] text-[#166534]"}`}>{onboardingComplete ? "🎉" : "🤖"}</span><div className="min-w-0 flex-1"><p className="text-sm font-semibold text-[#111827]">{onboardingComplete ? "Your AI Employee is Ready" : "Training Your AI Employee"}</p><p className="mt-1 text-xs text-[#475569]">{onboardingComplete ? "Your AI has completed training and is ready to represent your business." : `Step ${activeIdentityStep + 1} of 8 · ${identityLessons[activeIdentityStep]}`}</p><p className="mt-1 text-xs leading-5 text-[#64748B]">{onboardingComplete ? "Keep teaching your AI as your business grows." : "Your AI is learning about your business so it can represent you confidently in every customer conversation."}</p><div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]"><div className="h-full rounded-full bg-[#22C55E] transition-all duration-300" style={{ width: `${onboardingComplete ? 100 : Math.max(12.5, trainingPercent)}%` }} /></div><p className="mt-2 text-[11px] font-semibold text-[#166534]">{completedIdentitySteps.length} of 8 lessons complete · {onboardingComplete ? 100 : trainingPercent}% trained</p></div></div>
+                      <div className="flex gap-3"><span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-lg shadow-sm ${onboardingComplete ? "bg-[#22C55E] text-white" : "bg-[#ECFDF5] text-[#166534]"}`}>{onboardingComplete ? "🎉" : "🤖"}</span><div className="min-w-0 flex-1"><p className="text-sm font-semibold text-[#111827]">{onboardingComplete ? "Your AI Employee is Ready" : "Training Your AI Employee"}</p><p className="mt-1 text-xs text-[#475569]">{onboardingComplete ? "Your AI has completed training and is ready to represent your business." : `Step ${activeIdentityStep + 1} of 8 · ${identityLessons[activeIdentityStep]}`}</p><p className="mt-1 text-xs leading-5 text-[#64748B]">{onboardingComplete ? "Keep teaching your AI as your business grows." : "Your AI is learning about your business so it can represent you confidently in every customer conversation."}</p><div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]"><div className="h-full rounded-full bg-[#22C55E] transition-all duration-300" style={{ width: `${onboardingComplete ? 100 : trainingPercent}%` }} /></div><p className="mt-2 text-[11px] font-semibold text-[#166534]">{trainingCompletedSteps.length} of 8 lessons complete · {onboardingComplete ? 100 : trainingPercent}% trained</p></div></div>
                       <div className="rounded-xl border border-[#BBF7D0] bg-[#F7FEF9] p-3"><p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#166534]">AI Readiness</p><p className="mt-1 text-lg font-semibold text-[#111827]">{onboardingComplete ? 100 : aiReadiness}% ready</p><p className="mt-1 text-xs text-[#64748B]">{onboardingComplete ? "Ready for customer conversations" : `About ${minutesRemaining || 1} min left`}</p><button type="button" onClick={() => { setActiveWorkspaceSection("Identity"); focusIdentityLesson(activeIdentityStep); }} className="mt-3 text-xs font-semibold text-[#166534] transition hover:text-[#047857]">Continue training <ChevronRight className="inline h-3.5 w-3.5" /></button></div>
                     </div>
                   </section>
@@ -3694,10 +3699,10 @@ export default function DashboardLayout() {
                         { label: "Ready for Customers", Icon: Check },
                       ].map(({ label, Icon }, index) => {
                         const active = activeIdentityStep === index;
-                        const completed = completedIdentitySteps.includes(index);
+                        const completed = trainingCompletedSteps.includes(index);
                         return (
                           <button key={label} type="button" onClick={() => focusIdentityLesson(index)} aria-current={active ? "step" : undefined} className={`group flex min-w-0 items-center justify-center gap-1.5 rounded-lg px-2 py-1.5 text-center text-[11px] font-semibold transition ${active ? "bg-[#111827] text-white shadow-sm" : completed ? "bg-[#ECFDF5] text-[#166534]" : "text-[#64748B] hover:bg-[#F8FAFC] hover:text-[#111827]"}`}>
-                            <span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full ${active ? "bg-white/15" : completed ? "bg-[#22C55E] text-white" : "bg-[#F1F5F9] text-[#64748B] group-hover:bg-[#E2E8F0]"}`}>{completed ? <Check className="h-2.5 w-2.5" /> : <Icon className="h-2.5 w-2.5" />}</span>
+                            <span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full ${active ? "bg-white/15" : completed ? "bg-[#22C55E] text-white" : "bg-[#FFF7ED] text-[#C2410C] group-hover:bg-[#FFEDD5]"}`}>{completed ? <Check className="h-2.5 w-2.5" /> : <CircleAlert className="h-2.5 w-2.5" />}</span>
                             <span className="truncate">{label}</span>
                           </button>
                         );
@@ -3741,12 +3746,13 @@ export default function DashboardLayout() {
                                       <input
                                         id="business-name"
                                         autoComplete="organization"
+                                        required
                                         value={businessInfo.name}
                                         onChange={(event) => setBusinessInfo((current) => ({ ...current, name: event.target.value }))}
                                         placeholder="Your business name"
                                         className={AI_TRAINING_FIELD}
                                       />
-                                      <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Business name is ready" />
+                                      {businessInfo.name && <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Business name is ready" />}
                                       <p className="mt-1.5 text-xs text-[#64748B]">Shown to customers in every conversation.</p>
                                     </div>
 
@@ -3756,12 +3762,13 @@ export default function DashboardLayout() {
                                       </label>
                                       <input
                                         id="industry"
+                                        required
                                         value={businessInfo.type}
                                         onChange={(event) => setBusinessInfo((current) => ({ ...current, type: event.target.value }))}
                                         placeholder="e.g. Retail, Hospitality, Services"
                                         className={AI_TRAINING_FIELD}
                                       />
-                                      <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Business type is ready" />
+                                      {businessInfo.type && <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Business type is ready" />}
                                       <p className="mt-1.5 text-xs text-[#64748B]">Helps your AI use the right context.</p>
                                     </div>
 
@@ -3772,8 +3779,10 @@ export default function DashboardLayout() {
                                     </label>
                                     <textarea
                                       id="business-description"
+                                      required
                                       value={businessInfo.about}
                                       onChange={(event) => setBusinessInfo((current) => ({ ...current, about: event.target.value }))}
+                                      placeholder="e.g. We help busy families stay connected with reliable home internet and friendly local support."
                                       rows={2}
                                       className={`${AI_TRAINING_TEXTAREA} resize-none`}
                                     />
@@ -3794,27 +3803,27 @@ export default function DashboardLayout() {
                                   <div className="grid gap-4 md:grid-cols-2">
                                     <div>
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-website">Website</label>
-                                      <input id="business-website" type="url" autoComplete="url" value={businessInfo.website} onChange={(event) => setBusinessInfo((current) => ({ ...current, website: event.target.value }))} placeholder="https://yourbusiness.com" className={AI_TRAINING_FIELD} />
+                                      <input id="business-website" type="url" autoComplete="url" required value={businessInfo.website} onChange={(event) => setBusinessInfo((current) => ({ ...current, website: event.target.value }))} placeholder="https://yourbusiness.com" className={AI_TRAINING_FIELD} />
                                       <p className="mt-1.5 text-xs text-[#64748B]">Optional—shared when customers ask for more details.</p>
                                     </div>
                                     <div>
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-phone">Phone number</label>
-                                      <input id="business-phone" type="tel" autoComplete="tel" value={businessInfo.phone} onChange={(event) => setBusinessInfo((current) => ({ ...current, phone: event.target.value }))} placeholder="+254 700 000 000" className={AI_TRAINING_FIELD} />
+                                      <input id="business-phone" type="tel" autoComplete="tel" required value={businessInfo.phone} onChange={(event) => setBusinessInfo((current) => ({ ...current, phone: event.target.value }))} placeholder="+254 700 000 000" className={AI_TRAINING_FIELD} />
                                       <p className="mt-1.5 text-xs text-[#64748B]">For customers who prefer to call.</p>
                                     </div>
                                     <div>
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="physical-address">Location</label>
-                                      <input id="physical-address" autoComplete="street-address" value={businessInfo.address} onChange={(event) => setBusinessInfo((current) => ({ ...current, address: event.target.value }))} placeholder="e.g. Nairobi, Kenya" className={AI_TRAINING_FIELD} />
+                                      <input id="physical-address" autoComplete="street-address" required value={businessInfo.address} onChange={(event) => setBusinessInfo((current) => ({ ...current, address: event.target.value }))} placeholder="e.g. Nairobi, Kenya" className={AI_TRAINING_FIELD} />
                                       <p className="mt-1.5 text-xs text-[#64748B]">Helps your AI answer location questions.</p>
                                     </div>
                                     <div>
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="whatsapp-number">WhatsApp number</label>
-                                      <input id="whatsapp-number" type="tel" autoComplete="tel" value={businessInfo.whatsapp} onChange={(event) => setBusinessInfo((current) => ({ ...current, whatsapp: event.target.value }))} placeholder="+254 700 000 000" className={AI_TRAINING_FIELD} />
+                                      <input id="whatsapp-number" type="tel" autoComplete="tel" required value={businessInfo.whatsapp} onChange={(event) => setBusinessInfo((current) => ({ ...current, whatsapp: event.target.value }))} placeholder="+254 700 000 000" className={AI_TRAINING_FIELD} />
                                       <p className="mt-1.5 text-xs text-[#64748B]">Used for direct customer follow-up.</p>
                                     </div>
                                   </div>
                                   <div className="flex justify-end border-t border-[#EEF2F6] pt-4">
-                                    <button type="button" onClick={() => completeIdentityLesson(0)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to training <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" disabled={!businessInfo.name.trim() || !businessInfo.type.trim() || !businessInfo.about.trim() || !businessInfo.website.trim() || !businessInfo.phone.trim() || !businessInfo.address.trim() || !businessInfo.whatsapp.trim()} onClick={() => completeIdentityLesson(0)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Continue to training <ChevronRight className="h-4 w-4" /></button>
                                   </div>
                                 </div>
                               </section>
@@ -4080,7 +4089,7 @@ export default function DashboardLayout() {
                                         placeholder="Mon–Fri, 8:00 AM - 6:00 PM"
                                         className={AI_TRAINING_FIELD}
                                       />
-                                      <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Business hours are ready" />
+                                      {businessHours && <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Business hours are ready" />}
                                       <p className="mt-1.5 text-xs text-[#64748B]">Your AI uses this to set customer expectations.</p>
                                     </div>
 
@@ -4104,7 +4113,7 @@ export default function DashboardLayout() {
                                   <label className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${escalateOutsideHours ? "border-[#BBF7D0] bg-[#F7FEF9]" : "border-[#E5E7EB] bg-[#FCFCFD]"}`}><input type="checkbox" checked={escalateOutsideHours} onChange={(event) => { setEscalateOutsideHours(event.target.checked); setHasUnsavedChanges(true); }} className="mt-0.5 h-4 w-4 rounded border-[#CBD5E1] text-[#22C55E] focus:ring-[#22C55E]" /><span><span className="block text-sm font-semibold text-[#111827]">Escalate urgent messages outside working hours</span><span className="mt-1 block text-xs leading-5 text-[#64748B]">Your Employee collects the details and flags urgent requests for your team.</span></span></label>
                                   <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
                                     <button type="button" onClick={() => setActiveIdentityStep(4)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" onClick={() => completeIdentityLesson(5)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Assign workplaces <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" disabled={!businessHours.trim()} onClick={() => completeIdentityLesson(5)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Assign workplaces <ChevronRight className="h-4 w-4" /></button>
                                   </div>
                                 </div>
                               </section>
