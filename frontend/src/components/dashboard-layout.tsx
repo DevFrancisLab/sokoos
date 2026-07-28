@@ -723,6 +723,7 @@ const POPULAR_PRODUCTS = [
 ];
 
 const LANGUAGES = ["English", "Kiswahili"] as const;
+const LANGUAGE_OPTIONS = ["English", "Kiswahili", "French", "Arabic", "German", "Spanish", "Portuguese", "Somali", "Amharic", "Hindi", "Chinese", "Italian"];
 const PERSONALITIES = ["Professional", "Friendly", "Luxury", "Casual", "Technical", "Playful"] as const;
 
 const BRAND_VOICE_DETAILS: Record<
@@ -1944,14 +1945,16 @@ export default function DashboardLayout() {
     facebookMessenger: false,
     googleBusinessMessages: false,
   });
-  const [primaryLanguage, setPrimaryLanguage] =
-    useState<(typeof LANGUAGES)[number]>("English");
-  const [secondaryLanguage, setSecondaryLanguage] =
-    useState<(typeof LANGUAGES)[number]>("Kiswahili");
+  const [primaryLanguage, setPrimaryLanguage] = useState("English");
+  const [secondaryLanguage, setSecondaryLanguage] = useState("Kiswahili");
   const [supportedLanguages, setSupportedLanguages] = useState<string[]>([
     "English",
     "Kiswahili",
   ]);
+  const [languageSearch, setLanguageSearch] = useState("");
+  const filteredLanguageOptions = LANGUAGE_OPTIONS.filter((language) =>
+    language.toLowerCase().includes(languageSearch.trim().toLowerCase()),
+  );
   const [tone, setTone] = useState<(typeof TONES)[number]>("Friendly");
   const [writingStyleOptions, setWritingStyleOptions] = useState<Record<string, boolean>>({
     "Use emojis": false,
@@ -3777,62 +3780,41 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
 
+                                  <div className="relative">
+                                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#94A3B8]" />
+                                    <input value={languageSearch} onChange={(event) => setLanguageSearch(event.target.value)} placeholder="Search languages…" className="h-11 w-full rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] pl-10 pr-3 text-sm outline-none transition placeholder:text-[#94A3B8] focus:border-[#22C55E] focus:bg-white focus:ring-4 focus:ring-[#DCFCE7]/70" />
+                                  </div>
+
                                   <div className="grid gap-4 md:grid-cols-2">
-                                    <div className="rounded-xl bg-[#F9FAFB] p-4 transition-shadow duration-200 ease-out hover:shadow-sm">
-                                      <div className="flex items-center justify-between gap-3">
-                                        <p className="text-sm font-semibold text-[#111827]">Main language</p>
-                                        <span className="rounded-full bg-[#DCFCE7] px-2.5 py-1 text-xs font-semibold text-[#166534]">{primaryLanguage}</span>
-                                      </div>
-                                      <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Primary language">
-                                        {LANGUAGES.map((lang) => (
-                                          <button key={lang} type="button" aria-pressed={primaryLanguage === lang} onClick={() => { setPrimaryLanguage(lang); setHasUnsavedChanges(true); }} className={`rounded-full px-3 py-2 text-sm font-medium transition-all duration-200 ease-out hover:-translate-y-px hover:shadow-sm ${primaryLanguage === lang ? "bg-[#111827] text-white" : "border border-[#E5E7EB] bg-white text-[#475569]"}`}>
-                                            {lang}
-                                          </button>
-                                        ))}
+                                    <div className="rounded-xl border border-[#E5E7EB] bg-[#FCFCFD] p-4">
+                                      <p className="text-sm font-semibold text-[#111827]">Primary language</p>
+                                      <p className="mt-1 text-xs leading-5 text-[#64748B]">The default language your AI uses when a customer starts a conversation.</p>
+                                      <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Primary language">
+                                        {filteredLanguageOptions.map((language) => <button key={language} type="button" aria-pressed={primaryLanguage === language} onClick={() => { setPrimaryLanguage(language); setHasUnsavedChanges(true); }} className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${primaryLanguage === language ? "bg-[#111827] text-white shadow-sm" : "border border-[#CBD5E1] bg-white text-[#475569] hover:border-[#22C55E] hover:text-[#166534]"}`}>{primaryLanguage === language && <Check className="mr-1 inline h-3 w-3" />}{language}</button>)}
                                       </div>
                                     </div>
 
-                                    <div className="rounded-xl bg-[#F9FAFB] p-4 transition-shadow duration-200 ease-out hover:shadow-sm">
-                                      <p className="text-sm font-semibold text-[#111827]">Second language</p>
-                                      <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Secondary language">
-                                        {LANGUAGES.map((lang) => (
-                                          <button key={lang} type="button" aria-pressed={secondaryLanguage === lang} onClick={() => { setSecondaryLanguage(lang); setHasUnsavedChanges(true); }} className={`rounded-full px-3 py-2 text-sm font-medium transition-all duration-200 ease-out hover:-translate-y-px hover:shadow-sm ${secondaryLanguage === lang ? "bg-[#111827] text-white" : "border border-[#E5E7EB] bg-white text-[#475569]"}`}>
-                                            {lang}
-                                          </button>
-                                        ))}
+                                    <div className="rounded-xl border border-[#E5E7EB] bg-[#FCFCFD] p-4">
+                                      <p className="text-sm font-semibold text-[#111827]">Secondary language</p>
+                                      <p className="mt-1 text-xs leading-5 text-[#64748B]">A second preferred language for customers who switch mid-conversation.</p>
+                                      <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Secondary language">
+                                        {filteredLanguageOptions.map((language) => <button key={language} type="button" aria-pressed={secondaryLanguage === language} onClick={() => { setSecondaryLanguage(language); setHasUnsavedChanges(true); }} className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${secondaryLanguage === language ? "bg-[#111827] text-white shadow-sm" : "border border-[#CBD5E1] bg-white text-[#475569] hover:border-[#22C55E] hover:text-[#166534]"}`}>{secondaryLanguage === language && <Check className="mr-1 inline h-3 w-3" />}{language}</button>)}
                                       </div>
                                     </div>
                                   </div>
 
-                                  <div className="rounded-xl bg-[#F9FAFB] p-4 transition-shadow duration-200 ease-out hover:shadow-sm">
-                                    <p className="text-sm font-semibold text-[#111827]">Other languages your AI can understand</p>
-                                    <div className="mt-4 flex flex-wrap gap-2">
-                                      {(["English", "Kiswahili", "French", "Arabic", "German"] as const).map((language) => {
+                                  <div className="rounded-xl border border-[#E5E7EB] bg-[#FCFCFD] p-4">
+                                    <div className="flex items-start justify-between gap-3">
+                                      <div><p className="text-sm font-semibold text-[#111827]">Languages AI understands</p><p className="mt-1 text-xs leading-5 text-[#64748B]">Add languages your AI can recognize and respond to, even when they are not preferred.</p></div>
+                                      <span className="rounded-full bg-[#ECFDF5] px-2.5 py-1 text-xs font-semibold text-[#166534]">{supportedLanguages.length} selected</span>
+                                    </div>
+                                    <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">Suggested languages</p>
+                                    <div className="mt-2 flex flex-wrap gap-2">
+                                      {filteredLanguageOptions.map((language) => {
                                         const selected = supportedLanguages.includes(language);
-                                        return (
-                                          <button
-                                            key={language}
-                                            type="button"
-                                            aria-pressed={selected}
-                                            onClick={() => {
-                                              setHasUnsavedChanges(true);
-                                              setSupportedLanguages((current) => {
-                                                if (current.includes(language)) {
-                                                  return current.filter((item) => item !== language);
-                                                }
-                                                return [...current, language];
-                                              });
-                                            }}
-                                            className={`rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 ease-out hover:-translate-y-px hover:shadow-sm ${
-                                              selected
-                                                ? "bg-[#111827] text-white shadow-sm"
-                                                : "border border-[#E5E7EB] bg-white text-[#475569] hover:border-[#CBD5E1]"
-                                            }`}
-                                          >
-                                            {language}
-                                          </button>
-                                        );
+                                        return <button key={language} type="button" aria-pressed={selected} onClick={() => { setHasUnsavedChanges(true); setSupportedLanguages((current) => current.includes(language) ? current.filter((item) => item !== language) : [...current, language]); }} className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${selected ? "bg-[#22C55E] text-white shadow-sm" : "border border-[#CBD5E1] bg-white text-[#475569] hover:border-[#22C55E] hover:text-[#166534]"}`}>{selected && <Check className="mr-1 inline h-3 w-3" />}{language}</button>;
                                       })}
+                                      {filteredLanguageOptions.length === 0 && <p className="py-2 text-sm text-[#64748B]">No languages match “{languageSearch}”.</p>}
                                     </div>
                                   </div>
                                   <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
