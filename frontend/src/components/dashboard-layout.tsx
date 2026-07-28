@@ -2017,7 +2017,7 @@ export default function DashboardLayout() {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [logoPreviewOpen, setLogoPreviewOpen] = useState(false);
   const [logoError, setLogoError] = useState("");
-  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(true);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
   const [upsellProducts, setUpsellProducts] = useState(true);
   const [recommendAlternatives, setRecommendAlternatives] = useState(true);
@@ -2115,6 +2115,14 @@ export default function DashboardLayout() {
       window.setTimeout(() => setSaveState("idle"), 1200);
     }, 650);
   };
+  useEffect(() => {
+    if (!hasUnsavedChanges) return;
+    const autosaveTimer = window.setTimeout(() => {
+      setHasUnsavedChanges(false);
+      setSaveState("idle");
+    }, 450);
+    return () => window.clearTimeout(autosaveTimer);
+  }, [hasUnsavedChanges]);
 
   const handleResetChanges = () => {
     setWelcomeMessage("Hello 👋 How can we help?");
@@ -3704,21 +3712,6 @@ export default function DashboardLayout() {
                   <div role="status" className="fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-xl border border-[#BBF7D0] bg-white px-4 py-3 text-sm font-semibold text-[#166534] shadow-[0_14px_32px_rgba(15,23,42,0.14)] animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
                     <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#22C55E] text-white"><Check className="h-3.5 w-3.5" /></span>
                     <span>{completionToast}</span>
-                  </div>
-                )}
-
-                {(hasUnsavedChanges || saveState !== "idle") && (
-                  <div className="fixed inset-x-0 bottom-5 z-50 flex justify-center px-4 animate-in fade-in-0 slide-in-from-bottom-4 duration-300">
-                    <div className="flex w-full max-w-xl items-center justify-between gap-3 rounded-2xl border border-white/70 bg-white/90 p-2 pl-4 shadow-[0_18px_48px_rgba(15,23,42,0.18)] backdrop-blur-xl">
-                      <div className="flex min-w-0 items-center gap-2.5">
-                        {saveState === "saved" ? <Check className="h-4 w-4 shrink-0 text-[#16A34A]" /> : <span className={`h-2 w-2 shrink-0 rounded-full ${saveState === "saving" ? "animate-pulse bg-[#F59E0B]" : "bg-[#22C55E]"}`} />}
-                        <p className="truncate text-sm font-semibold text-[#111827]">{saveState === "saving" ? "Saving..." : saveState === "saved" ? "Saved ✓" : "Unsaved changes"}</p>
-                      </div>
-                      {saveState !== "saved" && <div className="flex shrink-0 items-center gap-1.5">
-                        <button type="button" onClick={handleResetChanges} disabled={saveState === "saving"} className="rounded-xl px-3 py-2 text-sm font-semibold text-[#64748B] transition hover:bg-[#F3F4F6] hover:text-[#111827] disabled:cursor-not-allowed disabled:opacity-50">Discard</button>
-                        <button type="button" onClick={handleSaveChanges} disabled={saveState === "saving"} className="rounded-xl bg-[#111827] px-3.5 py-2 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-80">{saveState === "saving" ? "Saving..." : "Save changes"}</button>
-                      </div>}
-                    </div>
                   </div>
                 )}
 
