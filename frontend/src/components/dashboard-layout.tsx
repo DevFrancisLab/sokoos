@@ -2276,6 +2276,7 @@ export default function DashboardLayout() {
   const onboardingComplete = aiEmployeeLaunched || completedIdentitySteps.length >= identityLessons.length;
   const shouldDockOnboarding = isOnboardingSticky && !onboardingComplete;
   const minutesRemaining = Math.max(0, 6 - completedIdentitySteps.length);
+  const trainingPercent = Math.round((completedIdentitySteps.length / identityLessons.length) * 100);
   const activeSetupItem = aiSetupChecklist.find((item) => item.section === activeWorkspaceSection);
   useEffect(() => {
     const saved = window.localStorage.getItem("sokoos-ai-training-progress");
@@ -3569,12 +3570,13 @@ export default function DashboardLayout() {
                       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between animate-in fade-in-0 zoom-in-95 duration-300">
                         <div className="flex items-start gap-3">
                           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#22C55E] text-lg text-white shadow-sm">✓</span>
-                          <div><p className="text-base font-semibold text-[#111827]">AI Employee Ready</p><p className="mt-1 text-sm text-[#64748B]">Your AI has completed training and is ready to represent your business.</p></div>
+                          <div><p className="text-base font-semibold text-[#111827]">Your AI Employee is Ready</p><p className="mt-1 text-sm text-[#64748B]">Your AI has successfully completed training and is ready to represent your business.</p><div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs font-semibold text-[#166534]">{["Identity", "Knowledge", "Personality", "Languages", "Hours", "Policies", "Integrations", "Ready for Customers"].map((lesson) => <span key={lesson}>✓ {lesson}</span>)}</div></div>
                         </div>
                         <div className="flex flex-wrap gap-2">
                           <button type="button" onClick={() => setActiveWorkspaceSection("Performance")} className="rounded-lg bg-[#111827] px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#334155]">View AI Profile</button>
-                          <button type="button" onClick={() => { setAiEmployeeLaunched(false); setCompletedIdentitySteps([]); focusIdentityLesson(0); }} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition hover:bg-[#F8FAFC] hover:text-[#111827]">Retrain AI</button>
-                          <button type="button" onClick={() => setActiveWorkspaceSection("Knowledge Hub")} className="rounded-lg border border-[#BBF7D0] bg-[#ECFDF5] px-3 py-2 text-xs font-semibold text-[#166534] transition hover:bg-[#DCFCE7]">Go to Knowledge</button>
+                          <button type="button" onClick={() => { setSelected("Inbox"); window.history.pushState({}, "", "/dashboard/inbox"); }} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition hover:bg-[#F8FAFC] hover:text-[#111827]">Start Conversations</button>
+                          <button type="button" onClick={() => setActiveWorkspaceSection("Test AI")} className="rounded-lg border border-[#BBF7D0] bg-[#ECFDF5] px-3 py-2 text-xs font-semibold text-[#166534] transition hover:bg-[#DCFCE7]">Test AI</button>
+                          <button type="button" onClick={() => { setAiEmployeeLaunched(false); setCompletedIdentitySteps([]); focusIdentityLesson(0); }} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition hover:bg-[#F8FAFC] hover:text-[#111827]">Teach More</button>
                         </div>
                       </div>
                     ) : <>
@@ -3583,12 +3585,13 @@ export default function DashboardLayout() {
                         <div className={`flex overflow-hidden transition-[max-height,opacity,margin] duration-300 ease-in-out ${shouldDockOnboarding ? "-mt-2 max-h-0 opacity-0" : "max-h-8 opacity-100"}`}>
                           <div className="flex items-center gap-2">
                           <span className="flex h-6 w-6 items-center justify-center rounded-md bg-[#ECFDF5] text-[#166534]"><Bot className="h-3.5 w-3.5" /></span>
-                          <p className="text-sm font-semibold text-[#111827]">Onboard your AI employee</p>
+                          <p className="text-sm font-semibold text-[#111827]">Onboard your AI Employee</p>
                           </div>
                         </div>
                         {shouldDockOnboarding && <p className="text-xs font-semibold text-[#111827]">Training your AI</p>}
                         <p className={`${shouldDockOnboarding ? "text-xs font-semibold text-[#111827]" : "mt-1 text-xs text-[#64748B]"}`}>Step {activeIdentityStep + 1} of 8 · {identityLessons[activeIdentityStep]}</p>
                         <p className={`overflow-hidden text-xs text-[#64748B] transition-[max-height,opacity,margin] duration-300 ease-in-out ${shouldDockOnboarding ? "mt-0 max-h-0 opacity-0" : "mt-1 max-h-6 opacity-100"}`}>{activeIdentityStep === 0 ? "Let’s start by introducing your AI employee to your business." : "One meaningful lesson at a time."}</p>
+                        {!shouldDockOnboarding && <p className="mt-1 text-[11px] font-semibold text-[#166534]">{completedIdentitySteps.length} of 8 lessons complete · {trainingPercent}% trained</p>}
                       </div>
                       {shouldDockOnboarding ? <span className="hidden shrink-0 items-center gap-1.5 text-[11px] font-semibold text-[#166534] sm:inline-flex"><span className="h-1.5 w-1.5 rounded-full bg-[#22C55E]" />AI Learning · {minutesRemaining ? `${minutesRemaining} min left` : "Complete"}</span> : <span className="shrink-0 rounded-full bg-[#ECFDF5] px-2.5 py-1 text-xs font-semibold text-[#166534]">{minutesRemaining ? `About ${minutesRemaining} min remaining` : "Training complete"}</span>}
                     </div>
@@ -3654,7 +3657,7 @@ export default function DashboardLayout() {
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><User className="h-5 w-5" /></div>
                                     <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Start with your business</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">Meet your AI</p>
                                     <p className="mt-2 text-sm leading-6 text-[#6B7280]">
                                       Give your AI the essentials it needs to represent you well.
                                     </p>
@@ -3715,7 +3718,7 @@ export default function DashboardLayout() {
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F8FAFC] text-[#475569]"><Phone className="h-5 w-5" /></div>
                                     <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">How can customers reach you?</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">Share how customers can reach your AI</p>
                                     <p className="mt-2 text-sm leading-6 text-[#6B7280]">Give your AI the right places to send people.</p>
                                     </div>
                                   </div>
@@ -3767,7 +3770,7 @@ export default function DashboardLayout() {
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF7ED] text-[#C2410C]"><Smile className="h-5 w-5" /></div>
                                     <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">How should your AI sound?</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">Shape your AI’s personality</p>
                                     <p className="mt-2 text-sm leading-6 text-[#6B7280]">
                                       Choose a personality that feels right for your customers.
                                     </p>
@@ -3886,7 +3889,7 @@ export default function DashboardLayout() {
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EFF6FF] text-[#1D4ED8]"><MessageCircle className="h-5 w-5" /></div>
                                     <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Set the first impression</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">Create a great first impression</p>
                                     <p className="mt-2 text-sm leading-6 text-[#6B7280]">
                                       Teach your AI what to say at the start of a conversation.
                                     </p>
@@ -3933,7 +3936,7 @@ export default function DashboardLayout() {
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F5F3FF] text-[#6D28D9]"><Globe className="h-5 w-5" /></div>
                                     <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Which languages should your AI speak?</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">Teach your AI how to speak</p>
                                     <p className="mt-2 text-sm leading-6 text-[#6B7280]">
                                       Choose the languages your AI can use with customers.
                                     </p>
@@ -3989,7 +3992,7 @@ export default function DashboardLayout() {
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF7ED] text-[#C2410C]"><Clock className="h-5 w-5" /></div>
                                     <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">When should your AI be available?</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">Set your AI’s working hours</p>
                                     <p className="mt-2 text-sm leading-6 text-[#6B7280]">
                                       Help your AI set the right expectations about your hours.
                                     </p>
@@ -4042,7 +4045,7 @@ export default function DashboardLayout() {
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><Plug className="h-5 w-5" /></div>
                                     <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Where should your AI work?</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">Choose your AI’s workplaces</p>
                                     <p className="mt-2 text-sm leading-6 text-[#6B7280]">Choose where customers can start a conversation with your AI.</p>
                                     </div>
                                   </div>
@@ -4083,7 +4086,7 @@ export default function DashboardLayout() {
                                 <div className="flex gap-3">
                                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#22C55E] text-white"><Check className="h-5 w-5" /></div>
                                   <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Graduation day</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">Ready for customers</p>
                                     <p className="mt-2 text-sm leading-6 text-[#475569]">Review what you taught your new teammate, then launch them with confidence.</p>
                                   </div>
                                 </div>
@@ -4112,14 +4115,14 @@ export default function DashboardLayout() {
                             <div className="space-y-4">
                               <details className="group rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-[0_12px_32px_rgba(15,23,42,0.10)] transition-shadow duration-200 ease-out hover:shadow-[0_16px_36px_rgba(15,23,42,0.12)] xl:sticky xl:top-20">
                                 <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-base font-semibold text-[#111827] [&::-webkit-details-marker]:hidden xl:hidden">
-                                  See what your AI would say
+                                  Live AI Preview
                                   <ChevronDown className="h-5 w-5 transition group-open:rotate-180" />
                                 </summary>
                                 <div className="max-h-0 overflow-hidden opacity-0 transition-[max-height,opacity] duration-200 ease-out group-open:max-h-[720px] group-open:opacity-100 xl:mt-0 xl:max-h-[720px] xl:opacity-100">
                                   <div className="hidden xl:flex items-center justify-between gap-3">
                                     <div>
-                                      <p className="text-base font-semibold text-[#111827]">See what your AI would say</p>
-                                      <p className="mt-0.5 text-xs text-[#6B7280]">This updates as you teach your AI.</p>
+                                      <p className="text-base font-semibold text-[#111827]">Live AI Preview</p>
+                                      <p className="mt-0.5 text-xs text-[#6B7280]">Watch your AI learn in real time.</p>
                                     </div>
                                     <span className="inline-flex items-center gap-1.5 rounded-full bg-[#ECFDF5] px-2.5 py-1 text-[11px] font-semibold text-[#166534]">
                                       <span className="h-1.5 w-1.5 rounded-full bg-[#22C55E]" /> Live
