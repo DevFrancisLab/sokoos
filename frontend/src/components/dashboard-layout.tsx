@@ -1269,6 +1269,7 @@ export default function DashboardLayout() {
       | "Test AI"
       | "Performance"
     >("Identity");
+  const [activeIdentityStep, setActiveIdentityStep] = useState(0);
 
   const CATALOG_ITEMS = [
     {
@@ -1919,10 +1920,10 @@ export default function DashboardLayout() {
   const [allowScheduleAppointments, setAllowScheduleAppointments] =
     useState(true);
   const [welcomeMessage, setWelcomeMessage] = useState(
-    "Hello! Welcome to Sokoos Internet. How can we help today?",
+    "Hello 👋 How can we help?",
   );
   const [awayMessage, setAwayMessage] = useState(
-    "Thanks for getting in touch. Our team is currently away and will reply during working hours.",
+    "Thanks for your message. We’re away right now, but we’ll get back to you during working hours.",
   );
   const [communicationChannels, setCommunicationChannels] = useState({
     whatsapp: true,
@@ -1971,22 +1972,24 @@ export default function DashboardLayout() {
   });
   const previewLanguageCopy = primaryLanguage === "Kiswahili"
     ? {
-        customerGreeting: "Habari! Naomba maelezo zaidi.",
-        availabilityQuestion: "Je, mpo wazi sasa?",
+        customerGreeting: "Habari",
+        pricingQuestion: "Intaneti yenu ni bei gani?",
+        availabilityQuestion: "Nahitaji kufungiwa intaneti leo jioni.",
         defaultWelcome: "Habari! Tunawezaje kukusaidia leo?",
       }
     : {
-        customerGreeting: "Hi, I’d like to learn more.",
-        availabilityQuestion: "Are you available now?",
-        defaultWelcome: "Hello! How can we help today?",
+        customerGreeting: "Hi",
+        pricingQuestion: "How much is your internet?",
+        availabilityQuestion: "I need internet installed this evening.",
+        defaultWelcome: "Hello 👋 How can we help?",
       };
   const previewPersonalityReply = {
-    Professional: `Thank you for reaching out to ${businessInfo.name || "us"}. How may we assist?`,
-    Friendly: `We’d love to help${writingStyleOptions["Use emojis"] ? " 👋" : ""}. What would you like to know?`,
-    Luxury: `Welcome. We would be delighted to assist with your enquiry.`,
-    Casual: `Absolutely — what can we help with today?`,
-    Technical: `Please share what you need help with and we’ll guide you clearly.`,
-    Playful: `You got it${writingStyleOptions["Use emojis"] ? " ✨" : ""}! What can we help you find?`,
+    Professional: "Our internet packages start from KES 2,500/month. Which area are you in?",
+    Friendly: `Our internet packages start from KES 2,500/month. Which area are you in${writingStyleOptions["Use emojis"] ? "? 😊" : "?"}`,
+    Luxury: "Our internet packages begin at KES 2,500/month. Which area would you like us to serve?",
+    Casual: "Our internet packages start from KES 2,500/month. Which area are you in?",
+    Technical: "Our internet packages start from KES 2,500/month. Which area are you in so we can check coverage?",
+    Playful: `Our internet packages start from KES 2,500/month. Which area are you in${writingStyleOptions["Use emojis"] ? "? ✨" : "?"}`,
   }[personality];
   const previewBusinessContext = writingStyleOptions["Keep replies short"]
     ? previewPersonalityReply
@@ -2025,8 +2028,8 @@ export default function DashboardLayout() {
   };
 
   const handleResetChanges = () => {
-    setWelcomeMessage("Hello! Welcome to Sokoos Internet. How can we help today?");
-    setAwayMessage("Thanks for getting in touch. Our team is currently away and will reply during working hours.");
+    setWelcomeMessage("Hello 👋 How can we help?");
+    setAwayMessage("Thanks for your message. We’re away right now, but we’ll get back to you during working hours.");
     setCommunicationChannels({
       whatsapp: true,
       websiteChat: true,
@@ -3395,13 +3398,13 @@ export default function DashboardLayout() {
                 </div>
               </div>
 
-              <main className="space-y-6">
+              <main className="space-y-5">
                 <div className="flex flex-col gap-3 border-b border-[#E5E7EB] pb-4 lg:flex-row lg:items-center lg:justify-between">
                   <div className="max-w-3xl">
                     <p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]">
                       {activeWorkspaceSection === "Identity" ? "Identity training" : "AI Employee workspace"}
                     </p>
-                    <p className="mt-1 text-sm text-[#475569]">{activeWorkspaceSection === "Identity" ? "Seven focused areas to help your AI represent you with confidence." : "Train and manage your AI employee."}</p>
+                    <p className="mt-1 text-sm text-[#475569]">{activeWorkspaceSection === "Identity" ? "Onboard your AI employee one focused decision at a time." : "Train and manage your AI employee."}</p>
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="text-xs font-medium text-[#6B7280]">Status</span>
@@ -3410,44 +3413,73 @@ export default function DashboardLayout() {
                   </div>
                 </div>
 
-                {hasUnsavedChanges && (
-                  <div className="sticky top-[68px] z-20 flex animate-in items-center justify-between gap-2 rounded-xl border border-[#BBF7D0] bg-white/95 px-4 py-2 shadow-[0_8px_20px_rgba(15,23,42,0.08)] backdrop-blur fade-in-0 slide-in-from-top-2 duration-200">
+                {activeWorkspaceSection === "Identity" && (
+                  <section className="rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)] sm:p-5" aria-label="AI employee onboarding progress">
+                    <div className="flex items-start justify-between gap-4">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="flex h-6 w-6 items-center justify-center rounded-md bg-[#ECFDF5] text-[#166534]"><Bot className="h-3.5 w-3.5" /></span>
+                          <p className="text-sm font-semibold text-[#111827]">Onboard your AI employee</p>
+                        </div>
+                        <p className="mt-1 text-xs text-[#64748B]">Step {activeIdentityStep + 1} of 7 · one decision at a time</p>
+                      </div>
+                      <span className="shrink-0 rounded-full bg-[#ECFDF5] px-2.5 py-1 text-xs font-semibold text-[#166534]">{Math.round(((activeIdentityStep + 1) / 7) * 100)}%</span>
+                    </div>
+                    <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]">
+                      <div className="h-full rounded-full bg-[#22C55E] transition-all duration-300" style={{ width: `${((activeIdentityStep + 1) / 7) * 100}%` }} />
+                    </div>
+                    <div className="mt-4 flex gap-1 overflow-x-auto pb-1 sm:justify-between">
+                      {[
+                        { label: "Business", Icon: User },
+                        { label: "Personality", Icon: Smile },
+                        { label: "Greeting", Icon: MessageCircle },
+                        { label: "Languages", Icon: Globe },
+                        { label: "Availability", Icon: Clock },
+                        { label: "Channels", Icon: Plug },
+                        { label: "Review", Icon: Check },
+                      ].map(({ label, Icon }, index) => {
+                        const active = activeIdentityStep === index;
+                        const completed = activeIdentityStep > index;
+                        return (
+                          <button key={label} type="button" onClick={() => setActiveIdentityStep(index)} aria-current={active ? "step" : undefined} className={`group inline-flex shrink-0 items-center gap-2 rounded-lg px-2.5 py-2 text-xs font-semibold transition ${active ? "bg-[#111827] text-white shadow-sm" : completed ? "bg-[#ECFDF5] text-[#166534]" : "text-[#64748B] hover:bg-[#F8FAFC] hover:text-[#334155]"}`}>
+                            <span className={`flex h-5 w-5 items-center justify-center rounded-full ${active ? "bg-white/15" : completed ? "bg-[#22C55E] text-white" : "bg-[#F1F5F9] text-[#64748B] group-hover:bg-[#E2E8F0]"}`}>{completed ? <Check className="h-3 w-3" /> : <Icon className="h-3 w-3" />}</span>
+                            <span>{label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </section>
+                )}
+
+                {hasUnsavedChanges && activeWorkspaceSection !== "Identity" && (
+                  <div className="sticky top-[68px] z-20 flex items-center justify-between gap-2 rounded-xl border border-[#BBF7D0] bg-white/95 px-4 py-2 shadow-[0_8px_20px_rgba(15,23,42,0.08)] backdrop-blur">
                     <div className="flex min-w-0 items-center gap-2">
                       <span className="h-2 w-2 shrink-0 rounded-full bg-[#22C55E]" />
                       <p className="truncate text-sm font-medium text-[#111827]">Unsaved changes</p>
                     </div>
                     <div className="flex shrink-0 items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={handleResetChanges}
-                        className="rounded-lg px-2.5 py-1.5 text-xs font-semibold text-[#64748B] transition hover:bg-[#F3F4F6] hover:text-[#111827]"
-                      >
-                        Discard
-                      </button>
-                      <button
-                        type="button"
-                        onClick={handleSaveChanges}
-                        className="rounded-lg bg-[#22C55E] px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#16A34A]"
-                      >
-                        Save Changes
-                      </button>
+                      <button type="button" onClick={handleResetChanges} className="rounded-lg px-2.5 py-1.5 text-xs font-semibold text-[#64748B] transition hover:bg-[#F3F4F6] hover:text-[#111827]">Discard</button>
+                      <button type="button" onClick={handleSaveChanges} className="rounded-lg bg-[#22C55E] px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#16A34A]">Save changes</button>
                     </div>
                   </div>
                 )}
 
                 <div className="w-full">
                     {activeWorkspaceSection === "Identity" && (
-                      <div className="space-y-8">
+                      <div className="space-y-5">
                         <div onChangeCapture={() => setHasUnsavedChanges(true)}>
                           <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1.35fr)_minmax(300px,0.65fr)]">
-                            <div className="space-y-8 scroll-smooth xl:max-h-[calc(100vh-220px)] xl:overflow-y-auto xl:pr-4">
-                              <section className="border-b border-[#E5E7EB] pb-8">
-                                <div className="space-y-6">
-                                  <div>
+                            <div className="space-y-4 scroll-smooth xl:pr-4">
+                              <section className={activeIdentityStep === 0 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
+                                <div className="space-y-5">
+                                  <div className="flex gap-3">
+                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><User className="h-5 w-5" /></div>
+                                    <div>
                                     <p className="text-[20px] font-semibold text-[#111827]">Start with your business</p>
                                     <p className="mt-2 text-sm leading-6 text-[#6B7280]">
                                       Give your AI the essentials it needs to represent you well.
                                     </p>
+                                    </div>
                                   </div>
 
                                   <div className="grid gap-4 md:grid-cols-2">
@@ -3494,11 +3526,14 @@ export default function DashboardLayout() {
                                 </div>
                               </section>
 
-                              <section className="border-b border-[#E5E7EB] pb-8">
-                                <div className="space-y-6">
-                                  <div>
+                              <section className={activeIdentityStep === 0 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
+                                <div className="space-y-5">
+                                  <div className="flex gap-3">
+                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F8FAFC] text-[#475569]"><Phone className="h-5 w-5" /></div>
+                                    <div>
                                     <p className="text-[20px] font-semibold text-[#111827]">How can customers reach you?</p>
                                     <p className="mt-2 text-sm leading-6 text-[#6B7280]">Give your AI the right places to send people.</p>
+                                    </div>
                                   </div>
                                   <div className="grid gap-4 md:grid-cols-2">
                                     <div>
@@ -3518,16 +3553,22 @@ export default function DashboardLayout() {
                                       <input id="whatsapp-number" type="tel" autoComplete="tel" value={businessInfo.whatsapp} onChange={(event) => setBusinessInfo((current) => ({ ...current, whatsapp: event.target.value }))} className={`${INPUT_FIELD} mt-2`} />
                                     </div>
                                   </div>
+                                  <div className="flex justify-end border-t border-[#EEF2F6] pt-4">
+                                    <button type="button" onClick={() => setActiveIdentityStep(1)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to personality <ChevronRight className="h-4 w-4" /></button>
+                                  </div>
                                 </div>
                               </section>
 
-                              <section className="border-b border-[#E5E7EB] pb-8">
-                                <div className="space-y-6">
-                                  <div>
+                              <section className={activeIdentityStep === 1 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
+                                <div className="space-y-5">
+                                  <div className="flex gap-3">
+                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF7ED] text-[#C2410C]"><Smile className="h-5 w-5" /></div>
+                                    <div>
                                     <p className="text-[20px] font-semibold text-[#111827]">How should your AI sound?</p>
                                     <p className="mt-2 text-sm leading-6 text-[#6B7280]">
                                       Choose a personality that feels right for your customers.
                                     </p>
+                                    </div>
                                   </div>
 
                                   <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
@@ -3623,16 +3664,23 @@ export default function DashboardLayout() {
                                       })}
                                     </div>
                                   </div>
+                                  <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
+                                    <button type="button" onClick={() => setActiveIdentityStep(0)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                                    <button type="button" onClick={() => setActiveIdentityStep(2)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to greeting <ChevronRight className="h-4 w-4" /></button>
+                                  </div>
                                 </div>
                               </section>
 
-                              <section className="border-b border-[#E5E7EB] pb-8">
-                                <div className="space-y-6">
-                                  <div>
+                              <section className={activeIdentityStep === 2 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
+                                <div className="space-y-5">
+                                  <div className="flex gap-3">
+                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EFF6FF] text-[#1D4ED8]"><MessageCircle className="h-5 w-5" /></div>
+                                    <div>
                                     <p className="text-[20px] font-semibold text-[#111827]">Set the first impression</p>
                                     <p className="mt-2 text-sm leading-6 text-[#6B7280]">
                                       Teach your AI what to say at the start of a conversation.
                                     </p>
+                                    </div>
                                   </div>
 
                                   <div className="space-y-4">
@@ -3655,16 +3703,23 @@ export default function DashboardLayout() {
                                     <label className="block text-sm font-semibold text-[#111827]" htmlFor="away-message">What should your AI say when you’re unavailable?</label>
                                     <textarea id="away-message" value={awayMessage} onChange={(event) => setAwayMessage(event.target.value)} rows={2} className={`${INPUT_FIELD} mt-2 resize-none`} />
                                   </div>
+                                  <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
+                                    <button type="button" onClick={() => setActiveIdentityStep(1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                                    <button type="button" onClick={() => setActiveIdentityStep(3)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to languages <ChevronRight className="h-4 w-4" /></button>
+                                  </div>
                                 </div>
                               </section>
 
-                              <section className="border-b border-[#E5E7EB] pb-8">
-                                <div className="space-y-6">
-                                  <div>
+                              <section className={activeIdentityStep === 3 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
+                                <div className="space-y-5">
+                                  <div className="flex gap-3">
+                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F5F3FF] text-[#6D28D9]"><Globe className="h-5 w-5" /></div>
+                                    <div>
                                     <p className="text-[20px] font-semibold text-[#111827]">Which languages should your AI speak?</p>
                                     <p className="mt-2 text-sm leading-6 text-[#6B7280]">
                                       Choose the languages your AI can use with customers.
                                     </p>
+                                    </div>
                                   </div>
 
                                   <div className="grid gap-4 md:grid-cols-2">
@@ -3725,16 +3780,23 @@ export default function DashboardLayout() {
                                       })}
                                     </div>
                                   </div>
+                                  <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
+                                    <button type="button" onClick={() => setActiveIdentityStep(2)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                                    <button type="button" onClick={() => setActiveIdentityStep(4)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to availability <ChevronRight className="h-4 w-4" /></button>
+                                  </div>
                                 </div>
                               </section>
 
-                              <section className="border-b border-[#E5E7EB] pb-8">
-                                <div className="space-y-6">
-                                  <div>
+                              <section className={activeIdentityStep === 4 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
+                                <div className="space-y-5">
+                                  <div className="flex gap-3">
+                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF7ED] text-[#C2410C]"><Clock className="h-5 w-5" /></div>
+                                    <div>
                                     <p className="text-[20px] font-semibold text-[#111827]">When should your AI be available?</p>
                                     <p className="mt-2 text-sm leading-6 text-[#6B7280]">
                                       Help your AI set the right expectations about your hours.
                                     </p>
+                                    </div>
                                   </div>
 
                                   <div className="grid gap-4 md:grid-cols-2">
@@ -3768,15 +3830,21 @@ export default function DashboardLayout() {
                                       </select>
                                     </div>
                                   </div>
-
+                                  <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
+                                    <button type="button" onClick={() => setActiveIdentityStep(3)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                                    <button type="button" onClick={() => setActiveIdentityStep(5)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to channels <ChevronRight className="h-4 w-4" /></button>
+                                  </div>
                                 </div>
                               </section>
 
-                              <section className="pb-2">
-                                <div className="space-y-6">
-                                  <div>
+                              <section className={activeIdentityStep === 5 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
+                                <div className="space-y-5">
+                                  <div className="flex gap-3">
+                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><Plug className="h-5 w-5" /></div>
+                                    <div>
                                     <p className="text-[20px] font-semibold text-[#111827]">Where should your AI work?</p>
                                     <p className="mt-2 text-sm leading-6 text-[#6B7280]">Choose where customers can start a conversation with your AI.</p>
+                                    </div>
                                   </div>
                                   <div className="rounded-xl bg-[#F9FAFB] p-4">
                                     <div>
@@ -3811,12 +3879,42 @@ export default function DashboardLayout() {
                                       })}
                                     </div>
                                   </div>
+                                  <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
+                                    <button type="button" onClick={() => setActiveIdentityStep(4)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                                    <button type="button" onClick={() => setActiveIdentityStep(6)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Review setup <ChevronRight className="h-4 w-4" /></button>
+                                  </div>
+                                </div>
+                              </section>
+                              <section className={activeIdentityStep === 6 ? "rounded-xl border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] to-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
+                                <div className="flex gap-3">
+                                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#22C55E] text-white"><Check className="h-5 w-5" /></div>
+                                  <div>
+                                    <p className="text-[20px] font-semibold text-[#111827]">Ready to meet your AI employee</p>
+                                    <p className="mt-2 text-sm leading-6 text-[#475569]">Review the essentials below, then save this training when you’re happy with it.</p>
+                                  </div>
+                                </div>
+                                <div className="mt-6 grid gap-3 sm:grid-cols-2">
+                                  {[
+                                    ["Business", businessInfo.name || "Not added"],
+                                    ["Personality", personality],
+                                    ["Languages", supportedLanguages.join(" · ") || primaryLanguage],
+                                    ["Availability", businessHours || "Not added"],
+                                  ].map(([label, value]) => (
+                                    <button key={label} type="button" onClick={() => setActiveIdentityStep(({ Business: 0, Personality: 1, Languages: 3, Availability: 4 } as Record<string, number>)[label] ?? 0)} className="rounded-lg border border-[#E5E7EB] bg-white px-4 py-3 text-left transition hover:border-[#86EFAC] hover:shadow-sm">
+                                      <p className="text-xs font-medium text-[#64748B]">{label}</p>
+                                      <p className="mt-1 truncate text-sm font-semibold text-[#111827]">{value}</p>
+                                    </button>
+                                  ))}
+                                </div>
+                                <div className="mt-6 flex items-center justify-between border-t border-[#D1FAE5] pt-4">
+                                  <button type="button" onClick={() => setActiveIdentityStep(5)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                                  <button type="button" onClick={handleSaveChanges} className="inline-flex items-center gap-2 rounded-lg bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"><Check className="h-4 w-4" />Save training</button>
                                 </div>
                               </section>
                             </div>
 
-                            <div className="space-y-8">
-                              <details open className="group rounded-[24px] border border-[#E5E7EB] bg-white p-4 shadow-[0_12px_32px_rgba(15,23,42,0.10)] transition-shadow duration-200 ease-out hover:shadow-[0_16px_36px_rgba(15,23,42,0.12)] xl:sticky xl:top-20">
+                            <div className="space-y-4">
+                              <details className="group rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-[0_12px_32px_rgba(15,23,42,0.10)] transition-shadow duration-200 ease-out hover:shadow-[0_16px_36px_rgba(15,23,42,0.12)] xl:sticky xl:top-20">
                                 <summary className="flex cursor-pointer list-none items-center justify-between gap-3 text-base font-semibold text-[#111827] [&::-webkit-details-marker]:hidden xl:hidden">
                                   See what your AI would say
                                   <ChevronDown className="h-5 w-5 transition group-open:rotate-180" />
@@ -3849,6 +3947,7 @@ export default function DashboardLayout() {
                                       <div className="w-fit max-w-[92%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm leading-6 text-[#111827] shadow-sm">
                                         {welcomeMessage || previewLanguageCopy.defaultWelcome}
                                       </div>
+                                      <div className="ml-auto w-fit max-w-[88%] rounded-2xl rounded-br-sm bg-[#DCFCE7] px-3 py-2 text-sm text-[#111827]">{previewLanguageCopy.pricingQuestion}</div>
                                       <div className="w-fit max-w-[92%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm leading-6 text-[#111827] shadow-sm">
                                         {previewBusinessContext}
                                       </div>
@@ -3876,7 +3975,7 @@ export default function DashboardLayout() {
                                 </div>
                               </details>
 
-                              <section className="pb-2">
+                              <section className={activeIdentityStep === 0 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]" : "hidden"}>
                                 <div className="flex items-center gap-4">
                                   <div className="flex h-14 w-14 overflow-hidden items-center justify-center rounded-[16px] bg-[#E5F6EC] text-2xl font-semibold text-[#065F46]">
                                     {logoPreview ? (
