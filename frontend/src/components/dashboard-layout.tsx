@@ -1940,6 +1940,10 @@ export default function DashboardLayout() {
   const [awayMessage, setAwayMessage] = useState(
     "Thanks for your message. We’re away right now, but we’ll get back to you during working hours.",
   );
+  const [closingMessage, setClosingMessage] = useState(
+    "Thanks for reaching out. We’re here whenever you need us.",
+  );
+  const [aiEmployeeLaunched, setAiEmployeeLaunched] = useState(false);
   const [communicationChannels, setCommunicationChannels] = useState({
     whatsapp: true,
     websiteChat: true,
@@ -2069,6 +2073,8 @@ export default function DashboardLayout() {
   const handleResetChanges = () => {
     setWelcomeMessage("Hello 👋 How can we help?");
     setAwayMessage("Thanks for your message. We’re away right now, but we’ll get back to you during working hours.");
+    setClosingMessage("Thanks for reaching out. We’re here whenever you need us.");
+    setAiEmployeeLaunched(false);
     setCommunicationChannels({
       whatsapp: true,
       websiteChat: true,
@@ -3405,13 +3411,13 @@ export default function DashboardLayout() {
                 <div className="flex flex-col gap-5">
                   <div className="max-w-3xl">
                     <p className="text-[12px] font-semibold uppercase tracking-[0.24em] text-[#6B7280]">
-                      AI Employee
+                      Your new teammate
                     </p>
                     <h2 className="mt-2 text-[24px] font-semibold tracking-[-0.02em] text-[#111827] lg:text-[26px]">
-                      Shape how your AI employee represents your business.
+                      Hire and train your AI Employee.
                     </h2>
                     <p className="mt-2 text-sm leading-6 text-[#6B7280]">
-                      Give it the business context, voice, and availability it needs to serve customers confidently.
+                      Give your new teammate the context, voice, and tools it needs to do great work from day one.
                     </p>
                   </div>
 
@@ -3434,7 +3440,7 @@ export default function DashboardLayout() {
                   <nav aria-label="AI employee workspace sections" className="sticky top-0 z-30 -mx-4 border-y border-[#E5E7EB] bg-white/95 px-4 py-3 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur lg:-mx-6 lg:px-6">
                     <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-5 lg:grid-cols-9">
                     {([
-                      { label: "Business", section: "Identity" as const, Icon: User, status: activeIdentityStep === 6 ? "complete" : "warning" },
+                      { label: "Business", section: "Identity" as const, Icon: User, status: activeIdentityStep === 7 ? "complete" : "warning" },
                       { label: "Knowledge", section: "Knowledge Hub" as const, Icon: BookOpen, status: "warning" },
                       { label: "Catalogue", section: "Catalogue" as const, Icon: Package, status: "complete" },
                       { label: "Playbooks", section: "Sales Playbooks" as const, Icon: Target, status: "complete" },
@@ -3492,22 +3498,23 @@ export default function DashboardLayout() {
                           <span className="flex h-6 w-6 items-center justify-center rounded-md bg-[#ECFDF5] text-[#166534]"><Bot className="h-3.5 w-3.5" /></span>
                           <p className="text-sm font-semibold text-[#111827]">Onboard your AI employee</p>
                         </div>
-                        <p className="mt-1 text-xs text-[#64748B]">Step {activeIdentityStep + 1} of 7 · one decision at a time</p>
+                        <p className="mt-1 text-xs text-[#64748B]">Step {activeIdentityStep + 1} of 8 · one meaningful lesson at a time</p>
                       </div>
-                      <span className="shrink-0 rounded-full bg-[#ECFDF5] px-2.5 py-1 text-xs font-semibold text-[#166534]">{Math.round(((activeIdentityStep + 1) / 7) * 100)}%</span>
+                      <span className="shrink-0 rounded-full bg-[#ECFDF5] px-2.5 py-1 text-xs font-semibold text-[#166534]">{Math.round(((activeIdentityStep + 1) / 8) * 100)}%</span>
                     </div>
                     <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]">
-                      <div className="h-full rounded-full bg-[#22C55E] transition-all duration-300" style={{ width: `${((activeIdentityStep + 1) / 7) * 100}%` }} />
+                      <div className="h-full rounded-full bg-[#22C55E] transition-all duration-300" style={{ width: `${((activeIdentityStep + 1) / 8) * 100}%` }} />
                     </div>
                     <div className="mt-4 flex gap-1 overflow-x-auto pb-1 sm:justify-between">
                       {[
-                        { label: "Business", Icon: User },
+                        { label: "Meet", Icon: User },
+                        { label: "Teach", Icon: BookOpen },
                         { label: "Personality", Icon: Smile },
-                        { label: "Greeting", Icon: MessageCircle },
+                        { label: "Greetings", Icon: MessageCircle },
                         { label: "Languages", Icon: Globe },
-                        { label: "Availability", Icon: Clock },
-                        { label: "Channels", Icon: Plug },
-                        { label: "Review", Icon: Check },
+                        { label: "Hours", Icon: Clock },
+                        { label: "Workplaces", Icon: Plug },
+                        { label: "Graduation", Icon: Check },
                       ].map(({ label, Icon }, index) => {
                         const active = activeIdentityStep === index;
                         const completed = activeIdentityStep > index;
@@ -3636,12 +3643,27 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
                                   <div className="flex justify-end border-t border-[#EEF2F6] pt-4">
-                                    <button type="button" onClick={() => setActiveIdentityStep(1)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to personality <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" onClick={() => setActiveIdentityStep(1)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to training <ChevronRight className="h-4 w-4" /></button>
                                   </div>
                                 </div>
                               </section>
 
                               <section className={activeIdentityStep === 1 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
+                                <div className="space-y-5">
+                                  <div className="flex gap-3"><div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EFF6FF] text-[#1D4ED8]"><BookOpen className="h-5 w-5" /></div><div><p className="text-[20px] font-semibold text-[#111827]">Teach your Employee</p><p className="mt-2 text-sm leading-6 text-[#6B7280]">Give your new teammate the answers, offers, and guardrails it needs to help customers with confidence.</p></div></div>
+                                  <div className="grid gap-3 sm:grid-cols-3">
+                                    {[
+                                      { label: "Knowledge", value: `${businessInfo.about ? "Business context added" : "Add context"}`, Icon: BookOpen, section: "Knowledge Hub" as const },
+                                      { label: "Products", value: `${knowledgeProducts.length} offers ready`, Icon: Package, section: "Catalogue" as const },
+                                      { label: "FAQs & policies", value: `${faqItems.length} FAQ${faqItems.length === 1 ? "" : "s"} added`, Icon: Shield, section: "Knowledge Hub" as const },
+                                    ].map((item) => <button key={item.label} type="button" onClick={() => setActiveWorkspaceSection(item.section)} className="rounded-xl border border-[#E5E7EB] bg-[#FCFCFD] p-4 text-left transition hover:-translate-y-px hover:border-[#86EFAC] hover:shadow-sm"><item.Icon className="h-5 w-5 text-[#166534]" /><p className="mt-3 text-sm font-semibold text-[#111827]">{item.label}</p><p className="mt-1 text-xs text-[#64748B]">{item.value}</p></button>)}
+                                  </div>
+                                  <div className="rounded-xl bg-[#F8FAFC] p-4 text-sm leading-6 text-[#475569]">Your Employee will use these sources to answer common questions, recommend the right products, and follow your business policies.</div>
+                                  <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4"><button type="button" onClick={() => setActiveIdentityStep(0)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button><button type="button" onClick={() => setActiveIdentityStep(2)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Choose personality <ChevronRight className="h-4 w-4" /></button></div>
+                                </div>
+                              </section>
+
+                              <section className={activeIdentityStep === 2 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
                                 <div className="space-y-5">
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF7ED] text-[#C2410C]"><Smile className="h-5 w-5" /></div>
@@ -3754,13 +3776,13 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
                                   <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
-                                    <button type="button" onClick={() => setActiveIdentityStep(0)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" onClick={() => setActiveIdentityStep(2)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to greeting <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" onClick={() => setActiveIdentityStep(1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                                    <button type="button" onClick={() => setActiveIdentityStep(3)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to greetings <ChevronRight className="h-4 w-4" /></button>
                                   </div>
                                 </div>
                               </section>
 
-                              <section className={activeIdentityStep === 2 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
+                              <section className={activeIdentityStep === 3 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
                                 <div className="space-y-5">
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EFF6FF] text-[#1D4ED8]"><MessageCircle className="h-5 w-5" /></div>
@@ -3794,15 +3816,20 @@ export default function DashboardLayout() {
                                     <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Away message is ready" />
                                     <p className="mt-1.5 text-xs text-[#64748B]">Used when your team is unavailable.</p>
                                   </div>
+                                  <div className="relative md:col-span-2">
+                                    <label className="block text-sm font-semibold text-[#111827]" htmlFor="closing-message">Closing message</label>
+                                    <textarea id="closing-message" value={closingMessage} onChange={(event) => setClosingMessage(event.target.value)} rows={2} placeholder="Thanks for reaching out. We’re here whenever you need us." className={`${AI_TRAINING_TEXTAREA} resize-none`} />
+                                    <p className="mt-1.5 text-xs text-[#64748B]">A warm sign-off after your AI has resolved a customer’s question.</p>
+                                  </div>
                                   </div>
                                   <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
-                                    <button type="button" onClick={() => setActiveIdentityStep(1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" onClick={() => setActiveIdentityStep(3)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to languages <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" onClick={() => setActiveIdentityStep(2)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                                    <button type="button" onClick={() => setActiveIdentityStep(4)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to languages <ChevronRight className="h-4 w-4" /></button>
                                   </div>
                                 </div>
                               </section>
 
-                              <section className={activeIdentityStep === 3 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
+                              <section className={activeIdentityStep === 4 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
                                 <div className="space-y-5">
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F5F3FF] text-[#6D28D9]"><Globe className="h-5 w-5" /></div>
@@ -3852,13 +3879,13 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
                                   <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
-                                    <button type="button" onClick={() => setActiveIdentityStep(2)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" onClick={() => setActiveIdentityStep(4)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to availability <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" onClick={() => setActiveIdentityStep(3)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                                    <button type="button" onClick={() => setActiveIdentityStep(5)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to working hours <ChevronRight className="h-4 w-4" /></button>
                                   </div>
                                 </div>
                               </section>
 
-                              <section className={activeIdentityStep === 4 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
+                              <section className={activeIdentityStep === 5 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
                                 <div className="space-y-5">
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF7ED] text-[#C2410C]"><Clock className="h-5 w-5" /></div>
@@ -3903,14 +3930,15 @@ export default function DashboardLayout() {
                                       <p className="mt-1.5 text-xs text-[#64748B]">Keeps hours accurate for every customer.</p>
                                     </div>
                                   </div>
+                                  <label className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${escalateOutsideHours ? "border-[#BBF7D0] bg-[#F7FEF9]" : "border-[#E5E7EB] bg-[#FCFCFD]"}`}><input type="checkbox" checked={escalateOutsideHours} onChange={(event) => { setEscalateOutsideHours(event.target.checked); setHasUnsavedChanges(true); }} className="mt-0.5 h-4 w-4 rounded border-[#CBD5E1] text-[#22C55E] focus:ring-[#22C55E]" /><span><span className="block text-sm font-semibold text-[#111827]">Escalate urgent messages outside working hours</span><span className="mt-1 block text-xs leading-5 text-[#64748B]">Your Employee collects the details and flags urgent requests for your team.</span></span></label>
                                   <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
-                                    <button type="button" onClick={() => setActiveIdentityStep(3)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" onClick={() => setActiveIdentityStep(5)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to channels <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" onClick={() => setActiveIdentityStep(4)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                                    <button type="button" onClick={() => setActiveIdentityStep(6)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Assign workplaces <ChevronRight className="h-4 w-4" /></button>
                                   </div>
                                 </div>
                               </section>
 
-                              <section className={activeIdentityStep === 5 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
+                              <section className={activeIdentityStep === 6 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
                                 <div className="space-y-5">
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><Plug className="h-5 w-5" /></div>
@@ -3947,35 +3975,37 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
                                   <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
-                                    <button type="button" onClick={() => setActiveIdentityStep(4)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" onClick={() => setActiveIdentityStep(6)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Review setup <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" onClick={() => setActiveIdentityStep(5)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                                    <button type="button" onClick={() => setActiveIdentityStep(7)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Go to graduation <ChevronRight className="h-4 w-4" /></button>
                                   </div>
                                 </div>
                               </section>
-                              <section className={activeIdentityStep === 6 ? "rounded-xl border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] to-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
+                              <section className={activeIdentityStep === 7 ? "rounded-xl border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] to-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
                                 <div className="flex gap-3">
                                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#22C55E] text-white"><Check className="h-5 w-5" /></div>
                                   <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Ready to meet your AI employee</p>
-                                    <p className="mt-2 text-sm leading-6 text-[#475569]">Review the essentials below, then save this training when you’re happy with it.</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">Graduation day</p>
+                                    <p className="mt-2 text-sm leading-6 text-[#475569]">Review what you taught your new teammate, then launch them with confidence.</p>
                                   </div>
                                 </div>
+                                {aiEmployeeLaunched && <div className="mt-5 rounded-xl border border-[#BBF7D0] bg-white p-5 text-center animate-in zoom-in-95 fade-in-0 duration-500"><div className="text-4xl animate-bounce">🎉</div><p className="mt-2 text-lg font-semibold text-[#166534]">Your AI Employee is officially on the team!</p><p className="mt-1 text-sm text-[#64748B]">It’s ready to represent your business across its assigned workplaces.</p></div>}
                                 <div className="mt-6 grid gap-3 sm:grid-cols-2">
                                   {[
                                     ["Business", businessInfo.name || "Not added"],
                                     ["Personality", personality],
+                                    ["Greetings", welcomeMessage || "Not added"],
                                     ["Languages", supportedLanguages.join(" · ") || primaryLanguage],
                                     ["Availability", businessHours || "Not added"],
                                   ].map(([label, value]) => (
-                                    <button key={label} type="button" onClick={() => setActiveIdentityStep(({ Business: 0, Personality: 1, Languages: 3, Availability: 4 } as Record<string, number>)[label] ?? 0)} className="rounded-lg border border-[#E5E7EB] bg-white px-4 py-3 text-left transition hover:border-[#86EFAC] hover:shadow-sm">
+                                    <button key={label} type="button" onClick={() => setActiveIdentityStep(({ Business: 0, Personality: 2, Greetings: 3, Languages: 4, Availability: 5 } as Record<string, number>)[label] ?? 0)} className="rounded-lg border border-[#E5E7EB] bg-white px-4 py-3 text-left transition hover:border-[#86EFAC] hover:shadow-sm">
                                       <p className="text-xs font-medium text-[#64748B]">{label}</p>
                                       <p className="mt-1 truncate text-sm font-semibold text-[#111827]">{value}</p>
                                     </button>
                                   ))}
                                 </div>
                                 <div className="mt-6 flex items-center justify-between border-t border-[#D1FAE5] pt-4">
-                                  <button type="button" onClick={() => setActiveIdentityStep(5)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                  <p className="text-sm font-medium text-[#166534]">Ready to save your training</p>
+                                  <button type="button" onClick={() => setActiveIdentityStep(6)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                                  <button type="button" onClick={() => { setAiEmployeeLaunched(true); handleSaveChanges(); }} className="inline-flex items-center gap-2 rounded-lg bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"><Sparkles className="h-4 w-4" />{aiEmployeeLaunched ? "Launched" : "Launch AI Employee"}</button>
                                 </div>
                               </section>
                             </div>
