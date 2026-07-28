@@ -420,7 +420,7 @@ function Hero() {
               <span className="text-[#16A34A]">Customer</span> Again
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Your AI employee that acquires customers, converts leads into sales, and retains customers across every channel.
+              Your AI employee that acquires customers, converts leads into customers, and keeps them coming back, <span className="relative isolate font-semibold text-[#166534] after:absolute after:bottom-[-0.16em] after:left-0 after:-z-10 after:h-[0.42em] after:w-full after:-rotate-[1.5deg] after:rounded-[55%_45%_50%_45%] after:bg-[#86EFAC]/70">across every channel.</span>
             </p>
             <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
               <Link
