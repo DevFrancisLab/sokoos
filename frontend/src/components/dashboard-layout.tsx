@@ -1288,16 +1288,6 @@ export default function DashboardLayout() {
   const previewMessagesRef = useRef<HTMLDivElement>(null);
   const onboardingDockTriggerRef = useRef<HTMLDivElement>(null);
   const identityLessons = ["Meet Your AI", "Teach Your AI", "Shape Personality", "First Impressions", "Languages", "Working Hours", "Workplaces", "Ready for Customers"];
-  const identityLessonInsights = [
-    "This helps your AI introduce your business correctly.",
-    "This teaches your AI what it can confidently answer.",
-    "This defines how your AI sounds in every conversation.",
-    "This helps your AI make a confident first impression.",
-    "Choose which customers your AI can communicate with.",
-    "Your AI will know exactly when you’re available.",
-    "Choose where your AI should meet customers.",
-    "Review what your AI learned before it serves customers.",
-  ];
   const identityLessonCompletionNames = ["Identity", "Knowledge", "Personality", "First Impressions", "Languages", "Working Hours", "Workplaces", "Customer Readiness"];
 
   const focusIdentityLesson = (step: number) => {
@@ -3614,18 +3604,9 @@ export default function DashboardLayout() {
                   </div>
 
                   <section className="rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)]" aria-label="AI setup score">
-                    <div className="flex items-center gap-4">
-                      <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl text-center text-lg font-semibold text-white shadow-sm ${onboardingComplete ? "bg-[#22C55E]" : "bg-[#111827]"}`}>{onboardingComplete ? "🎉" : `${completedIdentitySteps.length + 1}/8`}</div>
-                      <div><p className="text-sm font-semibold text-[#111827]">{onboardingComplete ? "AI Employee Ready" : "AI Employee onboarding"}</p><p className="mt-0.5 text-xs text-[#64748B]">{onboardingComplete ? "Your AI employee is fully trained and ready to serve customers." : "Guide your AI through a few meaningful lessons, one at a time."}</p></div>
-                    </div>
-                    <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
-                      {aiSetupChecklist.map((item) => {
-                        const status = item.complete ? "Completed" : item.recommended ? "Recommended" : "Missing information";
-                        return <button key={item.label} type="button" onClick={() => setActiveWorkspaceSection(item.section as typeof activeWorkspaceSection)} className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-left transition hover:-translate-y-px hover:shadow-sm ${item.complete ? "border-[#BBF7D0] bg-[#F7FEF9]" : item.recommended ? "border-[#BFDBFE] bg-[#EFF6FF]" : "border-[#FDE68A] bg-[#FFFBEB]"}`}>
-                          {item.complete ? <Check className="h-4 w-4 shrink-0 text-[#16A34A]" /> : <CircleAlert className={`h-4 w-4 shrink-0 ${item.recommended ? "text-[#2563EB]" : "text-[#D97706]"}`} />}
-                          <span className="min-w-0"><span className="block truncate text-xs font-semibold text-[#111827]">{item.label}</span><span className={`block truncate text-[10px] font-medium ${item.complete ? "text-[#166534]" : item.recommended ? "text-[#1D4ED8]" : "text-[#B45309]"}`}>{status}{item.complete ? " ✓" : ""}</span></span>
-                        </button>;
-                      })}
+                    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-center">
+                      <div className="flex gap-3"><span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-lg shadow-sm ${onboardingComplete ? "bg-[#22C55E] text-white" : "bg-[#ECFDF5] text-[#166534]"}`}>{onboardingComplete ? "🎉" : "🤖"}</span><div className="min-w-0 flex-1"><p className="text-sm font-semibold text-[#111827]">{onboardingComplete ? "Your AI Employee is Ready" : "Training Your AI Employee"}</p><p className="mt-1 text-xs text-[#475569]">{onboardingComplete ? "Your AI has completed training and is ready to represent your business." : `Step ${activeIdentityStep + 1} of 8 · ${identityLessons[activeIdentityStep]}`}</p><p className="mt-1 text-xs leading-5 text-[#64748B]">{onboardingComplete ? "Keep teaching your AI as your business grows." : "Your AI is learning about your business so it can represent you confidently in every customer conversation."}</p><div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]"><div className="h-full rounded-full bg-[#22C55E] transition-all duration-300" style={{ width: `${onboardingComplete ? 100 : Math.max(12.5, trainingPercent)}%` }} /></div><p className="mt-2 text-[11px] font-semibold text-[#166534]">{completedIdentitySteps.length} of 8 lessons complete · {onboardingComplete ? 100 : trainingPercent}% trained</p></div></div>
+                      <div className="rounded-xl border border-[#BBF7D0] bg-[#F7FEF9] p-3"><p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#166534]">AI Readiness</p><p className="mt-1 text-lg font-semibold text-[#111827]">{onboardingComplete ? 100 : aiReadiness}% ready</p><p className="mt-1 text-xs text-[#64748B]">{onboardingComplete ? "Ready for customer conversations" : `About ${minutesRemaining || 1} min left`}</p><button type="button" onClick={() => { setActiveWorkspaceSection("Identity"); focusIdentityLesson(activeIdentityStep); }} className="mt-3 text-xs font-semibold text-[#166534] transition hover:text-[#047857]">Continue training <ChevronRight className="inline h-3.5 w-3.5" /></button></div>
                     </div>
                   </section>
 
@@ -3657,8 +3638,8 @@ export default function DashboardLayout() {
               </div>
 
               <main className="relative space-y-5 pb-28 lg:pl-[252px]">
-                <aside className="absolute left-0 top-0 hidden w-[228px] lg:block" aria-label="AI employee workspaces">
-                  <div className="sticky top-5 rounded-xl border border-[#E5E7EB] bg-white p-2 shadow-[0_8px_24px_rgba(15,23,42,0.05)]">
+                <aside className="hidden w-[228px] lg:sticky lg:top-5 lg:float-left lg:-ml-[252px] lg:block" aria-label="AI employee workspaces">
+                  <div className="rounded-xl border border-[#E5E7EB] bg-white p-2 shadow-[0_8px_24px_rgba(15,23,42,0.05)]">
                     <div className="px-2.5 pb-2 pt-1.5"><p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">AI workspaces</p><p className="mt-1 text-xs text-[#64748B]">Train one capability at a time.</p></div>
                     <nav className="space-y-1" aria-label="AI Employee workspace navigator">
                       {workspaceNavigatorItems.map((item) => {
@@ -3705,25 +3686,11 @@ export default function DashboardLayout() {
                         </div>
                       </div>
                     ) : <>
-                    <div className={`flex justify-between gap-4 ${shouldDockOnboarding ? "items-center" : "items-start"}`}>
-                      <div>
-                        <div className={`flex overflow-hidden transition-[max-height,opacity,margin] duration-300 ease-in-out ${shouldDockOnboarding ? "-mt-2 max-h-0 opacity-0" : "max-h-8 opacity-100"}`}>
-                          <div className="flex items-center gap-2">
-                          <span className="flex h-6 w-6 items-center justify-center rounded-md bg-[#ECFDF5] text-[#166534]"><Bot className="h-3.5 w-3.5" /></span>
-                          <p className="text-sm font-semibold text-[#111827]">🤖 Training Your AI Employee</p>
-                          </div>
-                        </div>
-                        {shouldDockOnboarding && <p className="text-xs font-semibold text-[#111827]">Training your AI</p>}
-                        <p className={`${shouldDockOnboarding ? "text-xs font-semibold text-[#111827]" : "mt-1 text-xs text-[#64748B]"}`}>Step {activeIdentityStep + 1} of 8 · {identityLessons[activeIdentityStep]}</p>
-                        <p className={`overflow-hidden text-xs text-[#64748B] transition-[max-height,opacity,margin] duration-300 ease-in-out ${shouldDockOnboarding ? "mt-0 max-h-0 opacity-0" : "mt-1 max-h-10 opacity-100"}`}>Your AI is learning about your business so it can represent you confidently in every customer conversation.</p>
-                        {!shouldDockOnboarding && <p className="mt-1 text-[11px] font-semibold text-[#166534]">{completedIdentitySteps.length} of 8 lessons complete · {trainingPercent}% trained</p>}
-                      </div>
-                      {shouldDockOnboarding ? <span className="hidden shrink-0 items-center gap-1.5 text-[11px] font-semibold text-[#166534] sm:inline-flex"><span className="h-1.5 w-1.5 rounded-full bg-[#22C55E]" />AI Learning · {aiReadiness}% ready</span> : <div className="shrink-0 rounded-xl border border-[#BBF7D0] bg-[#F7FEF9] px-3 py-2 text-right"><p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#166534]">AI Readiness</p><p className="mt-0.5 text-xs font-semibold text-[#111827]">{aiReadiness}% ready · {minutesRemaining ? `about ${minutesRemaining} min left` : "training complete"}</p><div className="mt-1.5 h-1 w-28 overflow-hidden rounded-full bg-[#DCFCE7]"><div className="h-full rounded-full bg-[#22C55E] transition-all duration-300" style={{ width: `${aiReadiness}%` }} /></div></div>}
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="text-xs font-semibold text-[#475569]">Lessons</p>
+                      <p className="text-xs font-medium text-[#64748B]">Select a lesson to edit it.</p>
                     </div>
-                    <div className={`${shouldDockOnboarding ? "mt-1.5" : "mt-4"} h-1.5 overflow-hidden rounded-full bg-[#EEF2F6] transition-all duration-300 ease-in-out`}>
-                      <div className="h-full rounded-full bg-[#22C55E] transition-all duration-300" style={{ width: `${((activeIdentityStep + 1) / 8) * 100}%` }} />
-                    </div>
-                    <div className={`${shouldDockOnboarding ? "mt-1" : "mt-4"} flex gap-1 overflow-x-auto pb-1 transition-all duration-300 ease-in-out sm:justify-between`}>
+                    <div className="mt-2 flex gap-1 overflow-x-auto pb-1 sm:justify-between">
                       {[
                         { label: "Meet Your AI", Icon: User },
                         { label: "Teach Your AI", Icon: BookOpen },
@@ -3737,14 +3704,13 @@ export default function DashboardLayout() {
                         const active = activeIdentityStep === index;
                         const completed = completedIdentitySteps.includes(index);
                         return (
-                          <button key={label} type="button" onClick={() => focusIdentityLesson(index)} aria-current={active ? "step" : undefined} className={`group inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 ${shouldDockOnboarding ? "py-1.5" : "py-2"} text-xs font-semibold transition ${active ? "bg-[#111827] text-white shadow-sm" : completed ? "bg-[#ECFDF5] text-[#166534]" : "text-[#64748B] hover:bg-[#F8FAFC] hover:text-[#111827]"}`}>
+                          <button key={label} type="button" onClick={() => focusIdentityLesson(index)} aria-current={active ? "step" : undefined} className={`group inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-2 text-xs font-semibold transition ${active ? "bg-[#111827] text-white shadow-sm" : completed ? "bg-[#ECFDF5] text-[#166534]" : "text-[#64748B] hover:bg-[#F8FAFC] hover:text-[#111827]"}`}>
                             <span className={`flex h-5 w-5 items-center justify-center rounded-full ${active ? "bg-white/15" : completed ? "bg-[#22C55E] text-white" : "bg-[#F1F5F9] text-[#64748B] group-hover:bg-[#E2E8F0]"}`}>{completed ? <Check className="h-3 w-3" /> : <Icon className="h-3 w-3" />}</span>
                             <span>{label}</span>
                           </button>
                         );
                       })}
                     </div>
-                    {!shouldDockOnboarding && <div className="mt-3 flex items-center gap-2 rounded-lg bg-[#F8FAFC] px-3 py-2 text-xs text-[#475569]"><Sparkles className="h-3.5 w-3.5 shrink-0 text-[#16A34A]" /><span><span className="font-semibold text-[#111827]">Why this matters:</span> {identityLessonInsights[activeIdentityStep]}</span></div>}
                     </>}
                   </section>
                   </>
