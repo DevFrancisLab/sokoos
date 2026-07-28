@@ -2339,13 +2339,6 @@ export default function DashboardLayout() {
     cancellationPolicy:
       "Cancel anytime with 48 hours notice before the next billing cycle.",
   });
-  const aiSetupChecklist = [
-    { label: "Business Identity", section: "Identity", complete: Boolean(businessInfo.name && businessInfo.type && businessInfo.about) },
-    { label: "Personality", section: "Identity", complete: Boolean(personality) },
-    { label: "Knowledge", section: "Knowledge Hub", complete: faqItems.length > 0 },
-    { label: "Playbooks", section: "Sales Playbooks", complete: upsellProducts || recommendAlternatives, recommended: true },
-    { label: "Availability", section: "Identity", complete: Boolean(businessHours) },
-  ];
   const identityFieldsComplete = Boolean(businessInfo.name.trim() && businessInfo.type.trim() && businessInfo.about.trim() && businessInfo.website.trim() && businessInfo.phone.trim() && businessInfo.address.trim() && businessInfo.whatsapp.trim());
   const trainingCompletedSteps = identityFieldsComplete ? completedIdentitySteps : [];
   const onboardingComplete = aiEmployeeLaunched || trainingCompletedSteps.length >= identityLessons.length;
@@ -2393,7 +2386,6 @@ export default function DashboardLayout() {
     { title: "Integrations", description: "Where it connects", section: "Integrations" as const, Icon: Plug, complete: Object.values(communicationChannels).some(Boolean) },
     { title: "Performance", description: "How it is improving", section: "Performance" as const, Icon: BarChart3, complete: aiEmployeeLaunched },
   ];
-  const activeSetupItem = aiSetupChecklist.find((item) => item.section === activeWorkspaceSection);
   useEffect(() => {
     const saved = window.localStorage.getItem("sokoos-ai-training-progress-v2");
     if (saved) {
@@ -3651,18 +3643,12 @@ export default function DashboardLayout() {
                     </nav>
                   </div>
                 </aside>
-                <div className="flex flex-col gap-3 border-b border-[#E5E7EB] pb-4 lg:flex-row lg:items-center lg:justify-between">
+                <div className="border-b border-[#E5E7EB] pb-4">
                   <div className="max-w-3xl">
                     <p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]">
                       {activeWorkspaceSection === "Identity" ? "Identity training" : "AI Employee workspace"}
                     </p>
                     <p className="mt-1 text-sm text-[#475569]">{activeWorkspaceSection === "Identity" ? "Onboard your AI employee one focused decision at a time." : "Train and manage your AI employee."}</p>
-                  </div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-xs font-medium text-[#6B7280]">Status</span>
-                    <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#166534]">Online</span>
-                    <span className="rounded-full bg-[#F3F4F6] px-3 py-1 text-xs font-semibold text-[#6B7280]">AI enabled</span>
-                    {activeSetupItem && <span className={`rounded-full px-3 py-1 text-xs font-semibold ${activeSetupItem.complete ? "bg-[#ECFDF5] text-[#166534]" : activeSetupItem.recommended ? "bg-[#EFF6FF] text-[#1D4ED8]" : "bg-[#FFFBEB] text-[#B45309]"}`}>{activeSetupItem.complete ? "Completed ✓" : activeSetupItem.recommended ? "Recommended" : "Missing information"}</span>}
                   </div>
                 </div>
 
