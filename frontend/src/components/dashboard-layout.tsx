@@ -306,6 +306,10 @@ const INPUT_FIELD_WHITE =
   `mt-3 w-full ${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-white px-4 py-3 text-[15px] text-[#111827] shadow-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7] ` +
   TRANSITION +
   " focus:shadow-none";
+const AI_TRAINING_FIELD =
+  "mt-2 h-12 w-full rounded-xl border border-[#E2E8F0] bg-white px-3.5 pr-10 text-sm text-[#111827] shadow-sm outline-none transition placeholder:text-[#94A3B8] focus:border-[#22C55E] focus:ring-4 focus:ring-[#DCFCE7]/70";
+const AI_TRAINING_TEXTAREA =
+  "mt-2 min-h-[96px] w-full rounded-xl border border-[#E2E8F0] bg-white px-3.5 py-3 text-sm text-[#111827] shadow-sm outline-none transition placeholder:text-[#94A3B8] focus:border-[#22C55E] focus:ring-4 focus:ring-[#DCFCE7]/70";
 // Typography tokens for consistent hierarchy
 const PANEL_TITLE = "text-[24px] font-semibold text-[#111827]";
 const SECTION_HEADING =
@@ -3515,9 +3519,9 @@ export default function DashboardLayout() {
                                   </div>
 
                                   <div className="grid gap-4 md:grid-cols-2">
-                                    <div>
+                                    <div className="relative">
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-name">
-                                        What is your business called?
+                                        Business name
                                       </label>
                                       <input
                                         id="business-name"
@@ -3525,25 +3529,29 @@ export default function DashboardLayout() {
                                         value={businessInfo.name}
                                         onChange={(event) => setBusinessInfo((current) => ({ ...current, name: event.target.value }))}
                                         placeholder="Your business name"
-                                        className={`${INPUT_FIELD} mt-2`}
+                                        className={AI_TRAINING_FIELD}
                                       />
+                                      <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Business name is ready" />
+                                      <p className="mt-1.5 text-xs text-[#64748B]">Shown to customers in every conversation.</p>
                                     </div>
 
-                                    <div>
+                                    <div className="relative">
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="industry">
-                                        What kind of business is it?
+                                        Business type
                                       </label>
                                       <input
                                         id="industry"
                                         value={businessInfo.type}
                                         onChange={(event) => setBusinessInfo((current) => ({ ...current, type: event.target.value }))}
                                         placeholder="e.g. Retail, Hospitality, Services"
-                                        className={`${INPUT_FIELD} mt-2`}
+                                        className={AI_TRAINING_FIELD}
                                       />
+                                      <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Business type is ready" />
+                                      <p className="mt-1.5 text-xs text-[#64748B]">Helps your AI use the right context.</p>
                                     </div>
 
                                   </div>
-                                  <div>
+                                  <div className="relative">
                                     <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-description">
                                       Teach your AI about your business
                                     </label>
@@ -3552,8 +3560,9 @@ export default function DashboardLayout() {
                                       value={businessInfo.about}
                                       onChange={(event) => setBusinessInfo((current) => ({ ...current, about: event.target.value }))}
                                       rows={2}
-                                      className={`${INPUT_FIELD} mt-2 resize-none`}
+                                      className={`${AI_TRAINING_TEXTAREA} resize-none`}
                                     />
+                                    <p className="mt-1.5 text-xs text-[#64748B]">A short summary is enough—your AI uses this to introduce your business.</p>
                                   </div>
                                 </div>
                               </section>
@@ -3570,19 +3579,23 @@ export default function DashboardLayout() {
                                   <div className="grid gap-4 md:grid-cols-2">
                                     <div>
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-website">Website</label>
-                                      <input id="business-website" type="url" autoComplete="url" value={businessInfo.website} onChange={(event) => setBusinessInfo((current) => ({ ...current, website: event.target.value }))} placeholder="https://yourbusiness.com" className={`${INPUT_FIELD} mt-2`} />
+                                      <input id="business-website" type="url" autoComplete="url" value={businessInfo.website} onChange={(event) => setBusinessInfo((current) => ({ ...current, website: event.target.value }))} placeholder="https://yourbusiness.com" className={AI_TRAINING_FIELD} />
+                                      <p className="mt-1.5 text-xs text-[#64748B]">Optional—shared when customers ask for more details.</p>
                                     </div>
                                     <div>
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-phone">Phone number</label>
-                                      <input id="business-phone" type="tel" autoComplete="tel" value={businessInfo.phone} onChange={(event) => setBusinessInfo((current) => ({ ...current, phone: event.target.value }))} placeholder="+254 700 000 000" className={`${INPUT_FIELD} mt-2`} />
+                                      <input id="business-phone" type="tel" autoComplete="tel" value={businessInfo.phone} onChange={(event) => setBusinessInfo((current) => ({ ...current, phone: event.target.value }))} placeholder="+254 700 000 000" className={AI_TRAINING_FIELD} />
+                                      <p className="mt-1.5 text-xs text-[#64748B]">For customers who prefer to call.</p>
                                     </div>
                                     <div>
-                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="physical-address">Where are you based?</label>
-                                      <input id="physical-address" autoComplete="street-address" value={businessInfo.address} onChange={(event) => setBusinessInfo((current) => ({ ...current, address: event.target.value }))} className={`${INPUT_FIELD} mt-2`} />
+                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="physical-address">Location</label>
+                                      <input id="physical-address" autoComplete="street-address" value={businessInfo.address} onChange={(event) => setBusinessInfo((current) => ({ ...current, address: event.target.value }))} placeholder="e.g. Nairobi, Kenya" className={AI_TRAINING_FIELD} />
+                                      <p className="mt-1.5 text-xs text-[#64748B]">Helps your AI answer location questions.</p>
                                     </div>
                                     <div>
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="whatsapp-number">WhatsApp number</label>
-                                      <input id="whatsapp-number" type="tel" autoComplete="tel" value={businessInfo.whatsapp} onChange={(event) => setBusinessInfo((current) => ({ ...current, whatsapp: event.target.value }))} className={`${INPUT_FIELD} mt-2`} />
+                                      <input id="whatsapp-number" type="tel" autoComplete="tel" value={businessInfo.whatsapp} onChange={(event) => setBusinessInfo((current) => ({ ...current, whatsapp: event.target.value }))} placeholder="+254 700 000 000" className={AI_TRAINING_FIELD} />
+                                      <p className="mt-1.5 text-xs text-[#64748B]">Used for direct customer follow-up.</p>
                                     </div>
                                   </div>
                                   <div className="flex justify-end border-t border-[#EEF2F6] pt-4">
@@ -3603,7 +3616,7 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
 
-                                  <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+                                  <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                                     {PERSONALITIES.map((personalityOption) => {
                                       const active = personality === personalityOption;
                                       const voice = BRAND_VOICE_DETAILS[personalityOption];
@@ -3624,34 +3637,41 @@ export default function DashboardLayout() {
                                           type="button"
                                           aria-pressed={active}
                                           onClick={() => { setPersonality(personalityOption); setHasUnsavedChanges(true); }}
-                                          className={`group relative min-h-[74px] rounded-xl border p-3 text-left transition-all duration-200 ease-out hover:-translate-y-px hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] ${
+                                          className={`group relative min-h-[178px] rounded-xl border p-4 text-left transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] ${
                                             active
-                                              ? "border-[#22C55E] bg-[#ECFDF5] text-[#111827] shadow-[0_4px_12px_rgba(34,197,94,0.12)]"
+                                              ? "z-10 scale-[1.025] border-[#22C55E] bg-[#F7FEF9] text-[#111827] shadow-[0_10px_28px_rgba(34,197,94,0.20)]"
                                               : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#A7F3D0]"
                                           }`}
                                         >
-                                          <div className="flex items-center gap-3">
-                                            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition-all duration-200 ease-out group-hover:scale-105 ${active ? "bg-[#22C55E] text-white" : "bg-[#F0FDF4] text-[#166534]"}`}>
-                                              <Icon className="h-4 w-4" />
+                                          <div className="flex h-full flex-col">
+                                            <div className="flex items-start justify-between gap-3">
+                                            <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition-all duration-300 ease-out group-hover:scale-110 ${active ? "bg-[#22C55E] text-white shadow-[0_6px_16px_rgba(34,197,94,0.25)]" : "bg-[#F0FDF4] text-[#166534]"}`}>
+                                              <Icon className="h-6 w-6" />
                                             </div>
-                                            <div className="min-w-0 flex-1">
-                                              <p className="text-sm font-semibold">{personalityOption}</p>
-                                              <p className="mt-0.5 truncate text-xs text-[#64748B]">{voice.description}</p>
+                                            {active && <span className="flex h-6 w-6 shrink-0 animate-in zoom-in-50 duration-200 items-center justify-center rounded-full bg-[#22C55E] text-white"><Check className="h-3.5 w-3.5" /></span>}
                                             </div>
-                                            {active && <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white"><Check className="h-3 w-3" /></span>}
+                                            <div className="mt-3">
+                                              <p className="text-sm font-semibold text-[#111827]">{personalityOption}</p>
+                                              <p className="mt-1 text-xs leading-5 text-[#64748B]">{voice.description}</p>
+                                            </div>
+                                            <div className={`mt-3 rounded-lg px-3 py-2 text-xs leading-5 ${active ? "bg-white text-[#166534] shadow-sm" : "bg-[#F8FAFC] text-[#64748B]"}`}>
+                                              “{voice.example}”
+                                            </div>
                                           </div>
                                         </button>
                                       );
                                     })}
                                   </div>
 
-                                  <div className="overflow-hidden rounded-xl bg-[#F0FDF4] px-4 py-3 transition-all duration-300 ease-out">
-                                    <div className="flex items-start gap-3">
-                                      <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white"><Check className="h-3.5 w-3.5" /></div>
-                                      <div>
-                                        <p className="text-sm font-semibold text-[#166534]">Your AI will sound {personality.toLowerCase()}</p>
-                                        <p className="mt-0.5 text-sm leading-5 text-[#475569]">“{BRAND_VOICE_DETAILS[personality].example}”</p>
-                                      </div>
+                                  <div className="overflow-hidden rounded-xl border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] to-white p-4">
+                                    <div className="flex items-center gap-2">
+                                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#22C55E] text-white"><Check className="h-3.5 w-3.5" /></span>
+                                      <p className="text-sm font-semibold text-[#166534]">Your AI will sound like this</p>
+                                      <span className="ml-auto rounded-full bg-white px-2 py-1 text-[10px] font-semibold text-[#166534]">{personality}</span>
+                                    </div>
+                                    <div key={personality} className="mt-3 flex items-end gap-2 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+                                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-[10px] font-bold text-white">AI</div>
+                                      <div className="max-w-[85%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm leading-5 text-[#111827] shadow-sm">{BRAND_VOICE_DETAILS[personality].example}</div>
                                     </div>
                                   </div>
 
@@ -3715,10 +3735,10 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
 
-                                  <div className="space-y-4">
-                                    <div>
+                                  <div className="grid gap-4 md:grid-cols-2">
+                                    <div className="relative">
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="welcome-message">
-                                        What should your AI say when someone says “Hi”?
+                                        Welcome message
                                       </label>
                                       <textarea
                                         id="welcome-message"
@@ -3726,14 +3746,17 @@ export default function DashboardLayout() {
                                         onChange={(event) => setWelcomeMessage(event.target.value)}
                                         rows={2}
                                         placeholder="Hello! Welcome to our business. How can we help today?"
-                                        className={`${INPUT_FIELD} mt-2 resize-none`}
+                                        className={`${AI_TRAINING_TEXTAREA} resize-none`}
                                       />
+                                      <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Welcome message is ready" />
+                                      <p className="mt-1.5 text-xs text-[#64748B]">Sent when a customer starts a conversation.</p>
                                     </div>
-
+                                  <div className="relative">
+                                    <label className="block text-sm font-semibold text-[#111827]" htmlFor="away-message">Away message</label>
+                                    <textarea id="away-message" value={awayMessage} onChange={(event) => setAwayMessage(event.target.value)} rows={2} placeholder="Thanks for your message. We’ll get back to you soon." className={`${AI_TRAINING_TEXTAREA} resize-none`} />
+                                    <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Away message is ready" />
+                                    <p className="mt-1.5 text-xs text-[#64748B]">Used when your team is unavailable.</p>
                                   </div>
-                                  <div>
-                                    <label className="block text-sm font-semibold text-[#111827]" htmlFor="away-message">What should your AI say when you’re unavailable?</label>
-                                    <textarea id="away-message" value={awayMessage} onChange={(event) => setAwayMessage(event.target.value)} rows={2} className={`${INPUT_FIELD} mt-2 resize-none`} />
                                   </div>
                                   <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
                                     <button type="button" onClick={() => setActiveIdentityStep(1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
@@ -3832,34 +3855,36 @@ export default function DashboardLayout() {
                                   </div>
 
                                   <div className="grid gap-4 md:grid-cols-2">
-                                    <div>
+                                    <div className="relative">
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-hours">
-                                        When are you open?
+                                        Business hours
                                       </label>
                                       <input
                                         id="business-hours"
                                         value={businessHours}
                                         onChange={(event) => setBusinessHours(event.target.value)}
                                         placeholder="Mon–Fri, 8:00 AM - 6:00 PM"
-                                        className={`${INPUT_FIELD} mt-2`}
+                                        className={AI_TRAINING_FIELD}
                                       />
+                                      <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Business hours are ready" />
+                                      <p className="mt-1.5 text-xs text-[#64748B]">Your AI uses this to set customer expectations.</p>
                                     </div>
 
-                                    <div>
-                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="timezone">
-                                        Your time zone
-                                      </label>
+                                    <div className="relative">
+                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="timezone">Time zone</label>
                                       <select
                                         id="timezone"
                                         value={timezone}
                                         onChange={(event) => setTimezone(event.target.value)}
-                                        className={`${INPUT_FIELD} mt-2`}
+                                        className={AI_TRAINING_FIELD}
                                       >
                                         <option>East Africa Time (EAT)</option>
                                         <option>West Africa Time (WAT)</option>
                                         <option>Central Africa Time (CAT)</option>
                                         <option>UTC</option>
                                       </select>
+                                      <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Time zone is ready" />
+                                      <p className="mt-1.5 text-xs text-[#64748B]">Keeps hours accurate for every customer.</p>
                                     </div>
                                   </div>
                                   <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
