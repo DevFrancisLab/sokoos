@@ -1287,7 +1287,18 @@ export default function DashboardLayout() {
   const identityLessonRef = useRef<HTMLDivElement>(null);
   const previewMessagesRef = useRef<HTMLDivElement>(null);
   const onboardingDockTriggerRef = useRef<HTMLDivElement>(null);
-  const identityLessons = ["Meet", "Teach", "Personality", "Greetings", "Languages", "Hours", "Workplaces", "Graduation"];
+  const identityLessons = ["Meet Your AI", "Teach Your AI", "Shape Personality", "First Impressions", "Languages", "Working Hours", "Workplaces", "Ready for Customers"];
+  const identityLessonInsights = [
+    "This helps your AI introduce your business correctly.",
+    "This teaches your AI what it can confidently answer.",
+    "This defines how your AI sounds in every conversation.",
+    "This helps your AI make a confident first impression.",
+    "Choose which customers your AI can communicate with.",
+    "Your AI will know exactly when you’re available.",
+    "Choose where your AI should meet customers.",
+    "Review what your AI learned before it serves customers.",
+  ];
+  const identityLessonCompletionNames = ["Identity", "Knowledge", "Personality", "First Impressions", "Languages", "Working Hours", "Workplaces", "Customer Readiness"];
 
   const focusIdentityLesson = (step: number) => {
     setActiveIdentityStep(step);
@@ -1300,7 +1311,7 @@ export default function DashboardLayout() {
 
   const completeIdentityLesson = (step: number) => {
     setCompletedIdentitySteps((current) => current.includes(step) ? current : [...current, step]);
-    setCompletionToast("Your AI learned this.");
+    setCompletionToast(`${identityLessonCompletionNames[step]} learned — your AI is getting smarter.`);
     window.setTimeout(() => setCompletionToast(null), 2200);
     if (step < identityLessons.length - 1) {
       window.setTimeout(() => focusIdentityLesson(step + 1), 500);
@@ -2277,6 +2288,7 @@ export default function DashboardLayout() {
   const shouldDockOnboarding = isOnboardingSticky && !onboardingComplete;
   const minutesRemaining = Math.max(0, 6 - completedIdentitySteps.length);
   const trainingPercent = Math.round((completedIdentitySteps.length / identityLessons.length) * 100);
+  const aiReadiness = Math.round(18 + (completedIdentitySteps.length / identityLessons.length) * 82);
   const activeSetupItem = aiSetupChecklist.find((item) => item.section === activeWorkspaceSection);
   useEffect(() => {
     const saved = window.localStorage.getItem("sokoos-ai-training-progress");
@@ -3585,29 +3597,29 @@ export default function DashboardLayout() {
                         <div className={`flex overflow-hidden transition-[max-height,opacity,margin] duration-300 ease-in-out ${shouldDockOnboarding ? "-mt-2 max-h-0 opacity-0" : "max-h-8 opacity-100"}`}>
                           <div className="flex items-center gap-2">
                           <span className="flex h-6 w-6 items-center justify-center rounded-md bg-[#ECFDF5] text-[#166534]"><Bot className="h-3.5 w-3.5" /></span>
-                          <p className="text-sm font-semibold text-[#111827]">Onboard your AI Employee</p>
+                          <p className="text-sm font-semibold text-[#111827]">🤖 Training Your AI Employee</p>
                           </div>
                         </div>
                         {shouldDockOnboarding && <p className="text-xs font-semibold text-[#111827]">Training your AI</p>}
                         <p className={`${shouldDockOnboarding ? "text-xs font-semibold text-[#111827]" : "mt-1 text-xs text-[#64748B]"}`}>Step {activeIdentityStep + 1} of 8 · {identityLessons[activeIdentityStep]}</p>
-                        <p className={`overflow-hidden text-xs text-[#64748B] transition-[max-height,opacity,margin] duration-300 ease-in-out ${shouldDockOnboarding ? "mt-0 max-h-0 opacity-0" : "mt-1 max-h-6 opacity-100"}`}>{activeIdentityStep === 0 ? "Let’s start by introducing your AI employee to your business." : "One meaningful lesson at a time."}</p>
+                        <p className={`overflow-hidden text-xs text-[#64748B] transition-[max-height,opacity,margin] duration-300 ease-in-out ${shouldDockOnboarding ? "mt-0 max-h-0 opacity-0" : "mt-1 max-h-10 opacity-100"}`}>Your AI is learning about your business so it can represent you confidently in every customer conversation.</p>
                         {!shouldDockOnboarding && <p className="mt-1 text-[11px] font-semibold text-[#166534]">{completedIdentitySteps.length} of 8 lessons complete · {trainingPercent}% trained</p>}
                       </div>
-                      {shouldDockOnboarding ? <span className="hidden shrink-0 items-center gap-1.5 text-[11px] font-semibold text-[#166534] sm:inline-flex"><span className="h-1.5 w-1.5 rounded-full bg-[#22C55E]" />AI Learning · {minutesRemaining ? `${minutesRemaining} min left` : "Complete"}</span> : <span className="shrink-0 rounded-full bg-[#ECFDF5] px-2.5 py-1 text-xs font-semibold text-[#166534]">{minutesRemaining ? `About ${minutesRemaining} min remaining` : "Training complete"}</span>}
+                      {shouldDockOnboarding ? <span className="hidden shrink-0 items-center gap-1.5 text-[11px] font-semibold text-[#166534] sm:inline-flex"><span className="h-1.5 w-1.5 rounded-full bg-[#22C55E]" />AI Learning · {aiReadiness}% ready</span> : <div className="shrink-0 rounded-xl border border-[#BBF7D0] bg-[#F7FEF9] px-3 py-2 text-right"><p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#166534]">AI Readiness</p><p className="mt-0.5 text-xs font-semibold text-[#111827]">{aiReadiness}% ready · {minutesRemaining ? `about ${minutesRemaining} min left` : "training complete"}</p><div className="mt-1.5 h-1 w-28 overflow-hidden rounded-full bg-[#DCFCE7]"><div className="h-full rounded-full bg-[#22C55E] transition-all duration-300" style={{ width: `${aiReadiness}%` }} /></div></div>}
                     </div>
                     <div className={`${shouldDockOnboarding ? "mt-1.5" : "mt-4"} h-1.5 overflow-hidden rounded-full bg-[#EEF2F6] transition-all duration-300 ease-in-out`}>
                       <div className="h-full rounded-full bg-[#22C55E] transition-all duration-300" style={{ width: `${((activeIdentityStep + 1) / 8) * 100}%` }} />
                     </div>
                     <div className={`${shouldDockOnboarding ? "mt-1" : "mt-4"} flex gap-1 overflow-x-auto pb-1 transition-all duration-300 ease-in-out sm:justify-between`}>
                       {[
-                        { label: "Meet", Icon: User },
-                        { label: "Teach", Icon: BookOpen },
-                        { label: "Personality", Icon: Smile },
-                        { label: "Greetings", Icon: MessageCircle },
+                        { label: "Meet Your AI", Icon: User },
+                        { label: "Teach Your AI", Icon: BookOpen },
+                        { label: "Shape Personality", Icon: Smile },
+                        { label: "First Impressions", Icon: MessageCircle },
                         { label: "Languages", Icon: Globe },
-                        { label: "Hours", Icon: Clock },
+                        { label: "Working Hours", Icon: Clock },
                         { label: "Workplaces", Icon: Plug },
-                        { label: "Graduation", Icon: Check },
+                        { label: "Ready for Customers", Icon: Check },
                       ].map(({ label, Icon }, index) => {
                         const active = activeIdentityStep === index;
                         const completed = completedIdentitySteps.includes(index);
@@ -3619,6 +3631,7 @@ export default function DashboardLayout() {
                         );
                       })}
                     </div>
+                    {!shouldDockOnboarding && <div className="mt-3 flex items-center gap-2 rounded-lg bg-[#F8FAFC] px-3 py-2 text-xs text-[#475569]"><Sparkles className="h-3.5 w-3.5 shrink-0 text-[#16A34A]" /><span><span className="font-semibold text-[#111827]">Why this matters:</span> {identityLessonInsights[activeIdentityStep]}</span></div>}
                     </>}
                   </section>
                   </>
