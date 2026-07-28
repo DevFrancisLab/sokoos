@@ -2227,6 +2227,15 @@ export default function DashboardLayout() {
     cancellationPolicy:
       "Cancel anytime with 48 hours notice before the next billing cycle.",
   });
+  const aiSetupChecklist = [
+    { label: "Business Identity", section: "Identity", complete: Boolean(businessInfo.name && businessInfo.type && businessInfo.about) },
+    { label: "Personality", section: "Identity", complete: Boolean(personality) },
+    { label: "Knowledge", section: "Knowledge Hub", complete: faqItems.length > 0 },
+    { label: "Playbooks", section: "Sales Playbooks", complete: upsellProducts || recommendAlternatives, recommended: true },
+    { label: "Availability", section: "Identity", complete: Boolean(businessHours) },
+  ];
+  const aiSetupScore = Math.round((aiSetupChecklist.filter((item) => item.complete).length / aiSetupChecklist.length) * 100);
+  const activeSetupItem = aiSetupChecklist.find((item) => item.section === activeWorkspaceSection);
   const [businessProfile, setBusinessProfile] = useState({
     name: "Sokoos Internet",
     industry: "Telecom & Connectivity",
@@ -3406,6 +3415,22 @@ export default function DashboardLayout() {
                     </p>
                   </div>
 
+                  <section className="rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)]" aria-label="AI setup score">
+                    <div className="flex items-center gap-4">
+                      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#111827] text-center text-lg font-semibold text-white shadow-sm">{aiSetupScore}%</div>
+                      <div><p className="text-sm font-semibold text-[#111827]">AI Setup Score</p><p className="mt-0.5 text-xs text-[#64748B]">Complete the essentials so your AI can represent your business with confidence.</p></div>
+                    </div>
+                    <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
+                      {aiSetupChecklist.map((item) => {
+                        const status = item.complete ? "Completed" : item.recommended ? "Recommended" : "Missing information";
+                        return <button key={item.label} type="button" onClick={() => setActiveWorkspaceSection(item.section as typeof activeWorkspaceSection)} className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-left transition hover:-translate-y-px hover:shadow-sm ${item.complete ? "border-[#BBF7D0] bg-[#F7FEF9]" : item.recommended ? "border-[#BFDBFE] bg-[#EFF6FF]" : "border-[#FDE68A] bg-[#FFFBEB]"}`}>
+                          {item.complete ? <Check className="h-4 w-4 shrink-0 text-[#16A34A]" /> : <CircleAlert className={`h-4 w-4 shrink-0 ${item.recommended ? "text-[#2563EB]" : "text-[#D97706]"}`} />}
+                          <span className="min-w-0"><span className="block truncate text-xs font-semibold text-[#111827]">{item.label}</span><span className={`block truncate text-[10px] font-medium ${item.complete ? "text-[#166534]" : item.recommended ? "text-[#1D4ED8]" : "text-[#B45309]"}`}>{status}{item.complete ? " ✓" : ""}</span></span>
+                        </button>;
+                      })}
+                    </div>
+                  </section>
+
                   <nav aria-label="AI employee workspace sections" className="sticky top-0 z-30 -mx-4 border-y border-[#E5E7EB] bg-white/95 px-4 py-3 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur lg:-mx-6 lg:px-6">
                     <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-5 lg:grid-cols-9">
                     {([
@@ -3455,6 +3480,7 @@ export default function DashboardLayout() {
                     <span className="text-xs font-medium text-[#6B7280]">Status</span>
                     <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#166534]">Online</span>
                     <span className="rounded-full bg-[#F3F4F6] px-3 py-1 text-xs font-semibold text-[#6B7280]">AI enabled</span>
+                    {activeSetupItem && <span className={`rounded-full px-3 py-1 text-xs font-semibold ${activeSetupItem.complete ? "bg-[#ECFDF5] text-[#166534]" : activeSetupItem.recommended ? "bg-[#EFF6FF] text-[#1D4ED8]" : "bg-[#FFFBEB] text-[#B45309]"}`}>{activeSetupItem.complete ? "Completed ✓" : activeSetupItem.recommended ? "Recommended" : "Missing information"}</span>}
                   </div>
                 </div>
 
