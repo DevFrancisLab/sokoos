@@ -1283,21 +1283,24 @@ export default function DashboardLayout() {
   const [completionToast, setCompletionToast] = useState<string | null>(null);
   const [previewReplyVisible, setPreviewReplyVisible] = useState(true);
   const [isOnboardingSticky, setIsOnboardingSticky] = useState(false);
+  const [onboardingRestored, setOnboardingRestored] = useState(false);
   const identityLessonRef = useRef<HTMLDivElement>(null);
   const previewMessagesRef = useRef<HTMLDivElement>(null);
-  const onboardingProgressRef = useRef<HTMLElement>(null);
+  const onboardingDockTriggerRef = useRef<HTMLDivElement>(null);
   const identityLessons = ["Meet", "Teach", "Personality", "Greetings", "Languages", "Hours", "Workplaces", "Graduation"];
 
   const focusIdentityLesson = (step: number) => {
     setActiveIdentityStep(step);
     window.setTimeout(() => {
       identityLessonRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      const firstField = identityLessonRef.current?.querySelector<HTMLElement>("input, select, textarea, button");
+      firstField?.focus({ preventScroll: true });
     }, 0);
   };
 
   const completeIdentityLesson = (step: number) => {
     setCompletedIdentitySteps((current) => current.includes(step) ? current : [...current, step]);
-    setCompletionToast(`${identityLessons[step]} completed`);
+    setCompletionToast("Your AI learned this.");
     window.setTimeout(() => setCompletionToast(null), 2200);
     if (step < identityLessons.length - 1) {
       window.setTimeout(() => focusIdentityLesson(step + 1), 500);
@@ -1310,16 +1313,6 @@ export default function DashboardLayout() {
       block: "start",
     });
   }, [activeWorkspaceSection]);
-  useEffect(() => {
-    const updateStickyState = () => {
-      const top = onboardingProgressRef.current?.getBoundingClientRect().top;
-      setIsOnboardingSticky(activeWorkspaceSection === "Identity" && typeof top === "number" && top <= 58);
-    };
-    updateStickyState();
-    window.addEventListener("scroll", updateStickyState, { passive: true });
-    return () => window.removeEventListener("scroll", updateStickyState);
-  }, [activeWorkspaceSection]);
-
   const CATALOG_ITEMS = [
     {
       id: "p-restaurant-001",
@@ -2280,8 +2273,46 @@ export default function DashboardLayout() {
     { label: "Playbooks", section: "Sales Playbooks", complete: upsellProducts || recommendAlternatives, recommended: true },
     { label: "Availability", section: "Identity", complete: Boolean(businessHours) },
   ];
-  const onboardingComplete = aiEmployeeLaunched || completedIdentitySteps.length >= 7;
+  const onboardingComplete = aiEmployeeLaunched || completedIdentitySteps.length >= identityLessons.length;
+  const shouldDockOnboarding = isOnboardingSticky && !onboardingComplete;
+  const minutesRemaining = Math.max(0, 6 - completedIdentitySteps.length);
   const activeSetupItem = aiSetupChecklist.find((item) => item.section === activeWorkspaceSection);
+  useEffect(() => {
+    const saved = window.localStorage.getItem("sokoos-ai-training-progress");
+    if (saved) {
+      try {
+        const progress = JSON.parse(saved) as { step?: number; completed?: number[]; launched?: boolean; scrollY?: number };
+        if (typeof progress.step === "number") setActiveIdentityStep(progress.step);
+        if (Array.isArray(progress.completed)) setCompletedIdentitySteps(progress.completed);
+        if (progress.launched) setAiEmployeeLaunched(true);
+        if (typeof progress.scrollY === "number") window.requestAnimationFrame(() => window.scrollTo({ top: progress.scrollY, behavior: "auto" }));
+      } catch {
+        window.localStorage.removeItem("sokoos-ai-training-progress");
+      }
+    }
+    setOnboardingRestored(true);
+  }, []);
+  useEffect(() => {
+    if (!onboardingRestored) return;
+    window.localStorage.setItem("sokoos-ai-training-progress", JSON.stringify({
+      step: activeIdentityStep,
+      completed: completedIdentitySteps,
+      launched: aiEmployeeLaunched,
+      scrollY: window.scrollY,
+    }));
+  }, [activeIdentityStep, completedIdentitySteps, aiEmployeeLaunched, onboardingRestored]);
+  useEffect(() => {
+    if (activeWorkspaceSection !== "Identity" || onboardingComplete || !onboardingDockTriggerRef.current) {
+      setIsOnboardingSticky(false);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsOnboardingSticky(!entry.isIntersecting),
+      { rootMargin: "-56px 0px 0px 0px", threshold: 0 },
+    );
+    observer.observe(onboardingDockTriggerRef.current);
+    return () => observer.disconnect();
+  }, [activeWorkspaceSection, onboardingComplete]);
   const [businessProfile, setBusinessProfile] = useState({
     name: "Sokoos Internet",
     industry: "Telecom & Connectivity",
@@ -3531,22 +3562,40 @@ export default function DashboardLayout() {
                 </div>
 
                 {activeWorkspaceSection === "Identity" && (
-                  <section ref={onboardingProgressRef} className={`sticky top-[58px] z-20 border border-[#E5E7EB] bg-white transition-all duration-200 ${isOnboardingSticky ? "-mx-4 rounded-none border-x-0 border-b-[#E2E8F0] border-t-0 px-4 py-2 shadow-[0_8px_18px_rgba(15,23,42,0.10)] lg:-mx-6 lg:px-6" : "rounded-xl p-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)] sm:p-5"}`} aria-label="AI employee onboarding progress">
-                    <div className={`flex justify-between gap-4 ${isOnboardingSticky ? "items-center" : "items-start"}`}>
+                  <>
+                  <div ref={onboardingDockTriggerRef} className="h-px" aria-hidden="true" />
+                  <section className={`${onboardingComplete ? "relative" : "sticky top-14"} z-20 border border-[#E5E7EB] bg-white transition-[padding,border-radius,box-shadow,border-color] duration-300 ease-in-out ${shouldDockOnboarding ? "-mx-4 rounded-none border-x-0 border-b-[#E2E8F0] border-t-0 px-4 py-2 shadow-[0_8px_18px_rgba(15,23,42,0.10)] lg:-mx-6 lg:px-6" : "rounded-xl p-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)] sm:p-5"}`} aria-label="AI employee onboarding progress">
+                    {onboardingComplete ? (
+                      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between animate-in fade-in-0 zoom-in-95 duration-300">
+                        <div className="flex items-start gap-3">
+                          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#22C55E] text-lg text-white shadow-sm">✓</span>
+                          <div><p className="text-base font-semibold text-[#111827]">AI Employee Ready</p><p className="mt-1 text-sm text-[#64748B]">Your AI has completed training and is ready to represent your business.</p></div>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          <button type="button" onClick={() => setActiveWorkspaceSection("Performance")} className="rounded-lg bg-[#111827] px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#334155]">View AI Profile</button>
+                          <button type="button" onClick={() => { setAiEmployeeLaunched(false); setCompletedIdentitySteps([]); focusIdentityLesson(0); }} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition hover:bg-[#F8FAFC] hover:text-[#111827]">Retrain AI</button>
+                          <button type="button" onClick={() => setActiveWorkspaceSection("Knowledge Hub")} className="rounded-lg border border-[#BBF7D0] bg-[#ECFDF5] px-3 py-2 text-xs font-semibold text-[#166534] transition hover:bg-[#DCFCE7]">Go to Knowledge</button>
+                        </div>
+                      </div>
+                    ) : <>
+                    <div className={`flex justify-between gap-4 ${shouldDockOnboarding ? "items-center" : "items-start"}`}>
                       <div>
-                        {!isOnboardingSticky && <div className="flex items-center gap-2">
+                        <div className={`flex overflow-hidden transition-[max-height,opacity,margin] duration-300 ease-in-out ${shouldDockOnboarding ? "-mt-2 max-h-0 opacity-0" : "max-h-8 opacity-100"}`}>
+                          <div className="flex items-center gap-2">
                           <span className="flex h-6 w-6 items-center justify-center rounded-md bg-[#ECFDF5] text-[#166534]"><Bot className="h-3.5 w-3.5" /></span>
                           <p className="text-sm font-semibold text-[#111827]">Onboard your AI employee</p>
-                        </div>}
-                        <p className={`${isOnboardingSticky ? "text-xs font-semibold text-[#111827]" : "mt-1 text-xs text-[#64748B]"}`}>Step {activeIdentityStep + 1} of 8</p>
-                        {!isOnboardingSticky && <p className="mt-1 text-xs text-[#64748B]">{activeIdentityStep === 0 ? "Let’s start by introducing your AI employee to your business." : "One meaningful lesson at a time."}</p>}
+                          </div>
+                        </div>
+                        {shouldDockOnboarding && <p className="text-xs font-semibold text-[#111827]">Training your AI</p>}
+                        <p className={`${shouldDockOnboarding ? "text-xs font-semibold text-[#111827]" : "mt-1 text-xs text-[#64748B]"}`}>Step {activeIdentityStep + 1} of 8 · {identityLessons[activeIdentityStep]}</p>
+                        <p className={`overflow-hidden text-xs text-[#64748B] transition-[max-height,opacity,margin] duration-300 ease-in-out ${shouldDockOnboarding ? "mt-0 max-h-0 opacity-0" : "mt-1 max-h-6 opacity-100"}`}>{activeIdentityStep === 0 ? "Let’s start by introducing your AI employee to your business." : "One meaningful lesson at a time."}</p>
                       </div>
-                      {!isOnboardingSticky && <span className="shrink-0 rounded-full bg-[#ECFDF5] px-2.5 py-1 text-xs font-semibold text-[#166534]">{completedIdentitySteps.length} completed</span>}
+                      {shouldDockOnboarding ? <span className="hidden shrink-0 items-center gap-1.5 text-[11px] font-semibold text-[#166534] sm:inline-flex"><span className="h-1.5 w-1.5 rounded-full bg-[#22C55E]" />AI Learning · {minutesRemaining ? `${minutesRemaining} min left` : "Complete"}</span> : <span className="shrink-0 rounded-full bg-[#ECFDF5] px-2.5 py-1 text-xs font-semibold text-[#166534]">{minutesRemaining ? `About ${minutesRemaining} min remaining` : "Training complete"}</span>}
                     </div>
-                    <div className={`${isOnboardingSticky ? "mt-1.5" : "mt-4"} h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]`}>
+                    <div className={`${shouldDockOnboarding ? "mt-1.5" : "mt-4"} h-1.5 overflow-hidden rounded-full bg-[#EEF2F6] transition-all duration-300 ease-in-out`}>
                       <div className="h-full rounded-full bg-[#22C55E] transition-all duration-300" style={{ width: `${((activeIdentityStep + 1) / 8) * 100}%` }} />
                     </div>
-                    <div className={`${isOnboardingSticky ? "mt-1" : "mt-4"} flex gap-1 overflow-x-auto pb-1 sm:justify-between`}>
+                    <div className={`${shouldDockOnboarding ? "mt-1" : "mt-4"} flex gap-1 overflow-x-auto pb-1 transition-all duration-300 ease-in-out sm:justify-between`}>
                       {[
                         { label: "Meet", Icon: User },
                         { label: "Teach", Icon: BookOpen },
@@ -3560,14 +3609,16 @@ export default function DashboardLayout() {
                         const active = activeIdentityStep === index;
                         const completed = completedIdentitySteps.includes(index);
                         return (
-                          <button key={label} type="button" onClick={() => focusIdentityLesson(index)} aria-current={active ? "step" : undefined} className={`group inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 ${isOnboardingSticky ? "py-1.5" : "py-2"} text-xs font-semibold transition ${active ? "bg-[#111827] text-white shadow-sm" : completed ? "bg-[#ECFDF5] text-[#166534]" : "text-[#64748B] hover:bg-[#F8FAFC] hover:text-[#334155]"}`}>
+                          <button key={label} type="button" onClick={() => focusIdentityLesson(index)} aria-current={active ? "step" : undefined} className={`group inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 ${shouldDockOnboarding ? "py-1.5" : "py-2"} text-xs font-semibold transition ${active ? "bg-[#111827] text-white shadow-sm" : completed ? "bg-[#ECFDF5] text-[#166534]" : "text-[#64748B] hover:bg-[#F8FAFC] hover:text-[#111827]"}`}>
                             <span className={`flex h-5 w-5 items-center justify-center rounded-full ${active ? "bg-white/15" : completed ? "bg-[#22C55E] text-white" : "bg-[#F1F5F9] text-[#64748B] group-hover:bg-[#E2E8F0]"}`}>{completed ? <Check className="h-3 w-3" /> : <Icon className="h-3 w-3" />}</span>
-                            <span>{completed ? `${label} Completed` : label}</span>
+                            <span>{label}</span>
                           </button>
                         );
                       })}
                     </div>
+                    </>}
                   </section>
+                  </>
                 )}
 
                 {completionToast && (
@@ -3593,7 +3644,7 @@ export default function DashboardLayout() {
                 )}
 
                 <div id="ai-workspace-content" className="w-full scroll-mt-28">
-                    {activeWorkspaceSection === "Identity" && (
+                    {activeWorkspaceSection === "Identity" && !onboardingComplete && (
                       <div className="space-y-5">
                         <div onChangeCapture={() => setHasUnsavedChanges(true)}>
                           <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1.35fr)_minmax(300px,0.65fr)]">
