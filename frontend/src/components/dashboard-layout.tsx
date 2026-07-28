@@ -36,6 +36,7 @@ import {
   Shield,
   Plug,
   BarChart3,
+  CircleAlert,
 } from "lucide-react";
 import AiSummaryCard from "./ui/ai-summary-card";
 
@@ -1266,10 +1267,17 @@ export default function DashboardLayout() {
       | "Sales Playbooks"
       | "Skills"
       | "Policies"
+      | "Integrations"
       | "Test AI"
       | "Performance"
     >("Identity");
   const [activeIdentityStep, setActiveIdentityStep] = useState(0);
+  useEffect(() => {
+    document.getElementById("ai-workspace-content")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }, [activeWorkspaceSection]);
 
   const CATALOG_ITEMS = [
     {
@@ -1954,6 +1962,7 @@ export default function DashboardLayout() {
   const [logoPreviewOpen, setLogoPreviewOpen] = useState(false);
   const [logoError, setLogoError] = useState("");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(true);
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
   const [upsellProducts, setUpsellProducts] = useState(true);
   const [recommendAlternatives, setRecommendAlternatives] = useState(true);
   const [closeSalesAutomatically, setCloseSalesAutomatically] = useState(false);
@@ -1999,6 +2008,18 @@ export default function DashboardLayout() {
       ? "Ungependa kujua nini hasa?"
       : "What would you like to know first?"
     : null;
+  const [previewQuestion, setPreviewQuestion] = useState<string | null>(null);
+  const [previewRefreshKey, setPreviewRefreshKey] = useState(0);
+  useEffect(() => {
+    setPreviewRefreshKey((current) => current + 1);
+  }, [businessHours, businessInfo.name, personality, primaryLanguage, supportedLanguages, welcomeMessage, awayMessage]);
+  const previewQuestionReply = previewQuestion?.toLowerCase().includes("located")
+    ? `We’re based in ${businessInfo.address || "your area"}.`
+    : previewQuestion?.toLowerCase().includes("hours")
+      ? `We’re available ${businessHours || "during business hours"}.`
+      : previewQuestion?.toLowerCase().includes("hello")
+        ? welcomeMessage || previewLanguageCopy.defaultWelcome
+        : previewBusinessContext;
   const [knowledgeProducts, setKnowledgeProducts] = useState([
     { id: "kp1", name: "10 Mbps Internet", price: "KES 2,500/month" },
     { id: "kp2", name: "20 Mbps Internet", price: "KES 3,500/month" },
@@ -2024,7 +2045,13 @@ export default function DashboardLayout() {
     phone: "",
   });
   const handleSaveChanges = () => {
-    setHasUnsavedChanges(false);
+    if (saveState === "saving") return;
+    setSaveState("saving");
+    window.setTimeout(() => {
+      setHasUnsavedChanges(false);
+      setSaveState("saved");
+      window.setTimeout(() => setSaveState("idle"), 1200);
+    }, 650);
   };
 
   const handleResetChanges = () => {
@@ -2068,6 +2095,7 @@ export default function DashboardLayout() {
     setLogoPreviewOpen(false);
     setLogoError("");
     setHasUnsavedChanges(false);
+    setSaveState("idle");
   };
 
   const addPersonalContact = () => {
@@ -3363,18 +3391,18 @@ export default function DashboardLayout() {
                     </p>
                   </div>
 
-                  <nav aria-label="AI employee workspace sections" className="sticky top-3 z-30 -mx-4 overflow-x-auto scroll-smooth border-y border-[#E5E7EB] bg-white/95 px-4 py-3 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur lg:-mx-6 lg:px-6">
-                    <div className="flex w-max gap-2">
+                  <nav aria-label="AI employee workspace sections" className="sticky top-0 z-30 -mx-4 border-y border-[#E5E7EB] bg-white/95 px-4 py-3 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur lg:-mx-6 lg:px-6">
+                    <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-5 lg:grid-cols-9">
                     {([
-                      { label: "Business Identity", section: "Identity" as const, Icon: User },
-                      { label: "Knowledge", section: "Knowledge Hub" as const, Icon: BookOpen },
-                      { label: "Catalogue", section: "Catalogue" as const, Icon: Package },
-                      { label: "Sales Playbooks", section: "Sales Playbooks" as const, Icon: Target },
-                      { label: "Skills", section: "Skills" as const, Icon: Sparkles },
-                      { label: "Policies", section: "Policies" as const, Icon: Shield },
-                      { label: "Integrations", section: "Policies" as const, Icon: Plug },
-                      { label: "Test AI", section: "Test AI" as const, Icon: Bot },
-                      { label: "Performance", section: "Performance" as const, Icon: BarChart3 },
+                      { label: "Business", section: "Identity" as const, Icon: User, status: activeIdentityStep === 6 ? "complete" : "warning" },
+                      { label: "Knowledge", section: "Knowledge Hub" as const, Icon: BookOpen, status: "warning" },
+                      { label: "Catalogue", section: "Catalogue" as const, Icon: Package, status: "complete" },
+                      { label: "Playbooks", section: "Sales Playbooks" as const, Icon: Target, status: "complete" },
+                      { label: "Skills", section: "Skills" as const, Icon: Sparkles, status: "warning" },
+                      { label: "Policies", section: "Policies" as const, Icon: Shield, status: "warning" },
+                      { label: "Integrations", section: "Integrations" as const, Icon: Plug, status: "warning" },
+                      { label: "Test", section: "Test AI" as const, Icon: Bot, status: "complete" },
+                      { label: "Performance", section: "Performance" as const, Icon: BarChart3, status: "complete" },
                     ]).map((tab) => {
                       const active = activeWorkspaceSection === tab.section;
                       return (
@@ -3382,14 +3410,16 @@ export default function DashboardLayout() {
                           key={tab.label}
                           type="button"
                           onClick={() => setActiveWorkspaceSection(tab.section)}
-                          className={`relative inline-flex shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ease-out after:absolute after:bottom-1 after:left-1/2 after:h-0.5 after:w-4 after:-translate-x-1/2 after:rounded-full after:bg-current after:transition-transform after:duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 ${
+                          aria-current={active ? "page" : undefined}
+                          className={`relative flex min-w-0 items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-xs font-semibold transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 ${
                             active
-                              ? "bg-[#22C55E] text-white shadow-sm after:scale-x-100"
-                              : "bg-[#F3F4F6] text-[#6B7280] after:scale-x-0 hover:bg-[#E5E7EB] hover:text-[#374151]"
+                              ? "bg-[#111827] text-white shadow-sm"
+                              : "text-[#64748B] hover:bg-[#F3F4F6] hover:text-[#111827]"
                           }`}
                         >
-                          <tab.Icon className="h-4 w-4" />
-                          {tab.label}
+                          <tab.Icon className="h-3.5 w-3.5 shrink-0" />
+                          <span className="truncate">{tab.label}</span>
+                          {tab.status === "complete" ? <Check className={`h-3.5 w-3.5 shrink-0 ${active ? "text-[#86EFAC]" : "text-[#16A34A]"}`} /> : <CircleAlert className={`h-3.5 w-3.5 shrink-0 ${active ? "text-[#FDE68A]" : "text-[#F59E0B]"}`} />}
                         </button>
                       );
                     })}
@@ -3398,7 +3428,7 @@ export default function DashboardLayout() {
                 </div>
               </div>
 
-              <main className="space-y-5">
+              <main className="space-y-5 pb-28">
                 <div className="flex flex-col gap-3 border-b border-[#E5E7EB] pb-4 lg:flex-row lg:items-center lg:justify-between">
                   <div className="max-w-3xl">
                     <p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]">
@@ -3451,20 +3481,22 @@ export default function DashboardLayout() {
                   </section>
                 )}
 
-                {hasUnsavedChanges && activeWorkspaceSection !== "Identity" && (
-                  <div className="sticky top-[68px] z-20 flex items-center justify-between gap-2 rounded-xl border border-[#BBF7D0] bg-white/95 px-4 py-2 shadow-[0_8px_20px_rgba(15,23,42,0.08)] backdrop-blur">
-                    <div className="flex min-w-0 items-center gap-2">
-                      <span className="h-2 w-2 shrink-0 rounded-full bg-[#22C55E]" />
-                      <p className="truncate text-sm font-medium text-[#111827]">Unsaved changes</p>
-                    </div>
-                    <div className="flex shrink-0 items-center gap-2">
-                      <button type="button" onClick={handleResetChanges} className="rounded-lg px-2.5 py-1.5 text-xs font-semibold text-[#64748B] transition hover:bg-[#F3F4F6] hover:text-[#111827]">Discard</button>
-                      <button type="button" onClick={handleSaveChanges} className="rounded-lg bg-[#22C55E] px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#16A34A]">Save changes</button>
+                {(hasUnsavedChanges || saveState !== "idle") && (
+                  <div className="fixed inset-x-0 bottom-5 z-50 flex justify-center px-4 animate-in fade-in-0 slide-in-from-bottom-4 duration-300">
+                    <div className="flex w-full max-w-xl items-center justify-between gap-3 rounded-2xl border border-white/70 bg-white/90 p-2 pl-4 shadow-[0_18px_48px_rgba(15,23,42,0.18)] backdrop-blur-xl">
+                      <div className="flex min-w-0 items-center gap-2.5">
+                        {saveState === "saved" ? <Check className="h-4 w-4 shrink-0 text-[#16A34A]" /> : <span className={`h-2 w-2 shrink-0 rounded-full ${saveState === "saving" ? "animate-pulse bg-[#F59E0B]" : "bg-[#22C55E]"}`} />}
+                        <p className="truncate text-sm font-semibold text-[#111827]">{saveState === "saving" ? "Saving..." : saveState === "saved" ? "Saved ✓" : "Unsaved changes"}</p>
+                      </div>
+                      {saveState !== "saved" && <div className="flex shrink-0 items-center gap-1.5">
+                        <button type="button" onClick={handleResetChanges} disabled={saveState === "saving"} className="rounded-xl px-3 py-2 text-sm font-semibold text-[#64748B] transition hover:bg-[#F3F4F6] hover:text-[#111827] disabled:cursor-not-allowed disabled:opacity-50">Discard</button>
+                        <button type="button" onClick={handleSaveChanges} disabled={saveState === "saving"} className="rounded-xl bg-[#111827] px-3.5 py-2 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-80">{saveState === "saving" ? "Saving..." : "Save changes"}</button>
+                      </div>}
                     </div>
                   </div>
                 )}
 
-                <div className="w-full">
+                <div id="ai-workspace-content" className="w-full scroll-mt-28">
                     {activeWorkspaceSection === "Identity" && (
                       <div className="space-y-5">
                         <div onChangeCapture={() => setHasUnsavedChanges(true)}>
@@ -3908,7 +3940,7 @@ export default function DashboardLayout() {
                                 </div>
                                 <div className="mt-6 flex items-center justify-between border-t border-[#D1FAE5] pt-4">
                                   <button type="button" onClick={() => setActiveIdentityStep(5)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                  <button type="button" onClick={handleSaveChanges} className="inline-flex items-center gap-2 rounded-lg bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"><Check className="h-4 w-4" />Save training</button>
+                                  <p className="text-sm font-medium text-[#166534]">Ready to save your training</p>
                                 </div>
                               </section>
                             </div>
@@ -3930,47 +3962,55 @@ export default function DashboardLayout() {
                                     </span>
                                   </div>
 
-                                  <div className="mx-auto mt-3 max-w-[340px] overflow-hidden rounded-[24px] border border-[#DDE4EA] bg-white shadow-[0_8px_20px_rgba(15,23,42,0.10)]">
-                                    <div className="flex items-center gap-3 border-b border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3">
-                                      <div className="flex h-10 w-10 overflow-hidden items-center justify-center rounded-full bg-[#ECFDF5] text-sm font-semibold text-[#166534]">
-                                        {logoPreview ? <img src={logoPreview} alt="Business logo" className="h-full w-full object-cover" /> : (businessInfo.name.slice(0, 1) || "B")}
+                                  <div className="mx-auto mt-4 w-full max-w-[326px] rounded-[32px] bg-[#111827] p-2 shadow-[0_18px_42px_rgba(15,23,42,0.22)]">
+                                    <div className="overflow-hidden rounded-[25px] bg-[#F8FAFB]">
+                                      <div className="flex items-center justify-between bg-[#111827] px-5 py-2 text-[10px] font-semibold text-white">
+                                        <span>9:41</span><span className="h-3 w-16 rounded-full bg-white/90" /><span>●●●</span>
                                       </div>
-                                      <div className="min-w-0">
-                                        <p className="truncate text-sm font-semibold text-[#111827]">{businessInfo.name || "Your business"}</p>
-                                        <p className="truncate text-xs text-[#6B7280]">{businessInfo.type || "AI assistant"} · {primaryLanguage}</p>
+                                      <div className="flex items-center gap-3 border-b border-[#E5E7EB] bg-white px-3.5 py-3">
+                                        <div className="flex h-9 w-9 overflow-hidden items-center justify-center rounded-full bg-[#ECFDF5] text-sm font-semibold text-[#166534]">
+                                          {logoPreview ? <img src={logoPreview} alt="Business logo" className="h-full w-full object-cover" /> : (businessInfo.name.slice(0, 1) || "B")}
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                          <p className="truncate text-sm font-semibold text-[#111827]">{businessInfo.name || "Your business"}</p>
+                                          <p className="text-[11px] text-[#16A34A]">Online · replies instantly</p>
+                                        </div>
+                                        <MessageCircle className="h-4 w-4 text-[#94A3B8]" />
                                       </div>
-                                      <span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-[#22C55E]" aria-label="Online" />
-                                    </div>
-
-                                    <div aria-live="polite" aria-atomic="true" className="space-y-3 bg-[#F8FAFB] p-3.5">
-                                      <div className="ml-auto w-fit max-w-[88%] rounded-2xl rounded-br-sm bg-[#DCFCE7] px-3 py-2 text-sm text-[#111827]">{previewLanguageCopy.customerGreeting}</div>
-                                      <div className="w-fit max-w-[92%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm leading-6 text-[#111827] shadow-sm">
-                                        {welcomeMessage || previewLanguageCopy.defaultWelcome}
+                                      <div key={`${previewRefreshKey}-${previewQuestion ?? "default"}`} aria-live="polite" aria-atomic="true" className="min-h-[286px] space-y-2.5 bg-[#F8FAFB] p-3 animate-in fade-in-0 slide-in-from-bottom-1 duration-300">
+                                        <p className="text-center text-[10px] font-medium text-[#94A3B8]">Today</p>
+                                        <div className="ml-auto w-fit max-w-[86%] rounded-2xl rounded-br-sm bg-[#DCFCE7] px-3 py-2 text-[12px] text-[#111827]">{previewLanguageCopy.customerGreeting}</div>
+                                        <div className="w-fit max-w-[91%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-[12px] leading-5 text-[#111827] shadow-sm">{welcomeMessage || previewLanguageCopy.defaultWelcome}</div>
+                                        {previewQuestion && <>
+                                          <div className="ml-auto w-fit max-w-[86%] rounded-2xl rounded-br-sm bg-[#DCFCE7] px-3 py-2 text-[12px] text-[#111827]">{previewQuestion}</div>
+                                          <div className="w-fit max-w-[91%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-[12px] leading-5 text-[#111827] shadow-sm">{previewQuestionReply}</div>
+                                        </>}
+                                        {!previewQuestion && <>
+                                          <div className="ml-auto w-fit max-w-[86%] rounded-2xl rounded-br-sm bg-[#DCFCE7] px-3 py-2 text-[12px] text-[#111827]">{previewLanguageCopy.pricingQuestion}</div>
+                                          <div className="w-fit max-w-[91%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-[12px] leading-5 text-[#111827] shadow-sm">{previewBusinessContext}</div>
+                                          {previewFollowUp && <div className="w-fit max-w-[91%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-[12px] leading-5 text-[#111827] shadow-sm">{previewFollowUp}</div>}
+                                        </>}
                                       </div>
-                                      <div className="ml-auto w-fit max-w-[88%] rounded-2xl rounded-br-sm bg-[#DCFCE7] px-3 py-2 text-sm text-[#111827]">{previewLanguageCopy.pricingQuestion}</div>
-                                      <div className="w-fit max-w-[92%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm leading-6 text-[#111827] shadow-sm">
-                                        {previewBusinessContext}
-                                      </div>
-                                      {previewFollowUp && <div className="w-fit max-w-[92%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm leading-6 text-[#111827] shadow-sm">{previewFollowUp}</div>}
-                                      <div className="ml-auto w-fit max-w-[88%] rounded-2xl rounded-br-sm bg-[#DCFCE7] px-3 py-2 text-sm text-[#111827]">{previewLanguageCopy.availabilityQuestion}</div>
-                                      <div className="w-fit max-w-[92%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm leading-6 text-[#111827] shadow-sm">
-                                        {awayMessage || `We’re available ${businessHours || "during business hours"}.`}
-                                      </div>
-                                      <div className="w-fit max-w-[92%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-xs leading-5 text-[#475569] shadow-sm">
-                                        {businessHours || "Available during business hours"} · {timezone}
-                                      </div>
+                                      <div className="flex items-center gap-2 border-t border-[#E5E7EB] bg-white px-3 py-2.5"><Plus className="h-4 w-4 text-[#94A3B8]" /><div className="flex-1 rounded-full bg-[#F1F5F9] px-3 py-1.5 text-[11px] text-[#94A3B8]">Message</div><Send className="h-4 w-4 text-[#22C55E]" /></div>
                                     </div>
                                   </div>
 
-                                  <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-1.5 text-xs text-[#64748B]" aria-label="Preview settings">
-                                    <span className="truncate">{businessInfo.website || "No website added"}</span>
-                                    <span className="truncate text-right">{businessInfo.phone || businessInfo.whatsapp || "No phone added"}</span>
-                                    <span className="truncate">{businessInfo.address || "No address added"}</span>
-                                    <span className="truncate text-right">{personality} voice</span>
+                                  <div className="mt-4 grid grid-cols-3 gap-2">
+                                    <button type="button" onClick={() => setPreviewQuestion("Hello") } className="rounded-lg border border-[#E5E7EB] bg-white px-2 py-2 text-[11px] font-semibold text-[#475569] transition hover:border-[#86EFAC] hover:text-[#166534]">Test greeting</button>
+                                    <button type="button" onClick={() => setPreviewQuestion("How much is your service?") } className="rounded-lg border border-[#E5E7EB] bg-white px-2 py-2 text-[11px] font-semibold text-[#475569] transition hover:border-[#86EFAC] hover:text-[#166534]">Ask question</button>
+                                    <button type="button" onClick={() => setPreviewQuestion(null)} className="rounded-lg border border-[#E5E7EB] bg-white px-2 py-2 text-[11px] font-semibold text-[#475569] transition hover:border-[#CBD5E1] hover:text-[#111827]">Reset</button>
                                   </div>
-                                  <div className="mt-2 flex items-center justify-between gap-3 border-t border-[#F1F5F9] pt-2 text-[11px] text-[#64748B]">
-                                    <span className="truncate">{supportedLanguages.join(" · ") || primaryLanguage}</span>
-                                    <span className="shrink-0">{secondaryLanguage} secondary</span>
+                                  <div className="mt-3">
+                                    <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">Try a quick prompt</p>
+                                    <div className="mt-2 flex flex-wrap gap-1.5">
+                                      {["How much is your service?", "Where are you located?", "What are your hours?"].map((prompt) => <button key={prompt} type="button" onClick={() => setPreviewQuestion(prompt)} className="rounded-full bg-[#F1F5F9] px-2.5 py-1.5 text-[11px] font-medium text-[#475569] transition hover:bg-[#ECFDF5] hover:text-[#166534]">{prompt}</button>)}
+                                    </div>
+                                  </div>
+                                  <div className="mt-4 border-t border-[#EEF2F6] pt-3">
+                                    <p className="text-xs font-semibold text-[#111827]">What changed</p>
+                                    <div className="mt-2 grid gap-1.5 text-[11px] text-[#64748B]">
+                                      {["Greeting updated", `${personality} personality`, supportedLanguages.join(" + ") || primaryLanguage, `Available ${businessHours || "not set"}`].map((change) => <span key={change} className="flex items-center gap-2"><Check className="h-3.5 w-3.5 shrink-0 text-[#22C55E]" />{change}</span>)}
+                                    </div>
                                   </div>
                                 </div>
                               </details>
@@ -4584,6 +4624,23 @@ export default function DashboardLayout() {
                               )}
                             </div>
                           ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {activeWorkspaceSection === "Integrations" && (
+                      <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
+                        <div className="flex items-start gap-3">
+                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><Plug className="h-5 w-5" /></div>
+                          <div>
+                            <p className="text-lg font-semibold text-[#111827]">Connect your AI’s tools</p>
+                            <p className="mt-1 text-sm leading-6 text-[#64748B]">Give your AI Employee access to the systems it needs to serve customers well.</p>
+                          </div>
+                        </div>
+                        <div className="mt-5 flex flex-wrap items-center gap-3 rounded-xl border border-[#FEF3C7] bg-[#FFFBEB] p-4 text-sm text-[#92400E]">
+                          <CircleAlert className="h-4 w-4 shrink-0" />
+                          <span className="flex-1">Some tools still need to be connected.</span>
+                          <button type="button" onClick={() => setSelected("Integrations")} className="rounded-lg bg-white px-3 py-2 text-xs font-semibold text-[#92400E] shadow-sm transition hover:bg-[#FEF3C7]">Manage integrations</button>
                         </div>
                       </div>
                     )}
