@@ -41,6 +41,7 @@ import {
   Mail,
 } from "lucide-react";
 import AiSummaryCard from "./ui/ai-summary-card";
+import sokoosLogo from "@/assets/sokoos_logo.png";
 
 const NAV_ITEMS = [
   {
@@ -2454,8 +2455,8 @@ export default function DashboardLayout() {
           <div className="px-4 pb-4">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-[20px] bg-[#22C55E] flex items-center justify-center text-white font-semibold">
-                  S
+                <div className="h-8 w-8 rounded-[20px] overflow-hidden">
+                  <img src={sokoosLogo} alt="Sokoos" className="h-8 w-8 object-cover" />
                 </div>
                 <span className="sr-only">Sokoos</span>
               </div>
@@ -2498,9 +2499,9 @@ export default function DashboardLayout() {
             <div className="fixed inset-y-0 left-0 z-50 w-64 min-w-[248px] bg-[#FFFFFF] border-r border-[#E5E7EB]/10 shadow-[0_18px_48px_rgba(15,23,42,0.12)] transition-all duration-200 ease-out">
               <div className="h-full flex flex-col pt-4">
                 <div className="px-4 pb-4">
-                  <div className="flex items-center gap-3">
-                    <div className="h-8 w-8 rounded-[20px] bg-[#22C55E] flex items-center justify-center text-white font-semibold">
-                      S
+                    <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-[20px] overflow-hidden">
+                      <img src={sokoosLogo} alt="Sokoos" className="h-8 w-8 object-cover" />
                     </div>
                     <span className="text-lg font-semibold">Sokoos</span>
                   </div>
@@ -2552,8 +2553,8 @@ export default function DashboardLayout() {
           <Menu className="h-5 w-5" />
         </button>
         <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-[20px] bg-[#22C55E] flex items-center justify-center text-white font-semibold">
-            S
+          <div className="h-8 w-8 rounded-[20px] overflow-hidden">
+            <img src={sokoosLogo} alt="Sokoos" className="h-8 w-8 object-cover" />
           </div>
           <span className="font-semibold">Sokoos</span>
         </div>
@@ -2569,8 +2570,8 @@ export default function DashboardLayout() {
           <div className="absolute left-0 top-0 bottom-0 w-72 bg-[#FFFFFF] border-r border-[#E5E7EB]/10 p-4 overflow-y-auto">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="h-8 w-8 rounded-[20px] bg-[#22C55E] flex items-center justify-center text-white font-semibold">
-                  S
+                <div className="h-8 w-8 rounded-[20px] overflow-hidden">
+                  <img src={sokoosLogo} alt="Sokoos" className="h-8 w-8 object-cover" />
                 </div>
                 <span className="font-semibold">Sokoos</span>
               </div>

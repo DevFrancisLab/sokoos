@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { MessageCircle } from "lucide-react";
+import sokoosLogo from "@/assets/sokoos_logo.png";
 import type { ReactNode } from "react";
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,10 +20,8 @@ export function AuthShell({ title, description, children, footer }: AuthShellPro
           to="/"
           className="inline-flex w-fit items-center gap-2 rounded-full border border-[#E5E7EB] bg-white/80 px-3 py-2 text-sm font-medium text-[#111827] shadow-sm backdrop-blur"
         >
-          <div className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground shadow-[var(--shadow-soft)]">
-            <MessageCircle className="h-4 w-4" strokeWidth={2.5} />
-          </div>
-          Sokoos
+          <img src={sokoosLogo} alt="Sokoos" className="h-8 w-8 rounded-lg object-cover" />
+          <span className="text-sm font-medium text-[#111827]">Sokoos</span>
         </Link>
 
         <div className="flex flex-1 items-center justify-center py-10 sm:py-12">

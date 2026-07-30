@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import heroDashboard from "@/assets/hero-dashboard.png";
 import solutionDashboard from "@/assets/solution-dashboard.png";
+import sokoosLogo from "@/assets/sokoos_logo.png";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -61,9 +62,7 @@ function Reveal({ children, delay = 0 }: { children: ReactNode; delay?: number }
 function Logo() {
   return (
     <div className="flex items-center gap-2">
-      <div className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground shadow-[var(--shadow-soft)]">
-        <MessageCircle className="h-4 w-4" strokeWidth={2.5} />
-      </div>
+      <img src={sokoosLogo} alt="Sokoos" className="h-8 w-8 rounded-lg object-cover" />
       <span className="text-lg font-bold tracking-tight">Sokoos</span>
     </div>
   );
