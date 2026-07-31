@@ -98,6 +98,19 @@ export default function SignUp() {
 
     if (!isValid) return;
 
+    try {
+      window.localStorage.setItem(
+        "sokoos-workspace-signup",
+        JSON.stringify({
+          businessName: formValues.businessName,
+          businessType: formValues.businessType,
+          country: formValues.country,
+        }),
+      );
+    } catch {
+      // ignore storage errors
+    }
+
     setIsSubmitting(true);
     setSuccessMessage("");
 

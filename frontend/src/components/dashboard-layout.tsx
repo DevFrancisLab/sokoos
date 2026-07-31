@@ -130,6 +130,36 @@ const MOST_VIEWED_PRODUCTS = [
   { name: "Inventory Package", views: 312 },
 ];
 
+const EMPTY_BUSINESS_INFO = {
+  name: "",
+  type: "",
+  country: "",
+  about: "",
+  website: "",
+  address: "",
+  phone: "",
+  whatsapp: "",
+  hours: "",
+  serviceAreas: "",
+  paymentMethods: "",
+};
+
+const normalizeBusinessInfo = (value?: Partial<typeof EMPTY_BUSINESS_INFO>) => ({
+  ...EMPTY_BUSINESS_INFO,
+  ...(value || {}),
+  name: value?.name ?? "",
+  type: value?.type ?? "",
+  country: value?.country ?? "",
+  about: value?.about ?? "",
+  website: value?.website ?? "",
+  address: value?.address ?? "",
+  phone: value?.phone ?? "",
+  whatsapp: value?.whatsapp ?? "",
+  hours: value?.hours ?? "",
+  serviceAreas: value?.serviceAreas ?? "",
+  paymentMethods: value?.paymentMethods ?? "",
+});
+
 const RECENT_AI_ACTIVITY = [
   { type: "Reply", title: "Answered pricing question", time: "2m ago" },
   { type: "Quote", title: "Generated quote for 10 units", time: "14m ago" },
@@ -2023,18 +2053,31 @@ export default function DashboardLayout() {
   const [upsellProducts, setUpsellProducts] = useState(true);
   const [recommendAlternatives, setRecommendAlternatives] = useState(true);
   const [closeSalesAutomatically, setCloseSalesAutomatically] = useState(false);
-  const [businessInfo, setBusinessInfo] = useState({
-    name: "",
-    type: "",
-    about: "",
-    website: "",
-    address: "",
-    phone: "",
-    whatsapp: "",
-    hours: "",
-    serviceAreas: "",
-    paymentMethods: "",
-  });
+  const [businessInfo, setBusinessInfo] = useState(() => normalizeBusinessInfo());
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    try {
+      const savedSignup = window.localStorage.getItem("sokoos-workspace-signup");
+      if (!savedSignup) return;
+
+      const parsedSignup = JSON.parse(savedSignup) as {
+        businessName?: string;
+        businessType?: string;
+        country?: string;
+      };
+
+      setBusinessInfo((current) => normalizeBusinessInfo({
+        ...current,
+        name: parsedSignup.businessName?.trim() || current.name,
+        type: parsedSignup.businessType?.trim() || current.type,
+        country: parsedSignup.country?.trim() || current.country,
+      }));
+    } catch {
+      // ignore storage errors
+    }
+  }, []);
+
   const previewLanguageCopy = primaryLanguage === "Kiswahili"
     ? {
         customerGreeting: "Habari",
@@ -2139,9 +2182,10 @@ export default function DashboardLayout() {
       slack: false,
       email: false,
     });
-    setBusinessInfo({
+    setBusinessInfo(normalizeBusinessInfo({
       name: "Sokoos Internet",
       type: "Telecom & Connectivity",
+      country: "Kenya",
       about: "We help local businesses stay online with reliable internet plans, fast support, and easy onboarding.",
       website: "https://sokoos.com",
       address: "Nairobi, Kenya",
@@ -2150,7 +2194,7 @@ export default function DashboardLayout() {
       hours: "Mon–Fri, 8:00 AM - 6:00 PM",
       serviceAreas: "Nairobi, Kiambu, Thika",
       paymentMethods: "Mobile Money, Bank Transfer, Cash",
-    });
+    }));
     setPrimaryLanguage("English");
     setSecondaryLanguage("Kiswahili");
     setSupportedLanguages(["English", "Kiswahili"]);
@@ -2340,7 +2384,16 @@ export default function DashboardLayout() {
     cancellationPolicy:
       "Cancel anytime with 48 hours notice before the next billing cycle.",
   });
-  const identityFieldsComplete = Boolean(businessInfo.name.trim() && businessInfo.type.trim() && businessInfo.about.trim() && businessInfo.website.trim() && businessInfo.phone.trim() && businessInfo.address.trim() && businessInfo.whatsapp.trim());
+  const identityFieldsComplete = Boolean(
+    (businessInfo.name || "").trim() &&
+    (businessInfo.type || "").trim() &&
+    (businessInfo.country || "").trim() &&
+    (businessInfo.about || "").trim() &&
+    (businessInfo.website || "").trim() &&
+    (businessInfo.phone || "").trim() &&
+    (businessInfo.address || "").trim() &&
+    (businessInfo.whatsapp || "").trim(),
+  );
   const trainingCompletedSteps = identityFieldsComplete ? completedIdentitySteps : [];
   const onboardingComplete = aiEmployeeLaunched || trainingCompletedSteps.length >= identityLessons.length;
   const minutesRemaining = Math.max(0, 6 - trainingCompletedSteps.length);
@@ -2392,7 +2445,7 @@ export default function DashboardLayout() {
     if (saved) {
       try {
         const progress = JSON.parse(saved) as { step?: number; completed?: number[]; launched?: boolean; scrollY?: number; businessInfo?: typeof businessInfo; businessHours?: string };
-        if (progress.businessInfo) setBusinessInfo(progress.businessInfo);
+        if (progress.businessInfo) setBusinessInfo(normalizeBusinessInfo(progress.businessInfo));
         if (typeof progress.businessHours === "string") setBusinessHours(progress.businessHours);
         if (typeof progress.step === "number") setActiveIdentityStep(progress.step);
         if (Array.isArray(progress.completed)) setCompletedIdentitySteps(progress.completed);
@@ -3727,12 +3780,12 @@ export default function DashboardLayout() {
 
                                   <div className="space-y-4">
                                     <div className="rounded-xl border border-[#EEF2F6] bg-[#F8FAFC] p-4 sm:p-5">
-                                      <p className="text-sm font-semibold text-[#111827]">Business profile</p>
-                                      <p className="mt-1 text-xs leading-5 text-[#64748B]">Give your AI the essentials it needs to represent you well.</p>
+                                      <p className="text-sm font-semibold text-[#111827]">Business Information</p>
+                                      <p className="mt-1 text-xs leading-5 text-[#64748B]">Let your AI start with the essentials of who your business is.</p>
                                       <div className="mt-4 grid gap-4 md:grid-cols-2">
                                         <div className="relative">
                                           <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-name">
-                                            Business name
+                                            Business Name
                                           </label>
                                           <input
                                             id="business-name"
@@ -3749,7 +3802,7 @@ export default function DashboardLayout() {
 
                                         <div className="relative">
                                           <label className="block text-sm font-semibold text-[#111827]" htmlFor="industry">
-                                            Business type
+                                            Business Type
                                           </label>
                                           <input
                                             id="industry"
@@ -3761,6 +3814,21 @@ export default function DashboardLayout() {
                                           />
                                           {businessInfo.type && <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Business type is ready" />}
                                           <p className="mt-1.5 text-xs text-[#64748B]">Helps your AI use the right context.</p>
+                                        </div>
+
+                                        <div className="relative md:col-span-2">
+                                          <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-country">
+                                            Country
+                                          </label>
+                                          <input
+                                            id="business-country"
+                                            required
+                                            value={businessInfo.country}
+                                            onChange={(event) => setBusinessInfo((current) => ({ ...current, country: event.target.value }))}
+                                            placeholder="e.g. Kenya"
+                                            className={AI_TRAINING_FIELD}
+                                          />
+                                          {businessInfo.country && <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Country is ready" />}
                                         </div>
                                       </div>
                                       <div className="mt-4 relative">
@@ -3809,7 +3877,7 @@ export default function DashboardLayout() {
                                   </div>
 
                                   <div className="flex justify-end border-t border-[#EEF2F6] pt-4">
-                                    <button type="button" disabled={!businessInfo.name.trim() || !businessInfo.type.trim() || !businessInfo.about.trim() || !businessInfo.website.trim() || !businessInfo.phone.trim() || !businessInfo.address.trim() || !businessInfo.whatsapp.trim()} onClick={() => completeIdentityLesson(0)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Continue to training <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" disabled={!((businessInfo.name || "").trim() && (businessInfo.type || "").trim() && (businessInfo.country || "").trim() && (businessInfo.about || "").trim() && (businessInfo.website || "").trim() && (businessInfo.phone || "").trim() && (businessInfo.address || "").trim() && (businessInfo.whatsapp || "").trim())} onClick={() => completeIdentityLesson(0)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Continue to training <ChevronRight className="h-4 w-4" /></button>
                                   </div>
                                 </div>
                               </section>
