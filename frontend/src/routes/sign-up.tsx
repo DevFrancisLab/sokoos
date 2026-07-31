@@ -105,6 +105,8 @@ export default function SignUp() {
           businessName: formValues.businessName,
           businessType: formValues.businessType,
           country: formValues.country,
+          businessEmail: formValues.businessEmail,
+          phoneNumber: formValues.phoneNumber,
         }),
       );
     } catch {

@@ -1,8 +1,9 @@
 import { n as __toESM } from "../_runtime.mjs";
+import { t as sokoos_logo_default } from "./sokoos_logo-B5_i8UVb.mjs";
 import { n as require_jsx_runtime, r as require_react } from "../_libs/react+tanstack__react-query.mjs";
 import { h as Link } from "../_libs/@tanstack/react-router+[...].mjs";
-import { A as Heart, D as Inbox, E as Linkedin, G as Brain, H as Check, I as Database, J as Bot, K as Boxes, N as Facebook, R as Clock, S as MessageCircle, U as ChartColumn, W as Calendar, X as ArrowRight, _ as Plug, b as Package, h as RefreshCw, m as Repeat, n as Users, o as Star, p as Rocket, s as Sparkles, x as MessageSquareOff } from "../_libs/lucide-react.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/routes-B5hGIAl8.js
+import { D as Linkedin, G as Calendar, K as Brain, L as Database, O as Inbox, P as Facebook, S as MessageCircle, U as Check, W as ChartColumn, Y as Bot, Z as ArrowRight, _ as Plug, b as Package, h as RefreshCw, j as Heart, m as Repeat, n as Users, o as Star, p as Rocket, q as Boxes, s as Sparkles, x as MessageSquareOff, z as Clock } from "../_libs/lucide-react.mjs";
+//#region node_modules/.nitro/vite/services/ssr/assets/routes-hgChB1Oi.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 var hero_dashboard_default = "/assets/hero-dashboard-D-CXLQyc.png";
@@ -35,12 +36,10 @@ function Reveal({ children, delay = 0 }) {
 function Logo() {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 		className: "flex items-center gap-2",
-		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-			className: "grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground shadow-[var(--shadow-soft)]",
-			children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MessageCircle, {
-				className: "h-4 w-4",
-				strokeWidth: 2.5
-			})
+		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+			src: sokoos_logo_default,
+			alt: "Sokoos",
+			className: "h-8 w-8 rounded-lg object-cover"
 		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 			className: "text-lg font-bold tracking-tight",
 			children: "Sokoos"
@@ -394,9 +393,12 @@ function Hero() {
 								" Again"
 							]
 						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
 							className: "mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg",
-							children: "Your AI employee that acquires customers, converts leads into sales, and retains customers across every channel."
+							children: ["Your AI employee that acquires customers, converts leads into customers, and keeps them coming back, ", /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: "relative isolate font-semibold text-[#166534] after:absolute after:bottom-[-0.16em] after:left-0 after:-z-10 after:h-[0.42em] after:w-full after:-rotate-[1.5deg] after:rounded-[55%_45%_50%_45%] after:bg-[#86EFAC]/70",
+								children: "across every channel."
+							})]
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 							className: "mt-8 flex flex-col items-center gap-3 sm:flex-row",

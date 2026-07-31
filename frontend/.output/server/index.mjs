@@ -15,38 +15,45 @@ globalThis.__nitro_vite_envs__ = services;
 //#endregion
 //#region #nitro/virtual/public-assets-data
 var public_assets_data_default = {
-	"/assets/routes-gvLwZh-F.js": {
+	"/assets/routes-Bu7Oa7GZ.js": {
 		"type": "text/javascript; charset=utf-8",
-		"etag": "\"8e06-/SdVy/Rro5gR8y8ijfI0QIzyMwI\"",
-		"mtime": "2026-07-28T11:23:45.438Z",
-		"size": 36358,
-		"path": "../public/assets/routes-gvLwZh-F.js"
+		"etag": "\"8eab-dNJN46FHGYE/PsNnqKKzSZxyMyw\"",
+		"mtime": "2026-07-31T19:47:49.455Z",
+		"size": 36523,
+		"path": "../public/assets/routes-Bu7Oa7GZ.js"
 	},
-	"/assets/styles-_-zDcgzj.css": {
+	"/assets/sokoos_logo-DQynRsip.png": {
+		"type": "image/png",
+		"etag": "\"6576-o8kCjremReQs9BmnjzKoH2j8xKg\"",
+		"mtime": "2026-07-31T19:47:49.457Z",
+		"size": 25974,
+		"path": "../public/assets/sokoos_logo-DQynRsip.png"
+	},
+	"/assets/styles-DqERHd7y.css": {
 		"type": "text/css; charset=utf-8",
-		"etag": "\"1d099-Q4pgSjh2y5HobuooHV2AnukaPUA\"",
-		"mtime": "2026-07-28T11:23:45.440Z",
-		"size": 118937,
-		"path": "../public/assets/styles-_-zDcgzj.css"
+		"etag": "\"1d834-fCqT6kZWjRN+aIPWE7ieS2l/Gko\"",
+		"mtime": "2026-07-31T19:47:49.457Z",
+		"size": 120884,
+		"path": "../public/assets/styles-DqERHd7y.css"
 	},
-	"/assets/index-BzmAuJAk.js": {
+	"/assets/index-G5w5drIP.js": {
 		"type": "text/javascript; charset=utf-8",
-		"etag": "\"901d1-xcXsTNiq7nPeA9UEfEYHsviryXg\"",
-		"mtime": "2026-07-28T11:23:45.437Z",
-		"size": 590289,
-		"path": "../public/assets/index-BzmAuJAk.js"
+		"etag": "\"99783-5oYyFOHu3fNXZQZTC63iZWHqsa4\"",
+		"mtime": "2026-07-31T19:47:49.454Z",
+		"size": 628611,
+		"path": "../public/assets/index-G5w5drIP.js"
 	},
 	"/assets/hero-dashboard-D-CXLQyc.png": {
 		"type": "image/png",
 		"etag": "\"147362-41kBF9Vn5e/eKUEVeST+cDUDypM\"",
-		"mtime": "2026-07-28T11:23:45.438Z",
+		"mtime": "2026-07-31T19:47:49.456Z",
 		"size": 1340258,
 		"path": "../public/assets/hero-dashboard-D-CXLQyc.png"
 	},
 	"/assets/solution-dashboard-BITB5GZi.png": {
 		"type": "image/png",
 		"etag": "\"135e39-8KXujycB59ycXDtOjw6MRyzLXZs\"",
-		"mtime": "2026-07-28T11:23:45.439Z",
+		"mtime": "2026-07-31T19:47:49.457Z",
 		"size": 1269305,
 		"path": "../public/assets/solution-dashboard-BITB5GZi.png"
 	}
