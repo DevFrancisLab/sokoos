@@ -39,6 +39,7 @@ import {
   CircleAlert,
   Hash,
   Mail,
+  Loader2,
 } from "lucide-react";
 import AiSummaryCard from "./ui/ai-summary-card";
 import sokoosLogo from "@/assets/sokoos_logo.png";
@@ -136,6 +137,7 @@ const EMPTY_BUSINESS_INFO = {
   country: "",
   about: "",
   website: "",
+  email: "",
   address: "",
   phone: "",
   whatsapp: "",
@@ -152,6 +154,7 @@ const normalizeBusinessInfo = (value?: Partial<typeof EMPTY_BUSINESS_INFO>) => (
   country: value?.country ?? "",
   about: value?.about ?? "",
   website: value?.website ?? "",
+  email: value?.email ?? "",
   address: value?.address ?? "",
   phone: value?.phone ?? "",
   whatsapp: value?.whatsapp ?? "",
@@ -159,6 +162,15 @@ const normalizeBusinessInfo = (value?: Partial<typeof EMPTY_BUSINESS_INFO>) => (
   serviceAreas: value?.serviceAreas ?? "",
   paymentMethods: value?.paymentMethods ?? "",
 });
+
+const parseServiceAreas = (value?: string | string[]) => {
+  if (Array.isArray(value)) return value.filter(Boolean).map((item) => item.trim()).filter(Boolean);
+  if (!value) return [];
+  return value
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+};
 
 const RECENT_AI_ACTIVITY = [
   { type: "Reply", title: "Answered pricing question", time: "2m ago" },
@@ -2050,10 +2062,12 @@ export default function DashboardLayout() {
   const [logoError, setLogoError] = useState("");
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
+  const [identitySaveState, setIdentitySaveState] = useState<"idle" | "saving" | "success">("idle");
   const [upsellProducts, setUpsellProducts] = useState(true);
   const [recommendAlternatives, setRecommendAlternatives] = useState(true);
   const [closeSalesAutomatically, setCloseSalesAutomatically] = useState(false);
   const [businessInfo, setBusinessInfo] = useState(() => normalizeBusinessInfo());
+  const [serviceAreaInput, setServiceAreaInput] = useState("");
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -2065,6 +2079,8 @@ export default function DashboardLayout() {
         businessName?: string;
         businessType?: string;
         country?: string;
+        businessEmail?: string;
+        phoneNumber?: string;
       };
 
       setBusinessInfo((current) => normalizeBusinessInfo({
@@ -2072,6 +2088,8 @@ export default function DashboardLayout() {
         name: parsedSignup.businessName?.trim() || current.name,
         type: parsedSignup.businessType?.trim() || current.type,
         country: parsedSignup.country?.trim() || current.country,
+        email: parsedSignup.businessEmail?.trim() || current.email,
+        phone: parsedSignup.phoneNumber?.trim() || current.phone,
       }));
     } catch {
       // ignore storage errors
@@ -2158,6 +2176,35 @@ export default function DashboardLayout() {
       window.setTimeout(() => setSaveState("idle"), 1200);
     }, 650);
   };
+
+  const saveIdentityAndContinue = () => {
+    if (identitySaveState === "saving" || !identityFormIsValid) return;
+
+    const progressPayload = {
+      step: activeIdentityStep,
+      completed: completedIdentitySteps.includes(0) ? completedIdentitySteps : [...completedIdentitySteps, 0],
+      launched: aiEmployeeLaunched,
+      scrollY: typeof window !== "undefined" ? window.scrollY : 0,
+      businessInfo: normalizeBusinessInfo(businessInfo),
+      businessHours,
+    };
+
+    setIdentitySaveState("saving");
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("sokoos-ai-training-progress-v2", JSON.stringify(progressPayload));
+    }
+
+    window.setTimeout(() => {
+      setCompletedIdentitySteps((current) => current.includes(0) ? current : [...current, 0]);
+      setActiveWorkspaceSection("Knowledge Hub");
+      setIdentitySaveState("success");
+      setCompletionToast("Identity saved — opening Knowledge workspace.");
+      window.setTimeout(() => {
+        setIdentitySaveState("idle");
+        setCompletionToast(null);
+      }, 1200);
+    }, 650);
+  };
   useEffect(() => {
     if (!hasUnsavedChanges) return;
     const autosaveTimer = window.setTimeout(() => {
@@ -2188,6 +2235,7 @@ export default function DashboardLayout() {
       country: "Kenya",
       about: "We help local businesses stay online with reliable internet plans, fast support, and easy onboarding.",
       website: "https://sokoos.com",
+      email: "support@sokoos.com",
       address: "Nairobi, Kenya",
       phone: "+254 700 000 000",
       whatsapp: "+254 700 000 000",
@@ -2215,6 +2263,29 @@ export default function DashboardLayout() {
     setLogoError("");
     setHasUnsavedChanges(false);
     setSaveState("idle");
+  };
+
+  const addServiceArea = (value?: string) => {
+    const trimmed = (value ?? serviceAreaInput).trim();
+    if (!trimmed) return;
+
+    const existingAreas = parseServiceAreas(businessInfo.serviceAreas);
+    if (!existingAreas.includes(trimmed)) {
+      setBusinessInfo((current) => ({
+        ...current,
+        serviceAreas: [...existingAreas, trimmed].join(", "),
+      }));
+    }
+    setServiceAreaInput("");
+  };
+
+  const removeServiceArea = (value: string) => {
+    const existingAreas = parseServiceAreas(businessInfo.serviceAreas);
+    const nextAreas = existingAreas.filter((item) => item !== value);
+    setBusinessInfo((current) => ({
+      ...current,
+      serviceAreas: nextAreas.join(", "),
+    }));
   };
 
   const addPersonalContact = () => {
@@ -2390,9 +2461,25 @@ export default function DashboardLayout() {
     (businessInfo.country || "").trim() &&
     (businessInfo.about || "").trim() &&
     (businessInfo.website || "").trim() &&
+    (businessInfo.email || "").trim() &&
     (businessInfo.phone || "").trim() &&
-    (businessInfo.address || "").trim() &&
     (businessInfo.whatsapp || "").trim(),
+  );
+  const identityFormIsValid = Boolean(
+    (businessInfo.name || "").trim() &&
+    (businessInfo.type || "").trim() &&
+    (businessInfo.country || "").trim() &&
+    (businessInfo.about || "").trim() &&
+    (businessInfo.website || "").trim() &&
+    (businessInfo.email || "").trim() &&
+    (businessInfo.address || "").trim() &&
+    (businessInfo.phone || "").trim() &&
+    (businessInfo.whatsapp || "").trim() &&
+    (businessInfo.email || "").includes("@") &&
+    (businessInfo.email || "").includes(".") &&
+    ((businessInfo.website || "").toLowerCase().startsWith("http://") || (businessInfo.website || "").toLowerCase().startsWith("https://")) &&
+    (businessInfo.phone || "").replace(/\D/g, "").length >= 7 &&
+    (businessInfo.whatsapp || "").replace(/\D/g, "").length >= 7,
   );
   const trainingCompletedSteps = identityFieldsComplete ? completedIdentitySteps : [];
   const onboardingComplete = aiEmployeeLaunched || trainingCompletedSteps.length >= identityLessons.length;
@@ -3778,12 +3865,14 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
 
-                                  <div className="space-y-4">
-                                    <div className="rounded-xl border border-[#EEF2F6] bg-[#F8FAFC] p-4 sm:p-5">
-                                      <p className="text-sm font-semibold text-[#111827]">Business Information</p>
-                                      <p className="mt-1 text-xs leading-5 text-[#64748B]">Let your AI start with the essentials of who your business is.</p>
-                                      <div className="mt-4 grid gap-4 md:grid-cols-2">
-                                        <div className="relative">
+                                  <div className="space-y-6">
+                                    <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                                      <div className="space-y-2">
+                                        <p className="text-[15px] font-semibold tracking-[-0.01em] text-[#111827]">Business Information</p>
+                                        <p className="text-sm leading-6 text-[#6B7280]">Let your AI start with the essentials of who your business is.</p>
+                                      </div>
+                                      <div className="mt-6 grid gap-4 md:grid-cols-2">
+                                        <div className="relative w-full space-y-2">
                                           <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-name">
                                             Business Name
                                           </label>
@@ -3794,13 +3883,13 @@ export default function DashboardLayout() {
                                             value={businessInfo.name}
                                             onChange={(event) => setBusinessInfo((current) => ({ ...current, name: event.target.value }))}
                                             placeholder="Your business name"
-                                            className={AI_TRAINING_FIELD}
+                                            className={`${AI_TRAINING_FIELD} w-full`}
                                           />
                                           {businessInfo.name && <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Business name is ready" />}
-                                          <p className="mt-1.5 text-xs text-[#64748B]">Shown to customers in every conversation.</p>
+                                          <p className="text-xs text-[#64748B]">Shown to customers in every conversation.</p>
                                         </div>
 
-                                        <div className="relative">
+                                        <div className="relative w-full space-y-2">
                                           <label className="block text-sm font-semibold text-[#111827]" htmlFor="industry">
                                             Business Type
                                           </label>
@@ -3810,13 +3899,13 @@ export default function DashboardLayout() {
                                             value={businessInfo.type}
                                             onChange={(event) => setBusinessInfo((current) => ({ ...current, type: event.target.value }))}
                                             placeholder="e.g. Retail, Hospitality, Services"
-                                            className={AI_TRAINING_FIELD}
+                                            className={`${AI_TRAINING_FIELD} w-full`}
                                           />
                                           {businessInfo.type && <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Business type is ready" />}
-                                          <p className="mt-1.5 text-xs text-[#64748B]">Helps your AI use the right context.</p>
+                                          <p className="text-xs text-[#64748B]">Helps your AI use the right context.</p>
                                         </div>
 
-                                        <div className="relative md:col-span-2">
+                                        <div className="relative w-full space-y-2 md:col-span-2">
                                           <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-country">
                                             Country
                                           </label>
@@ -3826,58 +3915,141 @@ export default function DashboardLayout() {
                                             value={businessInfo.country}
                                             onChange={(event) => setBusinessInfo((current) => ({ ...current, country: event.target.value }))}
                                             placeholder="e.g. Kenya"
-                                            className={AI_TRAINING_FIELD}
+                                            className={`${AI_TRAINING_FIELD} w-full`}
                                           />
                                           {businessInfo.country && <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Country is ready" />}
                                         </div>
                                       </div>
-                                      <div className="mt-4 relative">
+                                      <div className="mt-6 space-y-2">
                                         <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-description">
-                                          Teach your AI about your business
+                                          Business Description
                                         </label>
+                                        <p className="text-sm leading-6 text-[#6B7280]">
+                                          Help your AI understand your business, your customers, and what makes you different.
+                                        </p>
                                         <textarea
                                           id="business-description"
                                           required
                                           value={businessInfo.about}
                                           onChange={(event) => setBusinessInfo((current) => ({ ...current, about: event.target.value }))}
-                                          placeholder="e.g. We help busy families stay connected with reliable home internet and friendly local support."
-                                          rows={2}
-                                          className={`${AI_TRAINING_TEXTAREA} resize-none`}
+                                          placeholder="We provide affordable fibre internet for homes and businesses across Nairobi with fast installation and friendly customer support."
+                                          rows={5}
+                                          className={`${AI_TRAINING_TEXTAREA} mt-0 w-full resize-none`}
                                         />
-                                        <p className="mt-1.5 text-xs text-[#64748B]">A short summary is enough—your AI uses this to introduce your business.</p>
+                                        <p className="text-xs text-[#64748B]">Your AI uses this description to introduce your business and answer customer questions.</p>
                                       </div>
                                     </div>
 
-                                    <div className="rounded-xl border border-[#EEF2F6] bg-[#F8FAFC] p-4 sm:p-5">
-                                      <p className="text-sm font-semibold text-[#111827]">How customers can reach you</p>
-                                      <p className="mt-1 text-xs leading-5 text-[#64748B]">Help your AI share the right contact details when needed.</p>
-                                      <div className="mt-4 grid gap-4 md:grid-cols-2">
-                                        <div>
-                                          <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-website">Website</label>
-                                          <input id="business-website" type="url" autoComplete="url" required value={businessInfo.website} onChange={(event) => setBusinessInfo((current) => ({ ...current, website: event.target.value }))} placeholder="https://yourbusiness.com" className={AI_TRAINING_FIELD} />
-                                          <p className="mt-1.5 text-xs text-[#64748B]">Optional—shared when customers ask for more details.</p>
+                                    <div className="border-t border-[#E5E7EB] pt-6 sm:pt-7">
+                                      <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                                        <div className="space-y-2">
+                                          <p className="text-[15px] font-semibold tracking-[-0.01em] text-[#111827]">Customer Contact Channels</p>
+                                          <p className="text-sm leading-6 text-[#6B7280]">These are the contact details your AI shares whenever customers ask how to reach your business.</p>
                                         </div>
-                                        <div>
-                                          <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-phone">Phone number</label>
-                                          <input id="business-phone" type="tel" autoComplete="tel" required value={businessInfo.phone} onChange={(event) => setBusinessInfo((current) => ({ ...current, phone: event.target.value }))} placeholder="+254 700 000 000" className={AI_TRAINING_FIELD} />
-                                          <p className="mt-1.5 text-xs text-[#64748B]">For customers who prefer to call.</p>
+                                        <div className="mt-6 grid gap-4 md:grid-cols-2">
+                                          <div className="w-full space-y-2">
+                                            <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-website">Website</label>
+                                            <input id="business-website" type="url" autoComplete="url" required value={businessInfo.website} onChange={(event) => setBusinessInfo((current) => ({ ...current, website: event.target.value }))} placeholder="https://yourbusiness.com" className={`${AI_TRAINING_FIELD} w-full`} />
+                                            <p className="text-xs text-[#64748B]">Use a full URL.</p>
+                                          </div>
+                                          <div className="w-full space-y-2">
+                                            <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-email">Business Email</label>
+                                            <input id="business-email" type="email" autoComplete="email" required value={businessInfo.email} onChange={(event) => setBusinessInfo((current) => ({ ...current, email: event.target.value }))} placeholder="support@yourbusiness.com" className={`${AI_TRAINING_FIELD} w-full`} />
+                                            <p className="text-xs text-[#64748B]">Use a valid business email.</p>
+                                          </div>
+                                          <div className="w-full space-y-2">
+                                            <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-phone">Business Phone</label>
+                                            <input id="business-phone" type="tel" inputMode="tel" autoComplete="tel" required value={businessInfo.phone} onChange={(event) => setBusinessInfo((current) => ({ ...current, phone: event.target.value }))} placeholder="+254 700 000 000" pattern="^\+?[0-9\s()\-]{7,}$" className={`${AI_TRAINING_FIELD} w-full`} />
+                                            <p className="text-xs text-[#64748B]">Supports international formats.</p>
+                                          </div>
+                                          <div className="w-full space-y-2">
+                                            <label className="block text-sm font-semibold text-[#111827]" htmlFor="whatsapp-number">WhatsApp Number</label>
+                                            <input id="whatsapp-number" type="tel" inputMode="tel" autoComplete="tel" required value={businessInfo.whatsapp} onChange={(event) => setBusinessInfo((current) => ({ ...current, whatsapp: event.target.value }))} placeholder="+254 700 000 000" pattern="^\+?[0-9\s()\-]{7,}$" className={`${AI_TRAINING_FIELD} w-full`} />
+                                            <p className="text-xs text-[#64748B]">Used for direct customer follow-up.</p>
+                                          </div>
                                         </div>
-                                        <div>
-                                          <label className="block text-sm font-semibold text-[#111827]" htmlFor="physical-address">Location</label>
-                                          <input id="physical-address" autoComplete="street-address" required value={businessInfo.address} onChange={(event) => setBusinessInfo((current) => ({ ...current, address: event.target.value }))} placeholder="e.g. Nairobi, Kenya" className={AI_TRAINING_FIELD} />
-                                          <p className="mt-1.5 text-xs text-[#64748B]">Helps your AI answer location questions.</p>
+                                      </div>
+                                    </div>
+
+                                    <div className="border-t border-[#E5E7EB] pt-6 sm:pt-7">
+                                      <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                                        <div className="space-y-2">
+                                          <p className="text-[15px] font-semibold tracking-[-0.01em] text-[#111827]">Business Locations</p>
+                                          <p className="text-sm leading-6 text-[#6B7280]">Help your AI answer questions about where your business operates.</p>
                                         </div>
-                                        <div>
-                                          <label className="block text-sm font-semibold text-[#111827]" htmlFor="whatsapp-number">WhatsApp number</label>
-                                          <input id="whatsapp-number" type="tel" autoComplete="tel" required value={businessInfo.whatsapp} onChange={(event) => setBusinessInfo((current) => ({ ...current, whatsapp: event.target.value }))} placeholder="+254 700 000 000" className={AI_TRAINING_FIELD} />
-                                          <p className="mt-1.5 text-xs text-[#64748B]">Used for direct customer follow-up.</p>
+                                        <div className="mt-6 grid gap-4 md:grid-cols-2">
+                                          <div className="w-full space-y-2">
+                                            <label className="block text-sm font-semibold text-[#111827]" htmlFor="head-office">Head Office</label>
+                                            <input
+                                              id="head-office"
+                                              value={businessInfo.address}
+                                              onChange={(event) => setBusinessInfo((current) => ({ ...current, address: event.target.value }))}
+                                              placeholder="Nairobi, Kenya"
+                                              className={`${AI_TRAINING_FIELD} w-full`}
+                                            />
+                                            <p className="text-xs text-[#64748B]">A single main location for your business.</p>
+                                          </div>
+
+                                          <div className="w-full space-y-2">
+                                            <label className="block text-sm font-semibold text-[#111827]" htmlFor="service-areas">Service Areas</label>
+                                            <input
+                                              id="service-areas"
+                                              value={serviceAreaInput}
+                                              onChange={(event) => setServiceAreaInput(event.target.value)}
+                                              onKeyDown={(event) => {
+                                                if (event.key === "Enter") {
+                                                  event.preventDefault();
+                                                  addServiceArea();
+                                                }
+                                              }}
+                                              placeholder="Nairobi"
+                                              className={`${AI_TRAINING_FIELD} w-full`}
+                                            />
+                                            <p className="text-xs text-[#64748B]">Type a place and press Enter to add it.</p>
+                                            <div className="mt-2 flex flex-wrap gap-2">
+                                              {parseServiceAreas(businessInfo.serviceAreas).map((area) => (
+                                                <button
+                                                  key={area}
+                                                  type="button"
+                                                  onClick={() => removeServiceArea(area)}
+                                                  className="inline-flex items-center gap-1 rounded-full border border-[#E5E7EB] bg-white px-2.5 py-1 text-xs font-semibold text-[#111827] transition hover:border-[#86EFAC] hover:bg-[#F0FDF4]"
+                                                >
+                                                  <span>{area}</span>
+                                                  <span className="text-[#64748B]">×</span>
+                                                </button>
+                                              ))}
+                                            </div>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
 
-                                  <div className="flex justify-end border-t border-[#EEF2F6] pt-4">
-                                    <button type="button" disabled={!((businessInfo.name || "").trim() && (businessInfo.type || "").trim() && (businessInfo.country || "").trim() && (businessInfo.about || "").trim() && (businessInfo.website || "").trim() && (businessInfo.phone || "").trim() && (businessInfo.address || "").trim() && (businessInfo.whatsapp || "").trim())} onClick={() => completeIdentityLesson(0)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Continue to training <ChevronRight className="h-4 w-4" /></button>
+                                  <div className="flex justify-end border-t border-[#EEF2F6] pt-5">
+                                    <button
+                                      type="button"
+                                      disabled={identitySaveState === "saving" || !identityFormIsValid}
+                                      aria-busy={identitySaveState === "saving"}
+                                      onClick={saveIdentityAndContinue}
+                                      className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45"
+                                    >
+                                      {identitySaveState === "saving" ? (
+                                        <>
+                                          <Loader2 className="h-4 w-4 animate-spin" />
+                                          <span>Saving...</span>
+                                        </>
+                                      ) : identitySaveState === "success" ? (
+                                        <>
+                                          <Check className="h-4 w-4 animate-[pulse_400ms_ease-out]" />
+                                          <span>Saved</span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <span>Save & Continue to Knowledge</span>
+                                          <ChevronRight className="h-4 w-4" />
+                                        </>
+                                      )}
+                                    </button>
                                   </div>
                                 </div>
                               </section>
