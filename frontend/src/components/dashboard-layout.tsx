@@ -1286,7 +1286,7 @@ export default function DashboardLayout() {
   const [onboardingRestored, setOnboardingRestored] = useState(false);
   const identityLessonRef = useRef<HTMLDivElement>(null);
   const previewMessagesRef = useRef<HTMLDivElement>(null);
-  const identityLessons = ["Meet Your AI", "Teach Your AI", "Shape Personality", "First Impressions", "Languages", "Working Hours", "Workplaces", "Ready for Customers"];
+  const identityLessons = ["Business Identity", "Teach Your AI", "Shape Personality", "First Impressions", "Languages", "Working Hours", "Workplaces", "Ready for Customers"];
   const identityLessonCompletionNames = ["Identity", "Knowledge", "Personality", "First Impressions", "Languages", "Working Hours", "Workplaces", "Customer Readiness"];
 
   const focusIdentityLesson = (step: number) => {
@@ -3676,7 +3676,7 @@ export default function DashboardLayout() {
                     </div>
                     <div className="mt-2 grid grid-cols-2 gap-1 sm:grid-cols-4 xl:grid-cols-8">
                       {[
-                        { label: "Meet Your AI", Icon: User },
+                        { label: "Business Identity", Icon: User },
                         { label: "Teach Your AI", Icon: BookOpen },
                         { label: "Shape Personality", Icon: Smile },
                         { label: "First Impressions", Icon: MessageCircle },
@@ -3718,97 +3718,96 @@ export default function DashboardLayout() {
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><User className="h-5 w-5" /></div>
                                     <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Meet your AI</p>
-                                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">
-                                      Give your AI the essentials it needs to represent you well.
-                                    </p>
+                                      <p className="text-[20px] font-semibold text-[#111827]">Business Identity</p>
+                                      <p className="mt-2 text-sm leading-6 text-[#6B7280]">
+                                        Tell your AI who your business is and how it should represent you.
+                                      </p>
                                     </div>
                                   </div>
 
-                                  <div className="grid gap-4 md:grid-cols-2">
-                                    <div className="relative">
-                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-name">
-                                        Business name
-                                      </label>
-                                      <input
-                                        id="business-name"
-                                        autoComplete="organization"
-                                        required
-                                        value={businessInfo.name}
-                                        onChange={(event) => setBusinessInfo((current) => ({ ...current, name: event.target.value }))}
-                                        placeholder="Your business name"
-                                        className={AI_TRAINING_FIELD}
-                                      />
-                                      {businessInfo.name && <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Business name is ready" />}
-                                      <p className="mt-1.5 text-xs text-[#64748B]">Shown to customers in every conversation.</p>
+                                  <div className="space-y-4">
+                                    <div className="rounded-xl border border-[#EEF2F6] bg-[#F8FAFC] p-4 sm:p-5">
+                                      <p className="text-sm font-semibold text-[#111827]">Business profile</p>
+                                      <p className="mt-1 text-xs leading-5 text-[#64748B]">Give your AI the essentials it needs to represent you well.</p>
+                                      <div className="mt-4 grid gap-4 md:grid-cols-2">
+                                        <div className="relative">
+                                          <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-name">
+                                            Business name
+                                          </label>
+                                          <input
+                                            id="business-name"
+                                            autoComplete="organization"
+                                            required
+                                            value={businessInfo.name}
+                                            onChange={(event) => setBusinessInfo((current) => ({ ...current, name: event.target.value }))}
+                                            placeholder="Your business name"
+                                            className={AI_TRAINING_FIELD}
+                                          />
+                                          {businessInfo.name && <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Business name is ready" />}
+                                          <p className="mt-1.5 text-xs text-[#64748B]">Shown to customers in every conversation.</p>
+                                        </div>
+
+                                        <div className="relative">
+                                          <label className="block text-sm font-semibold text-[#111827]" htmlFor="industry">
+                                            Business type
+                                          </label>
+                                          <input
+                                            id="industry"
+                                            required
+                                            value={businessInfo.type}
+                                            onChange={(event) => setBusinessInfo((current) => ({ ...current, type: event.target.value }))}
+                                            placeholder="e.g. Retail, Hospitality, Services"
+                                            className={AI_TRAINING_FIELD}
+                                          />
+                                          {businessInfo.type && <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Business type is ready" />}
+                                          <p className="mt-1.5 text-xs text-[#64748B]">Helps your AI use the right context.</p>
+                                        </div>
+                                      </div>
+                                      <div className="mt-4 relative">
+                                        <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-description">
+                                          Teach your AI about your business
+                                        </label>
+                                        <textarea
+                                          id="business-description"
+                                          required
+                                          value={businessInfo.about}
+                                          onChange={(event) => setBusinessInfo((current) => ({ ...current, about: event.target.value }))}
+                                          placeholder="e.g. We help busy families stay connected with reliable home internet and friendly local support."
+                                          rows={2}
+                                          className={`${AI_TRAINING_TEXTAREA} resize-none`}
+                                        />
+                                        <p className="mt-1.5 text-xs text-[#64748B]">A short summary is enough—your AI uses this to introduce your business.</p>
+                                      </div>
                                     </div>
 
-                                    <div className="relative">
-                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="industry">
-                                        Business type
-                                      </label>
-                                      <input
-                                        id="industry"
-                                        required
-                                        value={businessInfo.type}
-                                        onChange={(event) => setBusinessInfo((current) => ({ ...current, type: event.target.value }))}
-                                        placeholder="e.g. Retail, Hospitality, Services"
-                                        className={AI_TRAINING_FIELD}
-                                      />
-                                      {businessInfo.type && <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Business type is ready" />}
-                                      <p className="mt-1.5 text-xs text-[#64748B]">Helps your AI use the right context.</p>
+                                    <div className="rounded-xl border border-[#EEF2F6] bg-[#F8FAFC] p-4 sm:p-5">
+                                      <p className="text-sm font-semibold text-[#111827]">How customers can reach you</p>
+                                      <p className="mt-1 text-xs leading-5 text-[#64748B]">Help your AI share the right contact details when needed.</p>
+                                      <div className="mt-4 grid gap-4 md:grid-cols-2">
+                                        <div>
+                                          <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-website">Website</label>
+                                          <input id="business-website" type="url" autoComplete="url" required value={businessInfo.website} onChange={(event) => setBusinessInfo((current) => ({ ...current, website: event.target.value }))} placeholder="https://yourbusiness.com" className={AI_TRAINING_FIELD} />
+                                          <p className="mt-1.5 text-xs text-[#64748B]">Optional—shared when customers ask for more details.</p>
+                                        </div>
+                                        <div>
+                                          <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-phone">Phone number</label>
+                                          <input id="business-phone" type="tel" autoComplete="tel" required value={businessInfo.phone} onChange={(event) => setBusinessInfo((current) => ({ ...current, phone: event.target.value }))} placeholder="+254 700 000 000" className={AI_TRAINING_FIELD} />
+                                          <p className="mt-1.5 text-xs text-[#64748B]">For customers who prefer to call.</p>
+                                        </div>
+                                        <div>
+                                          <label className="block text-sm font-semibold text-[#111827]" htmlFor="physical-address">Location</label>
+                                          <input id="physical-address" autoComplete="street-address" required value={businessInfo.address} onChange={(event) => setBusinessInfo((current) => ({ ...current, address: event.target.value }))} placeholder="e.g. Nairobi, Kenya" className={AI_TRAINING_FIELD} />
+                                          <p className="mt-1.5 text-xs text-[#64748B]">Helps your AI answer location questions.</p>
+                                        </div>
+                                        <div>
+                                          <label className="block text-sm font-semibold text-[#111827]" htmlFor="whatsapp-number">WhatsApp number</label>
+                                          <input id="whatsapp-number" type="tel" autoComplete="tel" required value={businessInfo.whatsapp} onChange={(event) => setBusinessInfo((current) => ({ ...current, whatsapp: event.target.value }))} placeholder="+254 700 000 000" className={AI_TRAINING_FIELD} />
+                                          <p className="mt-1.5 text-xs text-[#64748B]">Used for direct customer follow-up.</p>
+                                        </div>
+                                      </div>
                                     </div>
+                                  </div>
 
-                                  </div>
-                                  <div className="relative">
-                                    <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-description">
-                                      Teach your AI about your business
-                                    </label>
-                                    <textarea
-                                      id="business-description"
-                                      required
-                                      value={businessInfo.about}
-                                      onChange={(event) => setBusinessInfo((current) => ({ ...current, about: event.target.value }))}
-                                      placeholder="e.g. We help busy families stay connected with reliable home internet and friendly local support."
-                                      rows={2}
-                                      className={`${AI_TRAINING_TEXTAREA} resize-none`}
-                                    />
-                                    <p className="mt-1.5 text-xs text-[#64748B]">A short summary is enough—your AI uses this to introduce your business.</p>
-                                  </div>
-                                </div>
-                              </section>
-
-                              <section className={activeIdentityStep === 0 ? "rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
-                                <div className="space-y-5">
-                                  <div className="flex gap-3">
-                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F8FAFC] text-[#475569]"><Phone className="h-5 w-5" /></div>
-                                    <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Share how customers can reach your AI</p>
-                                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">Give your AI the right places to send people.</p>
-                                    </div>
-                                  </div>
-                                  <div className="grid gap-4 md:grid-cols-2">
-                                    <div>
-                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-website">Website</label>
-                                      <input id="business-website" type="url" autoComplete="url" required value={businessInfo.website} onChange={(event) => setBusinessInfo((current) => ({ ...current, website: event.target.value }))} placeholder="https://yourbusiness.com" className={AI_TRAINING_FIELD} />
-                                      <p className="mt-1.5 text-xs text-[#64748B]">Optional—shared when customers ask for more details.</p>
-                                    </div>
-                                    <div>
-                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-phone">Phone number</label>
-                                      <input id="business-phone" type="tel" autoComplete="tel" required value={businessInfo.phone} onChange={(event) => setBusinessInfo((current) => ({ ...current, phone: event.target.value }))} placeholder="+254 700 000 000" className={AI_TRAINING_FIELD} />
-                                      <p className="mt-1.5 text-xs text-[#64748B]">For customers who prefer to call.</p>
-                                    </div>
-                                    <div>
-                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="physical-address">Location</label>
-                                      <input id="physical-address" autoComplete="street-address" required value={businessInfo.address} onChange={(event) => setBusinessInfo((current) => ({ ...current, address: event.target.value }))} placeholder="e.g. Nairobi, Kenya" className={AI_TRAINING_FIELD} />
-                                      <p className="mt-1.5 text-xs text-[#64748B]">Helps your AI answer location questions.</p>
-                                    </div>
-                                    <div>
-                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="whatsapp-number">WhatsApp number</label>
-                                      <input id="whatsapp-number" type="tel" autoComplete="tel" required value={businessInfo.whatsapp} onChange={(event) => setBusinessInfo((current) => ({ ...current, whatsapp: event.target.value }))} placeholder="+254 700 000 000" className={AI_TRAINING_FIELD} />
-                                      <p className="mt-1.5 text-xs text-[#64748B]">Used for direct customer follow-up.</p>
-                                    </div>
-                                  </div>
                                   <div className="flex justify-end border-t border-[#EEF2F6] pt-4">
                                     <button type="button" disabled={!businessInfo.name.trim() || !businessInfo.type.trim() || !businessInfo.about.trim() || !businessInfo.website.trim() || !businessInfo.phone.trim() || !businessInfo.address.trim() || !businessInfo.whatsapp.trim()} onClick={() => completeIdentityLesson(0)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Continue to training <ChevronRight className="h-4 w-4" /></button>
                                   </div>
