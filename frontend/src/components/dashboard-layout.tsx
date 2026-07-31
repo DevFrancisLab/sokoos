@@ -2455,33 +2455,27 @@ export default function DashboardLayout() {
     cancellationPolicy:
       "Cancel anytime with 48 hours notice before the next billing cycle.",
   });
-  const identityFieldsComplete = Boolean(
+  const identityWorkspaceComplete = Boolean(
     (businessInfo.name || "").trim() &&
     (businessInfo.type || "").trim() &&
     (businessInfo.country || "").trim() &&
     (businessInfo.about || "").trim() &&
-    (businessInfo.website || "").trim() &&
     (businessInfo.email || "").trim() &&
-    (businessInfo.phone || "").trim() &&
-    (businessInfo.whatsapp || "").trim(),
-  );
-  const identityFormIsValid = Boolean(
-    (businessInfo.name || "").trim() &&
-    (businessInfo.type || "").trim() &&
-    (businessInfo.country || "").trim() &&
-    (businessInfo.about || "").trim() &&
-    (businessInfo.website || "").trim() &&
-    (businessInfo.email || "").trim() &&
-    (businessInfo.address || "").trim() &&
     (businessInfo.phone || "").trim() &&
     (businessInfo.whatsapp || "").trim() &&
+    (businessInfo.address || "").trim(),
+  );
+  const identityFormIsValid = Boolean(
+    identityWorkspaceComplete &&
     (businessInfo.email || "").includes("@") &&
     (businessInfo.email || "").includes(".") &&
-    ((businessInfo.website || "").toLowerCase().startsWith("http://") || (businessInfo.website || "").toLowerCase().startsWith("https://")) &&
     (businessInfo.phone || "").replace(/\D/g, "").length >= 7 &&
     (businessInfo.whatsapp || "").replace(/\D/g, "").length >= 7,
   );
-  const trainingCompletedSteps = identityFieldsComplete ? completedIdentitySteps : [];
+  const trainingCompletedSteps = [...new Set(
+    (identityWorkspaceComplete ? [...completedIdentitySteps, 0] : completedIdentitySteps)
+      .filter((step) => step >= 0 && step < identityLessons.length),
+  )];
   const onboardingComplete = aiEmployeeLaunched || trainingCompletedSteps.length >= identityLessons.length;
   const minutesRemaining = Math.max(0, 6 - trainingCompletedSteps.length);
   const trainingPercent = Math.round((trainingCompletedSteps.length / identityLessons.length) * 100);
@@ -2518,8 +2512,8 @@ export default function DashboardLayout() {
           ? { title: "No website pages yet", description: "Import your website to give your AI a fast, trusted starting point.", action: "Import website" }
           : { title: "No knowledge items yet", description: "Add a focused FAQ, product, policy, or website page to start teaching your AI.", action: "Add knowledge" };
   const workspaceNavigatorItems = [
-    { title: "Identity", description: "Who your AI represents", section: "Identity" as const, Icon: User, complete: trainingCompletedSteps.length >= 1 },
-    { title: "Knowledge", description: "What it can answer", section: "Knowledge Hub" as const, Icon: BookOpen, complete: faqItems.length > 0 },
+    { title: "Identity", description: "Who your AI represents", section: "Identity" as const, Icon: User, complete: identityWorkspaceComplete || trainingCompletedSteps.includes(0) },
+    { title: "Knowledge", description: "What it can answer", section: "Knowledge Hub" as const, Icon: BookOpen, complete: identityWorkspaceComplete || faqItems.length > 0 },
     { title: "Catalogue", description: "Offers it can recommend", section: "Catalogue" as const, Icon: Package, complete: knowledgeProducts.length > 0 },
     { title: "Sales Playbooks", description: "How it handles selling", section: "Sales Playbooks" as const, Icon: Target, complete: upsellProducts || recommendAlternatives },
     { title: "Policies", description: "Rules it follows", section: "Policies" as const, Icon: Shield, complete: Boolean(policies.returnPolicy && policies.deliveryPolicy) },
@@ -2544,6 +2538,18 @@ export default function DashboardLayout() {
     }
     setOnboardingRestored(true);
   }, []);
+  useEffect(() => {
+    setCompletedIdentitySteps((current) => {
+      if (identityWorkspaceComplete && !current.includes(0)) {
+        return [...current, 0];
+      }
+      if (!identityWorkspaceComplete && current.includes(0)) {
+        return current.filter((step) => step !== 0);
+      }
+      return current;
+    });
+  }, [identityWorkspaceComplete]);
+
   useEffect(() => {
     if (!onboardingRestored) return;
     window.localStorage.setItem("sokoos-ai-training-progress-v2", JSON.stringify({
