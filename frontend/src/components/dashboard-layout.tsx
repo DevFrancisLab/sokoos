@@ -4169,44 +4169,107 @@ export default function DashboardLayout() {
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EFF6FF] text-[#1D4ED8]"><MessageCircle className="h-5 w-5" /></div>
                                     <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Greetings</p>
-                                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">
-                                      Teach your AI what to say at the start of a conversation.
-                                    </p>
+                                      <p className="text-[20px] font-semibold text-[#111827]">Greetings</p>
+                                      <p className="mt-2 text-sm leading-6 text-[#6B7280]">
+                                        Teach your AI how conversations begin so every first reply feels warm and consistent.
+                                      </p>
                                     </div>
                                   </div>
 
-                                  <div className="grid gap-4 md:grid-cols-2">
-                                    <div className="relative">
-                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="welcome-message">
-                                        Welcome message
-                                      </label>
-                                      <textarea
-                                        id="welcome-message"
-                                        value={welcomeMessage}
-                                        onChange={(event) => setWelcomeMessage(event.target.value)}
-                                        rows={2}
-                                        placeholder="Hello! Welcome to our business. How can we help today?"
-                                        className={`${AI_TRAINING_TEXTAREA} resize-none`}
-                                      />
-                                      <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Welcome message is ready" />
-                                      <p className="mt-1.5 text-xs text-[#64748B]">Sent when a customer starts a conversation.</p>
+                                  <div className="grid gap-5 lg:grid-cols-[1.45fr_0.9fr]">
+                                    <div className="space-y-4 rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                                      <div className="space-y-2">
+                                        <label className="block text-sm font-semibold text-[#111827]" htmlFor="welcome-message">
+                                          Welcome Message
+                                        </label>
+                                        <textarea
+                                          id="welcome-message"
+                                          value={welcomeMessage}
+                                          onChange={(event) => { setWelcomeMessage(event.target.value); setHasUnsavedChanges(true); }}
+                                          rows={3}
+                                          placeholder="Hi 👋\nWelcome to Sokoos Internet.\nHow can I help you today?"
+                                          className={`${AI_TRAINING_TEXTAREA} mt-0 w-full resize-none`}
+                                        />
+                                        <p className="text-xs leading-5 text-[#64748B]">Use this when a customer starts a conversation.</p>
+                                      </div>
+
+                                      <div className="space-y-2">
+                                        <label className="block text-sm font-semibold text-[#111827]" htmlFor="returning-greeting">
+                                          Returning Customer Greeting
+                                        </label>
+                                        <textarea
+                                          id="returning-greeting"
+                                          value={welcomeMessage}
+                                          onChange={(event) => { setWelcomeMessage(event.target.value); setHasUnsavedChanges(true); }}
+                                          rows={2}
+                                          placeholder="Welcome back! We’re glad to help again."
+                                          className={`${AI_TRAINING_TEXTAREA} mt-0 w-full resize-none`}
+                                        />
+                                      </div>
+
+                                      <div className="space-y-2">
+                                        <label className="block text-sm font-semibold text-[#111827]" htmlFor="away-message">
+                                          Offline Message
+                                        </label>
+                                        <textarea
+                                          id="away-message"
+                                          value={awayMessage}
+                                          onChange={(event) => { setAwayMessage(event.target.value); setHasUnsavedChanges(true); }}
+                                          rows={2}
+                                          placeholder="Thanks for your message. We’ll get back to you soon."
+                                          className={`${AI_TRAINING_TEXTAREA} mt-0 w-full resize-none`}
+                                        />
+                                      </div>
+
+                                      <div className="space-y-2">
+                                        <label className="block text-sm font-semibold text-[#111827]" htmlFor="closing-message">
+                                          After Hours Message
+                                        </label>
+                                        <textarea
+                                          id="closing-message"
+                                          value={closingMessage}
+                                          onChange={(event) => { setClosingMessage(event.target.value); setHasUnsavedChanges(true); }}
+                                          rows={2}
+                                          placeholder="We’re currently offline. Please leave a message and we’ll reply when we’re back."
+                                          className={`${AI_TRAINING_TEXTAREA} mt-0 w-full resize-none`}
+                                        />
+                                      </div>
+
+                                      <div className="space-y-2">
+                                        <label className="block text-sm font-semibold text-[#111827]" htmlFor="thank-you-message">
+                                          Thank You Message
+                                        </label>
+                                        <textarea
+                                          id="thank-you-message"
+                                          value={closingMessage}
+                                          onChange={(event) => { setClosingMessage(event.target.value); setHasUnsavedChanges(true); }}
+                                          rows={2}
+                                          placeholder="Thanks for reaching out. We’re here whenever you need us."
+                                          className={`${AI_TRAINING_TEXTAREA} mt-0 w-full resize-none`}
+                                        />
+                                      </div>
                                     </div>
-                                  <div className="relative">
-                                    <label className="block text-sm font-semibold text-[#111827]" htmlFor="away-message">Away message</label>
-                                    <textarea id="away-message" value={awayMessage} onChange={(event) => setAwayMessage(event.target.value)} rows={2} placeholder="Thanks for your message. We’ll get back to you soon." className={`${AI_TRAINING_TEXTAREA} resize-none`} />
-                                    <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Away message is ready" />
-                                    <p className="mt-1.5 text-xs text-[#64748B]">Used when your team is unavailable.</p>
+
+                                    <div className="rounded-2xl border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] to-white p-5 shadow-sm">
+                                      <div className="flex items-center gap-2">
+                                        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#22C55E] text-white"><Check className="h-3.5 w-3.5" /></span>
+                                        <p className="text-sm font-semibold text-[#166534]">Default conversation starters</p>
+                                      </div>
+                                      <p className="mt-3 text-sm leading-6 text-[#475569]">
+                                        These greetings become the default opening lines your AI uses when customers reach out. They help your assistant sound consistent, welcoming, and ready to help from the first message.
+                                      </p>
+                                      <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm">
+                                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#64748B]">Example</p>
+                                        <p className="mt-2 text-sm leading-6 text-[#111827]">
+                                          Hi 👋 Welcome to Sokoos Internet. How can I help you today?
+                                        </p>
+                                      </div>
+                                    </div>
                                   </div>
-                                  <div className="relative md:col-span-2">
-                                    <label className="block text-sm font-semibold text-[#111827]" htmlFor="closing-message">Closing message</label>
-                                    <textarea id="closing-message" value={closingMessage} onChange={(event) => setClosingMessage(event.target.value)} rows={2} placeholder="Thanks for reaching out. We’re here whenever you need us." className={`${AI_TRAINING_TEXTAREA} resize-none`} />
-                                    <p className="mt-1.5 text-xs text-[#64748B]">A warm sign-off after your AI has resolved a customer’s question.</p>
-                                  </div>
-                                  </div>
+
                                   <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
                                     <button type="button" onClick={() => focusIdentityLesson(1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" onClick={() => completeIdentityLesson(2)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to languages <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" onClick={() => completeIdentityLesson(2)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
                                   </div>
                                 </div>
                               </section>
