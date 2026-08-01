@@ -2700,14 +2700,14 @@ export default function DashboardLayout() {
     Performance: aiEmployeeLaunched ? 100 : Math.min(100, 20 + (trainingCompletedSteps.length > 0 ? 10 : 0)),
   };
   const workspaceNavigatorItems = [
-    { title: "Identity", description: "Who your AI represents", section: "Identity" as const, Icon: User, complete: identityWorkspaceComplete || trainingCompletedSteps.includes(0), percent: workspaceProgressBySection.Identity, unlocked: true },
-    { title: "Knowledge", description: "What it can answer", section: "Knowledge Hub" as const, Icon: BookOpen, complete: completedKnowledgeSteps.length >= knowledgeLessons.length || (knowledgeCoverage >= 70 && knowledgeCompleteness >= 60), percent: workspaceProgressBySection["Knowledge Hub"], unlocked: identityWorkspaceComplete || trainingCompletedSteps.includes(0) },
-    { title: "Catalogue", description: "Offers it can recommend", section: "Catalogue" as const, Icon: Package, complete: knowledgeProducts.length > 0 && CATALOG_ITEMS.length > 0, percent: workspaceProgressBySection.Catalogue, unlocked: false },
-    { title: "Sales Playbooks", description: "How it handles selling", section: "Sales Playbooks" as const, Icon: Target, complete: Boolean(upsellProducts || recommendAlternatives), percent: workspaceProgressBySection["Sales Playbooks"], unlocked: false },
-    { title: "Policies", description: "Rules it follows", section: "Policies" as const, Icon: Shield, complete: Boolean(policies.returnPolicy && policies.deliveryPolicy), percent: workspaceProgressBySection.Policies, unlocked: false },
-    { title: "Skills", description: "Work it can do", section: "Skills" as const, Icon: Sparkles, complete: skills.some((skill) => skill.enabled), percent: workspaceProgressBySection.Skills, unlocked: false },
-    { title: "Integrations", description: "Where it connects", section: "Integrations" as const, Icon: Plug, complete: Object.values(communicationChannels).some(Boolean), percent: workspaceProgressBySection.Integrations, unlocked: false },
-    { title: "Performance", description: "How it is improving", section: "Performance" as const, Icon: BarChart3, complete: aiEmployeeLaunched, percent: workspaceProgressBySection.Performance, unlocked: false },
+    { title: "Identity", description: "Who your AI represents", section: "Identity" as const, Icon: User, complete: false, percent: 0, unlocked: true },
+    { title: "Knowledge", description: "What it can answer", section: "Knowledge Hub" as const, Icon: BookOpen, complete: false, percent: 0, unlocked: identityWorkspaceComplete || trainingCompletedSteps.includes(0) },
+    { title: "Catalogue", description: "Offers it can recommend", section: "Catalogue" as const, Icon: Package, complete: false, percent: 0, unlocked: false },
+    { title: "Sales Playbooks", description: "How it handles selling", section: "Sales Playbooks" as const, Icon: Target, complete: false, percent: 0, unlocked: false },
+    { title: "Policies", description: "Rules it follows", section: "Policies" as const, Icon: Shield, complete: false, percent: 0, unlocked: false },
+    { title: "Skills", description: "Work it can do", section: "Skills" as const, Icon: Sparkles, complete: false, percent: 0, unlocked: false },
+    { title: "Integrations", description: "Where it connects", section: "Integrations" as const, Icon: Plug, complete: false, percent: 0, unlocked: false },
+    { title: "Performance", description: "How it is improving", section: "Performance" as const, Icon: BarChart3, complete: false, percent: 0, unlocked: false },
   ].map((item, index, items) => ({
     ...item,
     unlocked: item.unlocked || items.slice(0, index).every((prereqItem) => prereqItem.complete),
