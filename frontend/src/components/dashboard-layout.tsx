@@ -2298,6 +2298,7 @@ export default function DashboardLayout() {
         ...current,
         serviceAreas: [...existingAreas, trimmed].join(", "),
       }));
+      setHasUnsavedChanges(true);
     }
     setServiceAreaInput("");
   };
@@ -2309,6 +2310,7 @@ export default function DashboardLayout() {
       ...current,
       serviceAreas: nextAreas.join(", "),
     }));
+    setHasUnsavedChanges(true);
   };
 
   const addPersonalContact = () => {
@@ -4465,20 +4467,20 @@ export default function DashboardLayout() {
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><MapPin className="h-5 w-5" /></div>
                                     <div>
                                       <p className="text-[20px] font-semibold text-[#111827]">Locations</p>
-                                      <p className="mt-2 text-sm leading-6 text-[#6B7280]">Tell your AI where your business operates so it can answer location questions confidently.</p>
+                                      <p className="mt-2 text-sm leading-6 text-[#6B7280]">Tell your AI where your business operates so it can answer area coverage questions confidently.</p>
                                     </div>
                                   </div>
                                   <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
                                     <div className="grid gap-4 md:grid-cols-2">
                                       <div className="w-full space-y-2">
-                                        <label className="block text-sm font-semibold text-[#111827]" htmlFor="identity-address">Primary address</label>
-                                        <input id="identity-address" value={businessInfo.address} onChange={(event) => setBusinessInfo((current) => ({ ...current, address: event.target.value }))} placeholder="Nairobi, Kenya" className={`${AI_TRAINING_FIELD} w-full`} />
-                                        <p className="text-xs text-[#64748B]">A single main location to share with customers.</p>
+                                        <label className="block text-sm font-semibold text-[#111827]" htmlFor="identity-address">Head Office</label>
+                                        <input id="identity-address" value={businessInfo.address} onChange={(event) => { setBusinessInfo((current) => ({ ...current, address: event.target.value })); setHasUnsavedChanges(true); }} placeholder="Nairobi, Kenya" className={`${AI_TRAINING_FIELD} w-full`} />
+                                        <p className="text-xs text-[#64748B]">This is the main office your AI can share with customers.</p>
                                       </div>
                                       <div className="w-full space-y-2">
-                                        <label className="block text-sm font-semibold text-[#111827]" htmlFor="identity-service-areas">Service areas</label>
+                                        <label className="block text-sm font-semibold text-[#111827]" htmlFor="identity-service-areas">Service Areas</label>
                                         <input id="identity-service-areas" value={serviceAreaInput} onChange={(event) => setServiceAreaInput(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); addServiceArea(); } }} placeholder="Nairobi" className={`${AI_TRAINING_FIELD} w-full`} />
-                                        <p className="text-xs text-[#64748B]">Press Enter to add each area.</p>
+                                        <p className="text-xs text-[#64748B]">Add multiple service areas. Press Enter after each one.</p>
                                         <div className="mt-2 flex flex-wrap gap-2">
                                           {parseServiceAreas(businessInfo.serviceAreas).map((area) => (
                                             <button key={area} type="button" onClick={() => removeServiceArea(area)} className="inline-flex items-center gap-1 rounded-full border border-[#E5E7EB] bg-white px-2.5 py-1 text-xs font-semibold text-[#111827] transition hover:border-[#86EFAC] hover:bg-[#F0FDF4]">
@@ -4487,12 +4489,28 @@ export default function DashboardLayout() {
                                             </button>
                                           ))}
                                         </div>
+                                        <div className="mt-3 flex flex-wrap gap-2">
+                                          {['Nairobi','Westlands','Karen','Kiambu','Machakos'].map((example) => (
+                                            <button key={example} type="button" onClick={() => addServiceArea(example)} className="rounded-full border border-[#E5E7EB] bg-white px-2.5 py-1 text-xs font-semibold text-[#475569] transition hover:border-[#22C55E] hover:text-[#166534]">{example}</button>
+                                          ))}
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
+
+                                  <div className="rounded-2xl border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] to-white p-4">
+                                    <div className="flex items-center gap-2">
+                                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#22C55E] text-white"><Check className="h-3.5 w-3.5" /></span>
+                                      <p className="text-sm font-semibold text-[#166534]">How the AI uses these locations</p>
+                                    </div>
+                                    <p className="mt-3 text-sm leading-6 text-[#475569]">
+                                      These locations are used by the AI when customers ask, “Do you serve my area?” so it can answer accurately and confidently.
+                                    </p>
+                                  </div>
+
                                   <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
                                     <button type="button" onClick={() => focusIdentityLesson(4)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" onClick={() => completeIdentityLesson(5)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to complete identity <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" onClick={() => completeIdentityLesson(5)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
                                   </div>
                                 </div>
                               </section>
