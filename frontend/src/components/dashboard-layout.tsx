@@ -770,35 +770,46 @@ const POPULAR_PRODUCTS = [
 
 const LANGUAGES = ["English", "Kiswahili"] as const;
 const LANGUAGE_OPTIONS = ["English", "Kiswahili", "French", "Arabic", "German", "Spanish", "Portuguese", "Somali", "Amharic", "Hindi", "Chinese", "Italian"];
-const PERSONALITIES = ["Professional", "Friendly", "Luxury", "Casual", "Technical", "Playful"] as const;
+const PERSONALITIES = ["Friendly", "Professional", "Warm", "Playful", "Luxury", "Technical", "Casual", "Formal"] as const;
+const COMMUNICATION_STYLE_OPTIONS = ["Short & Direct", "Balanced", "Detailed"] as const;
+const EMOJI_USAGE_OPTIONS = ["Never", "Sometimes", "Often"] as const;
+const PREFERRED_TONE_OPTIONS = ["Helpful", "Confident", "Educational", "Sales-focused", "Conversational"] as const;
 
 const BRAND_VOICE_DETAILS: Record<
   (typeof PERSONALITIES)[number],
   { description: string; example: string }
 > = {
+  Friendly: {
+    description: "Warm, helpful and approachable.",
+    example: "Hello 👋 We’re happy to help. What can we do for you?",
+  },
   Professional: {
     description: "Clear, polished and dependable.",
     example: "Thank you for reaching out. How may we assist you today?",
   },
-  Friendly: {
-    description: "Warm, helpful and approachable.",
-    example: "Hello 👋 We’re happy to help. What can we do for you?",
+  Warm: {
+    description: "Gentle, caring and reassuring.",
+    example: "Of course, we’re here to guide you every step of the way.",
+  },
+  Playful: {
+    description: "Upbeat, lively and full of personality.",
+    example: "Hey there! Let’s find exactly what you need ✨",
   },
   Luxury: {
     description: "Refined, attentive and elevated.",
     example: "Welcome. We would be delighted to assist you.",
   },
-  Casual: {
-    description: "Relaxed, simple and conversational.",
-    example: "Hi! What can we help you with today?",
-  },
   Technical: {
     description: "Precise, informative and direct.",
     example: "Hello. Please share the details and we’ll help you resolve it.",
   },
-  Playful: {
-    description: "Upbeat, lively and full of personality.",
-    example: "Hey there! Let’s find exactly what you need ✨",
+  Casual: {
+    description: "Relaxed, simple and conversational.",
+    example: "Hi! What can we help you with today?",
+  },
+  Formal: {
+    description: "Polished, respectful and structured.",
+    example: "Good day. We appreciate your inquiry and will assist accordingly.",
   },
 };
 const LOGO_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Crect width='240' height='240' rx='32' fill='%23E5F6EC'/%3E%3Cpath d='M73 91h94v58H73z' rx='8' fill='%2322C55E'/%3E%3Cpath d='M91 72h58v19H91z' fill='%23065F46'/%3E%3Ccircle cx='120' cy='120' r='17' fill='white'/%3E%3C/svg%3E";
@@ -1943,6 +1954,15 @@ export default function DashboardLayout() {
     useState<(typeof LANGUAGES)[number]>("English");
   const [personality, setPersonality] =
     useState<(typeof PERSONALITIES)[number]>("Friendly");
+  const [communicationStyle, setCommunicationStyle] =
+    useState<(typeof COMMUNICATION_STYLE_OPTIONS)[number]>("Balanced");
+  const [emojiUsage, setEmojiUsage] =
+    useState<(typeof EMOJI_USAGE_OPTIONS)[number]>("Sometimes");
+  const [preferredTone, setPreferredTone] =
+    useState<(typeof PREFERRED_TONE_OPTIONS)[number]>("Helpful");
+  const [writingExamples, setWritingExamples] = useState(
+    "Hi James 👋\nThanks for reaching out.\nInstallation takes less than 24 hours.",
+  );
   const [testAiInput, setTestAiInput] = useState(
     "How much is the Business Package?",
   );
@@ -4020,114 +4040,126 @@ export default function DashboardLayout() {
                                     <div>
                                       <p className="text-[20px] font-semibold text-[#111827]">Brand Voice</p>
                                       <p className="mt-2 text-sm leading-6 text-[#6B7280]">
-                                        Choose a voice that feels right for your customers and the kind of conversations you want your AI to have.
+                                        Teach your AI how it should sound so every reply feels consistent and on-brand.
                                       </p>
                                     </div>
                                   </div>
 
-                                  <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                                    {PERSONALITIES.map((personalityOption) => {
-                                      const active = personality === personalityOption;
-                                      const voice = BRAND_VOICE_DETAILS[personalityOption];
-                                      const Icon = personalityOption === "Professional"
-                                        ? User
-                                        : personalityOption === "Friendly"
-                                        ? Smile
-                                        : personalityOption === "Luxury"
-                                        ? Sparkles
-                                        : personalityOption === "Technical"
-                                        ? Cpu
-                                        : personalityOption === "Playful"
-                                        ? MessageCircle
-                                        : Globe;
-                                      return (
-                                        <button
-                                          key={personalityOption}
-                                          type="button"
-                                          aria-pressed={active}
-                                          onClick={() => { setPersonality(personalityOption); setHasUnsavedChanges(true); }}
-                                          className={`group relative min-h-[178px] rounded-xl border p-4 text-left transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] ${
-                                            active
-                                              ? "z-10 scale-[1.025] border-[#22C55E] bg-[#F7FEF9] text-[#111827] shadow-[0_10px_28px_rgba(34,197,94,0.20)]"
-                                              : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#A7F3D0]"
-                                          }`}
-                                        >
-                                          <div className="flex h-full flex-col">
-                                            <div className="flex items-start justify-between gap-3">
-                                            <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl transition-all duration-300 ease-out group-hover:scale-110 ${active ? "bg-[#22C55E] text-white shadow-[0_6px_16px_rgba(34,197,94,0.25)]" : "bg-[#F0FDF4] text-[#166534]"}`}>
-                                              <Icon className="h-6 w-6" />
-                                            </div>
-                                            {active && <span className="flex h-6 w-6 shrink-0 animate-in zoom-in-50 duration-200 items-center justify-center rounded-full bg-[#22C55E] text-white"><Check className="h-3.5 w-3.5" /></span>}
-                                            </div>
-                                            <div className="mt-3">
-                                              <p className="text-sm font-semibold text-[#111827]">{personalityOption}</p>
-                                              <p className="mt-1 text-xs leading-5 text-[#64748B]">{voice.description}</p>
-                                            </div>
-                                            <div className={`mt-3 rounded-lg px-3 py-2 text-xs leading-5 ${active ? "bg-white text-[#166534] shadow-sm" : "bg-[#F8FAFC] text-[#64748B]"}`}>
-                                              “{voice.example}”
-                                            </div>
-                                          </div>
-                                        </button>
-                                      );
-                                    })}
-                                  </div>
-
-                                  <div className="overflow-hidden rounded-xl border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] to-white p-4">
-                                    <div className="flex items-center gap-2">
-                                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#22C55E] text-white"><Check className="h-3.5 w-3.5" /></span>
-                                      <p className="text-sm font-semibold text-[#166534]">This is how your AI will sound</p>
-                                      <span className="ml-auto rounded-full bg-white px-2 py-1 text-[10px] font-semibold text-[#166534]">{personality}</span>
+                                  <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                                    <div className="space-y-2">
+                                      <p className="text-[15px] font-semibold tracking-[-0.01em] text-[#111827]">Brand Personality</p>
+                                      <p className="text-sm leading-6 text-[#6B7280]">Pick the character your AI should reflect in conversations.</p>
                                     </div>
-                                    <div key={personality} className="mt-3 flex items-end gap-2 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
-                                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-[10px] font-bold text-white">AI</div>
-                                      <div className="max-w-[85%] rounded-2xl rounded-bl-sm bg-white px-3 py-2 text-sm leading-5 text-[#111827] shadow-sm">{BRAND_VOICE_DETAILS[personality].example}</div>
-                                    </div>
-                                  </div>
-
-                                  <div className="border-t border-[#E5E7EB] pt-4">
-                                    <p className="text-sm font-semibold text-[#111827]">How should your AI reply?</p>
-                                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">
-                                      Pick a few habits to make every reply feel natural.
-                                    </p>
                                     <div className="mt-4 flex flex-wrap gap-2">
-                                      {[
-                                        "Use emojis",
-                                        "Keep replies short",
-                                        "Explain simply",
-                                        "Ask follow-up questions",
-                                        "Personalize responses",
-                                      ].map((option) => {
-                                        const checked = writingStyleOptions[option];
+                                      {PERSONALITIES.map((personalityOption) => {
+                                        const active = personality === personalityOption;
                                         return (
-                                          <label
-                                            key={option}
-                                            className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium transition-all duration-200 ease-out hover:-translate-y-px hover:shadow-sm ${
-                                              checked
-                                                ? "border-[#22C55E] bg-[#ECFDF5] text-[#111827]"
-                                                : "border-[#E5E7EB] bg-white text-[#475569]"
-                                            }`}
+                                          <button
+                                            key={personalityOption}
+                                            type="button"
+                                            aria-pressed={active}
+                                            onClick={() => { setPersonality(personalityOption); setHasUnsavedChanges(true); }}
+                                            className={`rounded-full border px-3 py-2 text-sm font-semibold transition ${active ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#A7F3D0] hover:text-[#111827]"}`}
                                           >
-                                            <input
-                                              type="checkbox"
-                                              checked={checked}
-                                              onChange={() =>
-                                                setWritingStyleOptions((current) => ({
-                                                  ...current,
-                                                  [option]: !current[option],
-                                                }))
-                                              }
-                                              className="sr-only"
-                                            />
-                                            {checked && <Check className="h-4 w-4" />}
-                                            <span>{option.replace("Personalize responses", "Personalized").replace("Keep replies short", "Short Replies").replace("Ask follow-up questions", "Ask Follow-up Questions").replace("Explain simply", "Explain Simply").replace("Use emojis", "Use Emojis")}</span>
-                                          </label>
+                                            {personalityOption}
+                                          </button>
                                         );
                                       })}
                                     </div>
+
+                                    <div className="mt-6 space-y-3">
+                                      <div>
+                                        <p className="text-sm font-semibold text-[#111827]">Communication Style</p>
+                                        <div className="mt-3 flex flex-wrap gap-2">
+                                          {COMMUNICATION_STYLE_OPTIONS.map((styleOption) => {
+                                            const active = communicationStyle === styleOption;
+                                            return (
+                                              <button
+                                                key={styleOption}
+                                                type="button"
+                                                onClick={() => { setCommunicationStyle(styleOption); setHasUnsavedChanges(true); }}
+                                                className={`rounded-full border px-3 py-2 text-sm font-semibold transition ${active ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#A7F3D0] hover:text-[#111827]"}`}
+                                              >
+                                                {styleOption}
+                                              </button>
+                                            );
+                                          })}
+                                        </div>
+                                      </div>
+
+                                      <div>
+                                        <p className="text-sm font-semibold text-[#111827]">Emoji Usage</p>
+                                        <div className="mt-3 flex flex-wrap gap-2">
+                                          {EMOJI_USAGE_OPTIONS.map((emojiOption) => {
+                                            const active = emojiUsage === emojiOption;
+                                            return (
+                                              <button
+                                                key={emojiOption}
+                                                type="button"
+                                                onClick={() => { setEmojiUsage(emojiOption); setHasUnsavedChanges(true); }}
+                                                className={`rounded-full border px-3 py-2 text-sm font-semibold transition ${active ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#A7F3D0] hover:text-[#111827]"}`}
+                                              >
+                                                {emojiOption}
+                                              </button>
+                                            );
+                                          })}
+                                        </div>
+                                      </div>
+
+                                      <div>
+                                        <p className="text-sm font-semibold text-[#111827]">Preferred Tone</p>
+                                        <div className="mt-3 flex flex-wrap gap-2">
+                                          {PREFERRED_TONE_OPTIONS.map((toneOption) => {
+                                            const active = preferredTone === toneOption;
+                                            return (
+                                              <button
+                                                key={toneOption}
+                                                type="button"
+                                                onClick={() => { setPreferredTone(toneOption); setHasUnsavedChanges(true); }}
+                                                className={`rounded-full border px-3 py-2 text-sm font-semibold transition ${active ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#A7F3D0] hover:text-[#111827]"}`}
+                                              >
+                                                {toneOption}
+                                              </button>
+                                            );
+                                          })}
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <div className="mt-6 rounded-2xl border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] to-white p-4">
+                                      <div className="flex items-center gap-2">
+                                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#22C55E] text-white"><Check className="h-3.5 w-3.5" /></span>
+                                        <p className="text-sm font-semibold text-[#166534]">Voice preview</p>
+                                      </div>
+                                      <div className="mt-3 space-y-2 rounded-2xl bg-white p-4 shadow-sm">
+                                        <div className="flex items-center gap-2">
+                                          <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#22C55E] text-[10px] font-bold text-white">AI</span>
+                                          <span className="text-xs font-semibold uppercase tracking-[0.2em] text-[#64748B]">{personality} · {preferredTone}</span>
+                                        </div>
+                                        <p className="text-sm leading-6 text-[#111827]">{BRAND_VOICE_DETAILS[personality].example}</p>
+                                        <p className="text-xs leading-5 text-[#64748B]">Style: {communicationStyle} · Emojis: {emojiUsage}</p>
+                                      </div>
+                                    </div>
+
+                                    <div className="mt-6 space-y-2">
+                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="writing-examples">
+                                        Writing Examples
+                                      </label>
+                                      <p className="text-sm leading-6 text-[#6B7280]">Write 2–3 example replies so the AI learns from them directly.</p>
+                                      <textarea
+                                        id="writing-examples"
+                                        value={writingExamples}
+                                        onChange={(event) => { setWritingExamples(event.target.value); setHasUnsavedChanges(true); }}
+                                        rows={6}
+                                        placeholder={`Hi James 👋\nThanks for reaching out.\nInstallation takes less than 24 hours.`}
+                                        className={`${AI_TRAINING_TEXTAREA} mt-0 w-full resize-none`}
+                                      />
+                                    </div>
                                   </div>
+
                                   <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
                                     <button type="button" onClick={() => focusIdentityLesson(0)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" onClick={() => completeIdentityLesson(1)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to greetings <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" onClick={() => completeIdentityLesson(1)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
                                   </div>
                                 </div>
                               </section>
