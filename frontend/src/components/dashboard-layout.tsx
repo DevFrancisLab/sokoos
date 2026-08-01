@@ -4514,35 +4514,84 @@ export default function DashboardLayout() {
                                   </div>
                                 </div>
                               </section>
-                              <section data-lesson-index="6" className={activeIdentityStep === 6 ? "rounded-[28px] border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] to-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
-                                <div className="flex gap-3">
-                                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#22C55E] text-white"><Check className="h-5 w-5" /></div>
-                                  <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Complete Identity</p>
-                                    <p className="mt-2 text-sm leading-6 text-[#475569]">Review the choices you made for your AI and finish the onboarding journey with confidence.</p>
+                              <section data-lesson-index="6" className={activeIdentityStep === 6 ? "relative overflow-hidden rounded-[28px] border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] via-white to-[#F8FAFC] p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
+                                <div className="pointer-events-none absolute inset-0 overflow-hidden">
+                                  <div className="absolute -right-10 -top-8 h-24 w-24 rounded-full bg-[#22C55E]/10 blur-3xl" />
+                                  <div className="absolute -left-8 bottom-0 h-24 w-24 rounded-full bg-[#3B82F6]/10 blur-3xl" />
+                                  <span className="absolute left-8 top-8 h-3 w-3 rounded-full bg-[#22C55E] animate-bounce" />
+                                  <span className="absolute right-12 top-12 h-2.5 w-2.5 rounded-full bg-[#F59E0B] animate-bounce" style={{ animationDelay: "180ms" }} />
+                                  <span className="absolute bottom-14 left-12 h-2 w-2 rounded-full bg-[#6366F1] animate-bounce" style={{ animationDelay: "320ms" }} />
+                                </div>
+                                <div className="relative space-y-6">
+                                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                                    <div className="max-w-2xl">
+                                      <div className="inline-flex items-center gap-2 rounded-full border border-[#BBF7D0] bg-white/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#166534]">
+                                        <Sparkles className="h-3.5 w-3.5" />
+                                        Identity training complete
+                                      </div>
+                                      <p className="mt-3 text-[24px] font-semibold tracking-[-0.02em] text-[#111827]">You’ve finished the Identity curriculum</p>
+                                      <p className="mt-2 text-sm leading-6 text-[#475569]">Your AI now has the voice, greetings, languages, hours, and location details you chose, so it can represent your business with confidence.</p>
+                                    </div>
+                                    <div className="flex items-center gap-4 rounded-2xl border border-[#D1FAE5] bg-white/80 p-4 shadow-sm">
+                                      <div className="relative flex h-24 w-24 items-center justify-center rounded-full border border-[#D1FAE5] p-1" style={{ background: `conic-gradient(#22C55E ${trainingPercent}%, #E5E7EB 0)` }}>
+                                        <div className="flex h-full w-full items-center justify-center rounded-full bg-white">
+                                          <div className="text-center">
+                                            <p className="text-[20px] font-semibold text-[#111827]">{trainingPercent}%</p>
+                                            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#64748B]">ready</p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                      <div>
+                                        <p className="text-sm font-semibold text-[#111827]">Training progress</p>
+                                        <p className="mt-1 text-sm text-[#64748B]">All key identity lessons are now locked in and ready for use.</p>
+                                      </div>
+                                    </div>
                                   </div>
-                                </div>
-                                {aiEmployeeLaunched && <div className="mt-5 rounded-xl border border-[#BBF7D0] bg-white p-5 text-center animate-in zoom-in-95 fade-in-0 duration-500"><div className="text-4xl animate-bounce">🎉</div><p className="mt-2 text-lg font-semibold text-[#166534]">Your identity curriculum is complete!</p><p className="mt-1 text-sm text-[#64748B]">Your AI is ready to represent your business with the voice, greetings, languages, hours, and locations you chose.</p></div>}
-                                <div className="mt-6 grid gap-3 sm:grid-cols-2">
-                                  {[
-                                    ["Business", businessInfo.name || "Not added"],
-                                    ["Personality", personality],
-                                    ["Greetings", welcomeMessage || "Not added"],
-                                    ["Languages", supportedLanguages.join(" · ") || primaryLanguage],
-                                    ["Hours", businessHours || "Not added"],
-                                  ].map(([label, value]) => (
-                                    <button key={label} type="button" onClick={() => {
-                                      const map: Record<string, number> = { Business: 0, Personality: 1, Greetings: 2, Languages: 3, Hours: 4 };
-                                      focusIdentityLesson(map[label] ?? 0);
-                                    }} className="rounded-lg border border-[#E5E7EB] bg-white px-4 py-3 text-left transition hover:border-[#86EFAC] hover:shadow-sm">
-                                      <p className="text-xs font-medium text-[#64748B]">{label}</p>
-                                      <p className="mt-1 truncate text-sm font-semibold text-[#111827]">{value}</p>
-                                    </button>
-                                  ))}
-                                </div>
-                                <div className="mt-6 flex items-center justify-between border-t border-[#D1FAE5] pt-4">
-                                  <button type="button" onClick={() => focusIdentityLesson(5)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                  <button type="button" onClick={() => { completeIdentityLesson(6); setAiEmployeeLaunched(true); handleSaveChanges(); }} className="inline-flex items-center gap-2 rounded-lg bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"><Sparkles className="h-4 w-4" />{aiEmployeeLaunched ? "Completed" : "Finish Identity"}</button>
+
+                                  <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+                                    <div className="rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-sm">
+                                      <p className="text-sm font-semibold text-[#111827]">What’s ready now</p>
+                                      <div className="mt-4 space-y-3">
+                                        {[
+                                          { label: "Business identity", value: businessInfo.name || "Not added", complete: Boolean(businessInfo.name) },
+                                          { label: "Brand voice", value: personality, complete: Boolean(personality) },
+                                          { label: "Greetings", value: welcomeMessage || "Default welcome set", complete: Boolean(welcomeMessage) },
+                                          { label: "Languages", value: supportedLanguages.length ? supportedLanguages.join(" · ") : primaryLanguage, complete: Boolean(primaryLanguage) },
+                                          { label: "Business hours", value: businessHours || "Schedule captured", complete: Boolean(businessHours) },
+                                          { label: "Locations", value: businessInfo.address || businessInfo.serviceAreas || "Service area added", complete: Boolean(businessInfo.address || businessInfo.serviceAreas) },
+                                        ].map((item) => (
+                                          <div key={item.label} className="flex items-start justify-between gap-3 rounded-xl border border-[#EEF2F6] bg-[#F8FAFC] px-3 py-3">
+                                            <div>
+                                              <p className="text-sm font-semibold text-[#111827]">{item.label}</p>
+                                              <p className="mt-1 text-sm text-[#64748B]">{item.value}</p>
+                                            </div>
+                                            <span className={`inline-flex h-6 w-6 items-center justify-center rounded-full ${item.complete ? "bg-[#22C55E] text-white" : "bg-[#F1F5F9] text-[#64748B]"}`}>
+                                              <Check className="h-3.5 w-3.5" />
+                                            </span>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+
+                                    <div className="rounded-2xl border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] to-white p-5 shadow-sm">
+                                      <div className="flex items-center gap-2">
+                                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#22C55E] text-white"><Sparkles className="h-4 w-4" /></span>
+                                        <div>
+                                          <p className="text-sm font-semibold text-[#166534]">Next step</p>
+                                          <p className="text-[11px] uppercase tracking-[0.24em] text-[#64748B]">Train the knowledge layer</p>
+                                        </div>
+                                      </div>
+                                      <p className="mt-3 text-sm leading-6 text-[#475569]">You’ve completed the identity training. Continue into Knowledge so your AI can answer frequently asked questions, policies, and offer details with confidence.</p>
+                                      <div className="mt-5 flex flex-wrap gap-2">
+                                        <button type="button" onClick={() => { setActiveWorkspaceSection("Knowledge Hub"); setAiEmployeeLaunched(true); handleSaveChanges(); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to Knowledge <ChevronRight className="h-4 w-4" /></button>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div className="flex items-center justify-between border-t border-[#D1FAE5] pt-4">
+                                    <button type="button" onClick={() => focusIdentityLesson(5)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                                    <button type="button" onClick={() => { completeIdentityLesson(6); setAiEmployeeLaunched(true); handleSaveChanges(); }} className="inline-flex items-center gap-2 rounded-lg bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"><Sparkles className="h-4 w-4" />{aiEmployeeLaunched ? "Completed" : "Finish Identity"}</button>
+                                  </div>
                                 </div>
                               </section>
                             </div>
