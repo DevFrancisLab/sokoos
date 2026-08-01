@@ -2510,6 +2510,39 @@ export default function DashboardLayout() {
     if (entries.length) setAiLearningTimeline((timeline) => [{ id: `learning-doc-${Date.now()}`, day: "Today", title: replacingKnowledgeDocumentId ? "Replaced knowledge document" : "Uploaded knowledge document", detail: `${entries.length} document${entries.length === 1 ? "" : "s"} sent for AI learning`, Icon: Paperclip }, ...timeline]);
     window.setTimeout(() => setKnowledgeDocuments((documents) => documents.map((document) => entries.some((entry) => entry.id === document.id) || (replacingKnowledgeDocumentId && document.id === replacingKnowledgeDocumentId) ? { ...document, status: "Ready", extracted: "Knowledge extracted" } : document)), 700);
   };
+
+  const uploadMock = (files: FileList | File[]) => {
+    const entries = Array.from(files).map((file) => ({
+      id: `knowledge-doc-${Date.now()}-${file.name}`,
+      name: file.name,
+      size: file.size >= 1024 * 1024 ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` : `${Math.max(1, Math.round(file.size / 1024))} KB`,
+      uploaded: "Just now",
+      status: "Reading...",
+      progress: 0,
+      kind: file.name.split(".").pop()?.toUpperCase() || "FILE",
+    }));
+
+    setKnowledgeDocuments((docs) => [...entries, ...docs]);
+
+    entries.forEach((entry, idx) => {
+      const startDelay = idx * 250;
+      window.setTimeout(() => {
+        let p = 0;
+        const timer = window.setInterval(() => {
+          p += Math.floor(15 + Math.random() * 30);
+          if (p >= 100) {
+            p = 100;
+            setKnowledgeDocuments((docs) => docs.map((d) => (d.id === entry.id ? { ...d, progress: p, status: "Indexed" } : d)));
+            window.clearInterval(timer as any);
+            window.setTimeout(() => setKnowledgeDocuments((docs) => docs.map((d) => (d.id === entry.id ? { ...d, progress: 100, status: "Ready" } : d))), 600 + Math.random() * 600);
+          } else {
+            setKnowledgeDocuments((docs) => docs.map((d) => (d.id === entry.id ? { ...d, progress: p, status: "Reading..." } : d)));
+          }
+        }, 300 + Math.random() * 200);
+      }, startDelay);
+    });
+    setAiLearningTimeline((timeline) => [{ id: `learning-doc-${Date.now()}`, day: "Today", title: "Uploaded knowledge document", detail: `${entries.length} document${entries.length === 1 ? "" : "s"} sent for AI learning`, Icon: Paperclip }, ...timeline]);
+  };
   const syncWebsiteKnowledge = () => {
     setWebsiteImportStatus("syncing");
     setWebsiteImportProgress(18);
@@ -5053,20 +5086,54 @@ export default function DashboardLayout() {
                                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EFF6FF] text-[#1D4ED8]"><Paperclip className="h-5 w-5" /></div>
                                 <div>
                                   <p className="text-[20px] font-semibold text-[#111827]">Documents</p>
-                                  <p className="mt-2 text-sm leading-6 text-[#6B7280]">Upload documents so the AI can reference policy files, brochures, contracts or support material.</p>
+                                  <p className="mt-2 text-sm leading-6 text-[#6B7280]">Allow the AI to learn from uploaded files. Supported: PDF, DOCX, TXT, CSV, XLSX, images.</p>
                                 </div>
                               </div>
+
                               <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
                                 <div className="rounded-xl border border-[#E5E7EB] bg-white p-4">
                                   <div className="flex items-center justify-between">
-                                    <p className="text-sm font-semibold text-[#111827]">Trusted documents</p>
+                                    <p className="text-sm font-semibold text-[#111827]">Upload documents</p>
                                     <span className="text-sm font-semibold text-[#166534]">{knowledgeDocuments.length} uploaded</span>
                                   </div>
-                                  <div className="mt-4 rounded-xl border border-dashed border-[#DCE3EA] bg-[#F8FAFC] p-4 text-sm text-[#64748B]">
-                                    {knowledgeDocuments.length ? knowledgeDocuments.slice(0, 3).map((document) => <div key={document.id} className="mt-2 flex items-center justify-between rounded-lg bg-white px-3 py-2"> <span className="font-medium text-[#111827]">{document.name}</span> <span className="text-xs text-[#64748B]">{document.status}</span></div>) : "No documents uploaded yet. Add files to give the AI a richer knowledge base."}
+
+                                  <input ref={knowledgeDocumentInputRef} type="file" multiple accept=".pdf,.doc,.docx,.txt,.csv,.xls,.xlsx,image/*" className="hidden" onChange={(event) => { if (event.target.files) uploadMock(event.target.files); event.target.value = ""; }} />
+
+                                  <div onDrop={(event) => { event.preventDefault(); setKnowledgeDocumentDragActive(false); if (event.dataTransfer.files.length) uploadMock(event.dataTransfer.files); }} onDragOver={(event) => { event.preventDefault(); setKnowledgeDocumentDragActive(true); }} onDragLeave={() => setKnowledgeDocumentDragActive(false)} onClick={() => knowledgeDocumentInputRef.current?.click()} className={`mt-4 cursor-pointer rounded-xl border-2 border-dashed p-6 text-center transition ${knowledgeDocumentDragActive ? "border-[#22C55E] bg-[#ECFDF5]" : "border-[#DCE3EA] bg-[#F8FAFC] hover:border-[#86EFAC] hover:bg-[#F7FEF9]"}`}>
+                                    <Paperclip className="mx-auto h-6 w-6 text-[#16A34A]" />
+                                    <p className="mt-3 text-sm font-semibold text-[#111827]">Drag & drop documents here</p>
+                                    <p className="mt-1 text-xs text-[#64748B]">PDF, DOCX, TXT, CSV, XLSX, images</p>
+                                    <p className="mt-3 text-xs text-[#64748B]">Click to browse files</p>
+                                  </div>
+
+                                  <div className="mt-4 grid gap-3">
+                                    {knowledgeDocuments.length ? knowledgeDocuments.map((doc) => (
+                                      <div key={doc.id} className="flex items-center justify-between rounded-lg border border-[#EEF2F6] bg-white px-3 py-2">
+                                        <div className="flex items-center gap-3">
+                                          <div className="h-10 w-10 flex items-center justify-center rounded-md bg-[#F8FAFB] text-[#475569]">
+                                            {doc.kind && doc.kind.toLowerCase().startsWith("png") || doc.kind.toLowerCase().startsWith("jpg") || doc.kind.toLowerCase().startsWith("jpeg") ? <Image className="h-5 w-5" /> : <Paperclip className="h-5 w-5" />}
+                                          </div>
+                                          <div className="min-w-0">
+                                            <p className="text-sm font-semibold text-[#111827] truncate">{doc.name}</p>
+                                            <p className="mt-1 text-xs text-[#64748B]">{doc.size} · {doc.status}</p>
+                                            {doc.progress !== undefined && doc.progress < 100 && (
+                                              <div className="mt-2 w-48 overflow-hidden rounded-full bg-[#EEF2F6]">
+                                                <div className="h-1.5 rounded-full bg-[#22C55E] transition-all" style={{ width: `${doc.progress}%` }} />
+                                              </div>
+                                            )}
+                                          </div>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                          <button type="button" onClick={() => setKnowledgeDocuments((docs) => docs.filter((d) => d.id !== doc.id))} className="rounded-lg px-2 py-1 text-xs font-semibold text-[#B91C1C] border border-[#FECACA] bg-white">Remove</button>
+                                        </div>
+                                      </div>
+                                    )) : (
+                                      <div className="rounded-xl border border-dashed border-[#DCE3EA] bg-[#F8FAFC] p-5 text-sm text-[#64748B]">No documents uploaded yet. Add files to give the AI a richer knowledge base.</div>
+                                    )}
                                   </div>
                                 </div>
                               </div>
+
                               <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
                                 <button type="button" onClick={() => focusKnowledgeLesson(3)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
                                 <button type="button" onClick={() => completeKnowledgeLesson(4)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
