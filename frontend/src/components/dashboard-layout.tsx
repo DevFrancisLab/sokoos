@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import { useRouter } from "@tanstack/react-router";
 import {
   Home,
@@ -2762,6 +2762,265 @@ export default function DashboardLayout() {
     ? MOCK_TEAM_MEMBERS.find((m) => m.id === currentUserId)
     : null;
 
+  const KnowledgeWorkspace = ({ children }: { children: ReactNode }) => (
+    <section className="space-y-5" aria-label="Knowledge training">
+      {children}
+    </section>
+  );
+
+  const KnowledgeLessonTabs = () => (
+    <section className="relative z-20 rounded-[24px] border border-[#E5E7EB] bg-white px-3 py-3 shadow-[0_6px_18px_rgba(15,23,42,0.04)]" aria-label="Knowledge onboarding progress">
+      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#166534]">Knowledge onboarding curriculum</p>
+          <p className="mt-1 text-base font-semibold text-[#111827]">Teach your AI in a few focused lessons so it can answer with confidence.</p>
+        </div>
+        <div className="rounded-full bg-[#ECFDF5] px-3 py-1 text-sm font-semibold text-[#166534]">
+          {completedKnowledgeSteps.length}/{knowledgeLessons.length} lessons complete
+        </div>
+      </div>
+      <div className="mt-3 flex flex-wrap gap-2">
+        {knowledgeLessons.map((lesson, index) => {
+          const active = activeKnowledgeStep === index;
+          const completed = completedKnowledgeSteps.includes(index);
+          const locked = index > activeKnowledgeStep && !completed;
+          return (
+            <button
+              key={lesson}
+              type="button"
+              onClick={() => !locked && focusKnowledgeLesson(index)}
+              aria-current={active ? "step" : undefined}
+              disabled={locked}
+              className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition ${locked ? "cursor-not-allowed border-[#E5E7EB] bg-[#F9FAFB] text-[#94A3B8]" : active ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534] shadow-sm" : completed ? "border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#86EFAC] hover:text-[#111827]"}`}
+            >
+              <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${completed ? "bg-[#22C55E] text-white" : active ? "bg-[#111827] text-white" : locked ? "bg-[#F1F5F9] text-[#94A3B8]" : "bg-[#F8FAFC] text-[#64748B]"}`}>
+                {completed ? <Check className="h-3.5 w-3.5" /> : <span className="text-[11px]">{index + 1}</span>}
+              </span>
+              <span>{lesson}</span>
+              {completed && <span className="text-[10px] uppercase tracking-[0.12em]">Done</span>}
+            </button>
+          );
+        })}
+      </div>
+    </section>
+  );
+
+  const CurrentLesson = () => {
+    const lessonContent = (() => {
+      switch (activeKnowledgeStep) {
+        case 0:
+          return (
+            <section data-lesson-index="0" className={knowledgeLessonCardClass(0)}>
+              <div className="space-y-5">
+                <div className="flex gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><Bot className="h-5 w-5" /></div>
+                  <div>
+                    <p className="text-[20px] font-semibold text-[#111827]">Knowledge Sources</p>
+                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">Teach the AI where it should learn from. Select one or more sources.</p>
+                  </div>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {[
+                    { key: "company", title: "Company Information", desc: "Teach your AI about your company, mission, industries and customers.", Icon: User },
+                    { key: "faqs", title: "FAQs", desc: "Teach the AI the questions customers ask most often and the preferred answers.", Icon: MessageCircle },
+                    { key: "documents", title: "Documents", desc: "Upload contracts, brochures and policy files for accurate referencing.", Icon: Paperclip },
+                    { key: "website", title: "Website", desc: "Sync information directly from your website.", Icon: Globe },
+                  ].map((item) => {
+                    const selected = selectedKnowledgeSources.includes(item.key);
+                    return (
+                      <button
+                        key={item.key}
+                        type="button"
+                        onClick={() => setSelectedKnowledgeSources((cur) => cur.includes(item.key) ? cur.filter((k) => k !== item.key) : [...cur, item.key])}
+                        className={`text-left rounded-2xl border p-4 transition ${selected ? "border-[#22C55E] bg-[#F7FEF9] shadow-sm" : "border-[#E5E7EB] bg-white hover:shadow-sm"}`}
+                      >
+                        <div className="flex items-start gap-3">
+                          <span className={`flex h-9 w-9 items-center justify-center rounded-xl ${selected ? "bg-[#22C55E] text-white" : "bg-[#F1F5F9] text-[#475569]"}`}><item.Icon className="h-4 w-4" /></span>
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center justify-between">
+                              <p className="text-sm font-semibold text-[#111827]">{item.title}</p>
+                              {selected && <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#22C55E] text-white"><Check className="h-3.5 w-3.5" /></span>}
+                            </div>
+                            <p className="mt-2 text-sm text-[#64748B]">{item.desc}</p>
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
+                  <button type="button" onClick={() => setActiveWorkspaceSection("Identity")} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                  <button type="button" onClick={() => completeKnowledgeLesson(0)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                </div>
+              </div>
+            </section>
+          );
+        case 1:
+          return (
+            <section data-lesson-index="1" className={knowledgeLessonCardClass(1)}>
+              <div className="space-y-5">
+                <div className="flex gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EFF6FF] text-[#1D4ED8]"><User className="h-5 w-5" /></div>
+                  <div>
+                    <p className="text-[20px] font-semibold text-[#111827]">Company Information</p>
+                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">Teach your AI important facts about your business so it can respond accurately.</p>
+                  </div>
+                </div>
+                <div className="space-y-4 rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                  <div>
+                    <label className="text-sm font-medium text-[#111827]">About your company</label>
+                    <Textarea value={companyAbout} onChange={(e) => setCompanyAbout(e.target.value)} className="mt-2 w-full resize-none" />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-[#111827]">Mission (optional)</label>
+                    <Textarea value={companyMission} onChange={(e) => setCompanyMission(e.target.value)} className="mt-2 w-full resize-none" />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-[#111827]">Vision (optional)</label>
+                    <Textarea value={companyVision} onChange={(e) => setCompanyVision(e.target.value)} className="mt-2 w-full resize-none" />
+                  </div>
+                </div>
+                <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
+                  <button type="button" onClick={() => focusKnowledgeLesson(0)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                  <button type="button" onClick={() => { setBusinessInfo((b) => ({ ...b, about: companyAbout })); completeKnowledgeLesson(1); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                </div>
+              </div>
+            </section>
+          );
+        case 2:
+          return (
+            <section data-lesson-index="2" className={knowledgeLessonCardClass(2)}>
+              <div className="space-y-5">
+                <div className="flex gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF7ED] text-[#C2410C]"><MessageCircle className="h-5 w-5" /></div>
+                  <div>
+                    <p className="text-[20px] font-semibold text-[#111827]">FAQs</p>
+                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">Teach the AI the questions customers ask most often and the answers it should use.</p>
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                  <div className="space-y-3">
+                    {faqItems.map((faq) => (
+                      <div key={faq.id} className="rounded-xl border border-[#E5E7EB] bg-white p-3">
+                        <p className="text-sm font-semibold text-[#111827]">{faq.question || "New FAQ"}</p>
+                        <p className="mt-1 text-sm text-[#64748B]">{faq.answer || "Add a helpful response."}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-4 flex items-center justify-between">
+                    <div />
+                    <button type="button" onClick={() => { const id = `faq-${Date.now()}`; setFaqItems((items) => [{ id, question: "", answer: "" }, ...items]); setEditingFaqId(id); }} className="inline-flex items-center gap-2 rounded-lg bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"><Plus className="h-4 w-4" />Add FAQ</button>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
+                  <button type="button" onClick={() => focusKnowledgeLesson(1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                  <button type="button" onClick={() => completeKnowledgeLesson(2)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                </div>
+              </div>
+            </section>
+          );
+        case 3:
+          return (
+            <section data-lesson-index="3" className={knowledgeLessonCardClass(3)}>
+              <div className="space-y-5">
+                <div className="flex gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F5F3FF] text-[#6D28D9]"><Shield className="h-5 w-5" /></div>
+                  <div>
+                    <p className="text-[20px] font-semibold text-[#111827]">Policies</p>
+                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">Capture the rules your AI should follow when customers ask about refunds, returns, warranties and privacy.</p>
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                  <div className="space-y-3">
+                    <Textarea value={policies.returnPolicy} onChange={(e) => setPolicies((cur) => ({ ...cur, returnPolicy: e.target.value }))} className="w-full" />
+                    <Textarea value={policies.deliveryPolicy} onChange={(e) => setPolicies((cur) => ({ ...cur, deliveryPolicy: e.target.value }))} className="w-full" />
+                    <Textarea value={policies.cancellationPolicy} onChange={(e) => setPolicies((cur) => ({ ...cur, cancellationPolicy: e.target.value }))} className="w-full" />
+                  </div>
+                </div>
+                <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
+                  <button type="button" onClick={() => focusKnowledgeLesson(2)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                  <button type="button" onClick={() => completeKnowledgeLesson(3)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                </div>
+              </div>
+            </section>
+          );
+        case 4:
+          return (
+            <section data-lesson-index="4" className={knowledgeLessonCardClass(4)}>
+              <div className="space-y-5">
+                <div className="flex gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EFF6FF] text-[#1D4ED8]"><Paperclip className="h-5 w-5" /></div>
+                  <div>
+                    <p className="text-[20px] font-semibold text-[#111827]">Documents</p>
+                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">Allow the AI to learn from uploaded files.</p>
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                  <div onClick={() => knowledgeDocumentInputRef.current?.click()} className="cursor-pointer rounded-xl border border-dashed border-[#DCE3EA] bg-white p-6 text-center">
+                    <Paperclip className="mx-auto h-6 w-6 text-[#16A34A]" />
+                    <p className="mt-3 text-sm font-semibold text-[#111827]">Upload documents</p>
+                  </div>
+                  <input ref={knowledgeDocumentInputRef} type="file" multiple accept=".pdf,.doc,.docx,.txt,.csv,.xls,.xlsx,image/*" className="hidden" onChange={(event) => { if (event.target.files) uploadMock(event.target.files); event.target.value = ""; }} />
+                </div>
+                <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
+                  <button type="button" onClick={() => focusKnowledgeLesson(3)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                  <button type="button" onClick={() => completeKnowledgeLesson(4)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                </div>
+              </div>
+            </section>
+          );
+        case 5:
+          return (
+            <section data-lesson-index="5" className={knowledgeLessonCardClass(5)}>
+              <div className="space-y-5">
+                <div className="flex gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F5F3FF] text-[#6D28D9]"><Globe className="h-5 w-5" /></div>
+                  <div>
+                    <p className="text-[20px] font-semibold text-[#111827]">Website Sync</p>
+                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">Connect the AI to your website so it can learn from the latest public information.</p>
+                  </div>
+                </div>
+                <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                  <div className="relative">
+                    <Globe className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#94A3B8]" />
+                    <input type="url" value={websiteImportUrl} onChange={(event) => setWebsiteImportUrl(event.target.value)} placeholder="https://theirbusiness.com" className="h-11 w-full rounded-lg border border-[#E2E8F0] bg-white pl-9 pr-3 text-sm outline-none transition focus:border-[#22C55E]" />
+                  </div>
+                  <button type="button" onClick={scanWebsite} disabled={websiteImportStatus === "syncing" || !websiteImportUrl.trim()} className="mt-4 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-60">{websiteImportStatus === "syncing" ? "Scanning…" : "Scan Website"}</button>
+                </div>
+                <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
+                  <button type="button" onClick={() => focusKnowledgeLesson(4)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                  <button type="button" onClick={() => completeKnowledgeLesson(5)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                </div>
+              </div>
+            </section>
+          );
+        case 6:
+          return (
+            <section data-lesson-index="6" className={activeKnowledgeStep === 6 ? "relative overflow-hidden rounded-[28px] border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] via-white to-[#F8FAFC] p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
+              <div className="space-y-5">
+                <div className="rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-sm">
+                  <p className="text-sm font-semibold text-[#111827]">Training complete</p>
+                  <p className="mt-2 text-sm leading-6 text-[#64748B]">Your lesson-based knowledge setup is complete.</p>
+                </div>
+                <div className="flex items-center justify-between border-t border-[#D1FAE5] pt-4">
+                  <button type="button" onClick={() => focusKnowledgeLesson(5)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                  <button type="button" onClick={() => { completeKnowledgeLesson(6); setActiveWorkspaceSection("Catalogue"); }} className="inline-flex items-center gap-2 rounded-lg bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"><Sparkles className="h-4 w-4" />Finish training</button>
+                </div>
+              </div>
+            </section>
+          );
+        default:
+          return null;
+      }
+    })();
+
+    return (
+      <div ref={knowledgeLessonRef} className="space-y-4 scroll-mt-36 scroll-smooth">
+        {lessonContent}
+      </div>
+    );
+  };
+
   return (
     <div className="h-screen min-h-screen overflow-hidden bg-[#FFFFFF] text-[#111827]">
       {/* Desktop fixed left sidebar */}
@@ -4850,449 +5109,10 @@ export default function DashboardLayout() {
                   </div>
 
                     {activeWorkspaceSection === "Knowledge Hub" && (
-                      <section className="space-y-5" aria-label="Knowledge training">
-                        <section className="relative z-20 rounded-[24px] border border-[#E5E7EB] bg-white px-3 py-3 shadow-[0_6px_18px_rgba(15,23,42,0.04)]" aria-label="Knowledge onboarding progress">
-                          {completedKnowledgeSteps.length >= knowledgeLessons.length ? (
-                            <div className="relative overflow-hidden rounded-[20px] border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] via-white to-[#F8FAFC] p-6 shadow-[0_10px_30px_rgba(15,23,42,0.06)] animate-in fade-in-0 zoom-in-95 duration-300">
-                              <div className="pointer-events-none absolute inset-0 overflow-hidden">
-                                <div className="absolute -right-10 -top-8 h-24 w-24 rounded-full bg-[#22C55E]/10 blur-3xl" />
-                                <div className="absolute -left-8 bottom-0 h-24 w-24 rounded-full bg-[#3B82F6]/10 blur-3xl" />
-                                <span className="absolute left-8 top-8 h-3 w-3 rounded-full bg-[#22C55E] animate-bounce" />
-                                <span className="absolute right-12 top-12 h-2.5 w-2.5 rounded-full bg-[#F59E0B] animate-bounce" style={{ animationDelay: "180ms" }} />
-                                <span className="absolute bottom-14 left-12 h-2 w-2 rounded-full bg-[#6366F1] animate-bounce" style={{ animationDelay: "320ms" }} />
-                              </div>
-                              <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-                                <div className="max-w-2xl">
-                                  <div className="inline-flex items-center gap-2 rounded-full border border-[#BBF7D0] bg-white/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#166534]">Knowledge Training Complete 🎉</div>
-                                  <p className="mt-3 text-[22px] font-semibold tracking-[-0.02em] text-[#111827]">Your AI now understands your business</p>
-                                  <p className="mt-2 text-sm leading-6 text-[#475569]">Your AI can answer customer questions using the information you provided.</p>
-                                  <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                                    {[
-                                      { label: 'Company Information', ok: Boolean(businessInfo.name || businessInfo.about) },
-                                      { label: 'FAQs', ok: faqItems.length > 0 },
-                                      { label: 'Policies', ok: Object.values(policies).filter(Boolean).length > 0 },
-                                      { label: 'Documents', ok: knowledgeDocuments.length > 0 },
-                                      { label: 'Website', ok: websiteScanSummary ? websiteScanSummary.pages > 0 : websiteImportStatus === 'complete' },
-                                    ].map((it) => (
-                                      <div key={it.label} className="flex items-center gap-3 rounded-xl border border-[#EEF2F6] bg-[#F8FAFC] px-3 py-3">
-                                        <span className={`inline-flex h-8 w-8 items-center justify-center rounded-full ${it.ok ? 'bg-[#22C55E] text-white' : 'bg-[#F1F5F9] text-[#64748B]'}`}>
-                                          {it.ok ? <Check className="h-4 w-4" /> : <span className="text-sm">–</span>} 
-                                        </span>
-                                        <div>
-                                          <p className="text-sm font-semibold text-[#111827]">{it.label}</p>
-                                        </div>
-                                      </div>
-                                    ))}
-                                  </div>
-                                </div>
-                                <div className="flex items-center gap-4 rounded-2xl border border-[#D1FAE5] bg-white/80 p-4 shadow-sm">
-                                  <div className="relative flex h-36 w-36 items-center justify-center rounded-full border border-[#D1FAE5] p-1" style={{ background: `conic-gradient(#22C55E ${Math.round((completedKnowledgeSteps.length / Math.max(1, knowledgeLessons.length)) * 100)}%, #E5E7EB 0)` }}>
-                                    <div className="flex h-full w-full items-center justify-center rounded-full bg-white">
-                                      <div className="text-center">
-                                        <p className="text-[26px] font-semibold text-[#111827]">{Math.round((completedKnowledgeSteps.length / Math.max(1, knowledgeLessons.length)) * 100)}%</p>
-                                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#64748B]">Complete</p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div>
-                                    <p className="text-sm font-semibold text-[#111827]">Knowledge</p>
-                                    <p className="mt-1 text-sm text-[#64748B]">100% Complete</p>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="mt-6 flex items-center justify-end gap-3">
-                                <button type="button" onClick={() => { setCompletedKnowledgeSteps([]); focusKnowledgeLesson(0); }} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-semibold text-[#475569] transition hover:bg-[#F8FAFC] hover:text-[#111827]">Review lessons</button>
-                                <button type="button" onClick={() => { setCompletionToast('Knowledge training complete — opening Catalogue.'); setActiveWorkspaceSection('Catalogue'); window.setTimeout(() => setCompletionToast(null), 1800); }} className="inline-flex items-center gap-2 rounded-lg bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]">Continue to Catalogue</button>
-                              </div>
-                            </div>
-                          ) : (
-                            <>
-                              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                                <div>
-                                  <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#166534]">Knowledge onboarding curriculum</p>
-                                  <p className="mt-1 text-base font-semibold text-[#111827]">Teach your AI in a few focused lessons so it can answer with confidence.</p>
-                                </div>
-                                <div className="rounded-full bg-[#ECFDF5] px-3 py-1 text-sm font-semibold text-[#166534]">
-                                  {completedKnowledgeSteps.length}/{knowledgeLessons.length} lessons complete
-                                </div>
-                              </div>
-                              <div className="mt-3 flex flex-wrap gap-2">
-                                {knowledgeLessons.map((lesson, index) => {
-                                  const active = activeKnowledgeStep === index;
-                                  const completed = completedKnowledgeSteps.includes(index);
-                                  const locked = index > activeKnowledgeStep && !completed;
-                                  return (
-                                    <button key={lesson} type="button" onClick={() => !locked && focusKnowledgeLesson(index)} aria-current={active ? "step" : undefined} disabled={locked} className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition ${locked ? "cursor-not-allowed border-[#E5E7EB] bg-[#F9FAFB] text-[#94A3B8]" : active ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534] shadow-sm" : completed ? "border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#86EFAC] hover:text-[#111827]"}`}>
-                                      <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${completed ? "bg-[#22C55E] text-white" : active ? "bg-[#111827] text-white" : locked ? "bg-[#F1F5F9] text-[#94A3B8]" : "bg-[#F8FAFC] text-[#64748B]"}`}>
-                                        {completed ? <Check className="h-3.5 w-3.5" /> : <span className="text-[11px]">{index + 1}</span>}
-                                      </span>
-                                      <span>{lesson}</span>
-                                      {completed && <span className="text-[10px] uppercase tracking-[0.12em]">Done</span>}
-                                    </button>
-                                  );
-                                })}
-                              </div>
-                            </>
-                          )}
-                        </section>
-
-                        <div ref={knowledgeLessonRef} className="space-y-4 scroll-mt-36 scroll-smooth">
-                          <section data-lesson-index="0" className={activeKnowledgeStep === 0 ? knowledgeLessonCardClass(0) : "hidden"}>
-                            <div className="space-y-5">
-                              <div className="flex gap-3">
-                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><Bot className="h-5 w-5" /></div>
-                                <div>
-                                  <p className="text-[20px] font-semibold text-[#111827]">Knowledge Sources</p>
-                                  <p className="mt-2 text-sm leading-6 text-[#6B7280]">Teach the AI where it should learn from. Select one or more sources.</p>
-                                </div>
-                              </div>
-                              <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
-                                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                                  {[
-                                    { key: "company", title: "Company Information", desc: "Teach your AI about your company, mission, industries and customers.", Icon: User },
-                                    { key: "faqs", title: "FAQs", desc: "Teach the AI the questions customers ask most often and the preferred answers.", Icon: MessageCircle },
-                                    { key: "documents", title: "Documents", desc: "Upload contracts, brochures and policy files for accurate referencing.", Icon: Paperclip },
-                                    { key: "website", title: "Website", desc: "Sync information directly from your website.", Icon: Globe },
-                                  ].map((item) => {
-                                    const selected = selectedKnowledgeSources.includes(item.key);
-                                    return (
-                                      <button
-                                        key={item.key}
-                                        type="button"
-                                        onClick={() => setSelectedKnowledgeSources((cur) => cur.includes(item.key) ? cur.filter((k) => k !== item.key) : [...cur, item.key])}
-                                        className={`text-left rounded-2xl border p-4 transition ${selected ? "border-[#22C55E] bg-[#F7FEF9] shadow-sm" : "border-[#E5E7EB] bg-white hover:shadow-sm"}`}
-                                      >
-                                        <div className="flex items-start gap-3">
-                                          <span className={`flex h-9 w-9 items-center justify-center rounded-xl ${selected ? "bg-[#22C55E] text-white" : "bg-[#F1F5F9] text-[#475569]"}`}><item.Icon className="h-4 w-4" /></span>
-                                          <div className="min-w-0 flex-1">
-                                            <div className="flex items-center justify-between">
-                                              <p className="text-sm font-semibold text-[#111827]">{item.title}</p>
-                                              {selected && <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#22C55E] text-white"><Check className="h-3.5 w-3.5" /></span>}
-                                            </div>
-                                            <p className="mt-2 text-sm text-[#64748B]">{item.desc}</p>
-                                          </div>
-                                        </div>
-                                      </button>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-                              <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
-                                <button type="button" onClick={() => setActiveWorkspaceSection("Identity")} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                <button type="button" onClick={() => { completeKnowledgeLesson(0); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
-                              </div>
-                            </div>
-                          </section>
-
-                          <section data-lesson-index="1" className={activeKnowledgeStep === 1 ? knowledgeLessonCardClass(1) : "hidden"}>
-                            <div className="space-y-6">
-                              <div className="flex gap-3">
-                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EFF6FF] text-[#1D4ED8]"><User className="h-5 w-5" /></div>
-                                <div>
-                                  <p className="text-[20px] font-semibold text-[#111827]">Company Information</p>
-                                  <p className="mt-2 text-sm leading-6 text-[#6B7280]">Teach your AI important facts about your business so it can respond accurately.</p>
-                                </div>
-                              </div>
-
-                              <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
-                                <div className="space-y-4">
-                                  <div>
-                                    <label className="text-sm font-medium text-[#111827]">About your company</label>
-                                    <Textarea value={companyAbout} onChange={(e) => setCompanyAbout(e.target.value)} className="mt-2 w-full resize-none" />
-                                    <p className="mt-1 text-xs text-[#64748B]">Briefly describe what customers should expect when they contact you.</p>
-                                  </div>
-
-                                  <div>
-                                    <label className="text-sm font-medium text-[#111827]">Mission (optional)</label>
-                                    <Textarea value={companyMission} onChange={(e) => setCompanyMission(e.target.value)} className="mt-2 w-full resize-none" />
-                                    <p className="mt-1 text-xs text-[#64748B]">A short statement of why your company exists.</p>
-                                  </div>
-
-                                  <div>
-                                    <label className="text-sm font-medium text-[#111827]">Vision (optional)</label>
-                                    <Textarea value={companyVision} onChange={(e) => setCompanyVision(e.target.value)} className="mt-2 w-full resize-none" />
-                                    <p className="mt-1 text-xs text-[#64748B]">Where your company is headed in the long term.</p>
-                                  </div>
-
-                                  <div className="grid gap-3 md:grid-cols-2">
-                                    <div>
-                                      <TextInput id="years-in-business" label="Years in business" value={yearsInBusiness} onChange={(e) => setYearsInBusiness(e.target.value)} />
-                                      <p className="mt-1 text-xs text-[#64748B]">Number of years you've been operating.</p>
-                                    </div>
-                                    <div>
-                                      <TextInput id="industries-served" label="Industries served" value={industriesServed} onChange={(e) => setIndustriesServed(e.target.value)} />
-                                      <p className="mt-1 text-xs text-[#64748B]">Comma-separated industries, e.g. Retail, Hospitality.</p>
-                                    </div>
-                                  </div>
-
-                                  <div>
-                                    <label className="text-sm font-medium text-[#111827]">Target customers</label>
-                                    <Textarea value={targetCustomers} onChange={(e) => setTargetCustomers(e.target.value)} className="mt-2 w-full resize-none" />
-                                    <p className="mt-1 text-xs text-[#64748B]">Who your typical customers are (segments, business sizes, demographics).</p>
-                                  </div>
-
-                                  <div>
-                                    <label className="text-sm font-medium text-[#111827]">What makes your business different?</label>
-                                    <Textarea value={differentiators} onChange={(e) => setDifferentiators(e.target.value)} className="mt-2 w-full resize-none" />
-                                    <p className="mt-1 text-xs text-[#64748B]">Unique strengths, guarantees, or policies that set you apart.</p>
-                                  </div>
-
-                                  <div>
-                                    <label className="text-sm font-medium text-[#111827]">Common customer problems you solve</label>
-                                    <Textarea value={customerProblems} onChange={(e) => setCustomerProblems(e.target.value)} className="mt-2 w-full resize-none" />
-                                    <p className="mt-1 text-xs text-[#64748B]">Examples of problems customers bring to you and how you help.</p>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
-                                <button type="button" onClick={() => focusKnowledgeLesson(0)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                <button type="button" onClick={() => { setBusinessInfo((b) => ({ ...b, about: companyAbout })); completeKnowledgeLesson(1); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
-                              </div>
-                            </div>
-                          </section>
-
-                          <section data-lesson-index="2" className={activeKnowledgeStep === 2 ? knowledgeLessonCardClass(2) : "hidden"}>
-                            <div className="space-y-5">
-                              <div className="flex gap-3">
-                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF7ED] text-[#C2410C]"><MessageCircle className="h-5 w-5" /></div>
-                                <div>
-                                  <p className="text-[20px] font-semibold text-[#111827]">FAQs</p>
-                                  <p className="mt-2 text-sm leading-6 text-[#6B7280]">Teach the AI the questions customers ask most often and the answers it should use.</p>
-                                </div>
-                              </div>
-
-                              <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
-                                <div className="flex items-center justify-between">
-                                  <p className="text-sm font-semibold text-[#111827]">FAQ training cards</p>
-                                  <span className="text-sm font-semibold text-[#166534]">{faqItems.length} FAQ{faqItems.length === 1 ? "" : "s"} added</span>
-                                </div>
-
-                                <div className="mt-4 grid gap-3">
-                                  {faqItems.length ? faqItems.map((faq) => {
-                                    const editing = editingFaqId === faq.id;
-                                    return (
-                                      <article key={faq.id} className={`rounded-xl border bg-white p-4 transition ${editing ? "ring-2 ring-[#DCFCE7]" : ""}`}>
-                                        <div className="flex items-start justify-between gap-3">
-                                          <div className="min-w-0">
-                                            {editing ? (
-                                              <>
-                                                <TextInput id={`faq-q-${faq.id}`} label="Question" value={faq.question} onChange={(e) => setFaqItems((items) => items.map((it) => it.id === faq.id ? { ...it, question: e.target.value } : it))} />
-                                                <div className="mt-3">
-                                                  <label className="text-sm font-medium text-[#111827]">Answer</label>
-                                                  <Textarea value={faq.answer} onChange={(e) => setFaqItems((items) => items.map((it) => it.id === faq.id ? { ...it, answer: e.target.value } : it))} className="mt-2 w-full resize-none" />
-                                                </div>
-                                              </>
-                                            ) : (
-                                              <>
-                                                <p className="text-sm font-semibold text-[#111827]">{faq.question}</p>
-                                                <p className="mt-2 text-sm leading-6 text-[#64748B]">{faq.answer}</p>
-                                              </>
-                                            )}
-                                          </div>
-                                          <div className="flex flex-col gap-2">
-                                            <button type="button" onClick={() => setEditingFaqId(editing ? null : faq.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-2 py-1 text-xs font-semibold text-[#64748B] transition hover:bg-[#F8FAFC]">{editing ? "Done" : "Edit"}</button>
-                                            <button type="button" onClick={() => setFaqItems((items) => items.filter((it) => it.id !== faq.id))} className="rounded-lg border border-[#FECACA] bg-white px-2 py-1 text-xs font-semibold text-[#B91C1C] transition hover:bg-[#FFEEEE]">Delete</button>
-                                          </div>
-                                        </div>
-                                      </article>
-                                    );
-                                  }) : (
-                                    <div className="rounded-xl border border-dashed border-[#DCE3EA] bg-white p-5 text-sm text-[#64748B]">No FAQs yet. Click "Add FAQ" to create one.</div>
-                                  )}
-                                </div>
-
-                                <div className="mt-4 flex items-center justify-between">
-                                  <div />
-                                  <button type="button" onClick={() => { const id = `faq-${Date.now()}`; setFaqItems((items) => [{ id, question: "", answer: "" }, ...items]); setEditingFaqId(id); }} className="inline-flex items-center gap-2 rounded-lg bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"><Plus className="h-4 w-4" />Add FAQ</button>
-                                </div>
-                              </div>
-
-                              <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
-                                <button type="button" onClick={() => focusKnowledgeLesson(1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                <button type="button" onClick={() => completeKnowledgeLesson(2)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
-                              </div>
-                            </div>
-                          </section>
-
-                          <section data-lesson-index="3" className={activeKnowledgeStep === 3 ? knowledgeLessonCardClass(3) : "hidden"}>
-                            <div className="space-y-5">
-                              <div className="flex gap-3">
-                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F5F3FF] text-[#6D28D9]"><Shield className="h-5 w-5" /></div>
-                                <div>
-                                  <p className="text-[20px] font-semibold text-[#111827]">Policies</p>
-                                  <p className="mt-2 text-sm leading-6 text-[#6B7280]">Capture the rules your AI should follow when customers ask about refunds, returns, warranties and privacy.</p>
-                                </div>
-                              </div>
-
-                              <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
-                                <div className="space-y-3">
-                                  {[
-                                    { key: "refund", title: "Refund Policy" },
-                                    { key: "return", title: "Return Policy" },
-                                    { key: "warranty", title: "Warranty" },
-                                    { key: "support", title: "Support Policy" },
-                                    { key: "privacy", title: "Privacy Policy" },
-                                    { key: "cancellation", title: "Cancellation Policy" },
-                                  ].map((p) => {
-                                    const expanded = expandedPolicy === p.key;
-                                    return (
-                                      <div key={p.key} className="rounded-xl border border-[#E5E7EB] bg-white">
-                                        <button type="button" onClick={() => setExpandedPolicy((cur) => (cur === p.key ? null : p.key))} className="w-full flex items-center justify-between p-4 text-left">
-                                          <div>
-                                            <p className="text-sm font-semibold text-[#111827]">{p.title}</p>
-                                            <p className="mt-1 text-xs text-[#64748B]">{expanded ? "Editing" : "Collapsed — click to expand and edit"}</p>
-                                          </div>
-                                          <ChevronDown className={`h-5 w-5 text-[#64748B] transition-transform ${expanded ? "rotate-180" : "rotate-0"}`} />
-                                        </button>
-                                        <div className={`${expanded ? "block" : "hidden"} border-t border-[#EEF2F6] p-4`}> 
-                                          <Textarea value={policiesText[p.key]} onChange={(e) => setPoliciesText((cur) => ({ ...cur, [p.key]: e.target.value }))} className="w-full" />
-                                          <p className="mt-2 text-xs text-[#64748B]">You can leave this blank and fill later.</p>
-                                        </div>
-                                      </div>
-                                    );
-                                  })}
-                                </div>
-                              </div>
-
-                              <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
-                                <button type="button" onClick={() => focusKnowledgeLesson(2)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                <button type="button" onClick={() => { completeKnowledgeLesson(3); setExpandedPolicy(null); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
-                              </div>
-                            </div>
-                          </section>
-
-                          <section data-lesson-index="4" className={activeKnowledgeStep === 4 ? knowledgeLessonCardClass(4) : "hidden"}>
-                            <div className="space-y-5">
-                              <div className="flex gap-3">
-                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EFF6FF] text-[#1D4ED8]"><Paperclip className="h-5 w-5" /></div>
-                                <div>
-                                  <p className="text-[20px] font-semibold text-[#111827]">Documents</p>
-                                  <p className="mt-2 text-sm leading-6 text-[#6B7280]">Allow the AI to learn from uploaded files. Supported: PDF, DOCX, TXT, CSV, XLSX, images.</p>
-                                </div>
-                              </div>
-
-                              <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
-                                <div className="rounded-xl border border-[#E5E7EB] bg-white p-4">
-                                  <div className="flex items-center justify-between">
-                                    <p className="text-sm font-semibold text-[#111827]">Upload documents</p>
-                                    <span className="text-sm font-semibold text-[#166534]">{knowledgeDocuments.length} uploaded</span>
-                                  </div>
-
-                                  <input ref={knowledgeDocumentInputRef} type="file" multiple accept=".pdf,.doc,.docx,.txt,.csv,.xls,.xlsx,image/*" className="hidden" onChange={(event) => { if (event.target.files) uploadMock(event.target.files); event.target.value = ""; }} />
-
-                                  <div onDrop={(event) => { event.preventDefault(); setKnowledgeDocumentDragActive(false); if (event.dataTransfer.files.length) uploadMock(event.dataTransfer.files); }} onDragOver={(event) => { event.preventDefault(); setKnowledgeDocumentDragActive(true); }} onDragLeave={() => setKnowledgeDocumentDragActive(false)} onClick={() => knowledgeDocumentInputRef.current?.click()} className={`mt-4 cursor-pointer rounded-xl border-2 border-dashed p-6 text-center transition ${knowledgeDocumentDragActive ? "border-[#22C55E] bg-[#ECFDF5]" : "border-[#DCE3EA] bg-[#F8FAFC] hover:border-[#86EFAC] hover:bg-[#F7FEF9]"}`}>
-                                    <Paperclip className="mx-auto h-6 w-6 text-[#16A34A]" />
-                                    <p className="mt-3 text-sm font-semibold text-[#111827]">Drag & drop documents here</p>
-                                    <p className="mt-1 text-xs text-[#64748B]">PDF, DOCX, TXT, CSV, XLSX, images</p>
-                                    <p className="mt-3 text-xs text-[#64748B]">Click to browse files</p>
-                                  </div>
-
-                                  <div className="mt-4 grid gap-3">
-                                    {knowledgeDocuments.length ? knowledgeDocuments.map((doc) => (
-                                      <div key={doc.id} className="flex items-center justify-between rounded-lg border border-[#EEF2F6] bg-white px-3 py-2">
-                                        <div className="flex items-center gap-3">
-                                          <div className="h-10 w-10 flex items-center justify-center rounded-md bg-[#F8FAFB] text-[#475569]">
-                                            {doc.kind && doc.kind.toLowerCase().startsWith("png") || doc.kind.toLowerCase().startsWith("jpg") || doc.kind.toLowerCase().startsWith("jpeg") ? <Image className="h-5 w-5" /> : <Paperclip className="h-5 w-5" />}
-                                          </div>
-                                          <div className="min-w-0">
-                                            <p className="text-sm font-semibold text-[#111827] truncate">{doc.name}</p>
-                                            <p className="mt-1 text-xs text-[#64748B]">{doc.size} · {doc.status}</p>
-                                            {doc.progress !== undefined && doc.progress < 100 && (
-                                              <div className="mt-2 w-48 overflow-hidden rounded-full bg-[#EEF2F6]">
-                                                <div className="h-1.5 rounded-full bg-[#22C55E] transition-all" style={{ width: `${doc.progress}%` }} />
-                                              </div>
-                                            )}
-                                          </div>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                          <button type="button" onClick={() => setKnowledgeDocuments((docs) => docs.filter((d) => d.id !== doc.id))} className="rounded-lg px-2 py-1 text-xs font-semibold text-[#B91C1C] border border-[#FECACA] bg-white">Remove</button>
-                                        </div>
-                                      </div>
-                                    )) : (
-                                      <div className="rounded-xl border border-dashed border-[#DCE3EA] bg-[#F8FAFC] p-5 text-sm text-[#64748B]">No documents uploaded yet. Add files to give the AI a richer knowledge base.</div>
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
-                                <button type="button" onClick={() => focusKnowledgeLesson(3)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                <button type="button" onClick={() => completeKnowledgeLesson(4)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
-                              </div>
-                            </div>
-                          </section>
-
-                          <section data-lesson-index="5" className={activeKnowledgeStep === 5 ? knowledgeLessonCardClass(5) : "hidden"}>
-                            <div className="space-y-5">
-                              <div className="flex gap-3">
-                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F5F3FF] text-[#6D28D9]"><Globe className="h-5 w-5" /></div>
-                                <div>
-                                  <p className="text-[20px] font-semibold text-[#111827]">Website Sync</p>
-                                  <p className="mt-2 text-sm leading-6 text-[#6B7280]">Connect the AI to your website so it can learn from the latest public information.</p>
-                                </div>
-                              </div>
-                              <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
-                                <div className="rounded-xl border border-[#E5E7EB] bg-white p-4">
-                                  <div className="flex items-center gap-2">
-                                    <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><Globe className="h-4 w-4" /></span>
-                                    <div>
-                                      <p className="text-sm font-semibold text-[#111827]">Website import</p>
-                                      <p className="mt-0.5 text-xs text-[#64748B]">Teach your AI from the pages you already trust.</p>
-                                    </div>
-                                  </div>
-                                  <div className="mt-4 flex flex-col gap-3 border-t border-[#EEF2F6] pt-4 sm:flex-row">
-                                    <div className="relative min-w-0 flex-1"><Globe className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#94A3B8]" /><input type="url" value={websiteImportUrl} onChange={(event) => setWebsiteImportUrl(event.target.value)} placeholder="https://theirbusiness.com" className="h-11 w-full rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] pl-9 pr-3 text-sm outline-none transition focus:border-[#22C55E] focus:bg-white focus:ring-4 focus:ring-[#DCFCE7]/70" /></div>
-                                    <button type="button" onClick={scanWebsite} disabled={websiteImportStatus === "syncing" || !websiteImportUrl.trim()} className="rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-60">{websiteImportStatus === "syncing" ? "Scanning…" : "Scan Website"}</button>
-                                  </div>
-                                  <div className="mt-4">
-                                    {websiteImportStatus === "syncing" ? (
-                                      <div className="rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] p-3">
-                                        <p className="text-sm text-[#64748B]">Scanning website…</p>
-                                        <div className="mt-3 w-full overflow-hidden rounded-full bg-[#EEF2F6]">
-                                          <div className="h-2 rounded-full bg-[#22C55E] transition-all" style={{ width: `${websiteImportProgress}%` }} />
-                                        </div>
-                                      </div>
-                                    ) : websiteImportStatus === "complete" && websiteScanSummary ? (
-                                      <div className="rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-sm">
-                                        <p className="text-sm font-semibold text-[#111827]">Website scanned successfully</p>
-                                        <p className="mt-1 text-xs text-[#64748B]">{websiteScanSummary.pages} pages discovered</p>
-                                        <div className="mt-3 grid gap-2 sm:grid-cols-3">
-                                          <div className="rounded-lg border border-[#EEF2F6] bg-[#F8FAFC] p-3 text-sm text-[#111827]"><div className="font-semibold">Products</div><div className="mt-1 text-xs text-[#64748B]">{websiteScanSummary.products}</div></div>
-                                          <div className="rounded-lg border border-[#EEF2F6] bg-[#F8FAFC] p-3 text-sm text-[#111827]"><div className="font-semibold">FAQs</div><div className="mt-1 text-xs text-[#64748B]">{websiteScanSummary.faqs}</div></div>
-                                          <div className="rounded-lg border border-[#EEF2F6] bg-[#F8FAFC] p-3 text-sm text-[#111827]"><div className="font-semibold">Contact</div><div className="mt-1 text-xs text-[#64748B]">{websiteScanSummary.contact}</div></div>
-                                          <div className="rounded-lg border border-[#EEF2F6] bg-[#F8FAFC] p-3 text-sm text-[#111827]"><div className="font-semibold">Policies</div><div className="mt-1 text-xs text-[#64748B]">{websiteScanSummary.policies}</div></div>
-                                          <div className="rounded-lg border border-[#EEF2F6] bg-[#F8FAFC] p-3 text-sm text-[#111827]"><div className="font-semibold">Blog</div><div className="mt-1 text-xs text-[#64748B]">{websiteScanSummary.blog}</div></div>
-                                        </div>
-                                        <div className="mt-3 rounded-md bg-[#ECFDF5] px-3 py-2 text-sm font-semibold text-[#166534]">Ready to import knowledge</div>
-                                      </div>
-                                    ) : (
-                                      <div className="rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] p-3 text-sm text-[#64748B]">Add a website URL to pull in pages and product information.</div>
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
-                                <button type="button" onClick={() => focusKnowledgeLesson(4)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                <button type="button" onClick={() => completeKnowledgeLesson(5)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
-                              </div>
-                            </div>
-                          </section>
-
-                          <section data-lesson-index="6" className={activeKnowledgeStep === 6 ? "relative overflow-hidden rounded-[28px] border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] via-white to-[#F8FAFC] p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
-                            <div className="relative space-y-6">
-                              <div className="rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-sm">
-                                <p className="text-sm font-semibold text-[#111827]">Training complete</p>
-                                <p className="mt-2 text-sm leading-6 text-[#64748B]">Your lesson-based knowledge setup is complete. Continue to the next workspace when you are ready.</p>
-                              </div>
-                              <div className="flex items-center justify-between border-t border-[#D1FAE5] pt-4">
-                                <button type="button" onClick={() => focusKnowledgeLesson(5)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                <button type="button" onClick={() => { completeKnowledgeLesson(6); setActiveWorkspaceSection("Catalogue"); }} className="inline-flex items-center gap-2 rounded-lg bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"><Sparkles className="h-4 w-4" />Finish training</button>
-                              </div>
-                            </div>
-                          </section>
-                        </div>
-                      </section>
+                      <KnowledgeWorkspace>
+                        <KnowledgeLessonTabs />
+                        <CurrentLesson />
+                      </KnowledgeWorkspace>
                     )}
 
                     {activeWorkspaceSection === "Catalogue" && (
