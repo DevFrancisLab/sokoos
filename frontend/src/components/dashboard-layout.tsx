@@ -4479,8 +4479,10 @@ export default function DashboardLayout() {
                                       </div>
                                       <div className="w-full space-y-2">
                                         <label className="block text-sm font-semibold text-[#111827]" htmlFor="identity-service-areas">Service Areas</label>
-                                        <input id="identity-service-areas" value={serviceAreaInput} onChange={(event) => setServiceAreaInput(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); addServiceArea(); } }} placeholder="Nairobi" className={`${AI_TRAINING_FIELD} w-full`} />
-                                        <p className="text-xs text-[#64748B]">Add multiple service areas. Press Enter after each one.</p>
+                                        <input id="identity-service-areas" value={serviceAreaInput} onChange={(event) => setServiceAreaInput(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); addServiceArea(); } }} placeholder="Nairobi, Westlands, Karen" className={`${AI_TRAINING_FIELD} w-full`} />
+                                        <div className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs leading-5 text-[#475569]">
+                                          Type one location at a time, then press Enter to add it. Example: Nairobi, Westlands, Karen.
+                                        </div>
                                         <div className="mt-2 flex flex-wrap gap-2">
                                           {parseServiceAreas(businessInfo.serviceAreas).map((area) => (
                                             <button key={area} type="button" onClick={() => removeServiceArea(area)} className="inline-flex items-center gap-1 rounded-full border border-[#E5E7EB] bg-white px-2.5 py-1 text-xs font-semibold text-[#111827] transition hover:border-[#86EFAC] hover:bg-[#F0FDF4]">
@@ -4489,11 +4491,7 @@ export default function DashboardLayout() {
                                             </button>
                                           ))}
                                         </div>
-                                        <div className="mt-3 flex flex-wrap gap-2">
-                                          {['Nairobi','Westlands','Karen','Kiambu','Machakos'].map((example) => (
-                                            <button key={example} type="button" onClick={() => addServiceArea(example)} className="rounded-full border border-[#E5E7EB] bg-white px-2.5 py-1 text-xs font-semibold text-[#475569] transition hover:border-[#22C55E] hover:text-[#166534]">{example}</button>
-                                          ))}
-                                        </div>
+
                                       </div>
                                     </div>
                                   </div>
