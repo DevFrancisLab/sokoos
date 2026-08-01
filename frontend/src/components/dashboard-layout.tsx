@@ -4367,50 +4367,94 @@ export default function DashboardLayout() {
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF7ED] text-[#C2410C]"><Clock className="h-5 w-5" /></div>
                                     <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Set your AI’s working hours</p>
-                                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">
-                                      Help your AI set the right expectations about your hours.
+                                      <p className="text-[20px] font-semibold text-[#111827]">Business Hours</p>
+                                      <p className="mt-2 text-sm leading-6 text-[#6B7280]">
+                                        Set the weekly rhythm of your business so the AI can answer whether you are open.
+                                      </p>
+                                    </div>
+                                  </div>
+
+                                  <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                                    <div className="grid gap-4 md:grid-cols-2">
+                                      <div className="space-y-2">
+                                        <label className="block text-sm font-semibold text-[#111827]" htmlFor="timezone">Timezone</label>
+                                        <select
+                                          id="timezone"
+                                          value={timezone}
+                                          onChange={(event) => { setTimezone(event.target.value); setHasUnsavedChanges(true); }}
+                                          className={AI_TRAINING_FIELD}
+                                        >
+                                          <option>East Africa Time (EAT)</option>
+                                          <option>West Africa Time (WAT)</option>
+                                          <option>Central Africa Time (CAT)</option>
+                                          <option>UTC</option>
+                                        </select>
+                                      </div>
+                                      <div className="space-y-2">
+                                        <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-hours">Weekly schedule</label>
+                                        <input
+                                          id="business-hours"
+                                          value={businessHours}
+                                          onChange={(event) => { setBusinessHours(event.target.value); setHasUnsavedChanges(true); }}
+                                          placeholder="Mon–Fri, 8:00 AM - 6:00 PM"
+                                          className={AI_TRAINING_FIELD}
+                                        />
+                                      </div>
+                                    </div>
+
+                                    <div className="mt-5 space-y-3">
+                                      {['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'].map((day) => (
+                                        <div key={day} className="rounded-xl border border-[#E5E7EB] bg-white p-3">
+                                          <div className="flex flex-wrap items-center justify-between gap-3">
+                                            <p className="text-sm font-semibold text-[#111827]">{day}</p>
+                                            <label className="inline-flex items-center gap-2 text-sm font-medium text-[#475569]">
+                                              <input type="checkbox" className="h-4 w-4 rounded border-[#CBD5E1] text-[#22C55E] focus:ring-[#22C55E]" />
+                                              <span>Closed</span>
+                                            </label>
+                                          </div>
+                                          <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                                            <div>
+                                              <label className="block text-xs font-semibold uppercase tracking-[0.2em] text-[#64748B]">Open</label>
+                                              <input type="text" placeholder="08:00" className="mt-1 h-10 w-full rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] px-3 text-sm outline-none focus:border-[#22C55E] focus:bg-white" />
+                                            </div>
+                                            <div>
+                                              <label className="block text-xs font-semibold uppercase tracking-[0.2em] text-[#64748B]">Close</label>
+                                              <input type="text" placeholder="17:00" className="mt-1 h-10 w-full rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] px-3 text-sm outline-none focus:border-[#22C55E] focus:bg-white" />
+                                            </div>
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+
+                                    <div className="mt-6 space-y-3">
+                                      <div className="space-y-2">
+                                        <label className="block text-sm font-semibold text-[#111827]" htmlFor="holiday-mode">Holiday Mode</label>
+                                        <textarea id="holiday-mode" rows={2} placeholder="We are closed for public holidays and reopen on the next business day." className={`${AI_TRAINING_TEXTAREA} mt-0 w-full resize-none`} />
+                                      </div>
+                                      <div className="space-y-2">
+                                        <label className="block text-sm font-semibold text-[#111827]" htmlFor="vacation-mode">Vacation Mode</label>
+                                        <textarea id="vacation-mode" rows={2} placeholder="We are currently on vacation and will respond once we are back." className={`${AI_TRAINING_TEXTAREA} mt-0 w-full resize-none`} />
+                                      </div>
+                                      <div className="space-y-2">
+                                        <label className="block text-sm font-semibold text-[#111827]" htmlFor="emergency-contact">Emergency Contact</label>
+                                        <input id="emergency-contact" placeholder="+254 700 000 000" className={AI_TRAINING_FIELD} />
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  <div className="rounded-2xl border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] to-white p-4">
+                                    <div className="flex items-center gap-2">
+                                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#22C55E] text-white"><Check className="h-3.5 w-3.5" /></span>
+                                      <p className="text-sm font-semibold text-[#166534]">How the AI uses these hours</p>
+                                    </div>
+                                    <p className="mt-3 text-sm leading-6 text-[#475569]">
+                                      These hours are used by the AI when customers ask whether the business is open. They help set accurate expectations and guide when the AI should respond with availability information.
                                     </p>
-                                    </div>
                                   </div>
 
-                                  <div className="grid gap-4 md:grid-cols-2">
-                                    <div className="relative">
-                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-hours">
-                                        Business hours
-                                      </label>
-                                      <input
-                                        id="business-hours"
-                                        value={businessHours}
-                                        onChange={(event) => setBusinessHours(event.target.value)}
-                                        placeholder="Mon–Fri, 8:00 AM - 6:00 PM"
-                                        className={AI_TRAINING_FIELD}
-                                      />
-                                      {businessHours && <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Business hours are ready" />}
-                                      <p className="mt-1.5 text-xs text-[#64748B]">Your AI uses this to set customer expectations.</p>
-                                    </div>
-
-                                    <div className="relative">
-                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="timezone">Time zone</label>
-                                      <select
-                                        id="timezone"
-                                        value={timezone}
-                                        onChange={(event) => setTimezone(event.target.value)}
-                                        className={AI_TRAINING_FIELD}
-                                      >
-                                        <option>East Africa Time (EAT)</option>
-                                        <option>West Africa Time (WAT)</option>
-                                        <option>Central Africa Time (CAT)</option>
-                                        <option>UTC</option>
-                                      </select>
-                                      <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Time zone is ready" />
-                                      <p className="mt-1.5 text-xs text-[#64748B]">Keeps hours accurate for every customer.</p>
-                                    </div>
-                                  </div>
-                                  <label className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${escalateOutsideHours ? "border-[#BBF7D0] bg-[#F7FEF9]" : "border-[#E5E7EB] bg-[#FCFCFD]"}`}><input type="checkbox" checked={escalateOutsideHours} onChange={(event) => { setEscalateOutsideHours(event.target.checked); setHasUnsavedChanges(true); }} className="mt-0.5 h-4 w-4 rounded border-[#CBD5E1] text-[#22C55E] focus:ring-[#22C55E]" /><span><span className="block text-sm font-semibold text-[#111827]">Escalate urgent messages outside working hours</span><span className="mt-1 block text-xs leading-5 text-[#64748B]">Your Employee collects the details and flags urgent requests for your team.</span></span></label>
                                   <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
                                     <button type="button" onClick={() => focusIdentityLesson(3)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" disabled={!businessHours.trim()} onClick={() => completeIdentityLesson(4)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Continue to locations <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" disabled={!businessHours.trim()} onClick={() => completeIdentityLesson(4)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Save & Continue <ChevronRight className="h-4 w-4" /></button>
                                   </div>
                                 </div>
                               </section>
