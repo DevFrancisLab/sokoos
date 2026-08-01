@@ -3790,7 +3790,7 @@ export default function DashboardLayout() {
 
                   <section className="rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)]" aria-label="AI setup score">
                     <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-center">
-                      <div className="flex gap-3"><span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-lg shadow-sm ${onboardingComplete ? "bg-[#22C55E] text-white" : "bg-[#ECFDF5] text-[#166534]"}`}>{onboardingComplete ? "🎉" : "🤖"}</span><div className="min-w-0 flex-1"><p className="text-sm font-semibold text-[#111827]">{onboardingComplete ? "Your AI Employee is Ready" : "Training Your AI Employee"}</p><p className="mt-1 text-xs text-[#475569]">{onboardingComplete ? "Your AI has completed training and is ready to represent your business." : `Step ${activeIdentityStep + 1} of 8 · ${identityLessons[activeIdentityStep]}`}</p><p className="mt-1 text-xs leading-5 text-[#64748B]">{onboardingComplete ? "Keep teaching your AI as your business grows." : "Your AI is learning about your business so it can represent you confidently in every customer conversation."}</p><div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]"><div className="h-full rounded-full bg-[#22C55E] transition-all duration-300" style={{ width: `${onboardingComplete ? 100 : trainingPercent}%` }} /></div><p className="mt-2 text-[11px] font-semibold text-[#166534]">{trainingCompletedSteps.length} of 8 lessons complete · {onboardingComplete ? 100 : trainingPercent}% trained</p></div></div>
+                      <div className="flex gap-3"><span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-lg shadow-sm ${onboardingComplete ? "bg-[#22C55E] text-white" : "bg-[#ECFDF5] text-[#166534]"}`}>{onboardingComplete ? "🎉" : "🤖"}</span><div className="min-w-0 flex-1"><p className="text-sm font-semibold text-[#111827]">{onboardingComplete ? "Your AI Employee is Ready" : "Training Your AI Employee"}</p><p className="mt-1 text-xs text-[#475569]">{onboardingComplete ? "Your AI has completed training and is ready to represent your business." : `Step ${activeIdentityStep + 1} of ${identityLessons.length} · ${identityLessons[activeIdentityStep]}`}</p><p className="mt-1 text-xs leading-5 text-[#64748B]">{onboardingComplete ? "Keep teaching your AI as your business grows." : "Your AI is learning about your business so it can represent you confidently in every customer conversation."}</p><div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]"><div className="h-full rounded-full bg-[#22C55E] transition-all duration-300" style={{ width: `${onboardingComplete ? 100 : trainingPercent}%` }} /></div><p className="mt-2 text-[11px] font-semibold text-[#166534]">{trainingCompletedSteps.length} of {identityLessons.length} lessons complete · {onboardingComplete ? 100 : trainingPercent}% trained</p></div></div>
                       <div className="rounded-xl border border-[#BBF7D0] bg-[#F7FEF9] p-3"><p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#166534]">AI Readiness</p><p className="mt-1 text-lg font-semibold text-[#111827]">{onboardingComplete ? 100 : aiReadiness}% ready</p><p className="mt-1 text-xs text-[#64748B]">{onboardingComplete ? "Ready for customer conversations" : `About ${minutesRemaining || 1} min left`}</p><button type="button" onClick={() => { setActiveWorkspaceSection("Identity"); focusIdentityLesson(activeIdentityStep); }} className="mt-3 text-xs font-semibold text-[#166534] transition hover:text-[#047857]">Continue training <ChevronRight className="inline h-3.5 w-3.5" /></button></div>
                     </div>
                   </section>
@@ -4014,14 +4014,7 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
 
-                                  <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-5">
-                                    <button
-                                      type="button"
-                                      disabled
-                                      className="text-sm font-semibold text-[#64748B] transition disabled:cursor-not-allowed disabled:opacity-60"
-                                    >
-                                      Back
-                                    </button>
+                                  <div className="flex items-center justify-end border-t border-[#EEF2F6] pt-5">
                                     <button
                                       type="button"
                                       disabled={!businessInfo.name.trim() || !businessInfo.type.trim() || !businessInfo.country.trim() || !businessInfo.about.trim()}
