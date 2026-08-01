@@ -2174,10 +2174,12 @@ export default function DashboardLayout() {
   const previewPersonalityReply = {
     Professional: "Our internet packages start from KES 2,500/month. Which area are you in?",
     Friendly: `Our internet packages start from KES 2,500/month. Which area are you in${writingStyleOptions["Use emojis"] ? "? 😊" : "?"}`,
+    Warm: "Our internet packages start from KES 2,500/month. We’d love to help you find the right fit.",
     Luxury: "Our internet packages begin at KES 2,500/month. Which area would you like us to serve?",
     Casual: "Our internet packages start from KES 2,500/month. Which area are you in?",
     Technical: "Our internet packages start from KES 2,500/month. Which area are you in so we can check coverage?",
     Playful: `Our internet packages start from KES 2,500/month. Which area are you in${writingStyleOptions["Use emojis"] ? "? ✨" : "?"}`,
+    Formal: "Our internet packages begin at KES 2,500/month. We would be pleased to assist you with your area.",
   }[personality];
   const previewBusinessContext = writingStyleOptions["Keep replies short"]
     ? previewPersonalityReply
@@ -2494,7 +2496,17 @@ export default function DashboardLayout() {
     { id: "learning-5", day: "3 days ago", title: "Added refund policy", detail: "Customer policy guidance added", Icon: Shield },
   ]);
   const knowledgeDocumentInputRef = useRef<HTMLInputElement>(null);
-  const [knowledgeDocuments, setKnowledgeDocuments] = useState([
+  type KnowledgeDocument = {
+    id: string;
+    name: string;
+    size: string;
+    uploaded: string;
+    status: string;
+    extracted: string;
+    kind: string;
+    progress?: number;
+  };
+  const [knowledgeDocuments, setKnowledgeDocuments] = useState<KnowledgeDocument[]>([
     { id: "knowledge-doc-1", name: "Internet Plans 2026.pdf", size: "2.4 MB", uploaded: "Today, 9:42 AM", status: "Ready", extracted: "16 knowledge items", kind: "PDF" },
     { id: "knowledge-doc-2", name: "Customer Support FAQ.docx", size: "86 KB", uploaded: "Jul 26, 2026", status: "Ready", extracted: "24 knowledge items", kind: "DOCX" },
   ]);
@@ -2519,6 +2531,7 @@ export default function DashboardLayout() {
       uploaded: "Just now",
       status: "Reading...",
       progress: 0,
+      extracted: "Pending extraction",
       kind: file.name.split(".").pop()?.toUpperCase() || "FILE",
     }));
 
@@ -2768,6 +2781,27 @@ export default function DashboardLayout() {
     </section>
   );
 
+  const canContinueKnowledgeLesson = (step: number) => {
+    switch (step) {
+      case 0:
+        return selectedKnowledgeSources.length > 0;
+      case 1:
+        return Boolean(companyAbout.trim() || companyMission.trim() || companyVision.trim());
+      case 2:
+        return faqItems.some((faq) => faq.question.trim() || faq.answer.trim());
+      case 3:
+        return Boolean(policies.returnPolicy.trim() || policies.deliveryPolicy.trim() || policies.cancellationPolicy.trim());
+      case 4:
+        return knowledgeDocuments.length > 0;
+      case 5:
+        return websiteImportUrl.trim().length > 0;
+      case 6:
+        return true;
+      default:
+        return false;
+    }
+  };
+
   const KnowledgeLessonTabs = () => (
     <section className="relative z-20 rounded-[24px] border border-[#E5E7EB] bg-white px-3 py-3 shadow-[0_6px_18px_rgba(15,23,42,0.04)]" aria-label="Knowledge onboarding progress">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -2783,17 +2817,15 @@ export default function DashboardLayout() {
         {knowledgeLessons.map((lesson, index) => {
           const active = activeKnowledgeStep === index;
           const completed = completedKnowledgeSteps.includes(index);
-          const locked = index > activeKnowledgeStep && !completed;
           return (
             <button
               key={lesson}
               type="button"
-              onClick={() => !locked && focusKnowledgeLesson(index)}
+              onClick={() => focusKnowledgeLesson(index)}
               aria-current={active ? "step" : undefined}
-              disabled={locked}
-              className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition ${locked ? "cursor-not-allowed border-[#E5E7EB] bg-[#F9FAFB] text-[#94A3B8]" : active ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534] shadow-sm" : completed ? "border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#86EFAC] hover:text-[#111827]"}`}
+              className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition ${active ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534] shadow-sm" : completed ? "border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#86EFAC] hover:text-[#111827]"}`}
             >
-              <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${completed ? "bg-[#22C55E] text-white" : active ? "bg-[#111827] text-white" : locked ? "bg-[#F1F5F9] text-[#94A3B8]" : "bg-[#F8FAFC] text-[#64748B]"}`}>
+              <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${completed ? "bg-[#22C55E] text-white" : active ? "bg-[#111827] text-white" : "bg-[#F8FAFC] text-[#64748B]"}`}>
                 {completed ? <Check className="h-3.5 w-3.5" /> : <span className="text-[11px]">{index + 1}</span>}
               </span>
               <span>{lesson}</span>
@@ -2850,7 +2882,7 @@ export default function DashboardLayout() {
                 </div>
                 <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
                   <button type="button" onClick={() => setActiveWorkspaceSection("Identity")} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                  <button type="button" onClick={() => completeKnowledgeLesson(0)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                  <button type="button" onClick={() => completeKnowledgeLesson(0)} disabled={!canContinueKnowledgeLesson(0)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Save & Continue <ChevronRight className="h-4 w-4" /></button>
                 </div>
               </div>
             </section>
@@ -2882,7 +2914,7 @@ export default function DashboardLayout() {
                 </div>
                 <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
                   <button type="button" onClick={() => focusKnowledgeLesson(0)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                  <button type="button" onClick={() => { setBusinessInfo((b) => ({ ...b, about: companyAbout })); completeKnowledgeLesson(1); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                  <button type="button" onClick={() => { setBusinessInfo((b) => ({ ...b, about: companyAbout })); completeKnowledgeLesson(1); }} disabled={!canContinueKnowledgeLesson(1)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Save & Continue <ChevronRight className="h-4 w-4" /></button>
                 </div>
               </div>
             </section>
@@ -2914,7 +2946,7 @@ export default function DashboardLayout() {
                 </div>
                 <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
                   <button type="button" onClick={() => focusKnowledgeLesson(1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                  <button type="button" onClick={() => completeKnowledgeLesson(2)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                  <button type="button" onClick={() => completeKnowledgeLesson(2)} disabled={!canContinueKnowledgeLesson(2)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Save & Continue <ChevronRight className="h-4 w-4" /></button>
                 </div>
               </div>
             </section>
@@ -2939,7 +2971,7 @@ export default function DashboardLayout() {
                 </div>
                 <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
                   <button type="button" onClick={() => focusKnowledgeLesson(2)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                  <button type="button" onClick={() => completeKnowledgeLesson(3)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                  <button type="button" onClick={() => completeKnowledgeLesson(3)} disabled={!canContinueKnowledgeLesson(3)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Save & Continue <ChevronRight className="h-4 w-4" /></button>
                 </div>
               </div>
             </section>
@@ -2964,7 +2996,7 @@ export default function DashboardLayout() {
                 </div>
                 <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
                   <button type="button" onClick={() => focusKnowledgeLesson(3)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                  <button type="button" onClick={() => completeKnowledgeLesson(4)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                  <button type="button" onClick={() => completeKnowledgeLesson(4)} disabled={!canContinueKnowledgeLesson(4)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Save & Continue <ChevronRight className="h-4 w-4" /></button>
                 </div>
               </div>
             </section>
@@ -2989,7 +3021,7 @@ export default function DashboardLayout() {
                 </div>
                 <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
                   <button type="button" onClick={() => focusKnowledgeLesson(4)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                  <button type="button" onClick={() => completeKnowledgeLesson(5)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                  <button type="button" onClick={() => completeKnowledgeLesson(5)} disabled={!canContinueKnowledgeLesson(5)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Save & Continue <ChevronRight className="h-4 w-4" /></button>
                 </div>
               </div>
             </section>
