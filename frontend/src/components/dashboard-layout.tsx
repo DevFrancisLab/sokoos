@@ -1337,6 +1337,7 @@ export default function DashboardLayout() {
   const [completedIdentitySteps, setCompletedIdentitySteps] = useState<number[]>([]);
   const [activeKnowledgeStep, setActiveKnowledgeStep] = useState(0);
   const [completedKnowledgeSteps, setCompletedKnowledgeSteps] = useState<number[]>([]);
+  const [selectedKnowledgeSources, setSelectedKnowledgeSources] = useState<string[]>([]);
   const [completionToast, setCompletionToast] = useState<string | null>(null);
   const [previewReplyVisible, setPreviewReplyVisible] = useState(true);
   const [onboardingRestored, setOnboardingRestored] = useState(false);
@@ -4803,28 +4804,43 @@ export default function DashboardLayout() {
                                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><Bot className="h-5 w-5" /></div>
                                 <div>
                                   <p className="text-[20px] font-semibold text-[#111827]">Knowledge Sources</p>
-                                  <p className="mt-2 text-sm leading-6 text-[#6B7280]">Choose the trusted sources your AI should learn from first.</p>
+                                  <p className="mt-2 text-sm leading-6 text-[#6B7280]">Teach the AI where it should learn from. Select one or more sources.</p>
                                 </div>
                               </div>
                               <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
-                                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                                   {[
-                                    { label: "Business info", detail: "Name, address, contact details, hours and service areas.", Icon: User },
-                                    { label: "Products", detail: "What you sell, pricing, offers and availability.", Icon: Package },
-                                    { label: "Trusted content", detail: "FAQs, policies, documents and website pages.", Icon: BookOpen },
-                                  ].map((item) => (
-                                    <div key={item.label} className="rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-sm">
-                                      <div className="flex items-center gap-2">
-                                        <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><item.Icon className="h-4 w-4" /></span>
-                                        <p className="text-sm font-semibold text-[#111827]">{item.label}</p>
-                                      </div>
-                                      <p className="mt-3 text-sm leading-6 text-[#64748B]">{item.detail}</p>
-                                    </div>
-                                  ))}
+                                    { key: "company", title: "Company Information", desc: "Teach your AI about your company, mission, industries and customers.", Icon: User },
+                                    { key: "faqs", title: "FAQs", desc: "Teach the AI the questions customers ask most often and the preferred answers.", Icon: MessageCircle },
+                                    { key: "documents", title: "Documents", desc: "Upload contracts, brochures and policy files for accurate referencing.", Icon: Paperclip },
+                                    { key: "website", title: "Website", desc: "Sync information directly from your website.", Icon: Globe },
+                                  ].map((item) => {
+                                    const selected = selectedKnowledgeSources.includes(item.key);
+                                    return (
+                                      <button
+                                        key={item.key}
+                                        type="button"
+                                        onClick={() => setSelectedKnowledgeSources((cur) => cur.includes(item.key) ? cur.filter((k) => k !== item.key) : [...cur, item.key])}
+                                        className={`text-left rounded-2xl border p-4 transition ${selected ? "border-[#22C55E] bg-[#F7FEF9] shadow-sm" : "border-[#E5E7EB] bg-white hover:shadow-sm"}`}
+                                      >
+                                        <div className="flex items-start gap-3">
+                                          <span className={`flex h-9 w-9 items-center justify-center rounded-xl ${selected ? "bg-[#22C55E] text-white" : "bg-[#F1F5F9] text-[#475569]"}`}><item.Icon className="h-4 w-4" /></span>
+                                          <div className="min-w-0 flex-1">
+                                            <div className="flex items-center justify-between">
+                                              <p className="text-sm font-semibold text-[#111827]">{item.title}</p>
+                                              {selected && <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#22C55E] text-white"><Check className="h-3.5 w-3.5" /></span>}
+                                            </div>
+                                            <p className="mt-2 text-sm text-[#64748B]">{item.desc}</p>
+                                          </div>
+                                        </div>
+                                      </button>
+                                    );
+                                  })}
                                 </div>
                               </div>
-                              <div className="flex items-center justify-end border-t border-[#EEF2F6] pt-4">
-                                <button type="button" onClick={() => completeKnowledgeLesson(0)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                              <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
+                                <button type="button" onClick={() => setActiveWorkspaceSection("Identity")} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                                <button type="button" onClick={() => { completeKnowledgeLesson(0); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
                               </div>
                             </div>
                           </section>
