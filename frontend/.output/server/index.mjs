@@ -15,47 +15,47 @@ globalThis.__nitro_vite_envs__ = services;
 //#endregion
 //#region #nitro/virtual/public-assets-data
 var public_assets_data_default = {
-	"/assets/routes-CHEwlfJa.js": {
-		"type": "text/javascript; charset=utf-8",
-		"etag": "\"8f95-FtVua63RgD/TI07/+8/VHc2/vT4\"",
-		"mtime": "2026-08-01T17:38:24.340Z",
-		"size": 36757,
-		"path": "../public/assets/routes-CHEwlfJa.js"
-	},
 	"/assets/sokoos_logo-DQynRsip.png": {
 		"type": "image/png",
 		"etag": "\"6576-o8kCjremReQs9BmnjzKoH2j8xKg\"",
-		"mtime": "2026-08-01T17:38:24.340Z",
+		"mtime": "2026-08-01T19:23:54.288Z",
 		"size": 25974,
 		"path": "../public/assets/sokoos_logo-DQynRsip.png"
 	},
-	"/assets/styles-t6KDzT8J.css": {
-		"type": "text/css; charset=utf-8",
-		"etag": "\"1cbe4-RUQIfJTjiVMurZcUnhUdgbW4ohA\"",
-		"mtime": "2026-08-01T17:38:24.342Z",
-		"size": 117732,
-		"path": "../public/assets/styles-t6KDzT8J.css"
-	},
-	"/assets/index-DsGl_BAa.js": {
+	"/assets/routes-Ch4Pc4v-.js": {
 		"type": "text/javascript; charset=utf-8",
-		"etag": "\"97d5f-o8AyCrSVWma6oZFZqnM2IgOBADQ\"",
-		"mtime": "2026-08-01T17:38:24.339Z",
-		"size": 621919,
-		"path": "../public/assets/index-DsGl_BAa.js"
+		"etag": "\"8f95-iPUJzCSQJbkjhvMbtYbJrkIxHgo\"",
+		"mtime": "2026-08-01T19:23:54.287Z",
+		"size": 36757,
+		"path": "../public/assets/routes-Ch4Pc4v-.js"
 	},
-	"/assets/hero-dashboard-D-CXLQyc.png": {
-		"type": "image/png",
-		"etag": "\"147362-41kBF9Vn5e/eKUEVeST+cDUDypM\"",
-		"mtime": "2026-08-01T17:38:24.340Z",
-		"size": 1340258,
-		"path": "../public/assets/hero-dashboard-D-CXLQyc.png"
+	"/assets/styles-D8YSG3qc.css": {
+		"type": "text/css; charset=utf-8",
+		"etag": "\"1cb5c-naGFJrzctBurXFAGrV/6lTUXA6Y\"",
+		"mtime": "2026-08-01T19:23:54.295Z",
+		"size": 117596,
+		"path": "../public/assets/styles-D8YSG3qc.css"
+	},
+	"/assets/index-8aGxalFj.js": {
+		"type": "text/javascript; charset=utf-8",
+		"etag": "\"965e9-qsE2sM5f+oLuJXjDnnbvf5E2K/Q\"",
+		"mtime": "2026-08-01T19:23:54.286Z",
+		"size": 615913,
+		"path": "../public/assets/index-8aGxalFj.js"
 	},
 	"/assets/solution-dashboard-BITB5GZi.png": {
 		"type": "image/png",
 		"etag": "\"135e39-8KXujycB59ycXDtOjw6MRyzLXZs\"",
-		"mtime": "2026-08-01T17:38:24.340Z",
+		"mtime": "2026-08-01T19:23:54.288Z",
 		"size": 1269305,
 		"path": "../public/assets/solution-dashboard-BITB5GZi.png"
+	},
+	"/assets/hero-dashboard-D-CXLQyc.png": {
+		"type": "image/png",
+		"etag": "\"147362-41kBF9Vn5e/eKUEVeST+cDUDypM\"",
+		"mtime": "2026-08-01T19:23:54.287Z",
+		"size": 1340258,
+		"path": "../public/assets/hero-dashboard-D-CXLQyc.png"
 	}
 };
 //#endregion

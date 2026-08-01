@@ -1348,8 +1348,32 @@ export default function DashboardLayout() {
   const previewMessagesRef = useRef<HTMLDivElement>(null);
   const identityLessons = ["Business Identity", "Brand Voice", "Greetings", "Languages", "Business Hours", "Locations", "Complete Identity"];
   const identityLessonCompletionNames = ["Business Identity", "Brand Voice", "Greetings", "Languages", "Business Hours", "Locations", "Complete Identity"];
-  const knowledgeLessons = ["Knowledge Sources", "Company Information", "FAQs", "Policies", "Documents", "Website Sync", "Review"];
-  const knowledgeLessonCompletionNames = ["Knowledge Sources", "Company Information", "FAQs", "Policies", "Documents", "Website Sync", "Review"];
+  const knowledgeLessons = ["Knowledge Sources", "Policies", "Review"];
+  const knowledgeSourceLessonTitles = {
+    company: "Company Information",
+    faqs: "FAQs",
+    documents: "Documents",
+    website: "Website",
+  } as const;
+  const knowledgeLessonSequence = [
+    "Knowledge Sources",
+    ...selectedKnowledgeSources.map((source) => knowledgeSourceLessonTitles[source as keyof typeof knowledgeSourceLessonTitles] ?? source),
+    "Policies",
+    "Review",
+  ];
+  const knowledgeLessonCompletionNames = knowledgeLessonSequence;
+  const sanitizeStepIndices = (steps: unknown[], maxLength: number) =>
+    Array.isArray(steps)
+      ? steps
+          .filter((step) => typeof step === "number" && step >= 0 && step < maxLength)
+          .map((step) => Number(step))
+          .sort((a, b) => a - b)
+      : [];
+
+  const sanitizeSelectedKnowledgeSources = (sources: unknown[]) =>
+    Array.isArray(sources)
+      ? sources.filter((source) => typeof source === "string").map((source) => String(source))
+      : [];
 
   const focusIdentityLesson = (step: number) => {
     setActiveIdentityStep(step);
@@ -1384,7 +1408,7 @@ export default function DashboardLayout() {
     setCompletedKnowledgeSteps((current) => (current.includes(step) ? current : [...current, step]));
     setCompletionToast(`${knowledgeLessonCompletionNames[step]} complete — your knowledge onboarding path is moving forward.`);
     window.setTimeout(() => setCompletionToast(null), 2200);
-    if (step < knowledgeLessons.length - 1) {
+    if (step < knowledgeLessonSequence.length - 1) {
       window.setTimeout(() => focusKnowledgeLesson(step + 1), 500);
     }
   };
@@ -2639,13 +2663,13 @@ export default function DashboardLayout() {
   const minutesRemaining = Math.max(0, 6 - trainingCompletedSteps.length);
   const trainingPercent = Math.round((trainingCompletedSteps.length / identityLessons.length) * 100);
   const completedTrainingLessonCount = completedIdentitySteps.length + completedKnowledgeSteps.length;
-  const totalTrainingLessonCount = identityLessons.length + knowledgeLessons.length;
+  const totalTrainingLessonCount = identityLessons.length + knowledgeLessonSequence.length;
   const overallTrainingPercent = Math.round((completedTrainingLessonCount / Math.max(1, totalTrainingLessonCount)) * 100);
-  const overallTrainingComplete = aiEmployeeLaunched || completedTrainingLessonCount >= totalTrainingLessonCount;
+  const overallTrainingComplete = completedTrainingLessonCount >= totalTrainingLessonCount;
   const currentTrainingLessonLabel = activeWorkspaceSection === "Knowledge Hub"
-    ? knowledgeLessons[activeKnowledgeStep] ?? knowledgeLessons[0]
+    ? knowledgeLessonSequence[activeKnowledgeStep] ?? knowledgeLessonSequence[0]
     : identityLessons[activeIdentityStep] ?? identityLessons[0];
-  const currentTrainingLessonCount = activeWorkspaceSection === "Knowledge Hub" ? knowledgeLessons.length : identityLessons.length;
+  const currentTrainingLessonCount = activeWorkspaceSection === "Knowledge Hub" ? knowledgeLessonSequence.length : identityLessons.length;
   const currentTrainingStepNumber = activeWorkspaceSection === "Knowledge Hub" ? activeKnowledgeStep + 1 : activeIdentityStep + 1;
   const aiReadiness = overallTrainingComplete ? 100 : Math.min(100, Math.round(18 + (completedTrainingLessonCount / Math.max(1, totalTrainingLessonCount)) * 82));
   const knowledgeSourceSummary = [
@@ -2700,34 +2724,17 @@ export default function DashboardLayout() {
     Performance: aiEmployeeLaunched ? 100 : Math.min(100, 20 + (trainingCompletedSteps.length > 0 ? 10 : 0)),
   };
   const workspaceNavigatorItems = [
-    { title: "Identity", description: "Who your AI represents", section: "Identity" as const, Icon: User, complete: false, percent: 0, unlocked: true },
-    { title: "Knowledge", description: "What it can answer", section: "Knowledge Hub" as const, Icon: BookOpen, complete: false, percent: 0, unlocked: identityWorkspaceComplete || trainingCompletedSteps.includes(0) },
-    { title: "Catalogue", description: "Offers it can recommend", section: "Catalogue" as const, Icon: Package, complete: false, percent: 0, unlocked: false },
-    { title: "Sales Playbooks", description: "How it handles selling", section: "Sales Playbooks" as const, Icon: Target, complete: false, percent: 0, unlocked: false },
-    { title: "Policies", description: "Rules it follows", section: "Policies" as const, Icon: Shield, complete: false, percent: 0, unlocked: false },
-    { title: "Skills", description: "Work it can do", section: "Skills" as const, Icon: Sparkles, complete: false, percent: 0, unlocked: false },
-    { title: "Integrations", description: "Where it connects", section: "Integrations" as const, Icon: Plug, complete: false, percent: 0, unlocked: false },
-    { title: "Performance", description: "How it is improving", section: "Performance" as const, Icon: BarChart3, complete: false, percent: 0, unlocked: false },
-  ].map((item, index, items) => ({
-    ...item,
-    unlocked: item.unlocked || items.slice(0, index).every((prereqItem) => prereqItem.complete),
-  }));
+    { title: "Identity", description: "Who your AI represents", section: "Identity" as const, Icon: User, complete: workspaceProgressBySection.Identity >= 100, percent: workspaceProgressBySection.Identity, unlocked: true },
+    { title: "Knowledge", description: "What it can answer", section: "Knowledge Hub" as const, Icon: BookOpen, complete: workspaceProgressBySection["Knowledge Hub"] >= 100, percent: workspaceProgressBySection["Knowledge Hub"], unlocked: true },
+    { title: "Catalogue", description: "Offers it can recommend", section: "Catalogue" as const, Icon: Package, complete: workspaceProgressBySection.Catalogue >= 100, percent: workspaceProgressBySection.Catalogue, unlocked: true },
+    { title: "Sales Playbooks", description: "How it handles selling", section: "Sales Playbooks" as const, Icon: Target, complete: workspaceProgressBySection["Sales Playbooks"] >= 100, percent: workspaceProgressBySection["Sales Playbooks"], unlocked: true },
+    { title: "Policies", description: "Rules it follows", section: "Policies" as const, Icon: Shield, complete: workspaceProgressBySection.Policies >= 100, percent: workspaceProgressBySection.Policies, unlocked: true },
+    { title: "Skills", description: "Work it can do", section: "Skills" as const, Icon: Sparkles, complete: workspaceProgressBySection.Skills >= 100, percent: workspaceProgressBySection.Skills, unlocked: true },
+    { title: "Integrations", description: "Where it connects", section: "Integrations" as const, Icon: Plug, complete: workspaceProgressBySection.Integrations >= 100, percent: workspaceProgressBySection.Integrations, unlocked: true },
+    { title: "Performance", description: "How it is improving", section: "Performance" as const, Icon: BarChart3, complete: workspaceProgressBySection.Performance >= 100, percent: workspaceProgressBySection.Performance, unlocked: true },
+  ];
   const handleWorkspaceSectionSelection = (section: (typeof workspaceNavigatorItems)[number]["section"]) => {
-    const item = workspaceNavigatorItems.find((entry) => entry.section === section);
-    if (!item) return;
-    if (item.unlocked) {
-      setActiveWorkspaceSection(section);
-      return;
-    }
-
-    const prerequisites = (workspacePrerequisites[section] ?? []).map((prerequisite) => prerequisite === "Knowledge Hub" ? "Knowledge Hub" : prerequisite);
-    const requiredLabel = prerequisites.length > 0 ? prerequisites.join(" and ") : "the earlier training steps";
-    const unlockMessage = prerequisites.length > 0
-      ? `${item.title} is locked until ${requiredLabel} is complete. Finish the required training first, then come back here.`
-      : `${item.title} is locked. Finish the earlier training steps first, then come back here.`;
-
-    setCompletionToast(unlockMessage);
-    window.setTimeout(() => setCompletionToast(null), 3200);
+    setActiveWorkspaceSection(section);
   };
   useEffect(() => {
     const saved = window.localStorage.getItem("sokoos-ai-training-progress-v2");
@@ -2737,9 +2744,10 @@ export default function DashboardLayout() {
         if (progress.businessInfo) setBusinessInfo(normalizeBusinessInfo(progress.businessInfo));
         if (typeof progress.businessHours === "string") setBusinessHours(progress.businessHours);
         if (typeof progress.step === "number") setActiveIdentityStep(progress.step);
-        if (Array.isArray(progress.completed)) setCompletedIdentitySteps(progress.completed);
-        if (Array.isArray((progress as any).completedKnowledge)) setCompletedKnowledgeSteps((progress as any).completedKnowledge);
-        if (typeof (progress as any).activeKnowledgeStep === "number") setActiveKnowledgeStep((progress as any).activeKnowledgeStep);
+        if (Array.isArray(progress.completed)) setCompletedIdentitySteps(sanitizeStepIndices(progress.completed, identityLessons.length));
+        if (Array.isArray((progress as any).completedKnowledge)) setCompletedKnowledgeSteps(sanitizeStepIndices((progress as any).completedKnowledge, knowledgeLessons.length));
+        if (Array.isArray((progress as any).selectedKnowledgeSources)) setSelectedKnowledgeSources(sanitizeSelectedKnowledgeSources((progress as any).selectedKnowledgeSources));
+        if (typeof (progress as any).activeKnowledgeStep === "number") setActiveKnowledgeStep(Math.min(Math.max((progress as any).activeKnowledgeStep, 0), knowledgeLessons.length - 1));
         if (progress.launched) setAiEmployeeLaunched(true);
         if (typeof progress.scrollY === "number") window.requestAnimationFrame(() => window.scrollTo({ top: progress.scrollY, behavior: "auto" }));
       } catch {
@@ -2767,12 +2775,13 @@ export default function DashboardLayout() {
       completed: completedIdentitySteps,
       activeKnowledgeStep,
       completedKnowledge: completedKnowledgeSteps,
+      selectedKnowledgeSources,
       launched: aiEmployeeLaunched,
       scrollY: window.scrollY,
       businessInfo,
       businessHours,
     }));
-  }, [activeIdentityStep, completedIdentitySteps, aiEmployeeLaunched, businessHours, businessInfo, onboardingRestored]);
+  }, [activeIdentityStep, completedIdentitySteps, activeKnowledgeStep, completedKnowledgeSteps, selectedKnowledgeSources, aiEmployeeLaunched, businessHours, businessInfo, onboardingRestored]);
   const [businessProfile, setBusinessProfile] = useState({
     name: "Sokoos Internet",
     industry: "Telecom & Connectivity",
@@ -2808,25 +2817,23 @@ export default function DashboardLayout() {
   );
 
   const canContinueKnowledgeLesson = (step: number) => {
-    switch (step) {
-      case 0:
-        return selectedKnowledgeSources.length > 0;
-      case 1:
-        return Boolean(companyAbout.trim() || companyMission.trim() || companyVision.trim());
-      case 2:
-        return faqItems.some((faq) => faq.question.trim() || faq.answer.trim());
-      case 3:
-        return Boolean(policies.returnPolicy.trim() || policies.deliveryPolicy.trim() || policies.cancellationPolicy.trim());
-      case 4:
-        return knowledgeDocuments.length > 0;
-      case 5:
-        return websiteImportUrl.trim().length > 0;
-      case 6:
-        return true;
-      default:
-        return false;
+    if (step === 0) {
+      return selectedKnowledgeSources.length > 0;
     }
+    const lesson = knowledgeLessonSequence[step];
+    if (lesson === "Policies") {
+      return Boolean(policies.returnPolicy.trim() || policies.deliveryPolicy.trim() || policies.cancellationPolicy.trim());
+    }
+    return true;
   };
+
+  useEffect(() => {
+    const maxStep = knowledgeLessonSequence.length - 1;
+    if (activeKnowledgeStep > maxStep) {
+      setActiveKnowledgeStep(maxStep);
+    }
+    setCompletedKnowledgeSteps((current) => current.filter((step) => step >= 0 && step <= maxStep));
+  }, [knowledgeLessonSequence.length]);
 
   const KnowledgeLessonTabs = () => (
     <section className="relative z-20 rounded-[24px] border border-[#E5E7EB] bg-white px-3 py-3 shadow-[0_6px_18px_rgba(15,23,42,0.04)]" aria-label="Knowledge onboarding progress">
@@ -2834,13 +2841,23 @@ export default function DashboardLayout() {
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#166534]">Knowledge onboarding curriculum</p>
           <p className="mt-1 text-base font-semibold text-[#111827]">Teach your AI in a few focused lessons so it can answer with confidence.</p>
+          {selectedKnowledgeSources.length > 0 ? (
+            <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-[#475569]">
+              <span className="font-semibold text-[#111827]">Selected sources:</span>
+              {selectedKnowledgeSources.map((source) => (
+                <span key={source} className="rounded-full bg-[#F3F4F6] px-2.5 py-1 text-xs font-semibold text-[#475569]">
+                  {source === "company" ? "Company Information" : source === "faqs" ? "FAQs" : source === "documents" ? "Documents" : source === "website" ? "Website" : source}
+                </span>
+              ))}
+            </div>
+          ) : null}
         </div>
         <div className="rounded-full bg-[#ECFDF5] px-3 py-1 text-sm font-semibold text-[#166534]">
-          {completedKnowledgeSteps.length}/{knowledgeLessons.length} lessons complete
+          {completedKnowledgeSteps.length}/{knowledgeLessonSequence.length} lessons complete
         </div>
       </div>
       <div className="mt-3 flex flex-wrap gap-2">
-        {knowledgeLessons.map((lesson, index) => {
+        {knowledgeLessonSequence.map((lesson, index) => {
           const active = activeKnowledgeStep === index;
           const completed = completedKnowledgeSteps.includes(index);
           return (
@@ -2864,217 +2881,168 @@ export default function DashboardLayout() {
   );
 
   const CurrentLesson = () => {
-    const lessonContent = (() => {
-      switch (activeKnowledgeStep) {
-        case 0:
-          return (
-            <section data-lesson-index="0" className={knowledgeLessonCardClass(0)}>
-              <div className="space-y-5">
-                <div className="flex gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><Bot className="h-5 w-5" /></div>
-                  <div>
-                    <p className="text-[20px] font-semibold text-[#111827]">Knowledge Sources</p>
-                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">Teach the AI where it should learn from. Select one or more sources.</p>
-                  </div>
-                </div>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {[
-                    { key: "company", title: "Company Information", desc: "Teach your AI about your company, mission, industries and customers.", Icon: User },
-                    { key: "faqs", title: "FAQs", desc: "Teach the AI the questions customers ask most often and the preferred answers.", Icon: MessageCircle },
-                    { key: "documents", title: "Documents", desc: "Upload contracts, brochures and policy files for accurate referencing.", Icon: Paperclip },
-                    { key: "website", title: "Website", desc: "Sync information directly from your website.", Icon: Globe },
-                  ].map((item) => {
-                    const selected = selectedKnowledgeSources.includes(item.key);
-                    return (
-                      <button
-                        key={item.key}
-                        type="button"
-                        onClick={() => setSelectedKnowledgeSources((cur) => cur.includes(item.key) ? cur.filter((k) => k !== item.key) : [...cur, item.key])}
-                        className={`text-left rounded-2xl border p-4 transition ${selected ? "border-[#22C55E] bg-[#F7FEF9] shadow-sm" : "border-[#E5E7EB] bg-white hover:shadow-sm"}`}
-                      >
-                        <div className="flex items-start gap-3">
-                          <span className={`flex h-9 w-9 items-center justify-center rounded-xl ${selected ? "bg-[#22C55E] text-white" : "bg-[#F1F5F9] text-[#475569]"}`}><item.Icon className="h-4 w-4" /></span>
-                          <div className="min-w-0 flex-1">
-                            <div className="flex items-center justify-between">
-                              <p className="text-sm font-semibold text-[#111827]">{item.title}</p>
-                              {selected && <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#22C55E] text-white"><Check className="h-3.5 w-3.5" /></span>}
-                            </div>
-                            <p className="mt-2 text-sm text-[#64748B]">{item.desc}</p>
-                          </div>
-                        </div>
-                      </button>
-                    );
-                  })}
-                </div>
-                <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
-                  <button type="button" onClick={() => setActiveWorkspaceSection("Identity")} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                  <button type="button" onClick={() => completeKnowledgeLesson(0)} disabled={!canContinueKnowledgeLesson(0)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Save & Continue <ChevronRight className="h-4 w-4" /></button>
-                </div>
-              </div>
-            </section>
-          );
-        case 1:
-          return (
-            <section data-lesson-index="1" className={knowledgeLessonCardClass(1)}>
-              <div className="space-y-5">
-                <div className="flex gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EFF6FF] text-[#1D4ED8]"><User className="h-5 w-5" /></div>
-                  <div>
-                    <p className="text-[20px] font-semibold text-[#111827]">Company Information</p>
-                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">Teach your AI important facts about your business so it can respond accurately.</p>
-                  </div>
-                </div>
-                <div className="space-y-4 rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
-                  <div>
-                    <label className="text-sm font-medium text-[#111827]">About your company</label>
-                    <Textarea value={companyAbout} onChange={(e) => setCompanyAbout(e.target.value)} className="mt-2 w-full resize-none" />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-[#111827]">Mission (optional)</label>
-                    <Textarea value={companyMission} onChange={(e) => setCompanyMission(e.target.value)} className="mt-2 w-full resize-none" />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-[#111827]">Vision (optional)</label>
-                    <Textarea value={companyVision} onChange={(e) => setCompanyVision(e.target.value)} className="mt-2 w-full resize-none" />
-                  </div>
-                </div>
-                <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
-                  <button type="button" onClick={() => focusKnowledgeLesson(0)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                  <button type="button" onClick={() => { setBusinessInfo((b) => ({ ...b, about: companyAbout })); completeKnowledgeLesson(1); }} disabled={!canContinueKnowledgeLesson(1)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Save & Continue <ChevronRight className="h-4 w-4" /></button>
-                </div>
-              </div>
-            </section>
-          );
-        case 2:
-          return (
-            <section data-lesson-index="2" className={knowledgeLessonCardClass(2)}>
-              <div className="space-y-5">
-                <div className="flex gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF7ED] text-[#C2410C]"><MessageCircle className="h-5 w-5" /></div>
-                  <div>
-                    <p className="text-[20px] font-semibold text-[#111827]">FAQs</p>
-                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">Teach the AI the questions customers ask most often and the answers it should use.</p>
-                  </div>
-                </div>
-                <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
-                  <div className="space-y-3">
-                    {faqItems.map((faq) => (
-                      <div key={faq.id} className="rounded-xl border border-[#E5E7EB] bg-white p-3">
-                        <p className="text-sm font-semibold text-[#111827]">{faq.question || "New FAQ"}</p>
-                        <p className="mt-1 text-sm text-[#64748B]">{faq.answer || "Add a helpful response."}</p>
+    const currentLesson = knowledgeLessonSequence[activeKnowledgeStep] ?? knowledgeLessonSequence[0];
+    const isSourceLesson = activeKnowledgeStep > 0 && activeKnowledgeStep < knowledgeLessonSequence.length - 2;
+    const sourceKey = isSourceLesson ? selectedKnowledgeSources[activeKnowledgeStep - 1] : undefined;
+
+    const renderKnowledgeSourcesLesson = () => (
+      <section data-lesson-index="0" className={knowledgeLessonCardClass(0)}>
+        <div className="space-y-5">
+          <div className="flex gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><Bot className="h-5 w-5" /></div>
+            <div>
+              <p className="text-[20px] font-semibold text-[#111827]">Knowledge Sources</p>
+              <p className="mt-2 text-sm leading-6 text-[#6B7280]">Teach the AI where it should learn from. Select one or more sources.</p>
+            </div>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {[
+              { key: "company", title: "Company Information", desc: "Teach your AI about your company, mission, industries and customers.", Icon: User },
+              { key: "faqs", title: "FAQs", desc: "Teach the AI the questions customers ask most often and the preferred answers.", Icon: MessageCircle },
+              { key: "documents", title: "Documents", desc: "Upload contracts, brochures and policy files for accurate referencing.", Icon: Paperclip },
+              { key: "website", title: "Website", desc: "Sync information directly from your website.", Icon: Globe },
+            ].map((item) => {
+              const selected = selectedKnowledgeSources.includes(item.key);
+              return (
+                <button
+                  key={item.key}
+                  type="button"
+                  onClick={() => setSelectedKnowledgeSources((cur) => cur.includes(item.key) ? cur.filter((k) => k !== item.key) : [...cur, item.key])}
+                  className={`text-left rounded-2xl border p-4 transition ${selected ? "border-[#22C55E] bg-[#F7FEF9] shadow-sm" : "border-[#E5E7EB] bg-white hover:shadow-sm"}`}
+                >
+                  <div className="flex items-start gap-3">
+                    <span className={`flex h-9 w-9 items-center justify-center rounded-xl ${selected ? "bg-[#22C55E] text-white" : "bg-[#F1F5F9] text-[#475569]"}`}><item.Icon className="h-4 w-4" /></span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm font-semibold text-[#111827]">{item.title}</p>
+                        {selected && <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#22C55E] text-white"><Check className="h-3.5 w-3.5" /></span>}
                       </div>
-                    ))}
+                      <p className="mt-2 text-sm text-[#64748B]">{item.desc}</p>
+                    </div>
                   </div>
-                  <div className="mt-4 flex items-center justify-between">
-                    <div />
-                    <button type="button" onClick={() => { const id = `faq-${Date.now()}`; setFaqItems((items) => [{ id, question: "", answer: "" }, ...items]); setEditingFaqId(id); }} className="inline-flex items-center gap-2 rounded-lg bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"><Plus className="h-4 w-4" />Add FAQ</button>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
-                  <button type="button" onClick={() => focusKnowledgeLesson(1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                  <button type="button" onClick={() => completeKnowledgeLesson(2)} disabled={!canContinueKnowledgeLesson(2)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Save & Continue <ChevronRight className="h-4 w-4" /></button>
-                </div>
+                </button>
+              );
+            })}
+          </div>
+          <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
+            <button type="button" onClick={() => setActiveWorkspaceSection("Identity")} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+            <button type="button" onClick={() => completeKnowledgeLesson(0)} disabled={!canContinueKnowledgeLesson(0)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+          </div>
+        </div>
+      </section>
+    );
+
+    const renderSourceLesson = () => {
+      if (!sourceKey) return null;
+      const title = knowledgeSourceLessonTitles[sourceKey as keyof typeof knowledgeSourceLessonTitles] ?? sourceKey;
+      const desc = sourceKey === "company"
+        ? "Teach your AI about your company, mission, products, and customers so it can respond with the right voice."
+        : sourceKey === "faqs"
+          ? "Add frequently asked questions and preferred answers so your AI can handle customer questions consistently."
+          : sourceKey === "documents"
+            ? "Upload documents like contracts, brochures, and guides to give your AI accurate reference material."
+            : "Connect your website so the AI can learn from your public pages and product content.";
+      const Icon = sourceKey === "company" ? User : sourceKey === "faqs" ? MessageCircle : sourceKey === "documents" ? Paperclip : Globe;
+
+      return (
+        <section data-lesson-index={String(activeKnowledgeStep)} className={knowledgeLessonCardClass(activeKnowledgeStep)}>
+          <div className="space-y-5">
+            <div className="flex gap-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EFF6FF] text-[#2563EB]"><Icon className="h-5 w-5" /></div>
+              <div>
+                <p className="text-[20px] font-semibold text-[#111827]">{title}</p>
+                <p className="mt-2 text-sm leading-6 text-[#6B7280]">{desc}</p>
               </div>
-            </section>
-          );
-        case 3:
-          return (
-            <section data-lesson-index="3" className={knowledgeLessonCardClass(3)}>
-              <div className="space-y-5">
-                <div className="flex gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F5F3FF] text-[#6D28D9]"><Shield className="h-5 w-5" /></div>
-                  <div>
-                    <p className="text-[20px] font-semibold text-[#111827]">Policies</p>
-                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">Capture the rules your AI should follow when customers ask about refunds, returns, warranties and privacy.</p>
-                  </div>
-                </div>
-                <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
-                  <div className="space-y-3">
-                    <Textarea value={policies.returnPolicy} onChange={(e) => setPolicies((cur) => ({ ...cur, returnPolicy: e.target.value }))} className="w-full" />
-                    <Textarea value={policies.deliveryPolicy} onChange={(e) => setPolicies((cur) => ({ ...cur, deliveryPolicy: e.target.value }))} className="w-full" />
-                    <Textarea value={policies.cancellationPolicy} onChange={(e) => setPolicies((cur) => ({ ...cur, cancellationPolicy: e.target.value }))} className="w-full" />
-                  </div>
-                </div>
-                <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
-                  <button type="button" onClick={() => focusKnowledgeLesson(2)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                  <button type="button" onClick={() => completeKnowledgeLesson(3)} disabled={!canContinueKnowledgeLesson(3)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Save & Continue <ChevronRight className="h-4 w-4" /></button>
-                </div>
+            </div>
+            <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+              <p className="text-sm font-semibold text-[#111827]">Next step</p>
+              <p className="mt-3 text-sm text-[#475569]">This lesson is tailored to the source you selected. Continue when you’re ready to move on.</p>
+            </div>
+            <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
+              <button type="button" onClick={() => focusKnowledgeLesson(activeKnowledgeStep - 1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+              <button type="button" onClick={() => completeKnowledgeLesson(activeKnowledgeStep)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+            </div>
+          </div>
+        </section>
+      );
+    };
+
+    const renderPoliciesLesson = () => (
+      <section data-lesson-index={String(activeKnowledgeStep)} className={knowledgeLessonCardClass(activeKnowledgeStep)}>
+        <div className="space-y-5">
+          <div className="flex gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F5F3FF] text-[#6D28D9]"><Shield className="h-5 w-5" /></div>
+            <div>
+              <p className="text-[20px] font-semibold text-[#111827]">Policies</p>
+              <p className="mt-2 text-sm leading-6 text-[#6B7280]">Capture the rules your AI should follow when customers ask about refunds, returns, warranties and privacy.</p>
+            </div>
+          </div>
+          <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+            <div className="space-y-3">
+              <Textarea value={policies.returnPolicy} onChange={(e) => setPolicies((cur) => ({ ...cur, returnPolicy: e.target.value }))} className="w-full" />
+              <Textarea value={policies.deliveryPolicy} onChange={(e) => setPolicies((cur) => ({ ...cur, deliveryPolicy: e.target.value }))} className="w-full" />
+              <Textarea value={policies.cancellationPolicy} onChange={(e) => setPolicies((cur) => ({ ...cur, cancellationPolicy: e.target.value }))} className="w-full" />
+            </div>
+          </div>
+          <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
+            <button type="button" onClick={() => focusKnowledgeLesson(activeKnowledgeStep - 1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+            <button type="button" onClick={() => completeKnowledgeLesson(activeKnowledgeStep)} disabled={!canContinueKnowledgeLesson(activeKnowledgeStep)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+          </div>
+        </div>
+      </section>
+    );
+
+    const renderReviewLesson = () => (
+      <section data-lesson-index={String(activeKnowledgeStep)} className={activeKnowledgeStep === knowledgeLessonSequence.length - 1 ? "relative overflow-hidden rounded-[28px] border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] via-white to-[#F8FAFC] p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
+        <div className="space-y-5">
+          <div className="flex gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><Sparkles className="h-5 w-5" /></div>
+            <div>
+              <p className="text-[20px] font-semibold text-[#111827]">Review</p>
+              <p className="mt-2 text-sm leading-6 text-[#6B7280]">Confirm the knowledge sources and policies you’ve added before finishing training.</p>
+            </div>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl border border-[#EEF2F6] bg-white p-5">
+              <p className="text-sm font-semibold text-[#111827]">Selected knowledge sources</p>
+              <div className="mt-3 space-y-2 text-sm text-[#475569]">
+                {selectedKnowledgeSources.length > 0 ? (
+                  selectedKnowledgeSources.map((source) => (
+                    <div key={source} className="rounded-lg bg-[#F8FAFC] px-3 py-2">
+                      {source === "company" ? "Company Information" : source === "faqs" ? "FAQs" : source === "documents" ? "Documents" : source === "website" ? "Website" : source}
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-sm text-[#94A3B8]">No knowledge source selected yet.</p>
+                )}
               </div>
-            </section>
-          );
-        case 4:
-          return (
-            <section data-lesson-index="4" className={knowledgeLessonCardClass(4)}>
-              <div className="space-y-5">
-                <div className="flex gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EFF6FF] text-[#1D4ED8]"><Paperclip className="h-5 w-5" /></div>
-                  <div>
-                    <p className="text-[20px] font-semibold text-[#111827]">Documents</p>
-                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">Allow the AI to learn from uploaded files.</p>
+            </div>
+            <div className="rounded-2xl border border-[#EEF2F6] bg-white p-5">
+              <p className="text-sm font-semibold text-[#111827]">Policies summary</p>
+              <div className="mt-3 space-y-3 text-sm text-[#475569]">
+                {Object.entries(policies).map(([key, value]) => (
+                  <div key={key} className="rounded-lg bg-[#F8FAFC] px-3 py-2">
+                    <p className="font-semibold text-[#111827]">{key === "returnPolicy" ? "Return policy" : key === "deliveryPolicy" ? "Delivery policy" : "Cancellation policy"}</p>
+                    <p className="mt-1 text-sm text-[#475569]">{value || "Not specified yet."}</p>
                   </div>
-                </div>
-                <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
-                  <div onClick={() => knowledgeDocumentInputRef.current?.click()} className="cursor-pointer rounded-xl border border-dashed border-[#DCE3EA] bg-white p-6 text-center">
-                    <Paperclip className="mx-auto h-6 w-6 text-[#16A34A]" />
-                    <p className="mt-3 text-sm font-semibold text-[#111827]">Upload documents</p>
-                  </div>
-                  <input ref={knowledgeDocumentInputRef} type="file" multiple accept=".pdf,.doc,.docx,.txt,.csv,.xls,.xlsx,image/*" className="hidden" onChange={(event) => { if (event.target.files) uploadMock(event.target.files); event.target.value = ""; }} />
-                </div>
-                <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
-                  <button type="button" onClick={() => focusKnowledgeLesson(3)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                  <button type="button" onClick={() => completeKnowledgeLesson(4)} disabled={!canContinueKnowledgeLesson(4)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Save & Continue <ChevronRight className="h-4 w-4" /></button>
-                </div>
+                ))}
               </div>
-            </section>
-          );
-        case 5:
-          return (
-            <section data-lesson-index="5" className={knowledgeLessonCardClass(5)}>
-              <div className="space-y-5">
-                <div className="flex gap-3">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F5F3FF] text-[#6D28D9]"><Globe className="h-5 w-5" /></div>
-                  <div>
-                    <p className="text-[20px] font-semibold text-[#111827]">Website Sync</p>
-                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">Connect the AI to your website so it can learn from the latest public information.</p>
-                  </div>
-                </div>
-                <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
-                  <div className="relative">
-                    <Globe className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#94A3B8]" />
-                    <input type="url" value={websiteImportUrl} onChange={(event) => setWebsiteImportUrl(event.target.value)} placeholder="https://theirbusiness.com" className="h-11 w-full rounded-lg border border-[#E2E8F0] bg-white pl-9 pr-3 text-sm outline-none transition focus:border-[#22C55E]" />
-                  </div>
-                  <button type="button" onClick={scanWebsite} disabled={websiteImportStatus === "syncing" || !websiteImportUrl.trim()} className="mt-4 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-60">{websiteImportStatus === "syncing" ? "Scanning…" : "Scan Website"}</button>
-                </div>
-                <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
-                  <button type="button" onClick={() => focusKnowledgeLesson(4)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                  <button type="button" onClick={() => completeKnowledgeLesson(5)} disabled={!canContinueKnowledgeLesson(5)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Save & Continue <ChevronRight className="h-4 w-4" /></button>
-                </div>
-              </div>
-            </section>
-          );
-        case 6:
-          return (
-            <section data-lesson-index="6" className={activeKnowledgeStep === 6 ? "relative overflow-hidden rounded-[28px] border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] via-white to-[#F8FAFC] p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
-              <div className="space-y-5">
-                <div className="rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-sm">
-                  <p className="text-sm font-semibold text-[#111827]">Training complete</p>
-                  <p className="mt-2 text-sm leading-6 text-[#64748B]">Your lesson-based knowledge setup is complete.</p>
-                </div>
-                <div className="flex items-center justify-between border-t border-[#D1FAE5] pt-4">
-                  <button type="button" onClick={() => focusKnowledgeLesson(5)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                  <button type="button" onClick={() => { completeKnowledgeLesson(6); setActiveWorkspaceSection("Catalogue"); }} className="inline-flex items-center gap-2 rounded-lg bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"><Sparkles className="h-4 w-4" />Finish training</button>
-                </div>
-              </div>
-            </section>
-          );
-        default:
-          return null;
-      }
-    })();
+            </div>
+          </div>
+          <div className="flex items-center justify-between border-t border-[#D1FAE5] pt-4">
+            <button type="button" onClick={() => focusKnowledgeLesson(activeKnowledgeStep - 1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+            <button type="button" onClick={() => { completeKnowledgeLesson(activeKnowledgeStep); setActiveWorkspaceSection("Catalogue"); }} className="inline-flex items-center gap-2 rounded-lg bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"><Sparkles className="h-4 w-4" />Finish training</button>
+          </div>
+        </div>
+      </section>
+    );
 
     return (
       <div ref={knowledgeLessonRef} className="space-y-4 scroll-mt-36 scroll-smooth">
-        {lessonContent}
+        {activeKnowledgeStep === 0 && renderKnowledgeSourcesLesson()}
+        {isSourceLesson && renderSourceLesson()}
+        {currentLesson === "Policies" && renderPoliciesLesson()}
+        {currentLesson === "Review" && renderReviewLesson()}
       </div>
     );
   };
@@ -4241,25 +4209,21 @@ export default function DashboardLayout() {
                     <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                     {workspaceNavigatorItems.map((tab) => {
                       const active = activeWorkspaceSection === tab.section;
-                      const unlocked = tab.unlocked;
                       return (
                         <button
                           key={tab.title}
                           type="button"
                           onClick={() => handleWorkspaceSectionSelection(tab.section)}
                           aria-current={active ? "page" : undefined}
-                          aria-disabled={!unlocked}
                           className={`relative flex min-w-0 flex-col gap-2 rounded-xl border px-2.5 py-2.5 text-left text-xs font-semibold transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 ${
                             active
                               ? "border-[#86EFAC] bg-[#ECFDF5] text-[#166534] shadow-sm"
-                              : unlocked
-                                ? "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#D1FAE5] hover:bg-[#F9FCFA]"
-                                : "border-[#E5E7EB] bg-[#F8FAFC] text-[#94A3B8]"
-                          } ${!unlocked ? "opacity-70" : ""}`}
+                              : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#D1FAE5] hover:bg-[#F9FCFA]"
+                          }`}
                         >
                           <div className="flex items-center justify-between gap-2">
                             <div className="flex items-center gap-1.5">
-                              <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-lg ${active ? "bg-[#22C55E] text-white" : tab.complete ? "bg-[#DCFCE7] text-[#166534]" : unlocked ? "bg-[#F1F5F9] text-[#64748B]" : "bg-[#F1F5F9] text-[#94A3B8]"}`}>
+                              <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-lg ${active ? "bg-[#22C55E] text-white" : tab.complete ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#F1F5F9] text-[#64748B]"}`}>
                                 {tab.complete ? <Check className="h-3.5 w-3.5" /> : <tab.Icon className="h-3.5 w-3.5" />}
                               </span>
                               <span className="truncate">{tab.title}</span>
@@ -4285,14 +4249,13 @@ export default function DashboardLayout() {
                     <nav className="space-y-2" aria-label="AI Employee workspace navigator">
                       {workspaceNavigatorItems.map((item) => {
                         const active = activeWorkspaceSection === item.section;
-                        const unlocked = item.unlocked;
-                        return <button key={item.title} type="button" onClick={() => handleWorkspaceSectionSelection(item.section)} aria-current={active ? "page" : undefined} aria-disabled={!unlocked} className={`w-full rounded-xl border px-2.5 py-2.5 text-left transition-all duration-200 ease-out ${active ? "border-[#86EFAC] bg-[#ECFDF5] shadow-sm" : unlocked ? "border-[#E5E7EB] bg-white hover:border-[#D1FAE5] hover:bg-[#F9FCFA]" : "border-[#E5E7EB] bg-[#F8FAFC] opacity-70"}`}>
+                        return <button key={item.title} type="button" onClick={() => handleWorkspaceSectionSelection(item.section)} aria-current={active ? "page" : undefined} className={`w-full rounded-xl border px-2.5 py-2.5 text-left transition-all duration-200 ease-out ${active ? "border-[#86EFAC] bg-[#ECFDF5] shadow-sm" : "border-[#E5E7EB] bg-white hover:border-[#D1FAE5] hover:bg-[#F9FCFA]"}`}>
                           <div className="flex items-center gap-2.5">
-                            <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${active ? "bg-[#22C55E] text-white" : item.complete ? "bg-[#DCFCE7] text-[#166534]" : unlocked ? "bg-[#F1F5F9] text-[#64748B]" : "bg-[#F1F5F9] text-[#94A3B8]"}`}>
+                            <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${active ? "bg-[#22C55E] text-white" : item.complete ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#F1F5F9] text-[#64748B]"}`}>
                               {item.complete ? <Check className="h-3.5 w-3.5" /> : <item.Icon className="h-3.5 w-3.5" />}
                             </span>
                             <span className="min-w-0 flex-1">
-                              <span className={`block truncate text-xs font-semibold ${active ? "text-[#166534]" : unlocked ? "text-[#111827]" : "text-[#64748B]"}`}>{item.title}</span>
+                              <span className={`block truncate text-xs font-semibold ${active ? "text-[#166534]" : "text-[#111827]"}`}>{item.title}</span>
                               <span className="mt-0.5 block truncate text-[10px] text-[#64748B]">{item.description}</span>
                             </span>
                             {item.complete && <Check className="h-3.5 w-3.5 shrink-0 text-[#16A34A]" />}
@@ -4301,7 +4264,7 @@ export default function DashboardLayout() {
                             <div className={`h-full rounded-full transition-all duration-500 ${item.complete ? "bg-[#22C55E]" : "bg-[#CBD5E1]"}`} style={{ width: `${Math.max(4, item.percent)}%` }} />
                           </div>
                           <div className="mt-1 flex items-center justify-between text-[10px] font-medium text-[#64748B]">
-                            <span>{unlocked ? (active ? "In progress" : "Ready") : "Locked"}</span>
+                            <span>{active ? "In progress" : "Ready"}</span>
                             <span>{item.percent}%</span>
                           </div>
                         </button>;
