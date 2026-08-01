@@ -594,42 +594,6 @@ var Globe = createLucideIcon("globe", [
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
-var Hash = createLucideIcon("hash", [
-	["line", {
-		x1: "4",
-		x2: "20",
-		y1: "9",
-		y2: "9",
-		key: "4lhtct"
-	}],
-	["line", {
-		x1: "4",
-		x2: "20",
-		y1: "15",
-		y2: "15",
-		key: "vyu0kd"
-	}],
-	["line", {
-		x1: "10",
-		x2: "8",
-		y1: "3",
-		y2: "21",
-		key: "1ggp8o"
-	}],
-	["line", {
-		x1: "16",
-		x2: "14",
-		y1: "3",
-		y2: "21",
-		key: "weycgp"
-	}]
-]);
-/**
-* @license lucide-react v0.575.0 - ISC
-*
-* This source code is licensed under the ISC license.
-* See the LICENSE file in the root directory of this source tree.
-*/
 var Heart = createLucideIcon("heart", [["path", {
 	d: "M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5",
 	key: "mvr1a0"
@@ -718,26 +682,14 @@ var Linkedin = createLucideIcon("linkedin", [
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
-var LoaderCircle = createLucideIcon("loader-circle", [["path", {
-	d: "M21 12a9 9 0 1 1-6.219-8.56",
-	key: "13zald"
-}]]);
-/**
-* @license lucide-react v0.575.0 - ISC
-*
-* This source code is licensed under the ISC license.
-* See the LICENSE file in the root directory of this source tree.
-*/
-var Mail = createLucideIcon("mail", [["path", {
-	d: "m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7",
-	key: "132q7q"
-}], ["rect", {
-	x: "2",
-	y: "4",
-	width: "20",
-	height: "16",
-	rx: "2",
-	key: "izxlao"
+var MapPin = createLucideIcon("map-pin", [["path", {
+	d: "M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0",
+	key: "1r0f0z"
+}], ["circle", {
+	cx: "12",
+	cy: "10",
+	r: "3",
+	key: "ilqhr7"
 }]]);
 /**
 * @license lucide-react v0.575.0 - ISC
@@ -1180,4 +1132,4 @@ var X = createLucideIcon("x", [["path", {
 	key: "d8bk6v"
 }]]);
 //#endregion
-export { House as A, CircleAlert as B, Menu as C, Linkedin as D, LoaderCircle as E, Eye as F, Calendar as G, ChevronDown as H, EyeOff as I, Box as J, Brain as K, Database as L, Hash as M, Globe as N, Inbox as O, Facebook as P, Activity as Q, Cpu as R, MessageCircle as S, Mail as T, Check as U, ChevronRight as V, ChartColumn as W, BookOpen as X, Bot as Y, ArrowRight as Z, Plug as _, Tag as a, Package as b, Smile as c, Send as d, Search as f, Plus as g, RefreshCw as h, Target as i, Heart as j, Image as k, Shield as l, Repeat as m, Users as n, Star as o, Rocket as p, Boxes as q, User as r, Sparkles as s, X as t, Settings as u, Phone as v, Megaphone as w, MessageSquareOff as x, Paperclip as y, Clock as z };
+export { Heart as A, ChevronDown as B, Menu as C, Inbox as D, Linkedin as E, Database as F, Boxes as G, ChartColumn as H, Cpu as I, BookOpen as J, Box as K, Clock as L, Facebook as M, Eye as N, Image as O, EyeOff as P, CircleAlert as R, MessageCircle as S, MapPin as T, Calendar as U, Check as V, Brain as W, Activity as X, ArrowRight as Y, Plug as _, Tag as a, Package as b, Smile as c, Send as d, Search as f, Plus as g, RefreshCw as h, Target as i, Globe as j, House as k, Shield as l, Repeat as m, Users as n, Star as o, Rocket as p, Bot as q, User as r, Sparkles as s, X as t, Settings as u, Phone as v, Megaphone as w, MessageSquareOff as x, Paperclip as y, ChevronRight as z };

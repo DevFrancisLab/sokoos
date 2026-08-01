@@ -3924,173 +3924,89 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
 
-                                  <div className="space-y-6">
-                                    <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
-                                      <div className="space-y-2">
-                                        <p className="text-[15px] font-semibold tracking-[-0.01em] text-[#111827]">Business Information</p>
-                                        <p className="text-sm leading-6 text-[#6B7280]">Let your AI start with the essentials of who your business is.</p>
-                                      </div>
-                                      <div className="mt-6 grid gap-4 md:grid-cols-2">
-                                        <div className="relative w-full space-y-2">
-                                          <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-name">
-                                            Business Name
-                                          </label>
-                                          <input
-                                            id="business-name"
-                                            autoComplete="organization"
-                                            required
-                                            value={businessInfo.name}
-                                            onChange={(event) => setBusinessInfo((current) => ({ ...current, name: event.target.value }))}
-                                            placeholder="Your business name"
-                                            className={`${AI_TRAINING_FIELD} w-full`}
-                                          />
-                                          {businessInfo.name && <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Business name is ready" />}
-                                          <p className="text-xs text-[#64748B]">Shown to customers in every conversation.</p>
-                                        </div>
-
-                                        <div className="relative w-full space-y-2">
-                                          <label className="block text-sm font-semibold text-[#111827]" htmlFor="industry">
-                                            Business Type
-                                          </label>
-                                          <input
-                                            id="industry"
-                                            required
-                                            value={businessInfo.type}
-                                            onChange={(event) => setBusinessInfo((current) => ({ ...current, type: event.target.value }))}
-                                            placeholder="e.g. Retail, Hospitality, Services"
-                                            className={`${AI_TRAINING_FIELD} w-full`}
-                                          />
-                                          {businessInfo.type && <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Business type is ready" />}
-                                          <p className="text-xs text-[#64748B]">Helps your AI use the right context.</p>
-                                        </div>
-
-                                        <div className="relative w-full space-y-2 md:col-span-2">
-                                          <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-country">
-                                            Country
-                                          </label>
-                                          <input
-                                            id="business-country"
-                                            required
-                                            value={businessInfo.country}
-                                            onChange={(event) => setBusinessInfo((current) => ({ ...current, country: event.target.value }))}
-                                            placeholder="e.g. Kenya"
-                                            className={`${AI_TRAINING_FIELD} w-full`}
-                                          />
-                                          {businessInfo.country && <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Country is ready" />}
-                                        </div>
-                                      </div>
-                                      <div className="mt-6 space-y-2">
-                                        <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-description">
-                                          Business Description
+                                  <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                                    <div className="space-y-2">
+                                      <p className="text-[15px] font-semibold tracking-[-0.01em] text-[#111827]">Who is this AI representing?</p>
+                                      <p className="text-sm leading-6 text-[#6B7280]">Start with the basics so your AI can introduce the business clearly.</p>
+                                    </div>
+                                    <div className="mt-6 grid gap-4 md:grid-cols-2">
+                                      <div className="relative w-full space-y-2 md:col-span-2">
+                                        <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-name">
+                                          Business Name
                                         </label>
-                                        <p className="text-sm leading-6 text-[#6B7280]">
-                                          Help your AI understand your business, your customers, and what makes you different.
-                                        </p>
-                                        <textarea
-                                          id="business-description"
+                                        <input
+                                          id="business-name"
+                                          autoComplete="organization"
                                           required
-                                          value={businessInfo.about}
-                                          onChange={(event) => setBusinessInfo((current) => ({ ...current, about: event.target.value }))}
-                                          placeholder="We provide affordable fibre internet for homes and businesses across Nairobi with fast installation and friendly customer support."
-                                          rows={5}
-                                          className={`${AI_TRAINING_TEXTAREA} mt-0 w-full resize-none`}
+                                          value={businessInfo.name}
+                                          onChange={(event) => setBusinessInfo((current) => ({ ...current, name: event.target.value }))}
+                                          placeholder="Your business name"
+                                          className={`${AI_TRAINING_FIELD} w-full`}
                                         />
-                                        <p className="text-xs text-[#64748B]">Your AI uses this description to introduce your business and answer customer questions.</p>
+                                        {businessInfo.name && <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Business name is ready" />}
+                                      </div>
+
+                                      <div className="relative w-full space-y-2">
+                                        <label className="block text-sm font-semibold text-[#111827]" htmlFor="industry">
+                                          Business Type
+                                        </label>
+                                        <input
+                                          id="industry"
+                                          required
+                                          value={businessInfo.type}
+                                          onChange={(event) => setBusinessInfo((current) => ({ ...current, type: event.target.value }))}
+                                          placeholder="e.g. Retail, Hospitality, Services"
+                                          className={`${AI_TRAINING_FIELD} w-full`}
+                                        />
+                                        {businessInfo.type && <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Business type is ready" />}
+                                      </div>
+
+                                      <div className="relative w-full space-y-2">
+                                        <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-country">
+                                          Country
+                                        </label>
+                                        <input
+                                          id="business-country"
+                                          required
+                                          value={businessInfo.country}
+                                          onChange={(event) => setBusinessInfo((current) => ({ ...current, country: event.target.value }))}
+                                          placeholder="e.g. Kenya"
+                                          className={`${AI_TRAINING_FIELD} w-full`}
+                                        />
+                                        {businessInfo.country && <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Country is ready" />}
                                       </div>
                                     </div>
-
-                                    <div className="border-t border-[#E5E7EB] pt-6 sm:pt-7">
-                                      <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
-                                        <div className="space-y-2">
-                                          <p className="text-[15px] font-semibold tracking-[-0.01em] text-[#111827]">Customer Contact Channels</p>
-                                          <p className="text-sm leading-6 text-[#6B7280]">These are the contact details your AI shares whenever customers ask how to reach your business.</p>
-                                        </div>
-                                        <div className="mt-6 grid gap-4 md:grid-cols-2">
-                                          <div className="w-full space-y-2">
-                                            <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-website">Website</label>
-                                            <input id="business-website" type="url" autoComplete="url" required value={businessInfo.website} onChange={(event) => setBusinessInfo((current) => ({ ...current, website: event.target.value }))} placeholder="https://yourbusiness.com" className={`${AI_TRAINING_FIELD} w-full`} />
-                                            <p className="text-xs text-[#64748B]">Use a full URL.</p>
-                                          </div>
-                                          <div className="w-full space-y-2">
-                                            <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-email">Business Email</label>
-                                            <input id="business-email" type="email" autoComplete="email" required value={businessInfo.email} onChange={(event) => setBusinessInfo((current) => ({ ...current, email: event.target.value }))} placeholder="support@yourbusiness.com" className={`${AI_TRAINING_FIELD} w-full`} />
-                                            <p className="text-xs text-[#64748B]">Use a valid business email.</p>
-                                          </div>
-                                          <div className="w-full space-y-2">
-                                            <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-phone">Business Phone</label>
-                                            <input id="business-phone" type="tel" inputMode="tel" autoComplete="tel" required value={businessInfo.phone} onChange={(event) => setBusinessInfo((current) => ({ ...current, phone: event.target.value }))} placeholder="+254 700 000 000" pattern="^\+?[0-9\s()\-]{7,}$" className={`${AI_TRAINING_FIELD} w-full`} />
-                                            <p className="text-xs text-[#64748B]">Supports international formats.</p>
-                                          </div>
-                                          <div className="w-full space-y-2">
-                                            <label className="block text-sm font-semibold text-[#111827]" htmlFor="whatsapp-number">WhatsApp Number</label>
-                                            <input id="whatsapp-number" type="tel" inputMode="tel" autoComplete="tel" required value={businessInfo.whatsapp} onChange={(event) => setBusinessInfo((current) => ({ ...current, whatsapp: event.target.value }))} placeholder="+254 700 000 000" pattern="^\+?[0-9\s()\-]{7,}$" className={`${AI_TRAINING_FIELD} w-full`} />
-                                            <p className="text-xs text-[#64748B]">Used for direct customer follow-up.</p>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-
-                                    <div className="border-t border-[#E5E7EB] pt-6 sm:pt-7">
-                                      <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
-                                        <div className="space-y-2">
-                                          <p className="text-[15px] font-semibold tracking-[-0.01em] text-[#111827]">Business Locations</p>
-                                          <p className="text-sm leading-6 text-[#6B7280]">Help your AI answer questions about where your business operates.</p>
-                                        </div>
-                                        <div className="mt-6 grid gap-4 md:grid-cols-2">
-                                          <div className="w-full space-y-2">
-                                            <label className="block text-sm font-semibold text-[#111827]" htmlFor="head-office">Head Office</label>
-                                            <input
-                                              id="head-office"
-                                              value={businessInfo.address}
-                                              onChange={(event) => setBusinessInfo((current) => ({ ...current, address: event.target.value }))}
-                                              placeholder="Nairobi, Kenya"
-                                              className={`${AI_TRAINING_FIELD} w-full`}
-                                            />
-                                            <p className="text-xs text-[#64748B]">A single main location for your business.</p>
-                                          </div>
-
-                                          <div className="w-full space-y-2">
-                                            <label className="block text-sm font-semibold text-[#111827]" htmlFor="service-areas">Service Areas</label>
-                                            <input
-                                              id="service-areas"
-                                              value={serviceAreaInput}
-                                              onChange={(event) => setServiceAreaInput(event.target.value)}
-                                              onKeyDown={(event) => {
-                                                if (event.key === "Enter") {
-                                                  event.preventDefault();
-                                                  addServiceArea();
-                                                }
-                                              }}
-                                              placeholder="Nairobi"
-                                              className={`${AI_TRAINING_FIELD} w-full`}
-                                            />
-                                            <p className="text-xs text-[#64748B]">Type a place and press Enter to add it.</p>
-                                            <div className="mt-2 flex flex-wrap gap-2">
-                                              {parseServiceAreas(businessInfo.serviceAreas).map((area) => (
-                                                <button
-                                                  key={area}
-                                                  type="button"
-                                                  onClick={() => removeServiceArea(area)}
-                                                  className="inline-flex items-center gap-1 rounded-full border border-[#E5E7EB] bg-white px-2.5 py-1 text-xs font-semibold text-[#111827] transition hover:border-[#86EFAC] hover:bg-[#F0FDF4]"
-                                                >
-                                                  <span>{area}</span>
-                                                  <span className="text-[#64748B]">×</span>
-                                                </button>
-                                              ))}
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
+                                    <div className="mt-6 space-y-2">
+                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-description">
+                                        Business Description
+                                      </label>
+                                      <textarea
+                                        id="business-description"
+                                        required
+                                        value={businessInfo.about}
+                                        onChange={(event) => setBusinessInfo((current) => ({ ...current, about: event.target.value }))}
+                                        placeholder="We provide affordable fibre internet for homes and businesses across Nairobi with fast installation and friendly customer support."
+                                        rows={4}
+                                        className={`${AI_TRAINING_TEXTAREA} mt-0 w-full resize-none`}
+                                      />
                                     </div>
                                   </div>
 
-                                  <div className="flex justify-end border-t border-[#EEF2F6] pt-5">
+                                  <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-5">
                                     <button
                                       type="button"
-                                      onClick={() => completeIdentityLesson(0)}
-                                      className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]"
+                                      disabled
+                                      className="text-sm font-semibold text-[#64748B] transition disabled:cursor-not-allowed disabled:opacity-60"
                                     >
-                                      <span>Continue to brand voice</span>
+                                      Back
+                                    </button>
+                                    <button
+                                      type="button"
+                                      disabled={!businessInfo.name.trim() || !businessInfo.type.trim() || !businessInfo.country.trim() || !businessInfo.about.trim()}
+                                      onClick={() => completeIdentityLesson(0)}
+                                      className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45"
+                                    >
+                                      <span>Save & Continue</span>
                                       <ChevronRight className="h-4 w-4" />
                                     </button>
                                   </div>
