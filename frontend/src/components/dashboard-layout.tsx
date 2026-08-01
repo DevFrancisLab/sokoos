@@ -2514,16 +2514,39 @@ export default function DashboardLayout() {
         : knowledgeFilter === "Website Page"
           ? { title: "No website pages yet", description: "Import your website to give your AI a fast, trusted starting point.", action: "Import website" }
           : { title: "No knowledge items yet", description: "Add a focused FAQ, product, policy, or website page to start teaching your AI.", action: "Add knowledge" };
+  const workspacePrerequisites: Record<string, string[]> = {
+    Identity: [],
+    "Knowledge Hub": ["Identity"],
+    Catalogue: ["Knowledge Hub"],
+    "Sales Playbooks": ["Catalogue"],
+    Policies: ["Knowledge Hub"],
+    Skills: ["Policies"],
+    Integrations: ["Knowledge Hub"],
+    Performance: ["Integrations"],
+  };
+  const workspaceProgressBySection = {
+    Identity: Math.min(100, Math.round((trainingCompletedSteps.length / identityLessons.length) * 100)),
+    "Knowledge Hub": Math.min(100, Math.round((knowledgeCoverage * 0.6) + (knowledgeCompleteness * 0.4))),
+    Catalogue: Math.min(100, Math.round((knowledgeProducts.length > 0 ? 45 : 0) + (CATALOG_ITEMS.length > 0 ? 35 : 0) + (knowledgeProducts.length > 2 ? 20 : 0))),
+    "Sales Playbooks": Math.min(100, upsellProducts || recommendAlternatives ? 100 : 0),
+    Policies: Math.min(100, Math.round((Object.values(policies).filter(Boolean).length / 3) * 100)),
+    Skills: Math.min(100, Math.round((skills.filter((skill) => skill.enabled).length / Math.max(1, skills.length)) * 100)),
+    Integrations: Math.min(100, Math.round((Object.values(communicationChannels).filter(Boolean).length / Math.max(1, Object.keys(communicationChannels).length)) * 100)),
+    Performance: aiEmployeeLaunched ? 100 : Math.min(100, 20 + (trainingCompletedSteps.length > 0 ? 10 : 0)),
+  };
   const workspaceNavigatorItems = [
-    { title: "Identity", description: "Who your AI represents", section: "Identity" as const, Icon: User, complete: identityWorkspaceComplete || trainingCompletedSteps.includes(0) },
-    { title: "Knowledge", description: "What it can answer", section: "Knowledge Hub" as const, Icon: BookOpen, complete: identityWorkspaceComplete || faqItems.length > 0 },
-    { title: "Catalogue", description: "Offers it can recommend", section: "Catalogue" as const, Icon: Package, complete: knowledgeProducts.length > 0 },
-    { title: "Sales Playbooks", description: "How it handles selling", section: "Sales Playbooks" as const, Icon: Target, complete: upsellProducts || recommendAlternatives },
-    { title: "Policies", description: "Rules it follows", section: "Policies" as const, Icon: Shield, complete: Boolean(policies.returnPolicy && policies.deliveryPolicy) },
-    { title: "Skills", description: "Work it can do", section: "Skills" as const, Icon: Sparkles, complete: false },
-    { title: "Integrations", description: "Where it connects", section: "Integrations" as const, Icon: Plug, complete: Object.values(communicationChannels).some(Boolean) },
-    { title: "Performance", description: "How it is improving", section: "Performance" as const, Icon: BarChart3, complete: aiEmployeeLaunched },
-  ];
+    { title: "Identity", description: "Who your AI represents", section: "Identity" as const, Icon: User, complete: identityWorkspaceComplete || trainingCompletedSteps.includes(0), percent: workspaceProgressBySection.Identity, unlocked: true },
+    { title: "Knowledge", description: "What it can answer", section: "Knowledge Hub" as const, Icon: BookOpen, complete: knowledgeCoverage >= 70 && knowledgeCompleteness >= 60, percent: workspaceProgressBySection["Knowledge Hub"], unlocked: identityWorkspaceComplete || trainingCompletedSteps.includes(0) },
+    { title: "Catalogue", description: "Offers it can recommend", section: "Catalogue" as const, Icon: Package, complete: knowledgeProducts.length > 0 && CATALOG_ITEMS.length > 0, percent: workspaceProgressBySection.Catalogue, unlocked: false },
+    { title: "Sales Playbooks", description: "How it handles selling", section: "Sales Playbooks" as const, Icon: Target, complete: Boolean(upsellProducts || recommendAlternatives), percent: workspaceProgressBySection["Sales Playbooks"], unlocked: false },
+    { title: "Policies", description: "Rules it follows", section: "Policies" as const, Icon: Shield, complete: Boolean(policies.returnPolicy && policies.deliveryPolicy), percent: workspaceProgressBySection.Policies, unlocked: false },
+    { title: "Skills", description: "Work it can do", section: "Skills" as const, Icon: Sparkles, complete: skills.some((skill) => skill.enabled), percent: workspaceProgressBySection.Skills, unlocked: false },
+    { title: "Integrations", description: "Where it connects", section: "Integrations" as const, Icon: Plug, complete: Object.values(communicationChannels).some(Boolean), percent: workspaceProgressBySection.Integrations, unlocked: false },
+    { title: "Performance", description: "How it is improving", section: "Performance" as const, Icon: BarChart3, complete: aiEmployeeLaunched, percent: workspaceProgressBySection.Performance, unlocked: false },
+  ].map((item, index, items) => ({
+    ...item,
+    unlocked: item.unlocked || items.slice(0, index).every((prereqItem) => prereqItem.complete),
+  }));
   useEffect(() => {
     const saved = window.localStorage.getItem("sokoos-ai-training-progress-v2");
     if (saved) {
@@ -3751,24 +3774,38 @@ export default function DashboardLayout() {
                   </section>
 
                   <nav aria-label="AI employee workspace sections" className="sticky top-0 z-30 -mx-4 border-y border-[#E5E7EB] bg-white/95 px-4 py-3 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur lg:hidden">
-                    <div className="grid grid-cols-3 gap-1.5 sm:grid-cols-5 lg:grid-cols-9">
+                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                     {workspaceNavigatorItems.map((tab) => {
                       const active = activeWorkspaceSection === tab.section;
+                      const unlocked = tab.unlocked;
                       return (
                         <button
                           key={tab.title}
                           type="button"
-                          onClick={() => setActiveWorkspaceSection(tab.section)}
+                          onClick={() => unlocked && setActiveWorkspaceSection(tab.section)}
+                          disabled={!unlocked}
                           aria-current={active ? "page" : undefined}
-                          className={`relative flex min-w-0 items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-xs font-semibold transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 ${
+                          className={`relative flex min-w-0 flex-col gap-2 rounded-xl border px-2.5 py-2.5 text-left text-xs font-semibold transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 ${
                             active
-                              ? "bg-[#111827] text-white shadow-sm"
-                              : "text-[#64748B] hover:bg-[#F3F4F6] hover:text-[#111827]"
-                          }`}
+                              ? "border-[#86EFAC] bg-[#ECFDF5] text-[#166534] shadow-sm"
+                              : unlocked
+                                ? "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#D1FAE5] hover:bg-[#F9FCFA]"
+                                : "border-[#E5E7EB] bg-[#F8FAFC] text-[#94A3B8]"
+                          } ${!unlocked ? "cursor-not-allowed opacity-70" : ""}`}
                         >
-                          <tab.Icon className="h-3.5 w-3.5 shrink-0" />
-                          <span className="truncate">{tab.title}</span>
-                          {tab.complete ? <Check className={`h-3.5 w-3.5 shrink-0 ${active ? "text-[#86EFAC]" : "text-[#16A34A]"}`} /> : <CircleAlert className={`h-3.5 w-3.5 shrink-0 ${active ? "text-[#FDE68A]" : "text-[#F59E0B]"}`} />}
+                          <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-1.5">
+                              <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-lg ${active ? "bg-[#22C55E] text-white" : tab.complete ? "bg-[#DCFCE7] text-[#166534]" : unlocked ? "bg-[#F1F5F9] text-[#64748B]" : "bg-[#F1F5F9] text-[#94A3B8]"}`}>
+                                {tab.complete ? <Check className="h-3.5 w-3.5" /> : <tab.Icon className="h-3.5 w-3.5" />}
+                              </span>
+                              <span className="truncate">{tab.title}</span>
+                            </div>
+                            {tab.complete ? <Check className="h-3.5 w-3.5 shrink-0 text-[#16A34A]" /> : null}
+                          </div>
+                          <div className="h-1.5 overflow-hidden rounded-full bg-[#E5E7EB]">
+                            <div className={`h-full rounded-full transition-all duration-500 ${tab.complete ? "bg-[#22C55E]" : "bg-[#CBD5E1]"}`} style={{ width: `${Math.max(4, tab.percent)}%` }} />
+                          </div>
+                          <span className="text-[10px] font-medium text-[#64748B]">{tab.percent}%</span>
                         </button>
                       );
                     })}
@@ -3779,15 +3816,30 @@ export default function DashboardLayout() {
 
               <main className="relative space-y-5 pb-28 lg:pl-[252px]">
                 <aside className="hidden w-[228px] lg:sticky lg:top-5 lg:float-left lg:-ml-[252px] lg:block" aria-label="AI employee workspaces">
-                  <div className="rounded-xl border border-[#E5E7EB] bg-white p-2 shadow-[0_8px_24px_rgba(15,23,42,0.05)]">
-                    <div className="px-2.5 pb-2 pt-1.5"><p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">AI workspaces</p><p className="mt-1 text-xs text-[#64748B]">Train one capability at a time.</p></div>
-                    <nav className="space-y-1" aria-label="AI Employee workspace navigator">
+                  <div className="rounded-xl border border-[#E5E7EB] bg-white p-2.5 shadow-[0_8px_24px_rgba(15,23,42,0.05)]">
+                    <div className="px-2.5 pb-2 pt-1.5"><p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">AI training</p><p className="mt-1 text-xs text-[#64748B]">Watch your AI grow one workspace at a time.</p></div>
+                    <nav className="space-y-2" aria-label="AI Employee workspace navigator">
                       {workspaceNavigatorItems.map((item) => {
                         const active = activeWorkspaceSection === item.section;
-                        return <button key={item.title} type="button" onClick={() => setActiveWorkspaceSection(item.section)} aria-current={active ? "page" : undefined} className={`group flex w-full items-center gap-2.5 rounded-lg border px-2.5 py-2.5 text-left transition-all duration-200 ease-out ${active ? "border-[#86EFAC] bg-[#ECFDF5] shadow-sm" : "border-transparent hover:-translate-y-px hover:border-[#E2E8F0] hover:bg-[#F8FAFC]"}`}>
-                          <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${active ? "bg-[#22C55E] text-white" : item.complete ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#F1F5F9] text-[#64748B] group-hover:bg-white"}`}>{item.complete ? <Check className="h-3.5 w-3.5" /> : <item.Icon className="h-3.5 w-3.5" />}</span>
-                          <span className="min-w-0 flex-1"><span className={`block truncate text-xs font-semibold ${active ? "text-[#166534]" : "text-[#111827]"}`}>{item.title}</span><span className="mt-0.5 block truncate text-[10px] text-[#64748B]">{item.description}</span></span>
-                          {item.complete && <Check className="h-3.5 w-3.5 shrink-0 text-[#16A34A]" />}
+                        const unlocked = item.unlocked;
+                        return <button key={item.title} type="button" onClick={() => unlocked && setActiveWorkspaceSection(item.section)} disabled={!unlocked} aria-current={active ? "page" : undefined} className={`w-full rounded-xl border px-2.5 py-2.5 text-left transition-all duration-200 ease-out ${active ? "border-[#86EFAC] bg-[#ECFDF5] shadow-sm" : unlocked ? "border-[#E5E7EB] bg-white hover:border-[#D1FAE5] hover:bg-[#F9FCFA]" : "border-[#E5E7EB] bg-[#F8FAFC] opacity-70"}`}>
+                          <div className="flex items-center gap-2.5">
+                            <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${active ? "bg-[#22C55E] text-white" : item.complete ? "bg-[#DCFCE7] text-[#166534]" : unlocked ? "bg-[#F1F5F9] text-[#64748B]" : "bg-[#F1F5F9] text-[#94A3B8]"}`}>
+                              {item.complete ? <Check className="h-3.5 w-3.5" /> : <item.Icon className="h-3.5 w-3.5" />}
+                            </span>
+                            <span className="min-w-0 flex-1">
+                              <span className={`block truncate text-xs font-semibold ${active ? "text-[#166534]" : unlocked ? "text-[#111827]" : "text-[#64748B]"}`}>{item.title}</span>
+                              <span className="mt-0.5 block truncate text-[10px] text-[#64748B]">{item.description}</span>
+                            </span>
+                            {item.complete && <Check className="h-3.5 w-3.5 shrink-0 text-[#16A34A]" />}
+                          </div>
+                          <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[#E5E7EB]">
+                            <div className={`h-full rounded-full transition-all duration-500 ${item.complete ? "bg-[#22C55E]" : "bg-[#CBD5E1]"}`} style={{ width: `${Math.max(4, item.percent)}%` }} />
+                          </div>
+                          <div className="mt-1 flex items-center justify-between text-[10px] font-medium text-[#64748B]">
+                            <span>{unlocked ? (active ? "In progress" : "Ready") : "Locked"}</span>
+                            <span>{item.percent}%</span>
+                          </div>
                         </button>;
                       })}
                     </nav>
