@@ -2554,6 +2554,26 @@ export default function DashboardLayout() {
       setAiLearningTimeline((timeline) => [{ id: `learning-${Date.now()}`, day: "Today", title: "Imported website", detail: "42 knowledge items learned from 18 pages", Icon: Globe }, ...timeline]);
     }, 950);
   };
+  const [websiteScanSummary, setWebsiteScanSummary] = useState<null | { pages: number; products: number; faqs: number; contact: number; policies: number; blog: number; }>(null);
+
+  // Enhanced mock scanning: set a fake summary after scanning completes
+  const scanWebsite = () => {
+    setWebsiteScanSummary(null);
+    setWebsiteImportStatus("syncing");
+    setWebsiteImportProgress(6);
+    // animated progress steps
+    window.setTimeout(() => setWebsiteImportProgress(24), 300);
+    window.setTimeout(() => setWebsiteImportProgress(46), 700);
+    window.setTimeout(() => setWebsiteImportProgress(72), 1200);
+    window.setTimeout(() => {
+      setWebsiteImportProgress(100);
+      setWebsiteImportStatus("complete");
+      const summary = { pages: 34, products: 12, faqs: 8, contact: 1, policies: 3, blog: 6 };
+      setWebsiteScanSummary(summary);
+      setWebsiteImportHistory((history) => [{ id: `website-sync-${Date.now()}`, time: "Just now", result: `${summary.pages} pages discovered · ${summary.products + summary.faqs + summary.policies} knowledge items found` }, ...history]);
+      setAiLearningTimeline((timeline) => [{ id: `learning-${Date.now()}`, day: "Today", title: "Scanned website", detail: `${summary.pages} pages discovered`, Icon: Globe }, ...timeline]);
+    }, 2200);
+  };
   const [policies, setPolicies] = useState({
     returnPolicy:
       "Customers may return services within 7 days if there is a technical issue requiring a fix.",
@@ -5161,9 +5181,33 @@ export default function DashboardLayout() {
                                   </div>
                                   <div className="mt-4 flex flex-col gap-3 border-t border-[#EEF2F6] pt-4 sm:flex-row">
                                     <div className="relative min-w-0 flex-1"><Globe className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#94A3B8]" /><input type="url" value={websiteImportUrl} onChange={(event) => setWebsiteImportUrl(event.target.value)} placeholder="https://theirbusiness.com" className="h-11 w-full rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] pl-9 pr-3 text-sm outline-none transition focus:border-[#22C55E] focus:bg-white focus:ring-4 focus:ring-[#DCFCE7]/70" /></div>
-                                    <button type="button" onClick={syncWebsiteKnowledge} disabled={websiteImportStatus === "syncing" || !websiteImportUrl.trim()} className="rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-60">{websiteImportStatus === "syncing" ? "Syncing…" : "Sync website"}</button>
+                                    <button type="button" onClick={scanWebsite} disabled={websiteImportStatus === "syncing" || !websiteImportUrl.trim()} className="rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-60">{websiteImportStatus === "syncing" ? "Scanning…" : "Scan Website"}</button>
                                   </div>
-                                  <div className="mt-4 rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] p-3 text-sm text-[#64748B]">{websiteImportStatus === "complete" ? "Website content is ready to use in replies." : websiteImportStatus === "syncing" ? "Sync in progress..." : "Add a website URL to pull in pages and product information."}</div>
+                                  <div className="mt-4">
+                                    {websiteImportStatus === "syncing" ? (
+                                      <div className="rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] p-3">
+                                        <p className="text-sm text-[#64748B]">Scanning website…</p>
+                                        <div className="mt-3 w-full overflow-hidden rounded-full bg-[#EEF2F6]">
+                                          <div className="h-2 rounded-full bg-[#22C55E] transition-all" style={{ width: `${websiteImportProgress}%` }} />
+                                        </div>
+                                      </div>
+                                    ) : websiteImportStatus === "complete" && websiteScanSummary ? (
+                                      <div className="rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-sm">
+                                        <p className="text-sm font-semibold text-[#111827]">Website scanned successfully</p>
+                                        <p className="mt-1 text-xs text-[#64748B]">{websiteScanSummary.pages} pages discovered</p>
+                                        <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                                          <div className="rounded-lg border border-[#EEF2F6] bg-[#F8FAFC] p-3 text-sm text-[#111827]"><div className="font-semibold">Products</div><div className="mt-1 text-xs text-[#64748B]">{websiteScanSummary.products}</div></div>
+                                          <div className="rounded-lg border border-[#EEF2F6] bg-[#F8FAFC] p-3 text-sm text-[#111827]"><div className="font-semibold">FAQs</div><div className="mt-1 text-xs text-[#64748B]">{websiteScanSummary.faqs}</div></div>
+                                          <div className="rounded-lg border border-[#EEF2F6] bg-[#F8FAFC] p-3 text-sm text-[#111827]"><div className="font-semibold">Contact</div><div className="mt-1 text-xs text-[#64748B]">{websiteScanSummary.contact}</div></div>
+                                          <div className="rounded-lg border border-[#EEF2F6] bg-[#F8FAFC] p-3 text-sm text-[#111827]"><div className="font-semibold">Policies</div><div className="mt-1 text-xs text-[#64748B]">{websiteScanSummary.policies}</div></div>
+                                          <div className="rounded-lg border border-[#EEF2F6] bg-[#F8FAFC] p-3 text-sm text-[#111827]"><div className="font-semibold">Blog</div><div className="mt-1 text-xs text-[#64748B]">{websiteScanSummary.blog}</div></div>
+                                        </div>
+                                        <div className="mt-3 rounded-md bg-[#ECFDF5] px-3 py-2 text-sm font-semibold text-[#166534]">Ready to import knowledge</div>
+                                      </div>
+                                    ) : (
+                                      <div className="rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] p-3 text-sm text-[#64748B]">Add a website URL to pull in pages and product information.</div>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
                               <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
