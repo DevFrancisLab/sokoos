@@ -4279,48 +4279,80 @@ export default function DashboardLayout() {
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F5F3FF] text-[#6D28D9]"><Globe className="h-5 w-5" /></div>
                                     <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Teach your AI how to speak</p>
-                                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">
-                                      Choose the languages your AI can use with customers.
-                                    </p>
+                                      <p className="text-[20px] font-semibold text-[#111827]">Languages</p>
+                                      <p className="mt-2 text-sm leading-6 text-[#6B7280]">
+                                        Choose the languages your AI can understand and use when customers reach out.
+                                      </p>
                                     </div>
                                   </div>
 
-                                  <div className="relative">
-                                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#94A3B8]" />
-                                    <input value={languageSearch} onChange={(event) => setLanguageSearch(event.target.value)} placeholder="Search languages…" className="h-11 w-full rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] pl-10 pr-3 text-sm outline-none transition placeholder:text-[#94A3B8] focus:border-[#22C55E] focus:bg-white focus:ring-4 focus:ring-[#DCFCE7]/70" />
-                                  </div>
-
-                                  <div className="grid gap-4 md:grid-cols-2">
-                                    <div className="rounded-xl border border-[#E5E7EB] bg-[#FCFCFD] p-4">
-                                      <p className="text-sm font-semibold text-[#111827]">Primary language</p>
-                                      <p className="mt-1 text-xs leading-5 text-[#64748B]">The default language your AI uses when a customer starts a conversation.</p>
+                                  <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                                    <div className="space-y-2">
+                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="primary-language">
+                                        Primary Language
+                                      </label>
+                                      <p className="text-sm leading-6 text-[#6B7280]">This is the default language your AI uses first.</p>
                                       <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Primary language">
-                                        {filteredLanguageOptions.map((language) => <button key={language} type="button" aria-pressed={primaryLanguage === language} onClick={() => { setPrimaryLanguage(language); setHasUnsavedChanges(true); }} className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${primaryLanguage === language ? "bg-[#111827] text-white shadow-sm" : "border border-[#CBD5E1] bg-white text-[#475569] hover:border-[#22C55E] hover:text-[#166534]"}`}>{primaryLanguage === language && <Check className="mr-1 inline h-3 w-3" />}{language}</button>)}
+                                        {filteredLanguageOptions.map((language) => (
+                                          <button
+                                            key={language}
+                                            type="button"
+                                            aria-pressed={primaryLanguage === language}
+                                            onClick={() => { setPrimaryLanguage(language); setHasUnsavedChanges(true); }}
+                                            className={`rounded-full border px-3 py-2 text-sm font-semibold transition ${primaryLanguage === language ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#A7F3D0] hover:text-[#111827]"}`}
+                                          >
+                                            {language}
+                                          </button>
+                                        ))}
                                       </div>
                                     </div>
 
-                                    <div className="rounded-xl border border-[#E5E7EB] bg-[#FCFCFD] p-4">
-                                      <p className="text-sm font-semibold text-[#111827]">Secondary language</p>
-                                      <p className="mt-1 text-xs leading-5 text-[#64748B]">A second preferred language for customers who switch mid-conversation.</p>
-                                      <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Secondary language">
-                                        {filteredLanguageOptions.map((language) => <button key={language} type="button" aria-pressed={secondaryLanguage === language} onClick={() => { setSecondaryLanguage(language); setHasUnsavedChanges(true); }} className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${secondaryLanguage === language ? "bg-[#111827] text-white shadow-sm" : "border border-[#CBD5E1] bg-white text-[#475569] hover:border-[#22C55E] hover:text-[#166534]"}`}>{secondaryLanguage === language && <Check className="mr-1 inline h-3 w-3" />}{language}</button>)}
+                                    <div className="mt-6 space-y-2">
+                                      <label className="block text-sm font-semibold text-[#111827]" htmlFor="additional-languages">
+                                        Additional Languages
+                                      </label>
+                                      <p className="text-sm leading-6 text-[#6B7280]">Allow multiple selection so the AI can respond naturally in more than one language.</p>
+                                      <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Additional languages">
+                                        {filteredLanguageOptions.map((language) => {
+                                          const selected = supportedLanguages.includes(language);
+                                          return (
+                                            <button
+                                              key={language}
+                                              type="button"
+                                              aria-pressed={selected}
+                                              onClick={() => {
+                                                setHasUnsavedChanges(true);
+                                                setSupportedLanguages((current) =>
+                                                  current.includes(language)
+                                                    ? current.filter((item) => item !== language)
+                                                    : [...current, language],
+                                                );
+                                              }}
+                                              className={`rounded-full border px-3 py-2 text-sm font-semibold transition ${selected ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#A7F3D0] hover:text-[#111827]"}`}
+                                            >
+                                              {language}
+                                            </button>
+                                          );
+                                        })}
                                       </div>
                                     </div>
-                                  </div>
 
-                                  <div className="rounded-xl border border-[#E5E7EB] bg-[#FCFCFD] p-4">
-                                    <div className="flex items-start justify-between gap-3">
-                                      <div><p className="text-sm font-semibold text-[#111827]">Languages AI understands</p><p className="mt-1 text-xs leading-5 text-[#64748B]">Add languages your AI can recognize and respond to, even when they are not preferred.</p></div>
-                                      <span className="rounded-full bg-[#ECFDF5] px-2.5 py-1 text-xs font-semibold text-[#166534]">{supportedLanguages.length} selected</span>
-                                    </div>
-                                    <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">Suggested languages</p>
-                                    <div className="mt-2 flex flex-wrap gap-2">
-                                      {filteredLanguageOptions.map((language) => {
-                                        const selected = supportedLanguages.includes(language);
-                                        return <button key={language} type="button" aria-pressed={selected} onClick={() => { setHasUnsavedChanges(true); setSupportedLanguages((current) => current.includes(language) ? current.filter((item) => item !== language) : [...current, language]); }} className={`rounded-full px-3 py-1.5 text-xs font-semibold transition ${selected ? "bg-[#22C55E] text-white shadow-sm" : "border border-[#CBD5E1] bg-white text-[#475569] hover:border-[#22C55E] hover:text-[#166534]"}`}>{selected && <Check className="mr-1 inline h-3 w-3" />}{language}</button>;
-                                      })}
-                                      {filteredLanguageOptions.length === 0 && <p className="py-2 text-sm text-[#64748B]">No languages match “{languageSearch}”.</p>}
+                                    <div className="mt-6 rounded-2xl border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] to-white p-4">
+                                      <div className="flex items-center gap-2">
+                                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#22C55E] text-white"><Check className="h-3.5 w-3.5" /></span>
+                                        <p className="text-sm font-semibold text-[#166534]">Automatic language switching</p>
+                                      </div>
+                                      <p className="mt-3 text-sm leading-6 text-[#475569]">
+                                        When a customer writes in a supported language, your AI can switch automatically. Unsupported languages are translated before the AI responds, so the conversation stays smooth.
+                                      </p>
+                                      <div className="mt-3 rounded-2xl bg-white p-3 shadow-sm">
+                                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#64748B]">Examples</p>
+                                        <div className="mt-2 flex flex-wrap gap-2">
+                                          {['English', 'Swahili', 'French', 'Arabic'].map((example) => (
+                                            <span key={example} className="rounded-full bg-[#F8FAFC] px-2.5 py-1 text-xs font-semibold text-[#111827]">{example}</span>
+                                          ))}
+                                        </div>
+                                      </div>
                                     </div>
                                   </div>
                                   <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
