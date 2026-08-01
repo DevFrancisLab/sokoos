@@ -2712,6 +2712,23 @@ export default function DashboardLayout() {
     ...item,
     unlocked: item.unlocked || items.slice(0, index).every((prereqItem) => prereqItem.complete),
   }));
+  const handleWorkspaceSectionSelection = (section: (typeof workspaceNavigatorItems)[number]["section"]) => {
+    const item = workspaceNavigatorItems.find((entry) => entry.section === section);
+    if (!item) return;
+    if (item.unlocked) {
+      setActiveWorkspaceSection(section);
+      return;
+    }
+
+    const prerequisites = (workspacePrerequisites[section] ?? []).map((prerequisite) => prerequisite === "Knowledge Hub" ? "Knowledge Hub" : prerequisite);
+    const requiredLabel = prerequisites.length > 0 ? prerequisites.join(" and ") : "the earlier training steps";
+    const unlockMessage = prerequisites.length > 0
+      ? `${item.title} is locked until ${requiredLabel} is complete. Finish the required training first, then come back here.`
+      : `${item.title} is locked. Finish the earlier training steps first, then come back here.`;
+
+    setCompletionToast(unlockMessage);
+    window.setTimeout(() => setCompletionToast(null), 3200);
+  };
   useEffect(() => {
     const saved = window.localStorage.getItem("sokoos-ai-training-progress-v2");
     if (saved) {
@@ -4229,16 +4246,16 @@ export default function DashboardLayout() {
                         <button
                           key={tab.title}
                           type="button"
-                          onClick={() => unlocked && setActiveWorkspaceSection(tab.section)}
-                          disabled={!unlocked}
+                          onClick={() => handleWorkspaceSectionSelection(tab.section)}
                           aria-current={active ? "page" : undefined}
+                          aria-disabled={!unlocked}
                           className={`relative flex min-w-0 flex-col gap-2 rounded-xl border px-2.5 py-2.5 text-left text-xs font-semibold transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 ${
                             active
                               ? "border-[#86EFAC] bg-[#ECFDF5] text-[#166534] shadow-sm"
                               : unlocked
                                 ? "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#D1FAE5] hover:bg-[#F9FCFA]"
                                 : "border-[#E5E7EB] bg-[#F8FAFC] text-[#94A3B8]"
-                          } ${!unlocked ? "cursor-not-allowed opacity-70" : ""}`}
+                          } ${!unlocked ? "opacity-70" : ""}`}
                         >
                           <div className="flex items-center justify-between gap-2">
                             <div className="flex items-center gap-1.5">
@@ -4269,7 +4286,7 @@ export default function DashboardLayout() {
                       {workspaceNavigatorItems.map((item) => {
                         const active = activeWorkspaceSection === item.section;
                         const unlocked = item.unlocked;
-                        return <button key={item.title} type="button" onClick={() => unlocked && setActiveWorkspaceSection(item.section)} disabled={!unlocked} aria-current={active ? "page" : undefined} className={`w-full rounded-xl border px-2.5 py-2.5 text-left transition-all duration-200 ease-out ${active ? "border-[#86EFAC] bg-[#ECFDF5] shadow-sm" : unlocked ? "border-[#E5E7EB] bg-white hover:border-[#D1FAE5] hover:bg-[#F9FCFA]" : "border-[#E5E7EB] bg-[#F8FAFC] opacity-70"}`}>
+                        return <button key={item.title} type="button" onClick={() => handleWorkspaceSectionSelection(item.section)} aria-current={active ? "page" : undefined} aria-disabled={!unlocked} className={`w-full rounded-xl border px-2.5 py-2.5 text-left transition-all duration-200 ease-out ${active ? "border-[#86EFAC] bg-[#ECFDF5] shadow-sm" : unlocked ? "border-[#E5E7EB] bg-white hover:border-[#D1FAE5] hover:bg-[#F9FCFA]" : "border-[#E5E7EB] bg-[#F8FAFC] opacity-70"}`}>
                           <div className="flex items-center gap-2.5">
                             <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${active ? "bg-[#22C55E] text-white" : item.complete ? "bg-[#DCFCE7] text-[#166534]" : unlocked ? "bg-[#F1F5F9] text-[#64748B]" : "bg-[#F1F5F9] text-[#94A3B8]"}`}>
                               {item.complete ? <Check className="h-3.5 w-3.5" /> : <item.Icon className="h-3.5 w-3.5" />}
