@@ -15,45 +15,45 @@ globalThis.__nitro_vite_envs__ = services;
 //#endregion
 //#region #nitro/virtual/public-assets-data
 var public_assets_data_default = {
-	"/assets/routes-BXE7AAh-.js": {
+	"/assets/routes-CHEwlfJa.js": {
 		"type": "text/javascript; charset=utf-8",
-		"etag": "\"8f95-CBhAtq2BoUkloQB3SiTYhB+LgbA\"",
-		"mtime": "2026-08-01T16:44:35.024Z",
+		"etag": "\"8f95-FtVua63RgD/TI07/+8/VHc2/vT4\"",
+		"mtime": "2026-08-01T17:38:24.340Z",
 		"size": 36757,
-		"path": "../public/assets/routes-BXE7AAh-.js"
+		"path": "../public/assets/routes-CHEwlfJa.js"
 	},
 	"/assets/sokoos_logo-DQynRsip.png": {
 		"type": "image/png",
 		"etag": "\"6576-o8kCjremReQs9BmnjzKoH2j8xKg\"",
-		"mtime": "2026-08-01T16:44:35.026Z",
+		"mtime": "2026-08-01T17:38:24.340Z",
 		"size": 25974,
 		"path": "../public/assets/sokoos_logo-DQynRsip.png"
 	},
 	"/assets/styles-t6KDzT8J.css": {
 		"type": "text/css; charset=utf-8",
 		"etag": "\"1cbe4-RUQIfJTjiVMurZcUnhUdgbW4ohA\"",
-		"mtime": "2026-08-01T16:44:35.027Z",
+		"mtime": "2026-08-01T17:38:24.342Z",
 		"size": 117732,
 		"path": "../public/assets/styles-t6KDzT8J.css"
 	},
-	"/assets/index-BK2mdq3P.js": {
+	"/assets/index-DsGl_BAa.js": {
 		"type": "text/javascript; charset=utf-8",
-		"etag": "\"97796-C/WzcOTo15bQPndn5hdnkueAWjk\"",
-		"mtime": "2026-08-01T16:44:35.023Z",
-		"size": 620438,
-		"path": "../public/assets/index-BK2mdq3P.js"
+		"etag": "\"97d5f-o8AyCrSVWma6oZFZqnM2IgOBADQ\"",
+		"mtime": "2026-08-01T17:38:24.339Z",
+		"size": 621919,
+		"path": "../public/assets/index-DsGl_BAa.js"
 	},
 	"/assets/hero-dashboard-D-CXLQyc.png": {
 		"type": "image/png",
 		"etag": "\"147362-41kBF9Vn5e/eKUEVeST+cDUDypM\"",
-		"mtime": "2026-08-01T16:44:35.025Z",
+		"mtime": "2026-08-01T17:38:24.340Z",
 		"size": 1340258,
 		"path": "../public/assets/hero-dashboard-D-CXLQyc.png"
 	},
 	"/assets/solution-dashboard-BITB5GZi.png": {
 		"type": "image/png",
 		"etag": "\"135e39-8KXujycB59ycXDtOjw6MRyzLXZs\"",
-		"mtime": "2026-08-01T16:44:35.026Z",
+		"mtime": "2026-08-01T17:38:24.340Z",
 		"size": 1269305,
 		"path": "../public/assets/solution-dashboard-BITB5GZi.png"
 	}
