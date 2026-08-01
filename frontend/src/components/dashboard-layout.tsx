@@ -2458,6 +2458,7 @@ export default function DashboardLayout() {
       answer: "Yes, installation costs KES 2,000.",
     },
   ]);
+  const [editingFaqId, setEditingFaqId] = useState<string | null>(null);
   const [knowledgeLibraryItems, setKnowledgeLibraryItems] = useState([
     { id: "knowledge-faq-1", type: "FAQ", title: "Do you offer installation?", summary: "Yes, installation costs KES 2,000.", source: "Customer FAQ", category: "Support", tags: ["installation", "setup"], status: "Ready", detail: "Question · Answer" },
     { id: "knowledge-product-1", type: "Product", title: "10 Mbps Internet", summary: "Reliable home internet for everyday browsing and streaming.", source: "Product catalogue", category: "Internet plans", tags: ["popular", "home"], status: "Ready", detail: "KES 2,500/month · 2 images" },
@@ -4936,20 +4937,53 @@ export default function DashboardLayout() {
                                   <p className="mt-2 text-sm leading-6 text-[#6B7280]">Teach the AI the questions customers ask most often and the answers it should use.</p>
                                 </div>
                               </div>
+
                               <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
                                 <div className="flex items-center justify-between">
                                   <p className="text-sm font-semibold text-[#111827]">FAQ training cards</p>
-                                  <span className="text-sm font-semibold text-[#166534]">{knowledgeLibraryItems.filter((item) => item.type === "FAQ").length} ready</span>
+                                  <span className="text-sm font-semibold text-[#166534]">{faqItems.length} FAQ{faqItems.length === 1 ? "" : "s"} added</span>
                                 </div>
-                                <div className="mt-4 grid gap-3 md:grid-cols-2">
-                                  {knowledgeLibraryItems.filter((item) => item.type === "FAQ").length ? knowledgeLibraryItems.filter((item) => item.type === "FAQ").slice(0, 4).map((item) => (
-                                    <div key={item.id} className="rounded-xl border border-[#E5E7EB] bg-white p-4">
-                                      <p className="text-sm font-semibold text-[#111827]">{item.title}</p>
-                                      <p className="mt-2 text-sm leading-6 text-[#64748B]">{item.summary}</p>
-                                    </div>
-                                  )) : <div className="md:col-span-2 rounded-xl border border-dashed border-[#DCE3EA] bg-white p-5 text-sm text-[#64748B]">No FAQ cards yet. Add one to train the AI on common customer questions.</div>}
+
+                                <div className="mt-4 grid gap-3">
+                                  {faqItems.length ? faqItems.map((faq) => {
+                                    const editing = editingFaqId === faq.id;
+                                    return (
+                                      <article key={faq.id} className={`rounded-xl border bg-white p-4 transition ${editing ? "ring-2 ring-[#DCFCE7]" : ""}`}>
+                                        <div className="flex items-start justify-between gap-3">
+                                          <div className="min-w-0">
+                                            {editing ? (
+                                              <>
+                                                <TextInput id={`faq-q-${faq.id}`} label="Question" value={faq.question} onChange={(e) => setFaqItems((items) => items.map((it) => it.id === faq.id ? { ...it, question: e.target.value } : it))} />
+                                                <div className="mt-3">
+                                                  <label className="text-sm font-medium text-[#111827]">Answer</label>
+                                                  <Textarea value={faq.answer} onChange={(e) => setFaqItems((items) => items.map((it) => it.id === faq.id ? { ...it, answer: e.target.value } : it))} className="mt-2 w-full resize-none" />
+                                                </div>
+                                              </>
+                                            ) : (
+                                              <>
+                                                <p className="text-sm font-semibold text-[#111827]">{faq.question}</p>
+                                                <p className="mt-2 text-sm leading-6 text-[#64748B]">{faq.answer}</p>
+                                              </>
+                                            )}
+                                          </div>
+                                          <div className="flex flex-col gap-2">
+                                            <button type="button" onClick={() => setEditingFaqId(editing ? null : faq.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-2 py-1 text-xs font-semibold text-[#64748B] transition hover:bg-[#F8FAFC]">{editing ? "Done" : "Edit"}</button>
+                                            <button type="button" onClick={() => setFaqItems((items) => items.filter((it) => it.id !== faq.id))} className="rounded-lg border border-[#FECACA] bg-white px-2 py-1 text-xs font-semibold text-[#B91C1C] transition hover:bg-[#FFEEEE]">Delete</button>
+                                          </div>
+                                        </div>
+                                      </article>
+                                    );
+                                  }) : (
+                                    <div className="rounded-xl border border-dashed border-[#DCE3EA] bg-white p-5 text-sm text-[#64748B]">No FAQs yet. Click "Add FAQ" to create one.</div>
+                                  )}
+                                </div>
+
+                                <div className="mt-4 flex items-center justify-between">
+                                  <div />
+                                  <button type="button" onClick={() => { const id = `faq-${Date.now()}`; setFaqItems((items) => [{ id, question: "", answer: "" }, ...items]); setEditingFaqId(id); }} className="inline-flex items-center gap-2 rounded-lg bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"><Plus className="h-4 w-4" />Add FAQ</button>
                                 </div>
                               </div>
+
                               <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
                                 <button type="button" onClick={() => focusKnowledgeLesson(1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
                                 <button type="button" onClick={() => completeKnowledgeLesson(2)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
