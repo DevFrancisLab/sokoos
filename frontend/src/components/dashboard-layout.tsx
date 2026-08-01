@@ -2459,6 +2459,15 @@ export default function DashboardLayout() {
     },
   ]);
   const [editingFaqId, setEditingFaqId] = useState<string | null>(null);
+  const [expandedPolicy, setExpandedPolicy] = useState<string | null>(null);
+  const [policiesText, setPoliciesText] = useState<Record<string, string>>({
+    refund: "",
+    return: "",
+    warranty: "",
+    support: "",
+    privacy: "",
+    cancellation: "",
+  });
   const [knowledgeLibraryItems, setKnowledgeLibraryItems] = useState([
     { id: "knowledge-faq-1", type: "FAQ", title: "Do you offer installation?", summary: "Yes, installation costs KES 2,000.", source: "Customer FAQ", category: "Support", tags: ["installation", "setup"], status: "Ready", detail: "Question · Answer" },
     { id: "knowledge-product-1", type: "Product", title: "10 Mbps Internet", summary: "Reliable home internet for everyday browsing and streaming.", source: "Product catalogue", category: "Internet plans", tags: ["popular", "home"], status: "Ready", detail: "KES 2,500/month · 2 images" },
@@ -4997,27 +5006,43 @@ export default function DashboardLayout() {
                                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F5F3FF] text-[#6D28D9]"><Shield className="h-5 w-5" /></div>
                                 <div>
                                   <p className="text-[20px] font-semibold text-[#111827]">Policies</p>
-                                  <p className="mt-2 text-sm leading-6 text-[#6B7280]">Capture the rules your AI should follow when customers ask about delivery, returns and service boundaries.</p>
+                                  <p className="mt-2 text-sm leading-6 text-[#6B7280]">Capture the rules your AI should follow when customers ask about refunds, returns, warranties and privacy.</p>
                                 </div>
                               </div>
+
                               <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
-                                <div className="grid gap-3 md:grid-cols-2">
+                                <div className="space-y-3">
                                   {[
-                                    { title: "Return policy", detail: "Teach the AI how to respond when a customer asks about refunds or exchanges." },
-                                    { title: "Delivery policy", detail: "Outline delivery expectations, timelines and service limitations." },
-                                    { title: "Cancellation policy", detail: "Define how cancellations and order changes should be handled." },
-                                    { title: "Service boundaries", detail: "Tell the AI when it should defer to a human team member." },
-                                  ].map((policy) => (
-                                    <div key={policy.title} className="rounded-xl border border-[#E5E7EB] bg-white p-4">
-                                      <p className="text-sm font-semibold text-[#111827]">{policy.title}</p>
-                                      <p className="mt-2 text-sm leading-6 text-[#64748B]">{policy.detail}</p>
-                                    </div>
-                                  ))}
+                                    { key: "refund", title: "Refund Policy" },
+                                    { key: "return", title: "Return Policy" },
+                                    { key: "warranty", title: "Warranty" },
+                                    { key: "support", title: "Support Policy" },
+                                    { key: "privacy", title: "Privacy Policy" },
+                                    { key: "cancellation", title: "Cancellation Policy" },
+                                  ].map((p) => {
+                                    const expanded = expandedPolicy === p.key;
+                                    return (
+                                      <div key={p.key} className="rounded-xl border border-[#E5E7EB] bg-white">
+                                        <button type="button" onClick={() => setExpandedPolicy((cur) => (cur === p.key ? null : p.key))} className="w-full flex items-center justify-between p-4 text-left">
+                                          <div>
+                                            <p className="text-sm font-semibold text-[#111827]">{p.title}</p>
+                                            <p className="mt-1 text-xs text-[#64748B]">{expanded ? "Editing" : "Collapsed — click to expand and edit"}</p>
+                                          </div>
+                                          <ChevronDown className={`h-5 w-5 text-[#64748B] transition-transform ${expanded ? "rotate-180" : "rotate-0"}`} />
+                                        </button>
+                                        <div className={`${expanded ? "block" : "hidden"} border-t border-[#EEF2F6] p-4`}> 
+                                          <Textarea value={policiesText[p.key]} onChange={(e) => setPoliciesText((cur) => ({ ...cur, [p.key]: e.target.value }))} className="w-full" />
+                                          <p className="mt-2 text-xs text-[#64748B]">You can leave this blank and fill later.</p>
+                                        </div>
+                                      </div>
+                                    );
+                                  })}
                                 </div>
                               </div>
+
                               <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
                                 <button type="button" onClick={() => focusKnowledgeLesson(2)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                <button type="button" onClick={() => completeKnowledgeLesson(3)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                                <button type="button" onClick={() => { completeKnowledgeLesson(3); setExpandedPolicy(null); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
                               </div>
                             </div>
                           </section>
