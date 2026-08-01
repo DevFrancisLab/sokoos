@@ -40,6 +40,7 @@ import {
   Hash,
   Mail,
   Loader2,
+  MapPin,
 } from "lucide-react";
 import AiSummaryCard from "./ui/ai-summary-card";
 import sokoosLogo from "@/assets/sokoos_logo.png";
@@ -1328,27 +1329,29 @@ export default function DashboardLayout() {
   const [onboardingRestored, setOnboardingRestored] = useState(false);
   const identityLessonRef = useRef<HTMLDivElement>(null);
   const previewMessagesRef = useRef<HTMLDivElement>(null);
-  const identityLessons = ["Business Identity", "Teach Your AI", "Shape Personality", "First Impressions", "Languages", "Working Hours", "Workplaces", "Ready for Customers"];
-  const identityLessonCompletionNames = ["Identity", "Knowledge", "Personality", "First Impressions", "Languages", "Working Hours", "Workplaces", "Customer Readiness"];
+  const identityLessons = ["Business Identity", "Brand Voice", "Greetings", "Languages", "Business Hours", "Locations", "Complete Identity"];
+  const identityLessonCompletionNames = ["Business Identity", "Brand Voice", "Greetings", "Languages", "Business Hours", "Locations", "Complete Identity"];
 
   const focusIdentityLesson = (step: number) => {
     setActiveIdentityStep(step);
     window.setTimeout(() => {
-      identityLessonRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      const firstField = identityLessonRef.current?.querySelector<HTMLElement>("input, select, textarea, button");
+      const target = identityLessonRef.current?.querySelector<HTMLElement>(`[data-lesson-index="${step}"]`);
+      if (!target) return;
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      const firstField = target.querySelector<HTMLElement>("input, select, textarea, button");
       firstField?.focus({ preventScroll: true });
     }, 0);
   };
 
   const completeIdentityLesson = (step: number) => {
-    setCompletedIdentitySteps((current) => current.includes(step) ? current : [...current, step]);
-    setCompletionToast(`${identityLessonCompletionNames[step]} learned — your AI is getting smarter.`);
+    setCompletedIdentitySteps((current) => (current.includes(step) ? current : [...current, step]));
+    setCompletionToast(`${identityLessonCompletionNames[step]} complete — your onboarding path is moving forward.`);
     window.setTimeout(() => setCompletionToast(null), 2200);
     if (step < identityLessons.length - 1) {
       window.setTimeout(() => focusIdentityLesson(step + 1), 500);
     }
   };
-  const identityLessonCardClass = (step: number) => `rounded-xl border bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-300 sm:p-6 ${trainingCompletedSteps.includes(step) ? "border-[#86EFAC] animate-[pulse_350ms_ease-out]" : "border-[#E5E7EB]"}`;
+  const identityLessonCardClass = (step: number) => `rounded-[28px] border bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-300 sm:p-6 ${completedIdentitySteps.includes(step) ? "border-[#86EFAC] shadow-[0_14px_34px_rgba(34,197,94,0.14)]" : "border-[#E5E7EB]"}`;
   useEffect(() => {
     document.getElementById("ai-workspace-content")?.scrollIntoView({
       behavior: "smooth",
@@ -3801,12 +3804,12 @@ export default function DashboardLayout() {
 
                 {activeWorkspaceSection === "Identity" && (
                   <>
-                  <section className="relative z-20 rounded-xl border border-[#E5E7EB] bg-white px-3 py-2.5 shadow-[0_6px_18px_rgba(15,23,42,0.04)]" aria-label="AI employee onboarding progress">
+                  <section className="relative z-20 rounded-[24px] border border-[#E5E7EB] bg-white px-3 py-3 shadow-[0_6px_18px_rgba(15,23,42,0.04)]" aria-label="AI employee onboarding progress">
                     {onboardingComplete ? (
                       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between animate-in fade-in-0 zoom-in-95 duration-300">
                         <div className="flex items-start gap-3">
                           <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#22C55E] text-lg text-white shadow-sm">✓</span>
-                          <div><p className="text-base font-semibold text-[#111827]">Your AI Employee is Ready</p><p className="mt-1 text-sm text-[#64748B]">Your AI has successfully completed training and is ready to represent your business.</p><div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs font-semibold text-[#166534]">{["Identity", "Knowledge", "Personality", "Languages", "Hours", "Policies", "Integrations", "Ready for Customers"].map((lesson) => <span key={lesson}>✓ {lesson}</span>)}</div></div>
+                          <div><p className="text-base font-semibold text-[#111827]">Your AI Employee is Ready</p><p className="mt-1 text-sm text-[#64748B]">Your AI has successfully completed the identity curriculum and is ready to represent your business.</p><div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs font-semibold text-[#166534]">{identityLessons.map((lesson) => <span key={lesson}>✓ {lesson}</span>)}</div></div>
                         </div>
                         <div className="flex flex-wrap gap-2">
                           <button type="button" onClick={() => setActiveWorkspaceSection("Performance")} className="rounded-lg bg-[#111827] px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#334155]">View AI Profile</button>
@@ -3816,27 +3819,25 @@ export default function DashboardLayout() {
                         </div>
                       </div>
                     ) : <>
-                    <div className="flex items-center gap-2">
-                      <p className="text-xs font-semibold text-[#475569]">Lessons</p>
-                      <span className="text-xs text-[#94A3B8]">· Select one to edit</span>
+                    <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                      <div>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#166534]">AI onboarding curriculum</p>
+                        <p className="mt-1 text-base font-semibold text-[#111827]">Complete one lesson at a time and the next one opens automatically.</p>
+                      </div>
+                      <div className="rounded-full bg-[#ECFDF5] px-3 py-1 text-sm font-semibold text-[#166534]">
+                        {trainingCompletedSteps.length}/{identityLessons.length} lessons complete
+                      </div>
                     </div>
-                    <div className="mt-2 grid grid-cols-2 gap-1 sm:grid-cols-4 xl:grid-cols-8">
-                      {[
-                        { label: "Business Identity", Icon: User },
-                        { label: "Teach Your AI", Icon: BookOpen },
-                        { label: "Shape Personality", Icon: Smile },
-                        { label: "First Impressions", Icon: MessageCircle },
-                        { label: "Languages", Icon: Globe },
-                        { label: "Working Hours", Icon: Clock },
-                        { label: "Workplaces", Icon: Plug },
-                        { label: "Ready for Customers", Icon: Check },
-                      ].map(({ label, Icon }, index) => {
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {identityLessons.map((lesson, index) => {
                         const active = activeIdentityStep === index;
-                        const completed = trainingCompletedSteps.includes(index);
+                        const completed = completedIdentitySteps.includes(index);
                         return (
-                          <button key={label} type="button" onClick={() => focusIdentityLesson(index)} aria-current={active ? "step" : undefined} className={`group flex min-w-0 items-center justify-center gap-1.5 rounded-lg px-2 py-1.5 text-center text-[11px] font-semibold transition ${active ? "bg-[#111827] text-white shadow-sm" : completed ? "bg-[#ECFDF5] text-[#166534]" : "text-[#64748B] hover:bg-[#F8FAFC] hover:text-[#111827]"}`}>
-                            <span className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full ${active ? "bg-white/15" : completed ? "bg-[#22C55E] text-white" : "bg-[#FFF7ED] text-[#C2410C] group-hover:bg-[#FFEDD5]"}`}>{completed ? <Check className="h-2.5 w-2.5" /> : <CircleAlert className="h-2.5 w-2.5" />}</span>
-                            <span className="truncate">{label}</span>
+                          <button key={lesson} type="button" onClick={() => focusIdentityLesson(index)} aria-current={active ? "step" : undefined} className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition ${active ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534] shadow-sm" : completed ? "border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#86EFAC] hover:text-[#111827]"}`}>
+                            <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${completed ? "bg-[#22C55E] text-white" : active ? "bg-[#111827] text-white" : "bg-[#F8FAFC] text-[#64748B]"}`}>
+                              {completed ? <Check className="h-3.5 w-3.5" /> : <span className="text-[11px]">{index + 1}</span>}
+                            </span>
+                            <span>{lesson}</span>
                           </button>
                         );
                       })}
@@ -3859,7 +3860,7 @@ export default function DashboardLayout() {
                         <div onChangeCapture={() => setHasUnsavedChanges(true)}>
                           <div>
                             <div ref={identityLessonRef} className="space-y-4 scroll-mt-36 scroll-smooth">
-                              <section className={activeIdentityStep === 0 ? identityLessonCardClass(0) : "hidden"}>
+                              <section data-lesson-index="0" className={activeIdentityStep === 0 ? identityLessonCardClass(0) : "hidden"}>
                                 <div className="space-y-5">
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><User className="h-5 w-5" /></div>
@@ -4034,56 +4035,25 @@ export default function DashboardLayout() {
                                   <div className="flex justify-end border-t border-[#EEF2F6] pt-5">
                                     <button
                                       type="button"
-                                      disabled={identitySaveState === "saving" || !identityFormIsValid}
-                                      aria-busy={identitySaveState === "saving"}
-                                      onClick={saveIdentityAndContinue}
-                                      className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45"
+                                      onClick={() => completeIdentityLesson(0)}
+                                      className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]"
                                     >
-                                      {identitySaveState === "saving" ? (
-                                        <>
-                                          <Loader2 className="h-4 w-4 animate-spin" />
-                                          <span>Saving...</span>
-                                        </>
-                                      ) : identitySaveState === "success" ? (
-                                        <>
-                                          <Check className="h-4 w-4 animate-[pulse_400ms_ease-out]" />
-                                          <span>Saved</span>
-                                        </>
-                                      ) : (
-                                        <>
-                                          <span>Save & Continue to Knowledge</span>
-                                          <ChevronRight className="h-4 w-4" />
-                                        </>
-                                      )}
+                                      <span>Continue to brand voice</span>
+                                      <ChevronRight className="h-4 w-4" />
                                     </button>
                                   </div>
                                 </div>
                               </section>
 
-                              <section className={activeIdentityStep === 1 ? identityLessonCardClass(1) : "hidden"}>
-                                <div className="space-y-5">
-                                  <div className="flex gap-3"><div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EFF6FF] text-[#1D4ED8]"><BookOpen className="h-5 w-5" /></div><div><p className="text-[20px] font-semibold text-[#111827]">Teach your Employee</p><p className="mt-2 text-sm leading-6 text-[#6B7280]">Give your new teammate the answers, offers, and guardrails it needs to help customers with confidence.</p></div></div>
-                                  <div className="grid gap-3 sm:grid-cols-3">
-                                    {[
-                                      { label: "Knowledge", value: `${businessInfo.about ? "Business context added" : "Add context"}`, Icon: BookOpen, section: "Knowledge Hub" as const },
-                                      { label: "Products", value: `${knowledgeProducts.length} offers ready`, Icon: Package, section: "Catalogue" as const },
-                                      { label: "FAQs & policies", value: `${faqItems.length} FAQ${faqItems.length === 1 ? "" : "s"} added`, Icon: Shield, section: "Knowledge Hub" as const },
-                                    ].map((item) => <button key={item.label} type="button" onClick={() => setActiveWorkspaceSection(item.section)} className="rounded-xl border border-[#E5E7EB] bg-[#FCFCFD] p-4 text-left transition hover:-translate-y-px hover:border-[#86EFAC] hover:shadow-sm"><item.Icon className="h-5 w-5 text-[#166534]" /><p className="mt-3 text-sm font-semibold text-[#111827]">{item.label}</p><p className="mt-1 text-xs text-[#64748B]">{item.value}</p></button>)}
-                                  </div>
-                                  <div className="rounded-xl bg-[#F8FAFC] p-4 text-sm leading-6 text-[#475569]">Your Employee will use these sources to answer common questions, recommend the right products, and follow your business policies.</div>
-                                  <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4"><button type="button" onClick={() => focusIdentityLesson(0)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button><button type="button" onClick={() => completeIdentityLesson(1)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Choose personality <ChevronRight className="h-4 w-4" /></button></div>
-                                </div>
-                              </section>
-
-                              <section className={activeIdentityStep === 2 ? identityLessonCardClass(2) : "hidden"}>
+                              <section data-lesson-index="1" className={activeIdentityStep === 1 ? identityLessonCardClass(1) : "hidden"}>
                                 <div className="space-y-5">
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF7ED] text-[#C2410C]"><Smile className="h-5 w-5" /></div>
                                     <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Shape your AI’s personality</p>
-                                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">
-                                      Choose a personality that feels right for your customers.
-                                    </p>
+                                      <p className="text-[20px] font-semibold text-[#111827]">Brand Voice</p>
+                                      <p className="mt-2 text-sm leading-6 text-[#6B7280]">
+                                        Choose a voice that feels right for your customers and the kind of conversations you want your AI to have.
+                                      </p>
                                     </div>
                                   </div>
 
@@ -4137,7 +4107,7 @@ export default function DashboardLayout() {
                                   <div className="overflow-hidden rounded-xl border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] to-white p-4">
                                     <div className="flex items-center gap-2">
                                       <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#22C55E] text-white"><Check className="h-3.5 w-3.5" /></span>
-                                      <p className="text-sm font-semibold text-[#166534]">Your AI will sound like this</p>
+                                      <p className="text-sm font-semibold text-[#166534]">This is how your AI will sound</p>
                                       <span className="ml-auto rounded-full bg-white px-2 py-1 text-[10px] font-semibold text-[#166534]">{personality}</span>
                                     </div>
                                     <div key={personality} className="mt-3 flex items-end gap-2 animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
@@ -4188,18 +4158,18 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
                                   <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
-                                    <button type="button" onClick={() => setActiveIdentityStep(1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" onClick={() => completeIdentityLesson(2)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to greetings <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" onClick={() => focusIdentityLesson(0)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                                    <button type="button" onClick={() => completeIdentityLesson(1)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to greetings <ChevronRight className="h-4 w-4" /></button>
                                   </div>
                                 </div>
                               </section>
 
-                              <section className={activeIdentityStep === 3 ? identityLessonCardClass(3) : "hidden"}>
+                              <section data-lesson-index="2" className={activeIdentityStep === 2 ? identityLessonCardClass(2) : "hidden"}>
                                 <div className="space-y-5">
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EFF6FF] text-[#1D4ED8]"><MessageCircle className="h-5 w-5" /></div>
                                     <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Create a great first impression</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">Greetings</p>
                                     <p className="mt-2 text-sm leading-6 text-[#6B7280]">
                                       Teach your AI what to say at the start of a conversation.
                                     </p>
@@ -4235,13 +4205,13 @@ export default function DashboardLayout() {
                                   </div>
                                   </div>
                                   <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
-                                    <button type="button" onClick={() => setActiveIdentityStep(2)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" onClick={() => completeIdentityLesson(3)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to languages <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" onClick={() => focusIdentityLesson(1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                                    <button type="button" onClick={() => completeIdentityLesson(2)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to languages <ChevronRight className="h-4 w-4" /></button>
                                   </div>
                                 </div>
                               </section>
 
-                              <section className={activeIdentityStep === 4 ? identityLessonCardClass(4) : "hidden"}>
+                              <section data-lesson-index="3" className={activeIdentityStep === 3 ? identityLessonCardClass(3) : "hidden"}>
                                 <div className="space-y-5">
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F5F3FF] text-[#6D28D9]"><Globe className="h-5 w-5" /></div>
@@ -4291,13 +4261,13 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
                                   <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
-                                    <button type="button" onClick={() => setActiveIdentityStep(3)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" onClick={() => completeIdentityLesson(4)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to working hours <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" onClick={() => focusIdentityLesson(2)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                                    <button type="button" onClick={() => completeIdentityLesson(3)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to business hours <ChevronRight className="h-4 w-4" /></button>
                                   </div>
                                 </div>
                               </section>
 
-                              <section className={activeIdentityStep === 5 ? identityLessonCardClass(5) : "hidden"}>
+                              <section data-lesson-index="4" className={activeIdentityStep === 4 ? identityLessonCardClass(4) : "hidden"}>
                                 <div className="space-y-5">
                                   <div className="flex gap-3">
                                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF7ED] text-[#C2410C]"><Clock className="h-5 w-5" /></div>
@@ -4344,80 +4314,78 @@ export default function DashboardLayout() {
                                   </div>
                                   <label className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${escalateOutsideHours ? "border-[#BBF7D0] bg-[#F7FEF9]" : "border-[#E5E7EB] bg-[#FCFCFD]"}`}><input type="checkbox" checked={escalateOutsideHours} onChange={(event) => { setEscalateOutsideHours(event.target.checked); setHasUnsavedChanges(true); }} className="mt-0.5 h-4 w-4 rounded border-[#CBD5E1] text-[#22C55E] focus:ring-[#22C55E]" /><span><span className="block text-sm font-semibold text-[#111827]">Escalate urgent messages outside working hours</span><span className="mt-1 block text-xs leading-5 text-[#64748B]">Your Employee collects the details and flags urgent requests for your team.</span></span></label>
                                   <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
-                                    <button type="button" onClick={() => setActiveIdentityStep(4)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" disabled={!businessHours.trim()} onClick={() => completeIdentityLesson(5)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Assign workplaces <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" onClick={() => focusIdentityLesson(3)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                                    <button type="button" disabled={!businessHours.trim()} onClick={() => completeIdentityLesson(4)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Continue to locations <ChevronRight className="h-4 w-4" /></button>
                                   </div>
                                 </div>
                               </section>
 
-                              <section className={activeIdentityStep === 6 ? identityLessonCardClass(6) : "hidden"}>
+                              <section data-lesson-index="5" className={activeIdentityStep === 5 ? identityLessonCardClass(5) : "hidden"}>
                                 <div className="space-y-5">
                                   <div className="flex gap-3">
-                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><Plug className="h-5 w-5" /></div>
+                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><MapPin className="h-5 w-5" /></div>
                                     <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Choose your AI’s workplaces</p>
-                                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">Choose where customers can start a conversation with your AI.</p>
+                                      <p className="text-[20px] font-semibold text-[#111827]">Locations</p>
+                                      <p className="mt-2 text-sm leading-6 text-[#6B7280]">Tell your AI where your business operates so it can answer location questions confidently.</p>
                                     </div>
                                   </div>
-                                  <div>
-                                    <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-                                      <div><p className="text-sm font-semibold text-[#111827]">Your AI’s workspaces</p><p className="mt-1 text-sm text-[#6B7280]">Connect the channels where your AI should meet customers.</p></div>
-                                      <span className="text-xs font-medium text-[#64748B]">{Object.values(communicationChannels).filter(Boolean).length} connected</span>
-                                    </div>
-                                    <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                                      {([
-                                        { id: "whatsapp", name: "WhatsApp", icon: MessageCircle, description: "Reply to customers on WhatsApp" },
-                                        { id: "websiteChat", name: "Website Chat", icon: Globe, description: "Help visitors while they browse" },
-                                        { id: "instagram", name: "Instagram", icon: Image, description: "Handle messages from your profile" },
-                                        { id: "facebookMessenger", name: "Facebook Messenger", icon: Users, description: "Answer conversations from Facebook" },
-                                        { id: "telegram", name: "Telegram", icon: Send, description: "Support your Telegram community" },
-                                        { id: "slack", name: "Slack", icon: Hash, description: "Route team requests in Slack" },
-                                        { id: "email", name: "Email", icon: Mail, description: "Turn inbox replies into help" },
-                                        { id: "googleBusinessMessages", name: "Google Business Messages", icon: Search, description: "Engage customers from Google" },
-                                      ] as const).map((channel) => {
-                                        const connected = communicationChannels[channel.id];
-                                        const Icon = channel.icon;
-                                        return <article key={channel.id} className={`group rounded-xl border p-4 transition-all duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_10px_24px_rgba(15,23,42,0.10)] ${connected ? "border-[#86EFAC] bg-[#F7FEF9]" : "border-[#E5E7EB] bg-white hover:border-[#CBD5E1]"}`}>
-                                          <div className="flex items-start justify-between gap-3"><div className={`flex h-10 w-10 items-center justify-center rounded-xl ${connected ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#F1F5F9] text-[#64748B]"}`}><Icon className="h-5 w-5" /></div><span className={`rounded-full px-2 py-1 text-[10px] font-semibold ${connected ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#F3F4F6] text-[#64748B]"}`}>{connected ? "Connected" : "Not connected"}</span></div>
-                                          <p className="mt-4 text-sm font-semibold text-[#111827]">{channel.name}</p><p className="mt-1 min-h-10 text-xs leading-5 text-[#64748B]">{channel.description}</p>
-                                          <p className="mt-3 border-t border-black/[0.05] pt-3 text-[11px] text-[#64748B]">{connected ? "Last synced just now" : "Not connected yet"}</p>
-                                          <div className="mt-3 flex gap-2"><button type="button" onClick={() => { if (!connected) { setCommunicationChannels((current) => ({ ...current, [channel.id]: true })); setHasUnsavedChanges(true); } }} className={`flex-1 rounded-lg px-3 py-2 text-xs font-semibold transition ${connected ? "border border-[#BBF7D0] bg-white text-[#166534] hover:bg-[#ECFDF5]" : "bg-[#111827] text-white hover:bg-[#334155]"}`}>{connected ? "Configure" : "Connect"}</button><button type="button" className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#64748B] transition hover:bg-[#F8FAFC] hover:text-[#111827]">Learn more</button></div>
-                                        </article>;
-                                      })}
+                                  <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                                    <div className="grid gap-4 md:grid-cols-2">
+                                      <div className="w-full space-y-2">
+                                        <label className="block text-sm font-semibold text-[#111827]" htmlFor="identity-address">Primary address</label>
+                                        <input id="identity-address" value={businessInfo.address} onChange={(event) => setBusinessInfo((current) => ({ ...current, address: event.target.value }))} placeholder="Nairobi, Kenya" className={`${AI_TRAINING_FIELD} w-full`} />
+                                        <p className="text-xs text-[#64748B]">A single main location to share with customers.</p>
+                                      </div>
+                                      <div className="w-full space-y-2">
+                                        <label className="block text-sm font-semibold text-[#111827]" htmlFor="identity-service-areas">Service areas</label>
+                                        <input id="identity-service-areas" value={serviceAreaInput} onChange={(event) => setServiceAreaInput(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") { event.preventDefault(); addServiceArea(); } }} placeholder="Nairobi" className={`${AI_TRAINING_FIELD} w-full`} />
+                                        <p className="text-xs text-[#64748B]">Press Enter to add each area.</p>
+                                        <div className="mt-2 flex flex-wrap gap-2">
+                                          {parseServiceAreas(businessInfo.serviceAreas).map((area) => (
+                                            <button key={area} type="button" onClick={() => removeServiceArea(area)} className="inline-flex items-center gap-1 rounded-full border border-[#E5E7EB] bg-white px-2.5 py-1 text-xs font-semibold text-[#111827] transition hover:border-[#86EFAC] hover:bg-[#F0FDF4]">
+                                              <span>{area}</span>
+                                              <span className="text-[#64748B]">×</span>
+                                            </button>
+                                          ))}
+                                        </div>
+                                      </div>
                                     </div>
                                   </div>
                                   <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
-                                    <button type="button" onClick={() => setActiveIdentityStep(5)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" onClick={() => completeIdentityLesson(6)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Go to graduation <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" onClick={() => focusIdentityLesson(4)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                                    <button type="button" onClick={() => completeIdentityLesson(5)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to complete identity <ChevronRight className="h-4 w-4" /></button>
                                   </div>
                                 </div>
                               </section>
-                              <section className={activeIdentityStep === 7 ? "rounded-xl border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] to-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
+                              <section data-lesson-index="6" className={activeIdentityStep === 6 ? "rounded-[28px] border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] to-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
                                 <div className="flex gap-3">
                                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#22C55E] text-white"><Check className="h-5 w-5" /></div>
                                   <div>
-                                    <p className="text-[20px] font-semibold text-[#111827]">Ready for customers</p>
-                                    <p className="mt-2 text-sm leading-6 text-[#475569]">Review what you taught your new teammate, then launch them with confidence.</p>
+                                    <p className="text-[20px] font-semibold text-[#111827]">Complete Identity</p>
+                                    <p className="mt-2 text-sm leading-6 text-[#475569]">Review the choices you made for your AI and finish the onboarding journey with confidence.</p>
                                   </div>
                                 </div>
-                                {aiEmployeeLaunched && <div className="mt-5 rounded-xl border border-[#BBF7D0] bg-white p-5 text-center animate-in zoom-in-95 fade-in-0 duration-500"><div className="text-4xl animate-bounce">🎉</div><p className="mt-2 text-lg font-semibold text-[#166534]">Your AI Employee is officially on the team!</p><p className="mt-1 text-sm text-[#64748B]">It’s ready to represent your business across its assigned workplaces.</p></div>}
+                                {aiEmployeeLaunched && <div className="mt-5 rounded-xl border border-[#BBF7D0] bg-white p-5 text-center animate-in zoom-in-95 fade-in-0 duration-500"><div className="text-4xl animate-bounce">🎉</div><p className="mt-2 text-lg font-semibold text-[#166534]">Your identity curriculum is complete!</p><p className="mt-1 text-sm text-[#64748B]">Your AI is ready to represent your business with the voice, greetings, languages, hours, and locations you chose.</p></div>}
                                 <div className="mt-6 grid gap-3 sm:grid-cols-2">
                                   {[
                                     ["Business", businessInfo.name || "Not added"],
                                     ["Personality", personality],
                                     ["Greetings", welcomeMessage || "Not added"],
                                     ["Languages", supportedLanguages.join(" · ") || primaryLanguage],
-                                    ["Availability", businessHours || "Not added"],
+                                    ["Hours", businessHours || "Not added"],
                                   ].map(([label, value]) => (
-                                    <button key={label} type="button" onClick={() => setActiveIdentityStep(({ Business: 0, Personality: 2, Greetings: 3, Languages: 4, Availability: 5 } as Record<string, number>)[label] ?? 0)} className="rounded-lg border border-[#E5E7EB] bg-white px-4 py-3 text-left transition hover:border-[#86EFAC] hover:shadow-sm">
+                                    <button key={label} type="button" onClick={() => {
+                                      const map: Record<string, number> = { Business: 0, Personality: 1, Greetings: 2, Languages: 3, Hours: 4 };
+                                      focusIdentityLesson(map[label] ?? 0);
+                                    }} className="rounded-lg border border-[#E5E7EB] bg-white px-4 py-3 text-left transition hover:border-[#86EFAC] hover:shadow-sm">
                                       <p className="text-xs font-medium text-[#64748B]">{label}</p>
                                       <p className="mt-1 truncate text-sm font-semibold text-[#111827]">{value}</p>
                                     </button>
                                   ))}
                                 </div>
                                 <div className="mt-6 flex items-center justify-between border-t border-[#D1FAE5] pt-4">
-                                  <button type="button" onClick={() => setActiveIdentityStep(6)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                  <button type="button" onClick={() => { completeIdentityLesson(7); setAiEmployeeLaunched(true); handleSaveChanges(); }} className="inline-flex items-center gap-2 rounded-lg bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"><Sparkles className="h-4 w-4" />{aiEmployeeLaunched ? "Launched" : "Launch AI Employee"}</button>
+                                  <button type="button" onClick={() => focusIdentityLesson(5)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
+                                  <button type="button" onClick={() => { completeIdentityLesson(6); setAiEmployeeLaunched(true); handleSaveChanges(); }} className="inline-flex items-center gap-2 rounded-lg bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"><Sparkles className="h-4 w-4" />{aiEmployeeLaunched ? "Completed" : "Finish Identity"}</button>
                                 </div>
                               </section>
                             </div>
