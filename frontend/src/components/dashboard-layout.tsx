@@ -2574,6 +2574,25 @@ export default function DashboardLayout() {
       setAiLearningTimeline((timeline) => [{ id: `learning-${Date.now()}`, day: "Today", title: "Scanned website", detail: `${summary.pages} pages discovered`, Icon: Globe }, ...timeline]);
     }, 2200);
   };
+  const [testQuery, setTestQuery] = useState("");
+  const [testConversations, setTestConversations] = useState<Array<{ id: string; user: string; ai?: string; source?: string }>>([]);
+  const handleTestAsk = (question: string) => {
+    if (!question.trim()) return;
+    const id = `test-${Date.now()}`;
+    setTestConversations((c) => [...c, { id, user: question }]);
+    setTestQuery("");
+    // simulate AI response
+    window.setTimeout(() => {
+      const sources = [] as string[];
+      if (faqItems.length > 0) sources.push("FAQ");
+      if (knowledgeDocuments.length > 0) sources.push("Document");
+      if (websiteScanSummary && websiteScanSummary.pages > 0) sources.push("Website");
+      if (businessInfo.name) sources.push("Company Information");
+      const source = sources.length ? sources[Math.floor(Math.random() * sources.length)] : "Company Information";
+      const ai = question.toLowerCase().includes("install") || question.toLowerCase().includes("installation") ? `Installation costs KES 2,000 according to your uploaded pricing document.` : `I can help with that — here's a suggested reply based on your ${source.toLowerCase()} knowledge.`;
+      setTestConversations((c) => c.map((entry) => entry.id === id ? { ...entry, ai, source } : entry));
+    }, 700 + Math.random() * 800);
+  };
   const [policies, setPolicies] = useState({
     returnPolicy:
       "Customers may return services within 7 days if there is a technical issue requiring a fix.",
@@ -2660,7 +2679,7 @@ export default function DashboardLayout() {
   };
   const workspaceNavigatorItems = [
     { title: "Identity", description: "Who your AI represents", section: "Identity" as const, Icon: User, complete: identityWorkspaceComplete || trainingCompletedSteps.includes(0), percent: workspaceProgressBySection.Identity, unlocked: true },
-    { title: "Knowledge", description: "What it can answer", section: "Knowledge Hub" as const, Icon: BookOpen, complete: knowledgeCoverage >= 70 && knowledgeCompleteness >= 60, percent: workspaceProgressBySection["Knowledge Hub"], unlocked: identityWorkspaceComplete || trainingCompletedSteps.includes(0) },
+    { title: "Knowledge", description: "What it can answer", section: "Knowledge Hub" as const, Icon: BookOpen, complete: completedKnowledgeSteps.length >= knowledgeLessons.length || (knowledgeCoverage >= 70 && knowledgeCompleteness >= 60), percent: workspaceProgressBySection["Knowledge Hub"], unlocked: identityWorkspaceComplete || trainingCompletedSteps.includes(0) },
     { title: "Catalogue", description: "Offers it can recommend", section: "Catalogue" as const, Icon: Package, complete: knowledgeProducts.length > 0 && CATALOG_ITEMS.length > 0, percent: workspaceProgressBySection.Catalogue, unlocked: false },
     { title: "Sales Playbooks", description: "How it handles selling", section: "Sales Playbooks" as const, Icon: Target, complete: Boolean(upsellProducts || recommendAlternatives), percent: workspaceProgressBySection["Sales Playbooks"], unlocked: false },
     { title: "Policies", description: "Rules it follows", section: "Policies" as const, Icon: Shield, complete: Boolean(policies.returnPolicy && policies.deliveryPolicy), percent: workspaceProgressBySection.Policies, unlocked: false },
@@ -2680,6 +2699,8 @@ export default function DashboardLayout() {
         if (typeof progress.businessHours === "string") setBusinessHours(progress.businessHours);
         if (typeof progress.step === "number") setActiveIdentityStep(progress.step);
         if (Array.isArray(progress.completed)) setCompletedIdentitySteps(progress.completed);
+        if (Array.isArray((progress as any).completedKnowledge)) setCompletedKnowledgeSteps((progress as any).completedKnowledge);
+        if (typeof (progress as any).activeKnowledgeStep === "number") setActiveKnowledgeStep((progress as any).activeKnowledgeStep);
         if (progress.launched) setAiEmployeeLaunched(true);
         if (typeof progress.scrollY === "number") window.requestAnimationFrame(() => window.scrollTo({ top: progress.scrollY, behavior: "auto" }));
       } catch {
@@ -2705,6 +2726,8 @@ export default function DashboardLayout() {
     window.localStorage.setItem("sokoos-ai-training-progress-v2", JSON.stringify({
       step: activeIdentityStep,
       completed: completedIdentitySteps,
+      activeKnowledgeStep,
+      completedKnowledge: completedKnowledgeSteps,
       launched: aiEmployeeLaunched,
       scrollY: window.scrollY,
       businessInfo,
@@ -4830,17 +4853,56 @@ export default function DashboardLayout() {
                       <section className="space-y-5" aria-label="Knowledge training">
                         <section className="relative z-20 rounded-[24px] border border-[#E5E7EB] bg-white px-3 py-3 shadow-[0_6px_18px_rgba(15,23,42,0.04)]" aria-label="Knowledge onboarding progress">
                           {completedKnowledgeSteps.length >= knowledgeLessons.length ? (
-                            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between animate-in fade-in-0 zoom-in-95 duration-300">
-                              <div className="flex items-start gap-3">
-                                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#22C55E] text-lg text-white shadow-sm">✓</span>
-                                <div>
-                                  <p className="text-base font-semibold text-[#111827]">Your knowledge curriculum is ready</p>
-                                  <p className="mt-1 text-sm text-[#64748B]">Your AI now has the core knowledge sources, library content, and import workflow you need to answer confidently.</p>
+                            <div className="relative overflow-hidden rounded-[20px] border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] via-white to-[#F8FAFC] p-6 shadow-[0_10px_30px_rgba(15,23,42,0.06)] animate-in fade-in-0 zoom-in-95 duration-300">
+                              <div className="pointer-events-none absolute inset-0 overflow-hidden">
+                                <div className="absolute -right-10 -top-8 h-24 w-24 rounded-full bg-[#22C55E]/10 blur-3xl" />
+                                <div className="absolute -left-8 bottom-0 h-24 w-24 rounded-full bg-[#3B82F6]/10 blur-3xl" />
+                                <span className="absolute left-8 top-8 h-3 w-3 rounded-full bg-[#22C55E] animate-bounce" />
+                                <span className="absolute right-12 top-12 h-2.5 w-2.5 rounded-full bg-[#F59E0B] animate-bounce" style={{ animationDelay: "180ms" }} />
+                                <span className="absolute bottom-14 left-12 h-2 w-2 rounded-full bg-[#6366F1] animate-bounce" style={{ animationDelay: "320ms" }} />
+                              </div>
+                              <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+                                <div className="max-w-2xl">
+                                  <div className="inline-flex items-center gap-2 rounded-full border border-[#BBF7D0] bg-white/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#166534]">Knowledge Training Complete 🎉</div>
+                                  <p className="mt-3 text-[22px] font-semibold tracking-[-0.02em] text-[#111827]">Your AI now understands your business</p>
+                                  <p className="mt-2 text-sm leading-6 text-[#475569]">Your AI can answer customer questions using the information you provided.</p>
+                                  <div className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                                    {[
+                                      { label: 'Company Information', ok: Boolean(businessInfo.name || businessInfo.about) },
+                                      { label: 'FAQs', ok: faqItems.length > 0 },
+                                      { label: 'Policies', ok: Object.values(policies).filter(Boolean).length > 0 },
+                                      { label: 'Documents', ok: knowledgeDocuments.length > 0 },
+                                      { label: 'Website', ok: websiteScanSummary ? websiteScanSummary.pages > 0 : websiteImportStatus === 'complete' },
+                                    ].map((it) => (
+                                      <div key={it.label} className="flex items-center gap-3 rounded-xl border border-[#EEF2F6] bg-[#F8FAFC] px-3 py-3">
+                                        <span className={`inline-flex h-8 w-8 items-center justify-center rounded-full ${it.ok ? 'bg-[#22C55E] text-white' : 'bg-[#F1F5F9] text-[#64748B]'}`}>
+                                          {it.ok ? <Check className="h-4 w-4" /> : <span className="text-sm">–</span>} 
+                                        </span>
+                                        <div>
+                                          <p className="text-sm font-semibold text-[#111827]">{it.label}</p>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-4 rounded-2xl border border-[#D1FAE5] bg-white/80 p-4 shadow-sm">
+                                  <div className="relative flex h-36 w-36 items-center justify-center rounded-full border border-[#D1FAE5] p-1" style={{ background: `conic-gradient(#22C55E ${Math.round((completedKnowledgeSteps.length / Math.max(1, knowledgeLessons.length)) * 100)}%, #E5E7EB 0)` }}>
+                                    <div className="flex h-full w-full items-center justify-center rounded-full bg-white">
+                                      <div className="text-center">
+                                        <p className="text-[26px] font-semibold text-[#111827]">{Math.round((completedKnowledgeSteps.length / Math.max(1, knowledgeLessons.length)) * 100)}%</p>
+                                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#64748B]">Complete</p>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div>
+                                    <p className="text-sm font-semibold text-[#111827]">Knowledge</p>
+                                    <p className="mt-1 text-sm text-[#64748B]">100% Complete</p>
+                                  </div>
                                 </div>
                               </div>
-                              <div className="flex flex-wrap gap-2">
-                                <button type="button" onClick={() => setActiveWorkspaceSection("Catalogue")} className="rounded-lg bg-[#111827] px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#334155]">Continue to Catalogue</button>
-                                <button type="button" onClick={() => { setCompletedKnowledgeSteps([]); focusKnowledgeLesson(0); }} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition hover:bg-[#F8FAFC] hover:text-[#111827]">Review lessons</button>
+                              <div className="mt-6 flex items-center justify-end gap-3">
+                                <button type="button" onClick={() => { setCompletedKnowledgeSteps([]); focusKnowledgeLesson(0); }} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-semibold text-[#475569] transition hover:bg-[#F8FAFC] hover:text-[#111827]">Review lessons</button>
+                                <button type="button" onClick={() => { setCompletionToast('Knowledge training complete — opening Catalogue.'); setActiveWorkspaceSection('Catalogue'); window.setTimeout(() => setCompletionToast(null), 1800); }} className="inline-flex items-center gap-2 rounded-lg bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]">Continue to Catalogue</button>
                               </div>
                             </div>
                           ) : (
@@ -5252,6 +5314,60 @@ export default function DashboardLayout() {
                                       </span>
                                     </div>
                                   ))}
+                                </div>
+                              </div>
+                              <div className="rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-sm">
+                                <p className="text-sm font-semibold text-[#111827]">Knowledge summary</p>
+                                <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                                  <div className="rounded-lg bg-[#F8FAFC] p-3">
+                                    <p className="text-xs font-semibold text-[#475569]">Company Information</p>
+                                    <p className="mt-1 text-sm font-semibold text-[#111827]">{businessInfo.name ? "Added ✓" : "Missing"}</p>
+                                  </div>
+                                  <div className="rounded-lg bg-[#F8FAFC] p-3">
+                                    <p className="text-xs font-semibold text-[#475569]">FAQs</p>
+                                    <p className="mt-1 text-sm font-semibold text-[#111827]">{faqItems.length} items</p>
+                                  </div>
+                                  <div className="rounded-lg bg-[#F8FAFC] p-3">
+                                    <p className="text-xs font-semibold text-[#475569]">Policies</p>
+                                    <p className="mt-1 text-sm font-semibold text-[#111827]">{Object.values(policies).filter(Boolean).length} items</p>
+                                  </div>
+                                  <div className="rounded-lg bg-[#F8FAFC] p-3">
+                                    <p className="text-xs font-semibold text-[#475569]">Documents</p>
+                                    <p className="mt-1 text-sm font-semibold text-[#111827]">{knowledgeDocuments.length}</p>
+                                  </div>
+                                  <div className="rounded-lg bg-[#F8FAFC] p-3">
+                                    <p className="text-xs font-semibold text-[#475569]">Website pages</p>
+                                    <p className="mt-1 text-sm font-semibold text-[#111827]">{websiteScanSummary ? websiteScanSummary.pages : 0}</p>
+                                  </div>
+                                  <div className="rounded-lg bg-[#F8FAFC] p-3">
+                                    <p className="text-xs font-semibold text-[#475569]">Knowledge score</p>
+                                    <p className="mt-1 text-sm font-semibold text-[#111827]">{Math.round(knowledgeConfidence)}%</p>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-sm">
+                                <p className="text-sm font-semibold text-[#111827]">Test your AI</p>
+                                <p className="mt-1 text-xs text-[#64748B]">Ask a question and get a mock response attributed to a knowledge source.</p>
+                                <div className="mt-4">
+                                  <div className="flex gap-2">
+                                    <input value={testQuery} onChange={(e) => setTestQuery(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleTestAsk(testQuery); } }} placeholder="Ask your AI a question..." className="w-full rounded-lg border border-[#E5E7EB] px-3 py-2 text-sm outline-none" />
+                                    <button type="button" onClick={() => handleTestAsk(testQuery)} className="rounded-lg bg-[#111827] px-3 py-2 text-sm font-semibold text-white">Ask</button>
+                                  </div>
+                                  <div className="mt-4 space-y-3">
+                                    {testConversations.map((c) => (
+                                      <div key={c.id} className="rounded-lg border border-[#EEF2F6] bg-[#F8FAFC] p-3">
+                                        <p className="text-sm font-semibold text-[#111827]">You</p>
+                                        <p className="mt-1 text-sm text-[#475569]">{c.user}</p>
+                                        {c.ai && (
+                                          <div className="mt-3 border-t border-[#EEF2F6] pt-3">
+                                            <p className="text-sm font-semibold text-[#111827]">AI response</p>
+                                            <p className="mt-1 text-sm text-[#475569]">{c.ai}</p>
+                                            <div className="mt-2 text-xs text-[#64748B]">Knowledge source: <span className="font-semibold text-[#111827]">{c.source}</span></div>
+                                          </div>
+                                        )}
+                                      </div>
+                                    ))}
+                                  </div>
                                 </div>
                               </div>
                               <div className="flex items-center justify-between border-t border-[#D1FAE5] pt-4">
