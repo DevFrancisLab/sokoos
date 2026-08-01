@@ -43,6 +43,8 @@ import {
   MapPin,
 } from "lucide-react";
 import AiSummaryCard from "./ui/ai-summary-card";
+import { TextInput } from "@/components/auth/text-input";
+import { Textarea } from "@/components/ui/textarea";
 import sokoosLogo from "@/assets/sokoos_logo.png";
 
 const NAV_ITEMS = [
@@ -2116,6 +2118,18 @@ export default function DashboardLayout() {
   const [closeSalesAutomatically, setCloseSalesAutomatically] = useState(false);
   const [businessInfo, setBusinessInfo] = useState(() => normalizeBusinessInfo());
   const [serviceAreaInput, setServiceAreaInput] = useState("");
+  const [companyAbout, setCompanyAbout] = useState<string>("");
+  const [companyMission, setCompanyMission] = useState<string>("");
+  const [companyVision, setCompanyVision] = useState<string>("");
+  const [yearsInBusiness, setYearsInBusiness] = useState<string>("");
+  const [industriesServed, setIndustriesServed] = useState<string>("");
+  const [targetCustomers, setTargetCustomers] = useState<string>("");
+  const [differentiators, setDifferentiators] = useState<string>("");
+  const [customerProblems, setCustomerProblems] = useState<string>("");
+
+  useEffect(() => {
+    setCompanyAbout(businessInfo.about || "");
+  }, [businessInfo.about]);
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -4846,41 +4860,69 @@ export default function DashboardLayout() {
                           </section>
 
                           <section data-lesson-index="1" className={activeKnowledgeStep === 1 ? knowledgeLessonCardClass(1) : "hidden"}>
-                            <div className="space-y-5">
+                            <div className="space-y-6">
                               <div className="flex gap-3">
                                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EFF6FF] text-[#1D4ED8]"><User className="h-5 w-5" /></div>
                                 <div>
                                   <p className="text-[20px] font-semibold text-[#111827]">Company Information</p>
-                                  <p className="mt-2 text-sm leading-6 text-[#6B7280]">Make sure the AI can describe your business clearly and accurately.</p>
+                                  <p className="mt-2 text-sm leading-6 text-[#6B7280]">Teach your AI important facts about your business so it can respond accurately.</p>
                                 </div>
                               </div>
+
                               <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
-                                <div className="grid gap-3 md:grid-cols-2">
-                                  <div className="rounded-xl border border-[#E5E7EB] bg-white p-4">
-                                    <p className="text-sm font-semibold text-[#111827]">Business name</p>
-                                    <p className="mt-1 text-sm text-[#64748B]">{businessInfo.name || "Add your business name"}</p>
+                                <div className="space-y-4">
+                                  <div>
+                                    <label className="text-sm font-medium text-[#111827]">About your company</label>
+                                    <Textarea value={companyAbout} onChange={(e) => setCompanyAbout(e.target.value)} className="mt-2 w-full resize-none" />
+                                    <p className="mt-1 text-xs text-[#64748B]">Briefly describe what customers should expect when they contact you.</p>
                                   </div>
-                                  <div className="rounded-xl border border-[#E5E7EB] bg-white p-4">
-                                    <p className="text-sm font-semibold text-[#111827]">Business type</p>
-                                    <p className="mt-1 text-sm text-[#64748B]">{businessInfo.type || "Add your industry"}</p>
+
+                                  <div>
+                                    <label className="text-sm font-medium text-[#111827]">Mission (optional)</label>
+                                    <Textarea value={companyMission} onChange={(e) => setCompanyMission(e.target.value)} className="mt-2 w-full resize-none" />
+                                    <p className="mt-1 text-xs text-[#64748B]">A short statement of why your company exists.</p>
                                   </div>
-                                  <div className="rounded-xl border border-[#E5E7EB] bg-white p-4">
-                                    <p className="text-sm font-semibold text-[#111827]">Website</p>
-                                    <p className="mt-1 text-sm text-[#64748B]">{businessInfo.website || "Add your website"}</p>
+
+                                  <div>
+                                    <label className="text-sm font-medium text-[#111827]">Vision (optional)</label>
+                                    <Textarea value={companyVision} onChange={(e) => setCompanyVision(e.target.value)} className="mt-2 w-full resize-none" />
+                                    <p className="mt-1 text-xs text-[#64748B]">Where your company is headed in the long term.</p>
                                   </div>
-                                  <div className="rounded-xl border border-[#E5E7EB] bg-white p-4">
-                                    <p className="text-sm font-semibold text-[#111827]">Contact</p>
-                                    <p className="mt-1 text-sm text-[#64748B]">{businessInfo.phone || businessInfo.email || "Add contact details"}</p>
+
+                                  <div className="grid gap-3 md:grid-cols-2">
+                                    <div>
+                                      <TextInput id="years-in-business" label="Years in business" value={yearsInBusiness} onChange={(e) => setYearsInBusiness(e.target.value)} />
+                                      <p className="mt-1 text-xs text-[#64748B]">Number of years you've been operating.</p>
+                                    </div>
+                                    <div>
+                                      <TextInput id="industries-served" label="Industries served" value={industriesServed} onChange={(e) => setIndustriesServed(e.target.value)} />
+                                      <p className="mt-1 text-xs text-[#64748B]">Comma-separated industries, e.g. Retail, Hospitality.</p>
+                                    </div>
                                   </div>
-                                </div>
-                                <div className="mt-4 rounded-xl border border-[#E5E7EB] bg-white p-4">
-                                  <p className="text-sm font-semibold text-[#111827]">About your business</p>
-                                  <p className="mt-2 text-sm leading-6 text-[#64748B]">{businessInfo.about || "Describe what customers should expect when they contact you."}</p>
+
+                                  <div>
+                                    <label className="text-sm font-medium text-[#111827]">Target customers</label>
+                                    <Textarea value={targetCustomers} onChange={(e) => setTargetCustomers(e.target.value)} className="mt-2 w-full resize-none" />
+                                    <p className="mt-1 text-xs text-[#64748B]">Who your typical customers are (segments, business sizes, demographics).</p>
+                                  </div>
+
+                                  <div>
+                                    <label className="text-sm font-medium text-[#111827]">What makes your business different?</label>
+                                    <Textarea value={differentiators} onChange={(e) => setDifferentiators(e.target.value)} className="mt-2 w-full resize-none" />
+                                    <p className="mt-1 text-xs text-[#64748B]">Unique strengths, guarantees, or policies that set you apart.</p>
+                                  </div>
+
+                                  <div>
+                                    <label className="text-sm font-medium text-[#111827]">Common customer problems you solve</label>
+                                    <Textarea value={customerProblems} onChange={(e) => setCustomerProblems(e.target.value)} className="mt-2 w-full resize-none" />
+                                    <p className="mt-1 text-xs text-[#64748B]">Examples of problems customers bring to you and how you help.</p>
+                                  </div>
                                 </div>
                               </div>
+
                               <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
                                 <button type="button" onClick={() => focusKnowledgeLesson(0)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                <button type="button" onClick={() => completeKnowledgeLesson(1)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                                <button type="button" onClick={() => { setBusinessInfo((b) => ({ ...b, about: companyAbout })); completeKnowledgeLesson(1); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
                               </div>
                             </div>
                           </section>
