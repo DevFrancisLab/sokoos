@@ -2655,6 +2655,74 @@ export default function DashboardLayout() {
     (businessInfo.phone || "").replace(/\D/g, "").length >= 7 &&
     (businessInfo.whatsapp || "").replace(/\D/g, "").length >= 7,
   );
+
+  const identityLessonProgress = [
+    Math.round(([
+      businessInfo.name,
+      businessInfo.type,
+      businessInfo.country,
+      businessInfo.about,
+    ].filter(Boolean).length / 4) * 100),
+    Math.round(([
+      personality,
+      communicationStyle,
+      emojiUsage,
+      preferredTone,
+      writingExamples,
+    ].filter(Boolean).length / 5) * 100),
+    Math.round(([
+      welcomeMessage,
+      awayMessage,
+      closingMessage,
+    ].filter(Boolean).length / 3) * 100),
+    Math.round(([
+      primaryLanguage,
+      supportedLanguages.length ? "x" : "",
+    ].filter(Boolean).length / 2) * 100),
+    businessHours.trim() ? 100 : 0,
+    Math.round(([
+      businessInfo.address,
+      businessInfo.serviceAreas,
+    ].filter(Boolean).length / 2) * 100),
+    identityWorkspaceComplete ? 100 : 0,
+  ];
+  const identityLessonActivityPercent = Math.min(100, Math.round(
+    identityLessonProgress.reduce((sum, value) => sum + value, 0) / identityLessonProgress.length,
+  ));
+
+  const knowledgeSourceLessonProgress = selectedKnowledgeSources.map((source) => {
+    if (source === "company") {
+      return Math.round(([
+        businessInfo.name,
+        businessInfo.about,
+        companyAbout || companyMission || companyVision || targetCustomers,
+      ].filter(Boolean).length / 3) * 100);
+    }
+    if (source === "faqs") {
+      return faqItems.length > 0 ? 100 : 0;
+    }
+    if (source === "documents") {
+      return knowledgeDocuments.length > 0 ? 100 : 0;
+    }
+    if (source === "website") {
+      return websiteScanSummary?.pages ? 100 : 0;
+    }
+    return 0;
+  });
+
+  const knowledgePoliciesProgress = Math.round((
+    Object.values(policies).filter(Boolean).length / 3
+  ) * 100);
+  const knowledgeLessonProgress = [
+    selectedKnowledgeSources.length > 0 ? 100 : 0,
+    ...knowledgeSourceLessonProgress,
+    knowledgePoliciesProgress,
+    selectedKnowledgeSources.length > 0 && knowledgeSourceLessonProgress.every((value) => value === 100) && knowledgePoliciesProgress === 100 ? 100 : 0,
+  ];
+  const knowledgeLessonActivityPercent = Math.min(100, Math.round(
+    knowledgeLessonProgress.reduce((sum, value) => sum + value, 0) / Math.max(1, knowledgeLessonProgress.length),
+  ));
+
   const trainingCompletedSteps = [...new Set(
     (identityWorkspaceComplete ? [...completedIdentitySteps, 0] : completedIdentitySteps)
       .filter((step) => step >= 0 && step < identityLessons.length),
@@ -2714,8 +2782,8 @@ export default function DashboardLayout() {
     Performance: ["Integrations"],
   };
   const workspaceProgressBySection = {
-    Identity: Math.min(100, Math.round((trainingCompletedSteps.length / identityLessons.length) * 100)),
-    "Knowledge Hub": Math.min(100, Math.round((knowledgeCoverage * 0.6) + (knowledgeCompleteness * 0.4))),
+    Identity: identityLessonActivityPercent,
+    "Knowledge Hub": knowledgeLessonActivityPercent,
     Catalogue: Math.min(100, Math.round((knowledgeProducts.length > 0 ? 45 : 0) + (CATALOG_ITEMS.length > 0 ? 35 : 0) + (knowledgeProducts.length > 2 ? 20 : 0))),
     "Sales Playbooks": Math.min(100, upsellProducts || recommendAlternatives ? 100 : 0),
     Policies: Math.min(100, Math.round((Object.values(policies).filter(Boolean).length / 3) * 100)),
