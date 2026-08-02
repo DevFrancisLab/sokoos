@@ -1361,6 +1361,7 @@ export default function DashboardLayout() {
     "Review",
   ];
   const knowledgeLessonCompletionNames = knowledgeLessonSequence;
+  const isDevMode = typeof import.meta !== "undefined" && Boolean((import.meta as any).env?.DEV);
   const sanitizeStepIndices = (steps: unknown[], maxLength: number) =>
     Array.isArray(steps)
       ? steps
@@ -2804,19 +2805,23 @@ export default function DashboardLayout() {
     if (saved) {
       try {
         const progress = JSON.parse(saved) as { step?: number; completed?: number[]; launched?: boolean; scrollY?: number; businessInfo?: typeof businessInfo; businessHours?: string };
-        if (progress.businessInfo) setBusinessInfo(normalizeBusinessInfo(progress.businessInfo));
-        if (typeof progress.businessHours === "string") setBusinessHours(progress.businessHours);
-        if (typeof progress.step === "number") setActiveIdentityStep(progress.step);
-        if (Array.isArray(progress.completed)) setCompletedIdentitySteps(sanitizeStepIndices(progress.completed, identityLessons.length));
-        const loadedSelectedKnowledgeSources = Array.isArray((progress as any).selectedKnowledgeSources)
-          ? sanitizeSelectedKnowledgeSources((progress as any).selectedKnowledgeSources)
-          : [];
-        if (loadedSelectedKnowledgeSources.length > 0) setSelectedKnowledgeSources(loadedSelectedKnowledgeSources);
-        const loadedKnowledgeSequenceLength = 1 + loadedSelectedKnowledgeSources.length + 1;
-        if (Array.isArray((progress as any).completedKnowledge)) setCompletedKnowledgeSteps(sanitizeStepIndices((progress as any).completedKnowledge, loadedKnowledgeSequenceLength));
-        if (typeof (progress as any).activeKnowledgeStep === "number") setActiveKnowledgeStep(Math.min(Math.max((progress as any).activeKnowledgeStep, 0), loadedKnowledgeSequenceLength - 1));
-        if (progress.launched) setAiEmployeeLaunched(true);
-        if (typeof progress.scrollY === "number") window.requestAnimationFrame(() => window.scrollTo({ top: progress.scrollY, behavior: "auto" }));
+        if (isDevMode) {
+          window.localStorage.removeItem("sokoos-ai-training-progress-v2");
+        } else {
+          if (progress.businessInfo) setBusinessInfo(normalizeBusinessInfo(progress.businessInfo));
+          if (typeof progress.businessHours === "string") setBusinessHours(progress.businessHours);
+          if (typeof progress.step === "number") setActiveIdentityStep(progress.step);
+          if (Array.isArray(progress.completed)) setCompletedIdentitySteps(sanitizeStepIndices(progress.completed, identityLessons.length));
+          const loadedSelectedKnowledgeSources = Array.isArray((progress as any).selectedKnowledgeSources)
+            ? sanitizeSelectedKnowledgeSources((progress as any).selectedKnowledgeSources)
+            : [];
+          if (loadedSelectedKnowledgeSources.length > 0) setSelectedKnowledgeSources(loadedSelectedKnowledgeSources);
+          const loadedKnowledgeSequenceLength = 1 + loadedSelectedKnowledgeSources.length + 1;
+          if (Array.isArray((progress as any).completedKnowledge)) setCompletedKnowledgeSteps(sanitizeStepIndices((progress as any).completedKnowledge, loadedKnowledgeSequenceLength));
+          if (typeof (progress as any).activeKnowledgeStep === "number") setActiveKnowledgeStep(Math.min(Math.max((progress as any).activeKnowledgeStep, 0), loadedKnowledgeSequenceLength - 1));
+          if (progress.launched) setAiEmployeeLaunched(true);
+          if (typeof progress.scrollY === "number") window.requestAnimationFrame(() => window.scrollTo({ top: progress.scrollY, behavior: "auto" }));
+        }
       } catch {
         window.localStorage.removeItem("sokoos-ai-training-progress-v2");
       }
