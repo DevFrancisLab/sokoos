@@ -1348,7 +1348,7 @@ export default function DashboardLayout() {
   const previewMessagesRef = useRef<HTMLDivElement>(null);
   const identityLessons = ["Business Identity", "Brand Voice", "Greetings", "Languages", "Business Hours", "Locations", "Complete Identity"];
   const identityLessonCompletionNames = ["Business Identity", "Brand Voice", "Greetings", "Languages", "Business Hours", "Locations", "Complete Identity"];
-  const knowledgeLessons = ["Knowledge Sources", "Policies", "Review"];
+  const knowledgeLessons = ["Knowledge Sources", "Review"];
   const knowledgeSourceLessonTitles = {
     company: "Company Information",
     faqs: "FAQs",
@@ -1358,7 +1358,6 @@ export default function DashboardLayout() {
   const knowledgeLessonSequence = [
     "Knowledge Sources",
     ...selectedKnowledgeSources.map((source) => knowledgeSourceLessonTitles[source as keyof typeof knowledgeSourceLessonTitles] ?? source),
-    "Policies",
     "Review",
   ];
   const knowledgeLessonCompletionNames = knowledgeLessonSequence;
@@ -2710,14 +2709,10 @@ export default function DashboardLayout() {
     return 0;
   });
 
-  const knowledgePoliciesProgress = Math.round((
-    Object.values(policies).filter(Boolean).length / 3
-  ) * 100);
   const knowledgeLessonProgress = [
     selectedKnowledgeSources.length > 0 ? 100 : 0,
     ...knowledgeSourceLessonProgress,
-    knowledgePoliciesProgress,
-    selectedKnowledgeSources.length > 0 && knowledgeSourceLessonProgress.every((value) => value === 100) && knowledgePoliciesProgress === 100 ? 100 : 0,
+    completedKnowledgeSteps.includes(knowledgeLessonSequence.length - 1) ? 100 : 0,
   ];
   const knowledgeLessonActivityPercent = Math.min(100, Math.round(
     knowledgeLessonProgress.reduce((sum, value) => sum + value, 0) / Math.max(1, knowledgeLessonProgress.length),
@@ -2813,9 +2808,13 @@ export default function DashboardLayout() {
         if (typeof progress.businessHours === "string") setBusinessHours(progress.businessHours);
         if (typeof progress.step === "number") setActiveIdentityStep(progress.step);
         if (Array.isArray(progress.completed)) setCompletedIdentitySteps(sanitizeStepIndices(progress.completed, identityLessons.length));
-        if (Array.isArray((progress as any).completedKnowledge)) setCompletedKnowledgeSteps(sanitizeStepIndices((progress as any).completedKnowledge, knowledgeLessons.length));
-        if (Array.isArray((progress as any).selectedKnowledgeSources)) setSelectedKnowledgeSources(sanitizeSelectedKnowledgeSources((progress as any).selectedKnowledgeSources));
-        if (typeof (progress as any).activeKnowledgeStep === "number") setActiveKnowledgeStep(Math.min(Math.max((progress as any).activeKnowledgeStep, 0), knowledgeLessons.length - 1));
+        const loadedSelectedKnowledgeSources = Array.isArray((progress as any).selectedKnowledgeSources)
+          ? sanitizeSelectedKnowledgeSources((progress as any).selectedKnowledgeSources)
+          : [];
+        if (loadedSelectedKnowledgeSources.length > 0) setSelectedKnowledgeSources(loadedSelectedKnowledgeSources);
+        const loadedKnowledgeSequenceLength = 1 + loadedSelectedKnowledgeSources.length + 1;
+        if (Array.isArray((progress as any).completedKnowledge)) setCompletedKnowledgeSteps(sanitizeStepIndices((progress as any).completedKnowledge, loadedKnowledgeSequenceLength));
+        if (typeof (progress as any).activeKnowledgeStep === "number") setActiveKnowledgeStep(Math.min(Math.max((progress as any).activeKnowledgeStep, 0), loadedKnowledgeSequenceLength - 1));
         if (progress.launched) setAiEmployeeLaunched(true);
         if (typeof progress.scrollY === "number") window.requestAnimationFrame(() => window.scrollTo({ top: progress.scrollY, behavior: "auto" }));
       } catch {
@@ -2888,10 +2887,6 @@ export default function DashboardLayout() {
     if (step === 0) {
       return selectedKnowledgeSources.length > 0;
     }
-    const lesson = knowledgeLessonSequence[step];
-    if (lesson === "Policies") {
-      return Boolean(policies.returnPolicy.trim() || policies.deliveryPolicy.trim() || policies.cancellationPolicy.trim());
-    }
     return true;
   };
 
@@ -2950,7 +2945,7 @@ export default function DashboardLayout() {
 
   const CurrentLesson = () => {
     const currentLesson = knowledgeLessonSequence[activeKnowledgeStep] ?? knowledgeLessonSequence[0];
-    const isSourceLesson = activeKnowledgeStep > 0 && activeKnowledgeStep < knowledgeLessonSequence.length - 2;
+    const isSourceLesson = activeKnowledgeStep > 0 && activeKnowledgeStep < knowledgeLessonSequence.length - 1;
     const sourceKey = isSourceLesson ? selectedKnowledgeSources[activeKnowledgeStep - 1] : undefined;
 
     const renderKnowledgeSourcesLesson = () => (
@@ -3035,31 +3030,6 @@ export default function DashboardLayout() {
       );
     };
 
-    const renderPoliciesLesson = () => (
-      <section data-lesson-index={String(activeKnowledgeStep)} className={knowledgeLessonCardClass(activeKnowledgeStep)}>
-        <div className="space-y-5">
-          <div className="flex gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F5F3FF] text-[#6D28D9]"><Shield className="h-5 w-5" /></div>
-            <div>
-              <p className="text-[20px] font-semibold text-[#111827]">Policies</p>
-              <p className="mt-2 text-sm leading-6 text-[#6B7280]">Capture the rules your AI should follow when customers ask about refunds, returns, warranties and privacy.</p>
-            </div>
-          </div>
-          <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
-            <div className="space-y-3">
-              <Textarea value={policies.returnPolicy} onChange={(e) => setPolicies((cur) => ({ ...cur, returnPolicy: e.target.value }))} className="w-full" />
-              <Textarea value={policies.deliveryPolicy} onChange={(e) => setPolicies((cur) => ({ ...cur, deliveryPolicy: e.target.value }))} className="w-full" />
-              <Textarea value={policies.cancellationPolicy} onChange={(e) => setPolicies((cur) => ({ ...cur, cancellationPolicy: e.target.value }))} className="w-full" />
-            </div>
-          </div>
-          <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
-            <button type="button" onClick={() => focusKnowledgeLesson(activeKnowledgeStep - 1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-            <button type="button" onClick={() => completeKnowledgeLesson(activeKnowledgeStep)} disabled={!canContinueKnowledgeLesson(activeKnowledgeStep)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Save & Continue <ChevronRight className="h-4 w-4" /></button>
-          </div>
-        </div>
-      </section>
-    );
-
     const renderReviewLesson = () => (
       <section data-lesson-index={String(activeKnowledgeStep)} className={activeKnowledgeStep === knowledgeLessonSequence.length - 1 ? "relative overflow-hidden rounded-[28px] border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] via-white to-[#F8FAFC] p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
         <div className="space-y-5">
@@ -3067,7 +3037,7 @@ export default function DashboardLayout() {
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><Sparkles className="h-5 w-5" /></div>
             <div>
               <p className="text-[20px] font-semibold text-[#111827]">Review</p>
-              <p className="mt-2 text-sm leading-6 text-[#6B7280]">Confirm the knowledge sources and policies you’ve added before finishing training.</p>
+              <p className="mt-2 text-sm leading-6 text-[#6B7280]">Confirm the knowledge sources you’ve added before finishing training.</p>
             </div>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -3086,15 +3056,8 @@ export default function DashboardLayout() {
               </div>
             </div>
             <div className="rounded-2xl border border-[#EEF2F6] bg-white p-5">
-              <p className="text-sm font-semibold text-[#111827]">Policies summary</p>
-              <div className="mt-3 space-y-3 text-sm text-[#475569]">
-                {Object.entries(policies).map(([key, value]) => (
-                  <div key={key} className="rounded-lg bg-[#F8FAFC] px-3 py-2">
-                    <p className="font-semibold text-[#111827]">{key === "returnPolicy" ? "Return policy" : key === "deliveryPolicy" ? "Delivery policy" : "Cancellation policy"}</p>
-                    <p className="mt-1 text-sm text-[#475569]">{value || "Not specified yet."}</p>
-                  </div>
-                ))}
-              </div>
+              <p className="text-sm font-semibold text-[#111827]">Policies training</p>
+              <p className="mt-3 text-sm text-[#475569]">Policy rules are configured in the Policies workspace, so this step focuses on knowledge sources only.</p>
             </div>
           </div>
           <div className="flex items-center justify-between border-t border-[#D1FAE5] pt-4">
@@ -3109,7 +3072,6 @@ export default function DashboardLayout() {
       <div ref={knowledgeLessonRef} className="space-y-4 scroll-mt-36 scroll-smooth">
         {activeKnowledgeStep === 0 && renderKnowledgeSourcesLesson()}
         {isSourceLesson && renderSourceLesson()}
-        {currentLesson === "Policies" && renderPoliciesLesson()}
         {currentLesson === "Review" && renderReviewLesson()}
       </div>
     );
