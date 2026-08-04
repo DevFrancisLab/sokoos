@@ -1602,7 +1602,6 @@ export default function DashboardLayout() {
     | "Review"
     | "Categories"
     | "Collections"
-    | "Media Library"
     | "Documents"
     | "Price Lists"
     | "Quote Templates"
@@ -1680,6 +1679,7 @@ export default function DashboardLayout() {
   ]);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const serviceFileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleFiles = (files: FileList | null) => {
     if (!files || files.length === 0) return;
@@ -1694,6 +1694,157 @@ export default function DashboardLayout() {
     }));
     setMediaAssets((prev) => [...arr, ...prev]);
     if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  type ServiceItem = {
+    id: string;
+    name: string;
+    description: string;
+    category: string;
+    price: string;
+    duration: string;
+    area: string;
+    appointmentRequired: boolean;
+    image: string;
+    mediaAssets: MediaAsset[];
+  };
+
+  const SERVICE_ITEMS: ServiceItem[] = [
+    {
+      id: "s-hair-001",
+      name: "Deluxe Hair Treatment",
+      description: "Repairing deep-conditioning treatment with scalp massage and styling guidance.",
+      category: "Salon",
+      price: "$45.00",
+      duration: "60 minutes",
+      area: "Salon",
+      appointmentRequired: true,
+      image: "/assets/sample/salon.jpg",
+      mediaAssets: [],
+    },
+    {
+      id: "s-clinic-001",
+      name: "Adult Wellness Check",
+      description: "Comprehensive check-up including vitals and basic blood work.",
+      category: "Clinic",
+      price: "$65.00",
+      duration: "45 minutes",
+      area: "Clinic",
+      appointmentRequired: true,
+      image: "/assets/sample/clinic.jpg",
+      mediaAssets: [],
+    },
+    {
+      id: "s-consult-001",
+      name: "Business Strategy Session",
+      description: "One-on-one planning session to align your product roadmap and marketing approach.",
+      category: "Consulting",
+      price: "$120.00",
+      duration: "90 minutes",
+      area: "Remote",
+      appointmentRequired: true,
+      image: "/assets/sample/meeting.jpg",
+      mediaAssets: [],
+    },
+  ];
+
+  const [catalogServices, setCatalogServices] = useState<ServiceItem[]>(SERVICE_ITEMS);
+  const [selectedServiceId, setSelectedServiceId] = useState<string>(SERVICE_ITEMS[0]?.id ?? "");
+
+  const createMediaAssets = (files: FileList | null) => {
+    if (!files || files.length === 0) return [] as MediaAsset[];
+    return Array.from(files).map((f) => ({
+      id: `service-asset-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      name: f.name,
+      fileType: f.type.split("/")[0] || "file",
+      uploadDate: new Date().toLocaleString(),
+      size: `${Math.round(f.size / 1024)} KB`,
+      url: URL.createObjectURL(f),
+      mime: f.type,
+    }));
+  };
+
+  const updateServiceField = <K extends keyof ServiceItem>(id: string, field: K, value: ServiceItem[K]) => {
+    setCatalogServices((list) => list.map((service) => (service.id === id ? { ...service, [field]: value } : service)));
+  };
+
+  const selectedService = catalogServices.find((service) => service.id === selectedServiceId) ?? SERVICE_ITEMS[0];
+
+  const handleServiceFiles = (files: FileList | null) => {
+    if (!files || files.length === 0 || !selectedService) return;
+    const arr = createMediaAssets(files);
+    setCatalogServices((list) =>
+      list.map((service) =>
+        service.id === selectedService.id ? { ...service, mediaAssets: [...arr, ...service.mediaAssets] } : service
+      )
+    );
+    if (serviceFileInputRef.current) serviceFileInputRef.current.value = "";
+  };
+
+  const onServiceDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    handleServiceFiles(e.dataTransfer.files);
+  };
+
+  const onServiceDragOver = (e: React.DragEvent<HTMLDivElement>) => e.preventDefault();
+
+  const viewServiceAsset = (asset: MediaAsset) => {
+    window.open(asset.url, "_blank");
+  };
+
+  const renameServiceAsset = (id: string) => {
+    if (!selectedService) return;
+    const asset = selectedService.mediaAssets.find((m) => m.id === id);
+    if (!asset) return;
+    const newName = window.prompt("Rename file", asset.name);
+    if (!newName) return;
+    setCatalogServices((list) =>
+      list.map((service) =>
+        service.id === selectedService.id
+          ? {
+              ...service,
+              mediaAssets: service.mediaAssets.map((m) => (m.id === id ? { ...m, name: newName } : m)),
+            }
+          : service
+      )
+    );
+  };
+
+  const deleteServiceAsset = (id: string) => {
+    if (!selectedService) return;
+    const asset = selectedService.mediaAssets.find((m) => m.id === id);
+    if (!asset) return;
+    if (!window.confirm(`Delete ${asset.name}?`)) return;
+    try {
+      if (asset.url.startsWith("blob:")) URL.revokeObjectURL(asset.url);
+    } catch {
+      /* ignore */
+    }
+    setCatalogServices((list) =>
+      list.map((service) =>
+        service.id === selectedService.id
+          ? { ...service, mediaAssets: service.mediaAssets.filter((m) => m.id !== id) }
+          : service
+      )
+    );
+  };
+
+  const addService = () => {
+    const id = `s-${Date.now()}`;
+    const newService: ServiceItem = {
+      id,
+      name: `Service ${catalogServices.length + 1}`,
+      description: "Describe this service for customers and your AI.",
+      category: "General",
+      price: "$0.00",
+      duration: "30 minutes",
+      area: "Online",
+      appointmentRequired: false,
+      image: "/assets/sample/placeholder.png",
+      mediaAssets: [],
+    };
+    setCatalogServices((list) => [newService, ...list]);
+    setSelectedServiceId(id);
   };
   const addProductWithData = (data: { name: string; category: string; price: string; availability: string; image?: string }) => {
     const id = `p-${Date.now()}`;
@@ -5442,111 +5593,7 @@ export default function DashboardLayout() {
                               )}
                             </div>
 
-                            {catalogueSubsection === "Media Library" ? (
-                              <div>
-                                <div className="mb-6">
-                                  <div className="overflow-x-auto pb-1 custom-scrollbar">
-                                    <div className="flex min-w-max items-center gap-3 px-1 py-1">
-                                      {[
-                                        { label: "Products", value: "Products & Services" as CatalogueSubsection },
-                                        { label: "Services", value: "Pricing" as CatalogueSubsection },
-                                        { label: "Inventory", value: "Availability" as CatalogueSubsection },
-                                        { label: "Review", value: "Review" as CatalogueSubsection },
-                                      ].map((lesson, index) => {
-                                        const lessonOrder: CatalogueSubsection[] = [
-                                          "Products & Services",
-                                          "Pricing",
-                                          "Availability",
-                                          "Categories",
-                                          "Media Library",
-                                          "Imports",
-                                          "Review",
-                                        ];
-                                        const selectedIndex = lessonOrder.indexOf(catalogueSubsection);
-                                        const isActive = selectedIndex === index;
-                                        const isCompleted = selectedIndex >= 0 && index < selectedIndex;
-
-                                        return (
-                                          <button
-                                            key={lesson.label}
-                                            type="button"
-                                            onClick={() => setCatalogueSubsection(lesson.value as CatalogueSubsection)}
-                                            className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition ${isActive ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534] shadow-sm" : isCompleted ? "border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#86EFAC] hover:text-[#111827]"}`}
-                                          >
-                                            {isCompleted ? (
-                                              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#16A34A] text-[11px] text-white">
-                                                <Check className="h-3.5 w-3.5" />
-                                              </span>
-                                            ) : (
-                                              <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${isCompleted ? "bg-[#22C55E] text-white" : isActive ? "bg-[#111827] text-white" : "bg-[#F8FAFC] text-[#64748B]"}`}>
-                                                {isCompleted ? <Check className="h-3.5 w-3.5" /> : <span className="text-[11px]">{index + 1}</span>}
-                                              </span>
-                                            )}
-                                            <span>{lesson.label}</span>
-                                          </button>
-                                        );
-                                      })}
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
-                                  <div>
-                                    <p className="text-sm font-semibold text-[#111827]">Media</p>
-                                    <p className="mt-1 text-xs text-[#6B7280]">Give your AI images, documents, and files it can use to better assist customers.</p>
-                                  </div>
-                                  <div className="rounded-[10px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
-                                    <span className="font-semibold">Est.</span> {mediaAssets.length > 0 ? "In progress" : "Not started"}
-                                  </div>
-                                </div>
-                                <div
-                                  onDrop={onDrop}
-                                  onDragOver={onDragOver}
-                                  className="rounded-[12px] border-dashed border-2 border-[#E5E7EB] bg-[#FAFAFB] p-6 text-center mb-5"
-                                >
-                                  <p className="text-sm font-semibold text-[#111827]">Drag & drop files here</p>
-                                  <p className="mt-2 text-sm text-[#64748B]">Images, PDFs, videos, logos, brochures, flyers, certificates, menus, floor plans</p>
-                                  <div className="mt-5">
-                                    <input ref={fileInputRef} type="file" multiple className="hidden" onChange={(e) => handleFiles(e.target.files)} />
-                                    <button type="button" onClick={() => fileInputRef.current?.click()} className="inline-flex items-center gap-2 rounded-[12px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Upload files</button>
-                                  </div>
-                                </div>
-
-                                <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
-                                  {mediaAssets.map((asset) => (
-                                    <div key={asset.id} className="flex h-full flex-col rounded-[14px] border border-[#EEF2F6] bg-white p-3 shadow-sm">
-                                      <div className="mb-3 flex aspect-[4/3] items-center justify-center overflow-hidden rounded-[10px] bg-[#F8FAFB]">
-                                        {asset.mime?.startsWith("image") ? (
-                                          <img src={asset.url} alt={asset.name} className="h-full w-full object-cover" />
-                                        ) : asset.mime?.startsWith("video") ? (
-                                          <video src={asset.url} controls className="h-full w-full object-cover" />
-                                        ) : asset.mime?.includes("pdf") ? (
-                                          <div className="flex flex-col items-center justify-center text-sm text-[#475569]">
-                                            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 2h7l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" stroke="#64748B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                                            <span className="mt-2">PDF</span>
-                                          </div>
-                                        ) : (
-                                          <div className="text-sm text-[#475569]">{asset.fileType}</div>
-                                        )}
-                                      </div>
-
-                                      <div className="flex min-h-0 flex-1 flex-col">
-                                        <p className="truncate text-sm font-semibold text-[#111827]">{asset.name}</p>
-                                        <div className="mt-2 space-y-1 text-xs text-[#6B7280]">
-                                          <p>{asset.fileType} • {asset.size}</p>
-                                          <p className="text-[#94A3B8]">{asset.uploadDate}</p>
-                                        </div>
-
-                                        <div className="mt-4 flex items-center justify-end gap-2">
-                                          <button type="button" onClick={() => viewAsset(asset)} className="rounded-[8px] border border-[#E5E7EB] bg-white px-2.5 py-1.5 text-xs font-semibold">View</button>
-                                          <button type="button" onClick={() => renameAsset(asset.id)} className="rounded-[8px] border border-[#E5E7EB] bg-white px-2.5 py-1.5 text-xs font-semibold">Rename</button>
-                                          <button type="button" onClick={() => deleteAsset(asset.id)} className="rounded-[8px] border border-[#FECACA] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#B91C1C]">Delete</button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            ) : catalogueSubsection === "Imports" ? (
+                            {catalogueSubsection === "Imports" ? (
                               <div>
                                 <div className="mb-6">
                                   <div className="overflow-x-auto pb-1 custom-scrollbar">
@@ -5837,8 +5884,8 @@ export default function DashboardLayout() {
                                   {catalogueSubsection === "Pricing" ? (
                                     <div className="flex flex-wrap items-start justify-between gap-3">
                                       <div>
-                                        <p className="text-sm font-semibold text-[#111827]">Pricing</p>
-                                        <p className="mt-1 text-xs text-[#6B7280]">Teach your AI how much everything costs.</p>
+                                        <p className="text-sm font-semibold text-[#111827]">Services</p>
+                                        <p className="mt-1 text-xs text-[#6B7280]">Help your AI understand your service offerings and how customers can book them.</p>
                                       </div>
                                       <div className="rounded-[10px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
                                         <span className="font-semibold">Est.</span> {catalogProducts.length > 0 ? "In progress" : "Not started"}
@@ -5874,31 +5921,11 @@ export default function DashboardLayout() {
                                         <span className="font-semibold">Est.</span> {catalogProducts.length > 0 ? "In progress" : "Not started"}
                                       </div>
                                     </div>
-                                  ) : catalogueSubsection === "Media Library" ? (
-                                    <div className="flex flex-wrap items-start justify-between gap-3">
-                                      <div>
-                                        <p className="text-sm font-semibold text-[#111827]">Media</p>
-                                        <p className="mt-1 text-xs text-[#6B7280]">Give your AI images, documents, and files it can use to better assist customers.</p>
-                                      </div>
-                                      <div className="rounded-[10px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
-                                        <span className="font-semibold">Est.</span> {mediaAssets.length > 0 ? "In progress" : "Not started"}
-                                      </div>
-                                    </div>
-                                  ) : catalogueSubsection === "Imports" ? (
-                                    <div className="flex flex-wrap items-start justify-between gap-3">
-                                      <div>
-                                        <p className="text-sm font-semibold text-[#111827]">Import Catalogue</p>
-                                        <p className="mt-1 text-xs text-[#6B7280]">Quickly teach your AI using your existing catalogue.</p>
-                                      </div>
-                                      <div className="rounded-[10px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
-                                        <span className="font-semibold">Est.</span> {Object.keys(importState).length > 0 ? "In progress" : "Not started"}
-                                      </div>
-                                    </div>
                                   ) : (
                                     <div className="flex flex-wrap items-start justify-between gap-3">
                                       <div>
                                         <p className="text-sm font-semibold text-[#111827]">Products</p>
-                                        <p className="mt-1 text-xs text-[#6B7280]">Teach your AI what you sell.</p>
+                                        <p className="mt-1 text-xs text-[#6B7280]">Teach your AI what you sell with full product, pricing, and availability details.</p>
                                       </div>
                                       <div className="rounded-[10px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
                                         <span className="font-semibold">Est.</span> {catalogProducts.length > 0 ? "In progress" : "Not started"}
@@ -5926,67 +5953,313 @@ export default function DashboardLayout() {
                                   ))}
                                 </div>
 
-                                {catalogueSubsection === "Pricing" ? (
-                                  <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-4">
-                                    <div className="overflow-x-auto">
+                                {catalogueSubsection === "Products & Services" ? (
+                                  <>
+                                    <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-4 mb-6">
+                                      <p className="text-sm font-semibold text-[#111827]">Product pricing</p>
+                                      <p className="mt-1 text-xs text-[#64748B]">Edit product prices, currency, billing, and discounts directly from the Products workspace.</p>
+                                      <div className="mt-4 overflow-x-auto">
+                                        <table className="min-w-full text-sm">
+                                          <thead>
+                                            <tr className="text-left text-[11px] uppercase tracking-[0.12em] text-[#6B7280]">
+                                              <th className="px-2 py-2">Product</th>
+                                              <th className="px-2 py-2">Price</th>
+                                              <th className="px-2 py-2">Currency</th>
+                                              <th className="px-2 py-2">Billing Period</th>
+                                              <th className="px-2 py-2">Discount</th>
+                                              <th className="px-2 py-2">Status</th>
+                                            </tr>
+                                          </thead>
+                                          <tbody>
+                                            {catalogProducts.map((item) => (
+                                              <tr key={item.id} className="border-t">
+                                                <td className="px-2 py-2 align-middle text-sm text-[#111827]">{item.name}</td>
+                                                <td className="px-2 py-2 align-middle">
+                                                  <input value={item.price || ''} onChange={(e) => updateCatalogProductField(item.id, 'price', e.target.value)} className="w-24 rounded border border-[#E5E7EB] px-2 py-1 text-sm" />
+                                                </td>
+                                                <td className="px-2 py-2 align-middle">
+                                                  <select value={(item as any).currency || 'USD'} onChange={(e) => updateCatalogProductField(item.id, 'currency', e.target.value)} className="w-20 rounded border border-[#E5E7EB] px-2 py-1 text-sm">
+                                                    <option>USD</option>
+                                                    <option>KES</option>
+                                                    <option>EUR</option>
+                                                    <option>NGN</option>
+                                                  </select>
+                                                </td>
+                                                <td className="px-2 py-2 align-middle">
+                                                  <select value={(item as any).billingPeriod || 'One-time'} onChange={(e) => updateCatalogProductField(item.id, 'billingPeriod', e.target.value)} className="w-28 rounded border border-[#E5E7EB] px-2 py-1 text-sm">
+                                                    <option>One-time</option>
+                                                    <option>Monthly</option>
+                                                    <option>Yearly</option>
+                                                    <option>Usage-based</option>
+                                                  </select>
+                                                </td>
+                                                <td className="px-2 py-2 align-middle">
+                                                  <input type="number" value={(item as any).discount ?? ''} onChange={(e) => updateCatalogProductField(item.id, 'discount', e.target.value ? Number(e.target.value) : '')} className="w-16 rounded border border-[#E5E7EB] px-2 py-1 text-sm" />
+                                                </td>
+                                                <td className="px-2 py-2 align-middle">
+                                                  <select value={(item as any).status || item.availability || 'Available'} onChange={(e) => updateCatalogProductField(item.id, 'status', e.target.value)} className="w-28 rounded border border-[#E5E7EB] px-2 py-1 text-sm">
+                                                    <option>Available</option>
+                                                    <option>Low stock</option>
+                                                    <option>By appointment</option>
+                                                    <option>Out of stock</option>
+                                                  </select>
+                                                </td>
+                                              </tr>
+                                            ))}
+                                          </tbody>
+                                        </table>
+                                      </div>
+                                      <div className="mt-4 flex items-center justify-between gap-4">
+                                        <div className="text-sm text-[#64748B]">Pricing is now editable directly from the Products workspace.</div>
+                                        <div>
+                                          <button onClick={() => {
+                                            setPricingSaved(true);
+                                            window.setTimeout(() => setPricingSaved(false), 1800);
+                                          }} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Save Product Pricing</button>
+                                          {pricingSaved ? <span className="ml-3 text-sm text-[#16A34A]">Saved</span> : null}
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-4 mb-6">
+                                      <div className="flex flex-wrap items-start justify-between gap-3">
+                                        <div>
+                                          <p className="text-sm font-semibold text-[#111827]">Product media</p>
+                                          <p className="mt-1 text-xs text-[#64748B]">Upload images and videos for each product so your AI can describe them accurately.</p>
+                                        </div>
+                                        <div className="rounded-[10px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
+                                          <span className="font-semibold">Est.</span> {mediaAssets.length > 0 ? "In progress" : "Not started"}
+                                        </div>
+                                      </div>
+
+                                      <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                                        <div className="rounded-[12px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
+                                          <p className="text-sm font-semibold text-[#111827]">Upload images</p>
+                                          <p className="mt-2 text-sm text-[#64748B]">Add product photos for better visual recommendations.</p>
+                                          <div className="mt-4 flex flex-wrap items-center gap-3">
+                                            <label htmlFor="product-image-upload" className="inline-flex cursor-pointer items-center rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">
+                                              Upload images
+                                            </label>
+                                            <span className="text-sm text-[#64748B]">{mediaAssets.filter((asset) => asset.mime?.startsWith("image")).length} images</span>
+                                            <input id="product-image-upload" type="file" accept="image/*" multiple className="hidden" onChange={(e) => handleFiles(e.target.files)} />
+                                          </div>
+                                        </div>
+                                        <div className="rounded-[12px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
+                                          <p className="text-sm font-semibold text-[#111827]">Upload videos</p>
+                                          <p className="mt-2 text-sm text-[#64748B]">Add short product videos to show customers key details and use cases.</p>
+                                          <div className="mt-4 flex flex-wrap items-center gap-3">
+                                            <label htmlFor="product-video-upload" className="inline-flex cursor-pointer items-center rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">
+                                              Upload videos
+                                            </label>
+                                            <span className="text-sm text-[#64748B]">{mediaAssets.filter((asset) => asset.mime?.startsWith("video")).length} videos</span>
+                                            <input id="product-video-upload" type="file" accept="video/*" multiple className="hidden" onChange={(e) => handleFiles(e.target.files)} />
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      <div className="mt-6 rounded-[12px] border-dashed border-2 border-[#E5E7EB] bg-[#FAFAFB] p-6 text-center">
+                                        <p className="text-sm font-semibold text-[#111827]">Drag & drop product media</p>
+                                        <p className="mt-2 text-sm text-[#64748B]">Drop images or videos here to attach them to your catalogue products.</p>
+                                        <div className="mt-5">
+                                          <input ref={fileInputRef} type="file" multiple className="hidden" onChange={(e) => handleFiles(e.target.files)} />
+                                          <button type="button" onClick={() => fileInputRef.current?.click()} className="inline-flex items-center gap-2 rounded-[12px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Upload files</button>
+                                        </div>
+                                      </div>
+
+                                      <div className="mt-6 space-y-6">
+                                        {mediaAssets.filter((asset) => asset.mime?.startsWith("image")).length > 0 && (
+                                          <div>
+                                            <div className="mb-4 flex items-center justify-between gap-3">
+                                              <div>
+                                                <p className="text-sm font-semibold text-[#111827]">Image gallery</p>
+                                                <p className="mt-1 text-xs text-[#64748B]">Manage the images attached to your product catalogue.</p>
+                                              </div>
+                                              <div className="text-sm text-[#64748B]">{mediaAssets.filter((asset) => asset.mime?.startsWith("image")).length} files</div>
+                                            </div>
+                                            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+                                              {mediaAssets.filter((asset) => asset.mime?.startsWith("image")).map((asset) => (
+                                                <div key={asset.id} className="flex h-full flex-col rounded-[14px] border border-[#EEF2F6] bg-white p-3 shadow-sm">
+                                                  <div className="mb-3 flex aspect-[4/3] items-center justify-center overflow-hidden rounded-[10px] bg-[#F8FAFB]">
+                                                    <img src={asset.url} alt={asset.name} className="h-full w-full object-cover" />
+                                                  </div>
+                                                  <div className="flex min-h-0 flex-1 flex-col">
+                                                    <p className="truncate text-sm font-semibold text-[#111827]">{asset.name}</p>
+                                                    <div className="mt-2 space-y-1 text-xs text-[#6B7280]">
+                                                      <p>{asset.fileType} • {asset.size}</p>
+                                                      <p className="text-[#94A3B8]">{asset.uploadDate}</p>
+                                                    </div>
+                                                    <div className="mt-4 flex items-center justify-end gap-2">
+                                                      <button type="button" onClick={() => viewAsset(asset)} className="rounded-[8px] border border-[#E5E7EB] bg-white px-2.5 py-1.5 text-xs font-semibold">Preview</button>
+                                                      <button type="button" onClick={() => deleteAsset(asset.id)} className="rounded-[8px] border border-[#FECACA] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#B91C1C]">Delete</button>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              ))}
+                                            </div>
+                                          </div>
+                                        )}
+
+                                        {mediaAssets.filter((asset) => asset.mime?.startsWith("video")).length > 0 && (
+                                          <div>
+                                            <div className="mb-4 flex items-center justify-between gap-3">
+                                              <div>
+                                                <p className="text-sm font-semibold text-[#111827]">Video gallery</p>
+                                                <p className="mt-1 text-xs text-[#64748B]">Manage video previews, demos, and product walkthroughs.</p>
+                                              </div>
+                                              <div className="text-sm text-[#64748B]">{mediaAssets.filter((asset) => asset.mime?.startsWith("video")).length} files</div>
+                                            </div>
+                                            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+                                              {mediaAssets.filter((asset) => asset.mime?.startsWith("video")).map((asset) => (
+                                                <div key={asset.id} className="flex h-full flex-col rounded-[14px] border border-[#EEF2F6] bg-white p-3 shadow-sm">
+                                                  <div className="mb-3 flex aspect-[4/3] items-center justify-center overflow-hidden rounded-[10px] bg-[#F8FAFB]">
+                                                    <video src={asset.url} controls className="h-full w-full object-cover" />
+                                                  </div>
+                                                  <div className="flex min-h-0 flex-1 flex-col">
+                                                    <p className="truncate text-sm font-semibold text-[#111827]">{asset.name}</p>
+                                                    <div className="mt-2 space-y-1 text-xs text-[#6B7280]">
+                                                      <p>{asset.fileType} • {asset.size}</p>
+                                                      <p className="text-[#94A3B8]">{asset.uploadDate}</p>
+                                                    </div>
+                                                    <div className="mt-4 flex items-center justify-end gap-2">
+                                                      <button type="button" onClick={() => viewAsset(asset)} className="rounded-[8px] border border-[#E5E7EB] bg-white px-2.5 py-1.5 text-xs font-semibold">Preview</button>
+                                                      <button type="button" onClick={() => deleteAsset(asset.id)} className="rounded-[8px] border border-[#FECACA] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#B91C1C]">Delete</button>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              ))}
+                                            </div>
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </>
+                                ) : catalogueSubsection === "Pricing" ? (
+                                  <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-6">
+                                    <div className="flex flex-wrap items-start justify-between gap-4">
+                                      <div>
+                                        <p className="text-lg font-semibold text-[#111827]">Services editor</p>
+                                        <p className="mt-2 text-sm text-[#64748B]">Manage service details, booking options, and media for your AI recommendations.</p>
+                                      </div>
+                                      <button type="button" onClick={addService} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Add Service</button>
+                                    </div>
+
+                                    <div className="mt-6 overflow-x-auto">
                                       <table className="min-w-full text-sm">
                                         <thead>
                                           <tr className="text-left text-[11px] uppercase tracking-[0.12em] text-[#6B7280]">
-                                            <th className="px-2 py-2">Product</th>
+                                            <th className="px-2 py-2">Service</th>
+                                            <th className="px-2 py-2">Category</th>
                                             <th className="px-2 py-2">Price</th>
-                                            <th className="px-2 py-2">Currency</th>
-                                            <th className="px-2 py-2">Billing Period</th>
-                                            <th className="px-2 py-2">Discount</th>
-                                            <th className="px-2 py-2">Status</th>
+                                            <th className="px-2 py-2">Duration</th>
+                                            <th className="px-2 py-2">Area</th>
+                                            <th className="px-2 py-2">Appt.</th>
                                           </tr>
                                         </thead>
                                         <tbody>
-                                          {catalogProducts.map((item) => (
-                                            <tr key={item.id} className="border-t">
-                                              <td className="px-2 py-2 align-middle text-sm text-[#111827]">{item.name}</td>
-                                              <td className="px-2 py-2 align-middle">
-                                                <input value={item.price || ''} onChange={(e) => updateCatalogProductField(item.id, 'price', e.target.value)} className="w-24 rounded border border-[#E5E7EB] px-2 py-1 text-sm" />
-                                              </td>
-                                              <td className="px-2 py-2 align-middle">
-                                                <select value={(item as any).currency || 'USD'} onChange={(e) => updateCatalogProductField(item.id, 'currency', e.target.value)} className="w-20 rounded border border-[#E5E7EB] px-2 py-1 text-sm">
-                                                  <option>USD</option>
-                                                  <option>KES</option>
-                                                  <option>EUR</option>
-                                                  <option>NGN</option>
-                                                </select>
-                                              </td>
-                                              <td className="px-2 py-2 align-middle">
-                                                <select value={(item as any).billingPeriod || 'One-time'} onChange={(e) => updateCatalogProductField(item.id, 'billingPeriod', e.target.value)} className="w-28 rounded border border-[#E5E7EB] px-2 py-1 text-sm">
-                                                  <option>One-time</option>
-                                                  <option>Monthly</option>
-                                                  <option>Yearly</option>
-                                                  <option>Usage-based</option>
-                                                </select>
-                                              </td>
-                                              <td className="px-2 py-2 align-middle">
-                                                <input type="number" value={(item as any).discount ?? ''} onChange={(e) => updateCatalogProductField(item.id, 'discount', e.target.value ? Number(e.target.value) : '')} className="w-16 rounded border border-[#E5E7EB] px-2 py-1 text-sm" />
-                                              </td>
-                                              <td className="px-2 py-2 align-middle">
-                                                <select value={(item as any).status || item.availability || 'Available'} onChange={(e) => updateCatalogProductField(item.id, 'status', e.target.value)} className="w-28 rounded border border-[#E5E7EB] px-2 py-1 text-sm">
-                                                  <option>Available</option>
-                                                  <option>Low stock</option>
-                                                  <option>By appointment</option>
-                                                  <option>Out of stock</option>
-                                                </select>
-                                              </td>
+                                          {catalogServices.map((service) => (
+                                            <tr key={service.id} className={`border-t cursor-pointer ${service.id === selectedServiceId ? "bg-[#ECFDF5]" : "hover:bg-[#F8FAFB]"}`} onClick={() => setSelectedServiceId(service.id)}>
+                                              <td className="px-2 py-2 align-middle text-sm text-[#111827]">{service.name}</td>
+                                              <td className="px-2 py-2 align-middle text-sm text-[#475569]">{service.category}</td>
+                                              <td className="px-2 py-2 align-middle text-sm text-[#475569]">{service.price}</td>
+                                              <td className="px-2 py-2 align-middle text-sm text-[#475569]">{service.duration}</td>
+                                              <td className="px-2 py-2 align-middle text-sm text-[#475569]">{service.area}</td>
+                                              <td className="px-2 py-2 align-middle text-sm text-[#475569]">{service.appointmentRequired ? "Yes" : "No"}</td>
                                             </tr>
                                           ))}
                                         </tbody>
                                       </table>
                                     </div>
-                                    <div className="mt-4 flex items-center justify-between gap-4">
-                                      <div className="text-sm text-[#64748B]">Pricing supports one-time, recurring and usage-based models.</div>
-                                      <div>
-                                        <button onClick={() => {
-                                          setPricingSaved(true);
-                                          window.setTimeout(() => setPricingSaved(false), 1800);
-                                        }} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Save Pricing</button>
-                                        {pricingSaved ? <span className="ml-3 text-sm text-[#16A34A]">Saved</span> : null}
+
+                                    <div className="mt-6 grid gap-4 lg:grid-cols-[1.3fr_0.9fr]">
+                                      <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-6">
+                                        <p className="text-sm font-semibold text-[#111827]">Service details</p>
+                                        <div className="mt-5 space-y-4">
+                                          <div>
+                                            <label className="text-xs text-[#6B7280]">Name</label>
+                                            <input value={selectedService.name} onChange={(e) => updateServiceField(selectedService.id, "name", e.target.value)} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+                                          </div>
+                                          <div>
+                                            <label className="text-xs text-[#6B7280]">Description</label>
+                                            <textarea value={selectedService.description} onChange={(e) => updateServiceField(selectedService.id, "description", e.target.value)} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm min-h-[96px]" />
+                                          </div>
+                                          <div className="grid gap-4 sm:grid-cols-2">
+                                            <div>
+                                              <label className="text-xs text-[#6B7280]">Category</label>
+                                              <input value={selectedService.category} onChange={(e) => updateServiceField(selectedService.id, "category", e.target.value)} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+                                            </div>
+                                            <div>
+                                              <label className="text-xs text-[#6B7280]">Price</label>
+                                              <input value={selectedService.price} onChange={(e) => updateServiceField(selectedService.id, "price", e.target.value)} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+                                            </div>
+                                          </div>
+                                          <div className="grid gap-4 sm:grid-cols-2">
+                                            <div>
+                                              <label className="text-xs text-[#6B7280]">Duration</label>
+                                              <input value={selectedService.duration} onChange={(e) => updateServiceField(selectedService.id, "duration", e.target.value)} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+                                            </div>
+                                            <div>
+                                              <label className="text-xs text-[#6B7280]">Service area</label>
+                                              <input value={selectedService.area} onChange={(e) => updateServiceField(selectedService.id, "area", e.target.value)} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+                                            </div>
+                                          </div>
+                                          <div className="flex items-center gap-3">
+                                            <label className="inline-flex items-center gap-2 text-sm text-[#111827]">
+                                              <input type="checkbox" checked={selectedService.appointmentRequired} onChange={(e) => updateServiceField(selectedService.id, "appointmentRequired", e.target.checked)} className="h-4 w-4 rounded border border-[#D1D5DB] text-[#22C55E] focus:ring-[#22C55E]" />
+                                              Appointment required
+                                            </label>
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-6">
+                                        <p className="text-sm font-semibold text-[#111827]">Media and files</p>
+                                        <p className="mt-2 text-sm text-[#64748B]">Upload images, videos, or supporting documents for this service.</p>
+                                        <div className="mt-4 rounded-[12px] border-dashed border-2 border-[#E5E7EB] bg-[#FAFAFB] p-4 text-center">
+                                          <p className="text-sm font-semibold text-[#111827]">Drag & drop files here</p>
+                                          <p className="mt-2 text-sm text-[#64748B]">Images, videos, documents, or any service resources.</p>
+                                          <div className="mt-4">
+                                            <input ref={serviceFileInputRef} type="file" multiple className="hidden" onChange={(e) => handleServiceFiles(e.target.files)} />
+                                            <button type="button" onClick={() => serviceFileInputRef.current?.click()} className="inline-flex items-center gap-2 rounded-[12px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Upload files</button>
+                                          </div>
+                                        </div>
+
+                                        <div className="mt-5 grid gap-3">
+                                          <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-4">
+                                            <p className="text-sm font-semibold text-[#111827]">Files uploaded</p>
+                                            <p className="mt-1 text-xs text-[#64748B]">{selectedService.mediaAssets.length} assets attached</p>
+                                          </div>
+                                          {selectedService.mediaAssets.length > 0 && (
+                                            <div className="grid gap-4 sm:grid-cols-2">
+                                              {selectedService.mediaAssets.map((asset) => (
+                                                <div key={asset.id} className="flex h-full flex-col rounded-[14px] border border-[#EEF2F6] bg-white p-3 shadow-sm">
+                                                  <div className="mb-3 flex aspect-[4/3] items-center justify-center overflow-hidden rounded-[10px] bg-[#F8FAFB]">
+                                                    {asset.mime?.startsWith("image") ? (
+                                                      <img src={asset.url} alt={asset.name} className="h-full w-full object-cover" />
+                                                    ) : asset.mime?.startsWith("video") ? (
+                                                      <video src={asset.url} controls className="h-full w-full object-cover" />
+                                                    ) : (
+                                                      <div className="flex flex-col items-center justify-center text-sm text-[#475569]">
+                                                        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 2h7l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" stroke="#64748B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                                                        <span className="mt-2">File</span>
+                                                      </div>
+                                                    )}
+                                                  </div>
+                                                  <div className="flex min-h-0 flex-1 flex-col">
+                                                    <p className="truncate text-sm font-semibold text-[#111827]">{asset.name}</p>
+                                                    <div className="mt-2 space-y-1 text-xs text-[#6B7280]">
+                                                      <p>{asset.fileType} • {asset.size}</p>
+                                                      <p className="text-[#94A3B8]">{asset.uploadDate}</p>
+                                                    </div>
+                                                    <div className="mt-4 flex items-center justify-end gap-2">
+                                                      <button type="button" onClick={() => viewServiceAsset(asset)} className="rounded-[8px] border border-[#E5E7EB] bg-white px-2.5 py-1.5 text-xs font-semibold">Preview</button>
+                                                      <button type="button" onClick={() => deleteServiceAsset(asset.id)} className="rounded-[8px] border border-[#FECACA] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#B91C1C]">Delete</button>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              ))}
+                                            </div>
+                                          )}
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
@@ -6080,12 +6353,12 @@ export default function DashboardLayout() {
                                         {
                                           key: 'Media',
                                           done: hasMedia,
-                                          jump: 'Media Library',
+                                          jump: 'Products & Services',
                                           configuredCount: mediaAssets.length,
                                           missingItems: hasMedia ? [] : ['Upload at least one asset'],
                                         },
                                         {
-                                          key: 'Pricing',
+                                          key: 'Services',
                                           done: pricingComplete,
                                           jump: 'Pricing',
                                           configuredCount: pricingConfiguredCount,
