@@ -6199,48 +6199,80 @@ export default function DashboardLayout() {
                                       </div>
                                     </section>
 
-                                    <section className="rounded-[18px] border border-[#EEF2F6] bg-white p-5 shadow-sm">
-                                      <div className="flex flex-wrap items-start justify-between gap-3">
+                                    <section className="rounded-[24px] border border-[#E8EDF3] bg-white p-6 shadow-sm">
+                                      <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-start lg:gap-8">
                                         <div>
-                                          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Section 4</p>
-                                          <p className="mt-1 text-lg font-semibold text-[#111827]">Product Media</p>
-                                          <p className="mt-2 text-sm text-[#64748B]">Upload images and videos for each product so your AI can describe them accurately.</p>
+                                          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#64748B]">Section 4</p>
+                                          <p className="mt-2 text-2xl font-semibold leading-tight text-[#111827]">Product Media</p>
+                                          <p className="mt-3 max-w-2xl text-sm leading-6 text-[#475569]">Create a premium media workspace for image and video uploads with clear actions, stronger hierarchy, and clean Material-inspired styling.</p>
                                         </div>
-                                        <div className="rounded-full border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-1 text-sm font-semibold text-[#64748B]">Step 4</div>
+                                        <div className="rounded-3xl border border-[#E5E7EB] bg-[#F8FAFC] px-4 py-3 text-sm font-semibold text-[#475569]">Step 4</div>
                                       </div>
 
-                                      <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                                        <div className="rounded-[12px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
-                                          <p className="text-sm font-semibold text-[#111827]">Upload images</p>
-                                          <p className="mt-2 text-sm text-[#64748B]">Add product photos for better visual recommendations.</p>
-                                          <div className="mt-4 flex flex-wrap items-center gap-3">
-                                            <label htmlFor="product-image-upload" className="inline-flex cursor-pointer items-center rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">
-                                              Upload images
+                                      <div className="mt-6 grid gap-4 xl:grid-cols-2">
+                                        <div className="rounded-[22px] border border-[#E5E7EB] bg-[#F8FAFB] p-5 shadow-sm">
+                                          <div className="flex items-center gap-4">
+                                            <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-[#DBEAFE] text-[#1D4ED8]">
+                                              <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                                <path d="M4.5 19.5h15a1 1 0 0 0 1-1v-9.5a1 1 0 0 0-1-1h-5.75l-1.75-2.25H4.5a1 1 0 0 0-1 1v11.5a1 1 0 0 0 1 1Z" strokeLinecap="round" strokeLinejoin="round" />
+                                                <path d="m8 13.5 2.5 3 3.5-4.5 4 5.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                <circle cx="7.5" cy="8.5" r="1.5" />
+                                              </svg>
+                                            </div>
+                                            <div>
+                                              <p className="text-sm font-semibold text-[#111827]">Upload images</p>
+                                              <p className="mt-2 text-sm text-[#64748B]">Add product photos for a richer catalogue experience.</p>
+                                            </div>
+                                          </div>
+                                          <div className="mt-6 flex flex-wrap items-center gap-3">
+                                            <label htmlFor="product-image-upload" className="inline-flex items-center gap-2 rounded-[16px] bg-[#1D4ED8] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1E40AF]">
+                                              <span>Upload images</span>
                                             </label>
-                                            <span className="text-sm text-[#64748B]">{mediaAssets.filter((asset) => asset.mime?.startsWith("image")).length} images</span>
+                                            <span className="text-sm text-[#475569]">{mediaAssets.filter((asset) => asset.mime?.startsWith("image")).length} images</span>
                                             <input id="product-image-upload" type="file" accept="image/*" multiple className="hidden" onChange={(e) => handleFiles(e.target.files)} />
                                           </div>
                                         </div>
-                                        <div className="rounded-[12px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
-                                          <p className="text-sm font-semibold text-[#111827]">Upload videos</p>
-                                          <p className="mt-2 text-sm text-[#64748B]">Add short product videos to show customers key details and use cases.</p>
-                                          <div className="mt-4 flex flex-wrap items-center gap-3">
-                                            <label htmlFor="product-video-upload" className="inline-flex cursor-pointer items-center rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">
-                                              Upload videos
+                                        <div className="rounded-[22px] border border-[#E5E7EB] bg-[#F8FAFB] p-5 shadow-sm">
+                                          <div className="flex items-center gap-4">
+                                            <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-[#FEF3C7] text-[#B45309]">
+                                              <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                                <path d="M6.5 5.5h11a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1v-10a1 1 0 0 1 1-1Z" strokeLinecap="round" strokeLinejoin="round" />
+                                                <path d="m9 9 2.5 2-2.5 2" strokeLinecap="round" strokeLinejoin="round" />
+                                              </svg>
+                                            </div>
+                                            <div>
+                                              <p className="text-sm font-semibold text-[#111827]">Upload videos</p>
+                                              <p className="mt-2 text-sm text-[#64748B]">Add product videos for motion-rich previews and walkthroughs.</p>
+                                            </div>
+                                          </div>
+                                          <div className="mt-6 flex flex-wrap items-center gap-3">
+                                            <label htmlFor="product-video-upload" className="inline-flex items-center gap-2 rounded-[16px] bg-[#1D4ED8] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1E40AF]">
+                                              <span>Upload videos</span>
                                             </label>
-                                            <span className="text-sm text-[#64748B]">{mediaAssets.filter((asset) => asset.mime?.startsWith("video")).length} videos</span>
+                                            <span className="text-sm text-[#475569]">{mediaAssets.filter((asset) => asset.mime?.startsWith("video")).length} videos</span>
                                             <input id="product-video-upload" type="file" accept="video/*" multiple className="hidden" onChange={(e) => handleFiles(e.target.files)} />
                                           </div>
                                         </div>
                                       </div>
 
-                                      <div className="mt-6 rounded-[12px] border-dashed border-2 border-[#E5E7EB] bg-[#FAFAFB] p-6 text-center">
-                                        <p className="text-sm font-semibold text-[#111827]">Drag & drop product media</p>
-                                        <p className="mt-2 text-sm text-[#64748B]">Drop images or videos here to attach them to your catalogue products.</p>
-                                        <div className="mt-5">
-                                          <input ref={fileInputRef} type="file" multiple className="hidden" onChange={(e) => handleFiles(e.target.files)} />
-                                          <button type="button" onClick={() => fileInputRef.current?.click()} className="inline-flex items-center gap-2 rounded-[12px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Upload files</button>
+                                      <div className="mt-6 rounded-[24px] border border-dashed border-[#CBD5E1] bg-[#F8FAFF] p-8 text-center shadow-sm">
+                                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-sm">
+                                          <svg viewBox="0 0 24 24" className="h-8 w-8 text-[#1D4ED8]" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                            <path d="M4 16.5v-4a2 2 0 0 1 2-2h3" strokeLinecap="round" strokeLinejoin="round" />
+                                            <path d="M16 8.5h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-8" strokeLinecap="round" strokeLinejoin="round" />
+                                            <path d="M9 12.5 12 9.5l3 3" strokeLinecap="round" strokeLinejoin="round" />
+                                            <path d="M12 9.5v6" strokeLinecap="round" strokeLinejoin="round" />
+                                          </svg>
                                         </div>
+                                        <p className="mt-4 text-lg font-semibold text-[#111827]">Drag and drop media files</p>
+                                        <p className="mt-2 text-sm leading-6 text-[#475569]">Drop images or videos here to attach them to your catalogue products.</p>
+                                        <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row sm:justify-center">
+                                          <button type="button" onClick={() => fileInputRef.current?.click()} className="inline-flex items-center rounded-[16px] bg-[#1D4ED8] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#1E40AF]">
+                                            Browse files
+                                          </button>
+                                          <span className="text-sm text-[#64748B]">Supports JPEG, PNG, MP4, MOV</span>
+                                        </div>
+                                        <input ref={fileInputRef} type="file" multiple className="hidden" onChange={(e) => handleFiles(e.target.files)} />
                                       </div>
 
                                       <div className="mt-6 space-y-6">
