@@ -1501,6 +1501,17 @@ export default function DashboardLayout() {
   ];
   const [catalogProducts, setCatalogProducts] = useState(() => CATALOG_ITEMS);
   const [productSearch, setProductSearch] = useState("");
+  const [categories, setCategories] = useState(() =>
+    Array.from(new Set(CATALOG_ITEMS.map((product) => product.category).filter(Boolean))).map((name, index) => ({
+      id: `category-${index + 1}`,
+      name: name as string,
+      productCount: CATALOG_ITEMS.filter((product) => product.category === name).length,
+    }))
+  );
+  const [showAddCategoryInput, setShowAddCategoryInput] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
+  const [categoryDrafts, setCategoryDrafts] = useState<Record<string, string>>({});
   const addProduct = (type: string = "Product") => {
     const id = `p-${Date.now()}`;
     const newItem = {
@@ -1518,6 +1529,48 @@ export default function DashboardLayout() {
   };
   const updateCatalogProductField = (id: string, field: string, value: any) => {
     setCatalogProducts((list) => list.map((p) => (p.id === id ? { ...p, [field]: value } : p)));
+  };
+  const handleAddCategory = () => {
+    const trimmedName = newCategoryName.trim();
+    if (!trimmedName) return;
+
+    const normalizedName = trimmedName.toLowerCase();
+    const exists = categories.some((category) => category.name.toLowerCase() === normalizedName);
+    if (exists) {
+      setNewCategoryName("");
+      setShowAddCategoryInput(false);
+      return;
+    }
+
+    setCategories((current) => [...current, { id: `category-${Date.now()}`, name: trimmedName, productCount: 0 }]);
+    setNewCategoryName("");
+    setShowAddCategoryInput(false);
+  };
+  const handleEditCategory = (categoryId: string) => {
+    const nextName = (categoryDrafts[categoryId] ?? "").trim();
+    if (!nextName) return;
+
+    const normalizedName = nextName.toLowerCase();
+    const exists = categories.some((category) => category.id !== categoryId && category.name.toLowerCase() === normalizedName);
+    if (exists) return;
+
+    const currentCategory = categories.find((category) => category.id === categoryId);
+    if (!currentCategory) return;
+
+    setCategories((current) => current.map((category) => (category.id === categoryId ? { ...category, name: nextName } : category)));
+    setCatalogProducts((list) => list.map((product) => (product.category === currentCategory.name ? { ...product, category: nextName } : product)));
+    setEditingCategoryId(null);
+    setCategoryDrafts((current) => {
+      const { [categoryId]: _, ...rest } = current;
+      return rest;
+    });
+  };
+  const handleDeleteCategory = (categoryId: string) => {
+    const currentCategory = categories.find((category) => category.id === categoryId);
+    if (!currentCategory) return;
+
+    setCategories((current) => current.filter((category) => category.id !== categoryId));
+    setCatalogProducts((list) => list.map((product) => (product.category === currentCategory.name ? { ...product, category: "Uncategorized" } : product)));
   };
   type MediaAsset = {
     id: string;
@@ -1541,7 +1594,7 @@ export default function DashboardLayout() {
     status: "Active" | "Paused" | "Expired";
   };
 
-  const [catalogueSubsection, setCatalogueSubsection] = useState<
+  type CatalogueSubsection =
     | "Products & Services"
     | "Pricing"
     | "Availability"
@@ -1553,8 +1606,9 @@ export default function DashboardLayout() {
     | "Documents"
     | "Price Lists"
     | "Quote Templates"
-    | "Imports"
-  >("Products & Services");
+    | "Imports";
+
+  const [catalogueSubsection, setCatalogueSubsection] = useState<CatalogueSubsection>("Products & Services");
   const [pricingSaved, setPricingSaved] = useState(false);
   const [availabilitySaved, setAvailabilitySaved] = useState(false);
   const [importMenuOpen, setImportMenuOpen] = useState(false);
@@ -5252,10 +5306,10 @@ export default function DashboardLayout() {
                     )}
 
                     {activeWorkspaceSection === "Catalogue" && (
-                      <div className="w-full max-w-[1600px] min-w-0 space-y-4 overflow-x-hidden lg:space-y-5">
-                        <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px] xl:gap-6 items-start">
+                      <div className="w-full max-w-[1600px] min-w-0 space-y-6 overflow-x-hidden lg:space-y-8">
+                        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_320px] xl:gap-8 items-start">
                           <div className="min-w-0 flex-1">
-                            <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+                            <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
                               <div className="flex flex-wrap items-center gap-3">
                                 <div className="relative">
                                   <button type="button" onClick={() => setAddProductMenuOpen((s) => !s)} className="inline-flex items-center gap-2 rounded-[12px] bg-[#22C55E] px-3 py-1 text-sm font-semibold text-white transition duration-200 ease-out hover:shadow-sm hover:bg-[#16A34A]">+ Add Product</button>
@@ -5383,27 +5437,27 @@ export default function DashboardLayout() {
                                 <div
                                   onDrop={onDrop}
                                   onDragOver={onDragOver}
-                                  className="rounded-[12px] border-dashed border-2 border-[#E5E7EB] bg-[#FAFAFB] p-6 text-center mb-4"
+                                  className="rounded-[12px] border-dashed border-2 border-[#E5E7EB] bg-[#FAFAFB] p-6 text-center mb-5"
                                 >
                                   <p className="text-sm font-semibold text-[#111827]">Drag & drop files here</p>
                                   <p className="mt-2 text-sm text-[#64748B]">Images, PDFs, videos, logos, brochures, flyers, certificates, menus, floor plans</p>
-                                  <div className="mt-4">
+                                  <div className="mt-5">
                                     <input ref={fileInputRef} type="file" multiple className="hidden" onChange={(e) => handleFiles(e.target.files)} />
                                     <button type="button" onClick={() => fileInputRef.current?.click()} className="inline-flex items-center gap-2 rounded-[12px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Upload files</button>
                                   </div>
                                 </div>
 
-                                <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                                <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
                                   {mediaAssets.map((asset) => (
-                                    <div key={asset.id} className="rounded-[12px] border border-[#EEF2F6] bg-white p-3">
-                                      <div className="h-36 w-full mb-3 flex items-center justify-center bg-[#F8FAFB] rounded-md overflow-hidden">
+                                    <div key={asset.id} className="flex h-full flex-col rounded-[14px] border border-[#EEF2F6] bg-white p-3 shadow-sm">
+                                      <div className="mb-3 flex aspect-[4/3] items-center justify-center overflow-hidden rounded-[10px] bg-[#F8FAFB]">
                                         {asset.mime?.startsWith("image") ? (
-                                          <img src={asset.url} alt={asset.name} className="object-cover h-full w-full" />
+                                          <img src={asset.url} alt={asset.name} className="h-full w-full object-cover" />
                                         ) : asset.mime?.startsWith("video") ? (
                                           <video src={asset.url} controls className="h-full w-full object-cover" />
                                         ) : asset.mime?.includes("pdf") ? (
                                           <div className="flex flex-col items-center justify-center text-sm text-[#475569]">
-                                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 2h7l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" stroke="#64748B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                                            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 2h7l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" stroke="#64748B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                                             <span className="mt-2">PDF</span>
                                           </div>
                                         ) : (
@@ -5411,14 +5465,18 @@ export default function DashboardLayout() {
                                         )}
                                       </div>
 
-                                      <p className="text-sm font-semibold text-[#111827] truncate">{asset.name}</p>
-                                      <p className="text-xs text-[#6B7280]">{asset.fileType} • {asset.size}</p>
-                                      <p className="text-xs text-[#94A3B8]">{asset.uploadDate}</p>
+                                      <div className="flex min-h-0 flex-1 flex-col">
+                                        <p className="truncate text-sm font-semibold text-[#111827]">{asset.name}</p>
+                                        <div className="mt-2 space-y-1 text-xs text-[#6B7280]">
+                                          <p>{asset.fileType} • {asset.size}</p>
+                                          <p className="text-[#94A3B8]">{asset.uploadDate}</p>
+                                        </div>
 
-                                      <div className="mt-3 flex justify-end gap-2">
-                                        <button type="button" onClick={() => viewAsset(asset)} className="rounded-[8px] border border-[#E5E7EB] bg-white px-2 py-1 text-xs font-semibold">View</button>
-                                        <button type="button" onClick={() => renameAsset(asset.id)} className="rounded-[8px] border border-[#E5E7EB] bg-white px-2 py-1 text-xs font-semibold">Rename</button>
-                                        <button type="button" onClick={() => deleteAsset(asset.id)} className="rounded-[8px] border border-[#FECACA] bg-white px-2 py-1 text-xs font-semibold text-[#B91C1C]">Delete</button>
+                                        <div className="mt-4 flex items-center justify-end gap-2">
+                                          <button type="button" onClick={() => viewAsset(asset)} className="rounded-[8px] border border-[#E5E7EB] bg-white px-2.5 py-1.5 text-xs font-semibold">View</button>
+                                          <button type="button" onClick={() => renameAsset(asset.id)} className="rounded-[8px] border border-[#E5E7EB] bg-white px-2.5 py-1.5 text-xs font-semibold">Rename</button>
+                                          <button type="button" onClick={() => deleteAsset(asset.id)} className="rounded-[8px] border border-[#FECACA] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#B91C1C]">Delete</button>
+                                        </div>
                                       </div>
                                     </div>
                                   ))}
@@ -5426,21 +5484,33 @@ export default function DashboardLayout() {
                               </div>
                             ) : catalogueSubsection === "Imports" ? (
                               <div>
-                                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                                <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                                   {IMPORT_TYPES.map((t) => (
-                                    <div key={t} className="rounded-[12px] border border-[#EEF2F6] bg-white p-4">
-                                      <p className="text-sm font-semibold text-[#111827]">{t}</p>
-                                      <p className="mt-1 text-xs text-[#64748B]">
-                                        {t === "Excel" && "Imports products, SKUs, prices, categories, and stock levels from an .xlsx file."}
-                                        {t === "CSV" && "Imports simple product lists and pricing from CSV files."}
-                                        {t === "PDF Catalogues" && "Extracts product listings from PDF catalogs (best-effort parsing)."}
-                                        {t === "Website Import" && "Fetches product pages from a website URL and converts into product entries."}
+                                    <div key={t} className="flex h-full flex-col rounded-[14px] border border-[#EEF2F6] bg-white p-4 shadow-sm">
+                                      <div className="flex items-center gap-3">
+                                        <div className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-[#F8FAFB] text-[#22C55E]">
+                                          {t === "Website Import" ? (
+                                            <Globe className="h-5 w-5" />
+                                          ) : t === "PDF Catalogues" ? (
+                                            <Image className="h-5 w-5" />
+                                          ) : (
+                                            <Package className="h-5 w-5" />
+                                          )}
+                                        </div>
+                                        <p className="text-sm font-semibold text-[#111827]">{t}</p>
+                                      </div>
+
+                                      <p className="mt-3 text-sm leading-5 text-[#64748B]">
+                                        {t === "Excel" && "Import products, SKUs, prices, categories, and stock levels from an .xlsx file."}
+                                        {t === "CSV" && "Import simple product lists and pricing from CSV files."}
+                                        {t === "PDF Catalogues" && "Extract product listings from PDF catalogs with best-effort parsing."}
+                                        {t === "Website Import" && "Pull product pages from a website URL and turn them into catalog entries."}
                                       </p>
 
                                       <div className="mt-4">
                                         {t === "Website Import" ? (
                                           <div className="flex gap-2">
-                                            <input placeholder="https://example.com/catalog" className="flex-1 rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" id={`url-${t}`} />
+                                            <input placeholder="https://example.com/catalog" className="flex-1 rounded-[10px] border border-[#E5E7EB] px-3 py-2 text-sm" id={`url-${t}`} />
                                             <button type="button" onClick={() => simulateImport(t as string, null)} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-xs font-semibold text-white">Start</button>
                                           </div>
                                         ) : (
@@ -5450,22 +5520,22 @@ export default function DashboardLayout() {
                                         )}
                                       </div>
 
-                                      <div className="mt-3">
-                                        <div className="h-2 w-full bg-[#F1F5F9] rounded-full overflow-hidden">
+                                      <div className="mt-4">
+                                        <div className="h-2 w-full overflow-hidden rounded-full bg-[#F1F5F9]">
                                           <div className="h-2 bg-[#22C55E]" style={{ width: `${importState[t]?.progress ?? 0}%` }} />
                                         </div>
-                                        <p className="mt-1 text-xs text-[#64748B]">{importState[t]?.status === "uploading" ? `Uploading (${importState[t]?.progress ?? 0}%)` : importState[t]?.status === "done" ? "Completed" : "Idle"}</p>
+                                        <p className="mt-2 text-xs text-[#64748B]">{importState[t]?.status === "uploading" ? `Uploading (${importState[t]?.progress ?? 0}%)` : importState[t]?.status === "done" ? "Completed" : "Idle"}</p>
                                       </div>
 
                                       {importState[t]?.status === "done" && importState[t]?.result && (
-                                        <div className="mt-3 rounded-[8px] bg-[#F8FAFB] p-3 text-sm">
+                                        <div className="mt-4 rounded-[10px] bg-[#F8FAFB] p-3 text-sm">
                                           <p className="font-semibold text-[#111827]">{importState[t]!.result!.message}</p>
                                           <p className="mt-1 text-xs text-[#64748B]">Products imported: {importState[t]!.result!.productsImported}</p>
                                           <p className="mt-1 text-xs text-[#F59E0B]">Duplicates found: {importState[t]!.result!.duplicatesFound}</p>
                                           {importState[t]!.result!.warnings.length > 0 && (
                                             <div className="mt-2 text-xs text-[#F59E0B]">
                                               <p className="font-semibold">Warnings:</p>
-                                              <ul className="list-disc ml-4">
+                                              <ul className="ml-4 list-disc">
                                                 {importState[t]!.result!.warnings.map((w, i) => (
                                                   <li key={i}>{w}</li>
                                                 ))}
@@ -5605,24 +5675,24 @@ export default function DashboardLayout() {
                                 </div>
                               </div>
                             ) : (
-                              <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
-                                <div className="mb-4">
-                                  <div className="mb-3 overflow-x-auto">
-                                    <div className="flex min-w-max items-center gap-2">
+                              <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-6">
+                                <div className="mb-6">
+                                  <div className="overflow-x-auto pb-1">
+                                    <div className="flex min-w-max items-center gap-3 px-1 py-1">
                                       {[
-                                        { label: "Products", value: "Products & Services" },
-                                        { label: "Pricing", value: "Pricing" },
-                                        { label: "Availability", value: "Availability" },
-                                        { label: "Categories", value: "Bundles & Promotions" },
-                                        { label: "Media", value: "Media Library" },
-                                        { label: "Import Catalogue", value: "Imports" },
-                                        { label: "Review", value: "Review" },
+                                        { label: "Products", value: "Products & Services" as CatalogueSubsection },
+                                        { label: "Pricing", value: "Pricing" as CatalogueSubsection },
+                                        { label: "Availability", value: "Availability" as CatalogueSubsection },
+                                        { label: "Categories", value: "Categories" as CatalogueSubsection },
+                                        { label: "Media", value: "Media Library" as CatalogueSubsection },
+                                        { label: "Import Catalogue", value: "Imports" as CatalogueSubsection },
+                                        { label: "Review", value: "Review" as CatalogueSubsection },
                                       ].map((lesson, index) => {
-                                        const lessonOrder = [
+                                        const lessonOrder: CatalogueSubsection[] = [
                                           "Products & Services",
                                           "Pricing",
                                           "Availability",
-                                          "Bundles & Promotions",
+                                          "Categories",
                                           "Media Library",
                                           "Imports",
                                           "Review",
@@ -5636,11 +5706,13 @@ export default function DashboardLayout() {
                                           <button
                                             key={lesson.label}
                                             type="button"
-                                            onClick={() => setCatalogueSubsection(lesson.value)}
-                                            className={`inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border px-3 py-1.5 text-sm font-semibold ${isActive ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]" : isCompleted ? "border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#475569]"}`}
+                                            onClick={() => setCatalogueSubsection(lesson.value as CatalogueSubsection)}
+                                            className={`inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-200 ${isActive ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534] shadow-[0_6px_16px_rgba(34,197,94,0.12)]" : isCompleted ? "border-[#BBF7D0] bg-[#F0FDF4] text-[#166534] shadow-sm" : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#86EFAC] hover:text-[#111827]"}`}
                                           >
                                             {isCompleted ? (
-                                              <Check className="h-3.5 w-3.5" />
+                                              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#16A34A] text-[11px] text-white">
+                                                <Check className="h-3.5 w-3.5" />
+                                              </span>
                                             ) : (
                                               <span className={`flex h-5 w-5 items-center justify-center rounded-full text-[11px] ${isActive ? "bg-[#22C55E] text-white" : isFuture ? "bg-[#F3F4F6] text-[#64748B]" : "bg-[#F3F4F6] text-[#64748B]"}`}>
                                                 {index + 1}
@@ -5654,54 +5726,73 @@ export default function DashboardLayout() {
                                   </div>
 
                                   {catalogueSubsection === "Pricing" ? (
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex flex-wrap items-start justify-between gap-3">
                                       <div>
                                         <p className="text-sm font-semibold text-[#111827]">Pricing</p>
-                                        <p className="mt-1 text-xs text-[#6B7280]">Teach your AI exactly how much everything costs.</p>
+                                        <p className="mt-1 text-xs text-[#6B7280]">Teach your AI how much everything costs.</p>
+                                      </div>
+                                      <div className="rounded-[10px] border border-[#EEF2F6] bg-[#F8FAFB] px-3 py-2">
+                                        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#64748B]">AI tip</p>
+                                        <p className="mt-1 text-xs text-[#475569]">Add clear pricing so replies stay accurate.</p>
+                                      </div>
+                                      <div className="rounded-[10px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
+                                        <span className="font-semibold">Est.</span> {catalogProducts.length > 0 ? "In progress" : "Not started"}
                                       </div>
                                     </div>
                                   ) : catalogueSubsection === "Availability" ? (
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex flex-wrap items-start justify-between gap-3">
                                       <div>
                                         <p className="text-sm font-semibold text-[#111827]">Availability</p>
-                                        <p className="mt-1 text-xs text-[#6B7280]">Teach the AI when products can be sold.</p>
+                                        <p className="mt-1 text-xs text-[#6B7280]">Teach your AI when products can be sold.</p>
+                                      </div>
+                                      <div className="rounded-[10px] border border-[#EEF2F6] bg-[#F8FAFB] px-3 py-2">
+                                        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#64748B]">AI tip</p>
+                                        <p className="mt-1 text-xs text-[#475569]">Share stock status to avoid bad recommendations.</p>
+                                      </div>
+                                      <div className="rounded-[10px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
+                                        <span className="font-semibold">Est.</span> {catalogProducts.length > 0 ? "In progress" : "Not started"}
                                       </div>
                                     </div>
                                   ) : catalogueSubsection === "Review" ? (
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex flex-wrap items-start justify-between gap-3">
                                       <div>
                                         <p className="text-sm font-semibold text-[#111827]">Review</p>
-                                        <p className="mt-1 text-xs text-[#6B7280]">Summary of your catalogue before finishing.</p>
+                                        <p className="mt-1 text-xs text-[#6B7280]">Verify everything before your AI starts selling.</p>
+                                      </div>
+                                      <div className="rounded-[10px] border border-[#EEF2F6] bg-[#F8FAFB] px-3 py-2">
+                                        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#64748B]">AI tip</p>
+                                        <p className="mt-1 text-xs text-[#475569]">A quick review helps your AI respond confidently.</p>
+                                      </div>
+                                      <div className="rounded-[10px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
+                                        <span className="font-semibold">Est.</span> {catalogProducts.length > 0 ? "Almost ready" : "Needs setup"}
                                       </div>
                                     </div>
-                                  ) : catalogueSubsection === "Bundles & Promotions" ? (
-                                    <div className="flex items-center justify-between">
+                                  ) : catalogueSubsection === "Categories" ? (
+                                    <div className="flex flex-wrap items-start justify-between gap-3">
                                       <div>
-                                        <p className="text-sm font-semibold text-[#111827]">Bundles & Promotions</p>
-                                        <p className="mt-1 text-xs text-[#6B7280]">Create bundles and offers that your AI can recommend.</p>
+                                        <p className="text-sm font-semibold text-[#111827]">Categories</p>
+                                        <p className="mt-1 text-xs text-[#6B7280]">Organize your catalogue so your AI can recommend accurately.</p>
                                       </div>
-                                      <div className="flex items-center gap-2">
-                                        <button onClick={() => {
-                                          const newPromotion = {
-                                            id: `promo-${Date.now()}`,
-                                            title: "New Promotion",
-                                            description: "Describe the promotion here.",
-                                            productsIncluded: "",
-                                            discountType: "Percentage" as const,
-                                            discountValue: "0",
-                                            startDate: new Date().toISOString().slice(0, 10),
-                                            endDate: new Date(new Date().setMonth(new Date().getMonth() + 1)).toISOString().slice(0, 10),
-                                            status: "Active" as const,
-                                          };
-                                          setPromotions((current) => [newPromotion, ...current]);
-                                        }} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Create Promotion</button>
+                                      <div className="rounded-[10px] border border-[#EEF2F6] bg-[#F8FAFB] px-3 py-2">
+                                        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#64748B]">AI tip</p>
+                                        <p className="mt-1 text-xs text-[#475569]">Clear categories improve matching and suggestions.</p>
+                                      </div>
+                                      <div className="rounded-[10px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
+                                        <span className="font-semibold">Est.</span> {catalogProducts.length > 0 ? "In progress" : "Not started"}
                                       </div>
                                     </div>
                                   ) : (
-                                    <div className="flex flex-wrap items-center justify-between gap-3">
+                                    <div className="flex flex-wrap items-start justify-between gap-3">
                                       <div>
                                         <p className="text-sm font-semibold text-[#111827]">Products & Services</p>
-                                        <p className="mt-1 text-xs text-[#6B7280]">Add everything your AI can recommend or sell.</p>
+                                        <p className="mt-1 text-xs text-[#6B7280]">Teach your AI what you sell.</p>
+                                      </div>
+                                      <div className="rounded-[10px] border border-[#EEF2F6] bg-[#F8FAFB] px-3 py-2">
+                                        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#64748B]">AI tip</p>
+                                        <p className="mt-1 text-xs text-[#475569]">Start with your core offers so recommendations stay relevant.</p>
+                                      </div>
+                                      <div className="rounded-[10px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
+                                        <span className="font-semibold">Est.</span> {catalogProducts.length > 0 ? "In progress" : "Not started"}
                                       </div>
                                     </div>
                                   )}
@@ -5731,43 +5822,43 @@ export default function DashboardLayout() {
                                     <div className="overflow-x-auto">
                                       <table className="min-w-full text-sm">
                                         <thead>
-                                          <tr className="text-left text-xs text-[#6B7280]">
-                                            <th className="px-3 py-2">Product</th>
-                                            <th className="px-3 py-2">Price</th>
-                                            <th className="px-3 py-2">Currency</th>
-                                            <th className="px-3 py-2">Billing Period</th>
-                                            <th className="px-3 py-2">Discount</th>
-                                            <th className="px-3 py-2">Status</th>
+                                          <tr className="text-left text-[11px] uppercase tracking-[0.12em] text-[#6B7280]">
+                                            <th className="px-2 py-2">Product</th>
+                                            <th className="px-2 py-2">Price</th>
+                                            <th className="px-2 py-2">Currency</th>
+                                            <th className="px-2 py-2">Billing Period</th>
+                                            <th className="px-2 py-2">Discount</th>
+                                            <th className="px-2 py-2">Status</th>
                                           </tr>
                                         </thead>
                                         <tbody>
                                           {catalogProducts.map((item) => (
                                             <tr key={item.id} className="border-t">
-                                              <td className="px-3 py-2 align-top">{item.name}</td>
-                                              <td className="px-3 py-2 align-top">
-                                                <input value={item.price || ''} onChange={(e) => updateCatalogProductField(item.id, 'price', e.target.value)} className="w-28 rounded border px-2 py-1 text-sm" />
+                                              <td className="px-2 py-2 align-middle text-sm text-[#111827]">{item.name}</td>
+                                              <td className="px-2 py-2 align-middle">
+                                                <input value={item.price || ''} onChange={(e) => updateCatalogProductField(item.id, 'price', e.target.value)} className="w-24 rounded border border-[#E5E7EB] px-2 py-1 text-sm" />
                                               </td>
-                                              <td className="px-3 py-2 align-top">
-                                                <select value={(item as any).currency || 'USD'} onChange={(e) => updateCatalogProductField(item.id, 'currency', e.target.value)} className="rounded border px-2 py-1 text-sm">
+                                              <td className="px-2 py-2 align-middle">
+                                                <select value={(item as any).currency || 'USD'} onChange={(e) => updateCatalogProductField(item.id, 'currency', e.target.value)} className="w-20 rounded border border-[#E5E7EB] px-2 py-1 text-sm">
                                                   <option>USD</option>
                                                   <option>KES</option>
                                                   <option>EUR</option>
                                                   <option>NGN</option>
                                                 </select>
                                               </td>
-                                              <td className="px-3 py-2 align-top">
-                                                <select value={(item as any).billingPeriod || 'One-time'} onChange={(e) => updateCatalogProductField(item.id, 'billingPeriod', e.target.value)} className="rounded border px-2 py-1 text-sm">
+                                              <td className="px-2 py-2 align-middle">
+                                                <select value={(item as any).billingPeriod || 'One-time'} onChange={(e) => updateCatalogProductField(item.id, 'billingPeriod', e.target.value)} className="w-28 rounded border border-[#E5E7EB] px-2 py-1 text-sm">
                                                   <option>One-time</option>
                                                   <option>Monthly</option>
                                                   <option>Yearly</option>
                                                   <option>Usage-based</option>
                                                 </select>
                                               </td>
-                                              <td className="px-3 py-2 align-top">
-                                                <input type="number" value={(item as any).discount ?? ''} onChange={(e) => updateCatalogProductField(item.id, 'discount', e.target.value ? Number(e.target.value) : '')} className="w-20 rounded border px-2 py-1 text-sm" />
+                                              <td className="px-2 py-2 align-middle">
+                                                <input type="number" value={(item as any).discount ?? ''} onChange={(e) => updateCatalogProductField(item.id, 'discount', e.target.value ? Number(e.target.value) : '')} className="w-16 rounded border border-[#E5E7EB] px-2 py-1 text-sm" />
                                               </td>
-                                              <td className="px-3 py-2 align-top">
-                                                <select value={(item as any).status || item.availability || 'Available'} onChange={(e) => updateCatalogProductField(item.id, 'status', e.target.value)} className="rounded border px-2 py-1 text-sm">
+                                              <td className="px-2 py-2 align-middle">
+                                                <select value={(item as any).status || item.availability || 'Available'} onChange={(e) => updateCatalogProductField(item.id, 'status', e.target.value)} className="w-28 rounded border border-[#E5E7EB] px-2 py-1 text-sm">
                                                   <option>Available</option>
                                                   <option>Low stock</option>
                                                   <option>By appointment</option>
@@ -5779,7 +5870,7 @@ export default function DashboardLayout() {
                                         </tbody>
                                       </table>
                                     </div>
-                                    <div className="mt-4 flex items-center justify-between">
+                                    <div className="mt-4 flex items-center justify-between gap-4">
                                       <div className="text-sm text-[#64748B]">Pricing supports one-time, recurring and usage-based models.</div>
                                       <div>
                                         <button onClick={() => {
@@ -5795,37 +5886,37 @@ export default function DashboardLayout() {
                                     <div className="overflow-x-auto">
                                       <table className="min-w-full text-sm">
                                         <thead>
-                                          <tr className="text-left text-xs text-[#6B7280]">
-                                            <th className="px-3 py-2">Product</th>
-                                            <th className="px-3 py-2">Availability</th>
-                                            <th className="px-3 py-2">Inventory Status</th>
-                                            <th className="px-3 py-2">Available Locations</th>
-                                            <th className="px-3 py-2">Estimated Delivery</th>
-                                            <th className="px-3 py-2">Visible to AI</th>
+                                          <tr className="text-left text-[11px] uppercase tracking-[0.12em] text-[#6B7280]">
+                                            <th className="px-2 py-2">Product</th>
+                                            <th className="px-2 py-2">Availability</th>
+                                            <th className="px-2 py-2">Inventory Status</th>
+                                            <th className="px-2 py-2">Available Locations</th>
+                                            <th className="px-2 py-2">Estimated Delivery</th>
+                                            <th className="px-2 py-2">Visible to AI</th>
                                           </tr>
                                         </thead>
                                         <tbody>
                                           {catalogProducts.map((item) => (
                                             <tr key={item.id} className="border-t hover:bg-[#F8FAFB]">
-                                              <td className="px-3 py-3 align-top">{item.name}</td>
-                                              <td className="px-3 py-3 align-top">
-                                                <input value={(item.availability || 'Available')} onChange={(e) => updateCatalogProductField(item.id, 'availability', e.target.value)} className="w-32 rounded border px-2 py-1 text-sm" />
+                                              <td className="px-2 py-2 align-middle text-sm text-[#111827]">{item.name}</td>
+                                              <td className="px-2 py-2 align-middle">
+                                                <input value={(item.availability || 'Available')} onChange={(e) => updateCatalogProductField(item.id, 'availability', e.target.value)} className="w-28 rounded border border-[#E5E7EB] px-2 py-1 text-sm" />
                                               </td>
-                                              <td className="px-3 py-3 align-top">
-                                                <select value={(item as any).inventoryStatus || 'In stock'} onChange={(e) => updateCatalogProductField(item.id, 'inventoryStatus', e.target.value)} className="rounded border px-2 py-1 text-sm">
+                                              <td className="px-2 py-2 align-middle">
+                                                <select value={(item as any).inventoryStatus || 'In stock'} onChange={(e) => updateCatalogProductField(item.id, 'inventoryStatus', e.target.value)} className="w-28 rounded border border-[#E5E7EB] px-2 py-1 text-sm">
                                                   <option>In stock</option>
                                                   <option>Low stock</option>
                                                   <option>Out of stock</option>
                                                   <option>Pre-order</option>
                                                 </select>
                                               </td>
-                                              <td className="px-3 py-3 align-top">
-                                                <input value={(item as any).availableLocations || 'All locations'} onChange={(e) => updateCatalogProductField(item.id, 'availableLocations', e.target.value)} className="w-48 rounded border px-2 py-1 text-sm" />
+                                              <td className="px-2 py-2 align-middle">
+                                                <input value={(item as any).availableLocations || 'All locations'} onChange={(e) => updateCatalogProductField(item.id, 'availableLocations', e.target.value)} className="w-40 rounded border border-[#E5E7EB] px-2 py-1 text-sm" />
                                               </td>
-                                              <td className="px-3 py-3 align-top">
-                                                <input value={(item as any).estimatedDelivery || '2-5 days'} onChange={(e) => updateCatalogProductField(item.id, 'estimatedDelivery', e.target.value)} className="w-32 rounded border px-2 py-1 text-sm" />
+                                              <td className="px-2 py-2 align-middle">
+                                                <input value={(item as any).estimatedDelivery || '2-5 days'} onChange={(e) => updateCatalogProductField(item.id, 'estimatedDelivery', e.target.value)} className="w-28 rounded border border-[#E5E7EB] px-2 py-1 text-sm" />
                                               </td>
-                                              <td className="px-3 py-3 align-top">
+                                              <td className="px-2 py-2 align-middle">
                                                 <label className="inline-flex items-center gap-2 text-sm">
                                                   <input type="checkbox" checked={(item as any).visibleToAi ?? true} onChange={(e) => updateCatalogProductField(item.id, 'visibleToAi', e.target.checked)} className="h-4 w-4 rounded border border-[#D1D5DB] text-[#22C55E] focus:ring-[#22C55E]" />
                                                   <span>{(item as any).visibleToAi ?? true ? 'Yes' : 'No'}</span>
@@ -5836,7 +5927,7 @@ export default function DashboardLayout() {
                                         </tbody>
                                       </table>
                                     </div>
-                                    <div className="mt-4 flex items-center justify-between">
+                                    <div className="mt-4 flex items-center justify-between gap-4">
                                       <div className="text-sm text-[#64748B]">Teach your AI when products are available and where they can be sold.</div>
                                       <div>
                                         <button onClick={() => {
@@ -5858,54 +5949,117 @@ export default function DashboardLayout() {
                                       const hasCategories = categoriesCount > 0;
                                       const hasMedia = mediaAssets.length > 0;
                                       const pricingComplete = hasProducts && catalogProducts.every((p) => p.price && p.price !== '$0.00');
+                                      const pricingConfiguredCount = catalogProducts.filter((p) => p.price && p.price !== '$0.00').length;
                                       const availabilityComplete = hasProducts && catalogProducts.every((p) => (p as any).availability && (p as any).availability !== '');
+                                      const availabilityConfiguredCount = catalogProducts.filter((p) => (p as any).availability && (p as any).availability !== '').length;
                                       const bundlesComplete = promotions.length > 0;
                                       const sections = [
-                                        { key: 'Products', done: hasProducts, jump: 'Products & Services' },
-                                        { key: 'Categories', done: hasCategories, jump: 'Categories' },
-                                        { key: 'Media', done: hasMedia, jump: 'Media Library' },
-                                        { key: 'Pricing', done: pricingComplete, jump: 'Pricing' },
-                                        { key: 'Availability', done: availabilityComplete, jump: 'Availability' },
-                                        { key: 'Bundles', done: bundlesComplete, jump: 'Bundles & Promotions' },
+                                        {
+                                          key: 'Products',
+                                          done: hasProducts,
+                                          jump: 'Products & Services',
+                                          configuredCount: catalogProducts.length,
+                                          missingItems: hasProducts ? [] : ['Add at least one product'],
+                                        },
+                                        {
+                                          key: 'Categories',
+                                          done: hasCategories,
+                                          jump: 'Categories',
+                                          configuredCount: categoriesCount,
+                                          missingItems: hasCategories ? [] : ['Add at least one category'],
+                                        },
+                                        {
+                                          key: 'Media',
+                                          done: hasMedia,
+                                          jump: 'Media Library',
+                                          configuredCount: mediaAssets.length,
+                                          missingItems: hasMedia ? [] : ['Upload at least one asset'],
+                                        },
+                                        {
+                                          key: 'Pricing',
+                                          done: pricingComplete,
+                                          jump: 'Pricing',
+                                          configuredCount: pricingConfiguredCount,
+                                          missingItems: pricingConfiguredCount === catalogProducts.length ? [] : catalogProducts.filter((p) => !p.price || p.price === '$0.00').map((p) => p.name || 'Unnamed product'),
+                                        },
+                                        {
+                                          key: 'Availability',
+                                          done: availabilityComplete,
+                                          jump: 'Availability',
+                                          configuredCount: availabilityConfiguredCount,
+                                          missingItems: availabilityConfiguredCount === catalogProducts.length ? [] : catalogProducts.filter((p) => !(p as any).availability || (p as any).availability === '').map((p) => p.name || 'Unnamed product'),
+                                        },
+                                        {
+                                          key: 'Bundles',
+                                          done: bundlesComplete,
+                                          jump: 'Bundles & Promotions',
+                                          configuredCount: promotions.length,
+                                          missingItems: bundlesComplete ? [] : ['Add a bundle or promotion'],
+                                        },
                                       ];
 
                                       const allDone = sections.every((s) => s.done);
 
                                       return (
-                                        <div className="mt-6 space-y-4">
-                                          {sections.map((s) => (
-                                            <div key={s.key} className="flex items-center justify-between rounded-[10px] border border-[#EEF2F6] p-3">
-                                              <div className="flex items-center gap-3">
-                                                <div>
+                                        <div className="mt-6 space-y-5">
+                                          <div className="grid gap-4 md:grid-cols-2">
+                                            {sections.map((s, index) => (
+                                              <div key={`${s.key}-${index}`} className={`rounded-[12px] border p-4 ${s.done ? 'border-[#D1FAE5] bg-[#F0FDF4]' : 'border-[#EEF2F6] bg-white'}`}>
+                                                <div className="flex items-start justify-between gap-3">
+                                                  <div className="flex items-center gap-3">
+                                                    <div className={`flex h-9 w-9 items-center justify-center rounded-full ${s.done ? 'bg-[#DCFCE7] text-[#16A34A]' : 'bg-[#F1F5F9] text-[#64748B]'}`}>
+                                                      {s.done ? (
+                                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                                                      ) : (
+                                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+                                                      )}
+                                                    </div>
+                                                    <div>
+                                                      <p className="text-sm font-semibold text-[#111827]">{s.key}</p>
+                                                      <p className={`text-xs ${s.done ? 'text-[#16A34A]' : 'text-[#64748B]'}`}>{s.done ? 'Completed' : 'Incomplete'}</p>
+                                                    </div>
+                                                  </div>
                                                   {s.done ? (
-                                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 6L9 17l-5-5" stroke="#16A34A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                                                    <span className="rounded-full bg-[#DCFCE7] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-[#166534]">Ready</span>
                                                   ) : (
-                                                    <div className="w-5 h-5 rounded-full bg-[#F1F5F9]" />
+                                                    <button onClick={() => setCatalogueSubsection(s.jump as any)} className="text-sm font-semibold text-[#065F46]">Complete now →</button>
                                                   )}
                                                 </div>
-                                                <div>
-                                                  <p className="text-sm font-semibold text-[#111827]">{s.key}</p>
-                                                  {!s.done && <p className="text-xs text-[#64748B]">Missing or incomplete</p>}
+
+                                                <div className="mt-4">
+                                                  <p className="text-xs font-medium uppercase tracking-wide text-[#64748B]">Configured items</p>
+                                                  <p className="mt-1 text-lg font-semibold text-[#111827]">{s.configuredCount}</p>
+                                                </div>
+
+                                                <div className="mt-4">
+                                                  <p className="text-xs font-medium uppercase tracking-wide text-[#64748B]">Missing items</p>
+                                                  {s.missingItems.length > 0 ? (
+                                                    <ul className="mt-2 space-y-2 text-sm text-[#64748B]">
+                                                      {s.missingItems.map((item, itemIndex) => (
+                                                        <li key={`${s.key}-${itemIndex}`} className="flex items-start gap-2">
+                                                          <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-[#F59E0B]" />
+                                                          <span>{item}</span>
+                                                        </li>
+                                                      ))}
+                                                    </ul>
+                                                  ) : (
+                                                    <p className="mt-2 text-sm text-[#16A34A]">No missing items</p>
+                                                  )}
                                                 </div>
                                               </div>
-                                              <div>
-                                                {s.done ? (
-                                                  <span className="text-sm text-[#16A34A] font-semibold">Completed</span>
-                                                ) : (
-                                                  <button onClick={() => setCatalogueSubsection(s.jump as any)} className="text-sm font-semibold text-[#065F46]">Complete now →</button>
-                                                )}
-                                              </div>
-                                            </div>
-                                          ))}
+                                            ))}
+                                          </div>
 
-                                          <div className="mt-4 border-t pt-4">
-                                            <p className="text-sm font-medium">Missing information</p>
-                                            {!allDone && (
-                                              <div className="mt-3 text-sm text-[#64748B]">Some sections are incomplete — complete them to improve AI recommendations.</div>
+                                          <div className="rounded-[12px] border border-[#EEF2F6] bg-[#F8FAFB] p-4">
+                                            <p className="text-sm font-semibold text-[#111827]">Review summary</p>
+                                            {!allDone ? (
+                                              <div className="mt-2 text-sm text-[#64748B]">Some sections are still incomplete — complete them to improve AI recommendations.</div>
+                                            ) : (
+                                              <div className="mt-2 text-sm text-[#16A34A]">Everything looks ready to finish your catalogue.</div>
                                             )}
                                           </div>
 
-                                          <div className="mt-6 flex items-center justify-end gap-3">
+                                          <div className="flex items-center justify-end gap-3">
                                             <button onClick={() => setCatalogueSubsection('Products & Services' as any)} className="rounded-[10px] border border-[#E5E7EB] px-3 py-2 text-sm">Back</button>
                                             <button onClick={() => setActiveWorkspaceSection('Sales Playbooks')} className={`rounded-[10px] px-3 py-2 text-sm font-semibold text-white ${allDone ? 'bg-[#16A34A]' : 'bg-[#9AE6B4]'}`}>Finish Catalogue</button>
                                           </div>
@@ -5913,62 +6067,65 @@ export default function DashboardLayout() {
                                       );
                                     })()}
                                   </div>
-                                ) : catalogueSubsection === "Bundles & Promotions" ? (
+                                ) : catalogueSubsection === "Categories" ? (
                                   <div className="space-y-4">
-                                    {promotions.map((promo) => (
-                                      <div key={promo.id} className="rounded-[20px] border border-[#E5E7EB] bg-white p-5 shadow-sm">
-                                        <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-                                          <div className="min-w-0 flex-1">
-                                            <input value={promo.title} onChange={(e) => setPromotions((list) => list.map((item) => item.id === promo.id ? { ...item, title: e.target.value } : item))} className="w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm font-semibold text-[#111827]" />
-                                            <textarea value={promo.description} onChange={(e) => setPromotions((list) => list.map((item) => item.id === promo.id ? { ...item, description: e.target.value } : item))} className="mt-3 w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm text-[#475569]" rows={3} />
-                                          </div>
-                                          <div className="flex items-center gap-2 text-sm text-[#64748B]">
-                                            <span className={`rounded-full border px-3 py-1 ${promo.status === 'Active' ? 'border-[#22C55E] bg-[#ECFDF5] text-[#065F46]' : promo.status === 'Paused' ? 'border-[#F59E0B] bg-[#FFFBEB] text-[#B45309]' : 'border-[#E5E7EB] bg-[#F8FAFB] text-[#475569]'}`}>{promo.status}</span>
-                                            <button onClick={() => setPromotions((list) => list.filter((item) => item.id !== promo.id))} className="rounded-[10px] border border-[#FECACA] bg-white px-3 py-2 text-sm font-semibold text-[#B91C1C]">Delete</button>
-                                          </div>
-                                        </div>
+                                    <div className="flex items-center justify-between gap-3">
+                                      <div className="text-sm text-[#64748B]">Organize products into clear, reusable categories.</div>
+                                      <button type="button" onClick={() => setShowAddCategoryInput(true)} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Add Category</button>
+                                    </div>
 
-                                        <div className="mt-4 grid gap-4 lg:grid-cols-2">
-                                          <div className="space-y-3">
-                                            <div>
-                                              <label className="text-xs font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">Products Included</label>
-                                              <input value={promo.productsIncluded} onChange={(e) => setPromotions((list) => list.map((item) => item.id === promo.id ? { ...item, productsIncluded: e.target.value } : item))} className="mt-2 w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm" />
-                                            </div>
-                                            <div className="grid gap-3 sm:grid-cols-2">
-                                              <div>
-                                                <label className="text-xs font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">Discount Type</label>
-                                                <select value={promo.discountType} onChange={(e) => setPromotions((list) => list.map((item) => item.id === promo.id ? { ...item, discountType: e.target.value as any } : item))} className="mt-2 w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm">
-                                                  <option>Percentage</option>
-                                                  <option>Fixed</option>
-                                                </select>
-                                              </div>
-                                              <div>
-                                                <label className="text-xs font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">Discount Value</label>
-                                                <input type="text" value={promo.discountValue} onChange={(e) => setPromotions((list) => list.map((item) => item.id === promo.id ? { ...item, discountValue: e.target.value } : item))} className="mt-2 w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm" />
-                                              </div>
-                                            </div>
-                                          </div>
-                                          <div className="grid gap-3 sm:grid-cols-2">
-                                            <div>
-                                              <label className="text-xs font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">Start Date</label>
-                                              <input type="date" value={promo.startDate} onChange={(e) => setPromotions((list) => list.map((item) => item.id === promo.id ? { ...item, startDate: e.target.value } : item))} className="mt-2 w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm" />
-                                            </div>
-                                            <div>
-                                              <label className="text-xs font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">End Date</label>
-                                              <input type="date" value={promo.endDate} onChange={(e) => setPromotions((list) => list.map((item) => item.id === promo.id ? { ...item, endDate: e.target.value } : item))} className="mt-2 w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm" />
-                                            </div>
-                                            <div className="sm:col-span-2">
-                                              <label className="text-xs font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">Status</label>
-                                              <select value={promo.status} onChange={(e) => setPromotions((list) => list.map((item) => item.id === promo.id ? { ...item, status: e.target.value as any } : item))} className="mt-2 w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm">
-                                                <option>Active</option>
-                                                <option>Paused</option>
-                                                <option>Expired</option>
-                                              </select>
-                                            </div>
-                                          </div>
+                                    {showAddCategoryInput && (
+                                      <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-3">
+                                        <input
+                                          value={newCategoryName}
+                                          onChange={(e) => setNewCategoryName(e.target.value)}
+                                          placeholder="Category name"
+                                          className="w-full rounded-[10px] border border-[#E5E7EB] px-3 py-2 text-sm"
+                                        />
+                                        <div className="mt-3 flex justify-end gap-2">
+                                          <button type="button" onClick={() => { setShowAddCategoryInput(false); setNewCategoryName(""); }} className="rounded-[10px] border border-[#E5E7EB] px-3 py-2 text-sm">Cancel</button>
+                                          <button type="button" onClick={handleAddCategory} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Save</button>
                                         </div>
                                       </div>
-                                    ))}
+                                    )}
+
+                                    <div className="grid gap-3">
+                                      {categories.map((category) => {
+                                        const isEditing = editingCategoryId === category.id;
+                                        const productCount = catalogProducts.filter((product) => product.category === category.name).length;
+
+                                        return (
+                                          <div key={category.id} className="flex items-center justify-between gap-3 rounded-[12px] border border-[#EEF2F6] bg-white p-3">
+                                            <div className="min-w-0 flex-1">
+                                              {isEditing ? (
+                                                <input
+                                                  value={categoryDrafts[category.id] ?? category.name}
+                                                  onChange={(e) => setCategoryDrafts((current) => ({ ...current, [category.id]: e.target.value }))}
+                                                  className="w-full rounded-[10px] border border-[#E5E7EB] px-3 py-2 text-sm"
+                                                />
+                                              ) : (
+                                                <p className="text-sm font-semibold text-[#111827]">{category.name}</p>
+                                              )}
+                                              <p className="mt-1 text-xs text-[#64748B]">{productCount} product{productCount === 1 ? "" : "s"}</p>
+                                            </div>
+
+                                            <div className="flex items-center gap-2">
+                                              {isEditing ? (
+                                                <>
+                                                  <button type="button" onClick={() => handleEditCategory(category.id)} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Save</button>
+                                                  <button type="button" onClick={() => { setEditingCategoryId(null); setCategoryDrafts((current) => { const { [category.id]: _, ...rest } = current; return rest; }); }} className="rounded-[10px] border border-[#E5E7EB] px-3 py-2 text-sm">Cancel</button>
+                                                </>
+                                              ) : (
+                                                <>
+                                                  <button type="button" onClick={() => { setEditingCategoryId(category.id); setCategoryDrafts((current) => ({ ...current, [category.id]: category.name })); }} className="rounded-[10px] border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-semibold text-[#111827]">Edit</button>
+                                                  <button type="button" onClick={() => handleDeleteCategory(category.id)} className="rounded-[10px] border border-[#FECACA] bg-white px-3 py-2 text-sm font-semibold text-[#B91C1C]">Delete</button>
+                                                </>
+                                              )}
+                                            </div>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
                                   </div>
                                 ) : (
                                   <div className="space-y-4">
@@ -6001,29 +6158,29 @@ export default function DashboardLayout() {
                                       );
                                       if (filtered.length === 0) return <p className="text-sm text-[#94A3B8]">No products found. Use "Add Product" to create one.</p>;
                                       return (
-                                        <div className="grid gap-6 items-stretch" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))' }}>
+                                        <div className="grid gap-4 items-stretch" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}>
                                           {filtered.map((item) => (
-                                            <div key={item.id} className="group h-full overflow-hidden rounded-[20px] border border-[#EEF2F6] bg-white shadow-sm transition duration-200 ease-out hover:-translate-y-1 hover:shadow-lg">
-                                              <div className="h-40 w-full overflow-hidden bg-[#F8FAFB]">
+                                            <div key={item.id} className="group h-full overflow-hidden rounded-[16px] border border-[#EEF2F6] bg-white shadow-sm transition duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md">
+                                              <div className="aspect-[4/3] w-full overflow-hidden bg-[#F8FAFB]">
                                                 <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
                                               </div>
 
-                                              <div className="flex min-h-[320px] flex-col gap-4 p-4">
+                                              <div className="flex flex-col gap-2 p-3">
                                                 <div className="min-h-0">
-                                                  <p className="text-base font-semibold text-[#111827] leading-6 line-clamp-2">{item.name}</p>
-                                                  <p className="mt-2 text-xs text-[#6B7280] uppercase tracking-[0.12em]">{item.category}</p>
+                                                  <p className="text-sm font-semibold text-[#111827] leading-5 line-clamp-2">{item.name}</p>
+                                                  <p className="mt-1 text-[11px] text-[#6B7280] uppercase tracking-[0.12em]">{item.category}</p>
 
-                                                  <div className="mt-4">
-                                                    <p className="text-lg font-semibold text-[#111827]">{item.price}</p>
+                                                  <div className="mt-2">
+                                                    <p className="text-sm font-semibold text-[#111827]">{item.price}</p>
                                                   </div>
 
-                                                  <div className={`mt-3 inline-flex items-center rounded-full border px-2 py-1 text-xs font-semibold ${item.availability === 'In stock' || item.availability === 'Available' ? 'border-[#D1FAE5] bg-[#ECFDF5] text-[#065F46]' : 'border-[#FDE8C7] bg-[#FFFBEB] text-[#B45309]'}`}>
+                                                  <div className={`mt-2 inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-semibold ${item.availability === 'In stock' || item.availability === 'Available' ? 'border-[#D1FAE5] bg-[#ECFDF5] text-[#065F46]' : 'border-[#FDE8C7] bg-[#FFFBEB] text-[#B45309]'}`}>
                                                     {item.availability}
                                                   </div>
                                                 </div>
 
-                                                <div className="mt-auto pt-4">
-                                                  <button type="button" className="w-full rounded-[12px] border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-semibold text-[#111827] transition duration-200 ease-out hover:bg-[#F8FAFB] hover:shadow-sm">Edit</button>
+                                                <div className="mt-auto pt-2">
+                                                  <button type="button" className="w-full rounded-[10px] border border-[#E5E7EB] bg-white px-2.5 py-2 text-sm font-semibold text-[#111827] transition duration-200 ease-out hover:bg-[#F8FAFB] hover:shadow-sm">Edit</button>
                                                 </div>
                                               </div>
                                             </div>
@@ -6045,10 +6202,10 @@ export default function DashboardLayout() {
                                   <button onClick={() => setActiveWorkspaceSection("Sales Playbooks")} className="w-full rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Continue</button>
                                 </div>
                               </div>
-                            ) : catalogueSubsection === "Bundles & Promotions" ? (
+                            ) : catalogueSubsection === "Categories" ? (
                               <div className="space-y-3">
-                                <p className="text-sm font-semibold">Promotion tips</p>
-                                <p className="text-sm text-[#64748B]">Use concise titles and clear start/end dates for best results.</p>
+                                <p className="text-sm font-semibold">Category tips</p>
+                                <p className="text-sm text-[#64748B]">Keep categories short and consistent so products are easier to find and recommend.</p>
                               </div>
                             ) : null}
                           </aside>
