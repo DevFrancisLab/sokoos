@@ -5607,9 +5607,50 @@ export default function DashboardLayout() {
                             ) : (
                               <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
                                 <div className="mb-4">
-                                  <div className="mb-3 flex items-center gap-2">
-                                    <button onClick={() => setCatalogueSubsection("Products & Services")} className={`px-3 py-1 rounded border ${catalogueSubsection === "Products & Services" ? 'border-[#22C55E] bg-[#ECFDF5]' : 'border-[#E5E7EB] bg-white'}`}>Products & Services</button>
-                                    <button onClick={() => setCatalogueSubsection("Pricing")} className={`px-3 py-1 rounded border ${catalogueSubsection === "Pricing" ? 'border-[#22C55E] bg-[#ECFDF5]' : 'border-[#E5E7EB] bg-white'}`}>Pricing</button>
+                                  <div className="mb-3 overflow-x-auto">
+                                    <div className="flex min-w-max items-center gap-2">
+                                      {[
+                                        { label: "Products", value: "Products & Services" },
+                                        { label: "Pricing", value: "Pricing" },
+                                        { label: "Availability", value: "Availability" },
+                                        { label: "Categories", value: "Bundles & Promotions" },
+                                        { label: "Media", value: "Media Library" },
+                                        { label: "Import Catalogue", value: "Imports" },
+                                        { label: "Review", value: "Review" },
+                                      ].map((lesson, index) => {
+                                        const lessonOrder = [
+                                          "Products & Services",
+                                          "Pricing",
+                                          "Availability",
+                                          "Bundles & Promotions",
+                                          "Media Library",
+                                          "Imports",
+                                          "Review",
+                                        ];
+                                        const selectedIndex = lessonOrder.indexOf(catalogueSubsection);
+                                        const isActive = selectedIndex === index;
+                                        const isCompleted = selectedIndex >= 0 && index < selectedIndex;
+                                        const isFuture = selectedIndex >= 0 && index > selectedIndex;
+
+                                        return (
+                                          <button
+                                            key={lesson.label}
+                                            type="button"
+                                            onClick={() => setCatalogueSubsection(lesson.value)}
+                                            className={`inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border px-3 py-1.5 text-sm font-semibold ${isActive ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]" : isCompleted ? "border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#475569]"}`}
+                                          >
+                                            {isCompleted ? (
+                                              <Check className="h-3.5 w-3.5" />
+                                            ) : (
+                                              <span className={`flex h-5 w-5 items-center justify-center rounded-full text-[11px] ${isActive ? "bg-[#22C55E] text-white" : isFuture ? "bg-[#F3F4F6] text-[#64748B]" : "bg-[#F3F4F6] text-[#64748B]"}`}>
+                                                {index + 1}
+                                              </span>
+                                            )}
+                                            <span>{lesson.label}</span>
+                                          </button>
+                                        );
+                                      })}
+                                    </div>
                                   </div>
 
                                   {catalogueSubsection === "Pricing" ? (
@@ -5618,12 +5659,6 @@ export default function DashboardLayout() {
                                         <p className="text-sm font-semibold text-[#111827]">Pricing</p>
                                         <p className="mt-1 text-xs text-[#6B7280]">Teach your AI exactly how much everything costs.</p>
                                       </div>
-                                      <div className="flex items-center gap-2">
-                                        <button onClick={() => {
-                                          setPricingSaved(true);
-                                          window.setTimeout(() => setPricingSaved(false), 1800);
-                                        }} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Save Pricing</button>
-                                      </div>
                                     </div>
                                   ) : catalogueSubsection === "Availability" ? (
                                     <div className="flex items-center justify-between">
@@ -5631,21 +5666,12 @@ export default function DashboardLayout() {
                                         <p className="text-sm font-semibold text-[#111827]">Availability</p>
                                         <p className="mt-1 text-xs text-[#6B7280]">Teach the AI when products can be sold.</p>
                                       </div>
-                                      <div className="flex items-center gap-2">
-                                        <button onClick={() => {
-                                          setAvailabilitySaved(true);
-                                          window.setTimeout(() => setAvailabilitySaved(false), 1800);
-                                        }} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Save Availability</button>
-                                      </div>
                                     </div>
                                   ) : catalogueSubsection === "Review" ? (
                                     <div className="flex items-center justify-between">
                                       <div>
                                         <p className="text-sm font-semibold text-[#111827]">Review</p>
                                         <p className="mt-1 text-xs text-[#6B7280]">Summary of your catalogue before finishing.</p>
-                                      </div>
-                                      <div className="flex items-center gap-2">
-                                        <button onClick={() => setActiveWorkspaceSection("Sales Playbooks")} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Finish Catalogue</button>
                                       </div>
                                     </div>
                                   ) : catalogueSubsection === "Bundles & Promotions" ? (
@@ -5676,15 +5702,6 @@ export default function DashboardLayout() {
                                       <div>
                                         <p className="text-sm font-semibold text-[#111827]">Products & Services</p>
                                         <p className="mt-1 text-xs text-[#6B7280]">Add everything your AI can recommend or sell.</p>
-                                      </div>
-                                      <div className="flex flex-wrap items-center gap-2 min-w-0">
-                                        <input
-                                          value={productSearch}
-                                          onChange={(e) => setProductSearch(e.target.value)}
-                                          placeholder="Search products, categories, or descriptions"
-                                          className="w-full max-w-[24rem] min-w-0 rounded-md border border-[#E5E7EB] px-3 py-2 text-sm"
-                                        />
-                                        <button onClick={() => addProduct()} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Add Product</button>
                                       </div>
                                     </div>
                                   )}
