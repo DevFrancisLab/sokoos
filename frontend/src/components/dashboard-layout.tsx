@@ -5894,8 +5894,8 @@ export default function DashboardLayout() {
                                   ) : catalogueSubsection === "Availability" ? (
                                     <div className="flex flex-wrap items-start justify-between gap-3">
                                       <div>
-                                        <p className="text-sm font-semibold text-[#111827]">Availability</p>
-                                        <p className="mt-1 text-xs text-[#6B7280]">Teach your AI when products and services can be sold.</p>
+                                        <p className="text-sm font-semibold text-[#111827]">Inventory management</p>
+                                        <p className="mt-1 text-xs text-[#64748B]">Set stock levels, warehouse locations, and inventory status for each product.</p>
                                       </div>
                                       <div className="rounded-[10px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
                                         <span className="font-semibold">Est.</span> {catalogProducts.length > 0 ? "In progress" : "Not started"}
@@ -6270,11 +6270,11 @@ export default function DashboardLayout() {
                                         <thead>
                                           <tr className="text-left text-[11px] uppercase tracking-[0.12em] text-[#6B7280]">
                                             <th className="px-2 py-2">Product</th>
+                                            <th className="px-2 py-2">Current stock</th>
+                                            <th className="px-2 py-2">Stock status</th>
+                                            <th className="px-2 py-2">Low stock threshold</th>
+                                            <th className="px-2 py-2">Warehouse / branch</th>
                                             <th className="px-2 py-2">Availability</th>
-                                            <th className="px-2 py-2">Inventory Status</th>
-                                            <th className="px-2 py-2">Available Locations</th>
-                                            <th className="px-2 py-2">Estimated Delivery</th>
-                                            <th className="px-2 py-2">Visible to AI</th>
                                           </tr>
                                         </thead>
                                         <tbody>
@@ -6282,27 +6282,24 @@ export default function DashboardLayout() {
                                             <tr key={item.id} className="border-t hover:bg-[#F8FAFB]">
                                               <td className="px-2 py-2 align-middle text-sm text-[#111827]">{item.name}</td>
                                               <td className="px-2 py-2 align-middle">
-                                                <input value={(item.availability || 'Available')} onChange={(e) => updateCatalogProductField(item.id, 'availability', e.target.value)} className="w-28 rounded border border-[#E5E7EB] px-2 py-1 text-sm" />
+                                                <input type="number" value={(item as any).currentStock ?? 0} onChange={(e) => updateCatalogProductField(item.id, 'currentStock', Number(e.target.value))} className="w-24 rounded border border-[#E5E7EB] px-2 py-1 text-sm" />
                                               </td>
                                               <td className="px-2 py-2 align-middle">
-                                                <select value={(item as any).inventoryStatus || 'In stock'} onChange={(e) => updateCatalogProductField(item.id, 'inventoryStatus', e.target.value)} className="w-28 rounded border border-[#E5E7EB] px-2 py-1 text-sm">
+                                                <select value={(item as any).stockStatus || 'In stock'} onChange={(e) => updateCatalogProductField(item.id, 'stockStatus', e.target.value)} className="w-28 rounded border border-[#E5E7EB] px-2 py-1 text-sm">
                                                   <option>In stock</option>
                                                   <option>Low stock</option>
                                                   <option>Out of stock</option>
-                                                  <option>Pre-order</option>
+                                                  <option>Backordered</option>
                                                 </select>
                                               </td>
                                               <td className="px-2 py-2 align-middle">
-                                                <input value={(item as any).availableLocations || 'All locations'} onChange={(e) => updateCatalogProductField(item.id, 'availableLocations', e.target.value)} className="w-40 rounded border border-[#E5E7EB] px-2 py-1 text-sm" />
+                                                <input type="number" value={(item as any).lowStockThreshold ?? 10} onChange={(e) => updateCatalogProductField(item.id, 'lowStockThreshold', Number(e.target.value))} className="w-24 rounded border border-[#E5E7EB] px-2 py-1 text-sm" />
                                               </td>
                                               <td className="px-2 py-2 align-middle">
-                                                <input value={(item as any).estimatedDelivery || '2-5 days'} onChange={(e) => updateCatalogProductField(item.id, 'estimatedDelivery', e.target.value)} className="w-28 rounded border border-[#E5E7EB] px-2 py-1 text-sm" />
+                                                <input value={(item as any).warehouseLocation || 'Main warehouse'} onChange={(e) => updateCatalogProductField(item.id, 'warehouseLocation', e.target.value)} className="w-40 rounded border border-[#E5E7EB] px-2 py-1 text-sm" />
                                               </td>
                                               <td className="px-2 py-2 align-middle">
-                                                <label className="inline-flex items-center gap-2 text-sm">
-                                                  <input type="checkbox" checked={(item as any).visibleToAi ?? true} onChange={(e) => updateCatalogProductField(item.id, 'visibleToAi', e.target.checked)} className="h-4 w-4 rounded border border-[#D1D5DB] text-[#22C55E] focus:ring-[#22C55E]" />
-                                                  <span>{(item as any).visibleToAi ?? true ? 'Yes' : 'No'}</span>
-                                                </label>
+                                                <input value={(item.availability || 'Available')} onChange={(e) => updateCatalogProductField(item.id, 'availability', e.target.value)} className="w-28 rounded border border-[#E5E7EB] px-2 py-1 text-sm" />
                                               </td>
                                             </tr>
                                           ))}
@@ -6310,12 +6307,12 @@ export default function DashboardLayout() {
                                       </table>
                                     </div>
                                     <div className="mt-4 flex items-center justify-between gap-4">
-                                      <div className="text-sm text-[#64748B]">Teach your AI when products are available and where they can be sold.</div>
+                                      <div className="text-sm text-[#64748B]">Track stock levels, reorder points, and where inventory is stored.</div>
                                       <div>
                                         <button onClick={() => {
                                           setAvailabilitySaved(true);
                                           window.setTimeout(() => setAvailabilitySaved(false), 1800);
-                                        }} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Save Availability</button>
+                                        }} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Save Inventory</button>
                                         {availabilitySaved ? <span className="ml-3 text-sm text-[#16A34A]">Saved</span> : null}
                                       </div>
                                     </div>
