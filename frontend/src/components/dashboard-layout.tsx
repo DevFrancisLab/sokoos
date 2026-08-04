@@ -1582,18 +1582,6 @@ export default function DashboardLayout() {
     mime?: string;
   };
 
-  type Promotion = {
-    id: string;
-    title: string;
-    description: string;
-    productsIncluded: string;
-    discountType: "Percentage" | "Fixed";
-    discountValue: string;
-    startDate: string;
-    endDate: string;
-    status: "Active" | "Paused" | "Expired";
-  };
-
   type CatalogueSubsection =
     | "Products & Services"
     | "Pricing"
@@ -1615,30 +1603,6 @@ export default function DashboardLayout() {
   const [showAddProductForm, setShowAddProductForm] = useState(false);
   const [selectedProductType, setSelectedProductType] = useState<string | null>(null);
   const [addProductFormData, setAddProductFormData] = useState<{ name: string; category: string; price: string; availability: string; image?: string } | null>(null);
-  const [promotions, setPromotions] = useState<Promotion[]>([
-    {
-      id: "promo-1",
-      title: "Summer Bundle",
-      description: "Bundle the top 3 summer essentials with 20% off.",
-      productsIncluded: "Ginger Citrus Salad, Deluxe Hair Treatment, Noise-Cancelling Headphones",
-      discountType: "Percentage",
-      discountValue: "20",
-      startDate: "2026-07-01",
-      endDate: "2026-08-31",
-      status: "Active",
-    },
-    {
-      id: "promo-2",
-      title: "New Customer Welcome",
-      description: "Give first-time buyers a fixed discount on their first order.",
-      productsIncluded: "10 Mbps, 20 Mbps, Business Package",
-      discountType: "Fixed",
-      discountValue: "500",
-      startDate: "2026-08-01",
-      endDate: "2026-09-30",
-      status: "Paused",
-    },
-  ]);
   const [mediaAssets, setMediaAssets] = useState<MediaAsset[]>([
     {
       id: "m-img-1",
