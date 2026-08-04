@@ -5252,7 +5252,7 @@ export default function DashboardLayout() {
                     )}
 
                     {activeWorkspaceSection === "Catalogue" && (
-                      <div className="space-y-6 overflow-x-hidden">
+                      <div className="w-full min-w-0 space-y-6 overflow-x-hidden">
                         <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_280px] items-start">
                           <div>
                             <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
@@ -5320,7 +5320,7 @@ export default function DashboardLayout() {
                                   )}
                                 </div>
 
-                                <div className="min-w-[240px] flex-1">
+                                <div className="flex-1">
                                   <input
                                     value={productSearch}
                                     onChange={(e) => setProductSearch(e.target.value)}
