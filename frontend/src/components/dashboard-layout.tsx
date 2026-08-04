@@ -6088,56 +6088,88 @@ export default function DashboardLayout() {
                                       })()}
                                     </section>
 
-                                    <section className="rounded-[18px] border border-[#EEF2F6] bg-white p-5 shadow-sm">
-                                      <div className="flex flex-wrap items-start justify-between gap-3">
+                                    <section className="rounded-[20px] border border-[#E5E7F0] bg-white p-6 shadow-sm">
+                                      <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-start lg:gap-8">
                                         <div>
                                           <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Section 3</p>
-                                          <p className="mt-1 text-lg font-semibold text-[#111827]">Pricing</p>
-                                          <p className="mt-2 text-sm text-[#64748B]">Edit prices, currency, billing, and discounts directly from the Products workspace.</p>
+                                          <p className="mt-2 text-2xl font-semibold text-[#111827]">Pricing</p>
+                                          <p className="mt-3 max-w-2xl text-sm leading-6 text-[#475569]">Adjust prices, currencies, billing cycles, discounts, and availability in a clean product pricing management view.</p>
                                         </div>
-                                        <div className="rounded-full border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-1 text-sm font-semibold text-[#64748B]">Step 3</div>
+                                        <div className="rounded-3xl border border-[#E5E7EB] bg-[#F8FAFB] px-4 py-3 text-sm font-semibold text-[#475569]">Step 3</div>
+                                      </div>
+
+                                      <div className="mt-6 grid gap-4 sm:grid-cols-[1fr_auto] sm:items-center">
+                                        <div className="rounded-[18px] bg-[#F8FAFB] p-4 shadow-sm">
+                                          <p className="text-xs uppercase tracking-[0.24em] text-[#64748B]">Pricing workspace</p>
+                                          <p className="mt-2 text-sm leading-6 text-[#475569]">Updates are applied instantly as you edit each product row.</p>
+                                        </div>
+                                        <div className="rounded-[18px] border border-[#E5E7EB] bg-white px-4 py-4 text-sm text-[#111827] shadow-sm">
+                                          <p className="font-semibold text-[#111827]">Catalogue items</p>
+                                          <p className="mt-1 text-sm text-[#64748B]">{catalogProducts.length} active pricing rows</p>
+                                        </div>
                                       </div>
 
                                       <div className="mt-6 overflow-x-auto">
-                                        <table className="min-w-full text-sm">
+                                        <table className="min-w-[720px] w-full divide-y divide-[#E5E7EB] text-sm">
                                           <thead>
-                                            <tr className="text-left text-[11px] uppercase tracking-[0.12em] text-[#6B7280]">
-                                              <th className="px-2 py-2">Product</th>
-                                              <th className="px-2 py-2">Price</th>
-                                              <th className="px-2 py-2">Currency</th>
-                                              <th className="px-2 py-2">Billing Period</th>
-                                              <th className="px-2 py-2">Discount</th>
-                                              <th className="px-2 py-2">Status</th>
+                                            <tr className="bg-[#F8FAFB] text-left text-[11px] uppercase tracking-[0.16em] text-[#475569]">
+                                              <th className="px-4 py-3">Product</th>
+                                              <th className="px-4 py-3">Price</th>
+                                              <th className="px-4 py-3">Currency</th>
+                                              <th className="px-4 py-3">Billing period</th>
+                                              <th className="px-4 py-3">Discount</th>
+                                              <th className="px-4 py-3">Status</th>
                                             </tr>
                                           </thead>
-                                          <tbody>
+                                          <tbody className="divide-y divide-[#E5E7EB]">
                                             {catalogProducts.map((item) => (
-                                              <tr key={item.id} className="border-t">
-                                                <td className="px-2 py-2 align-middle text-sm text-[#111827]">{item.name}</td>
-                                                <td className="px-2 py-2 align-middle">
-                                                  <input value={item.price || ''} onChange={(e) => updateCatalogProductField(item.id, 'price', e.target.value)} className="w-24 rounded border border-[#E5E7EB] px-2 py-1 text-sm" />
+                                              <tr key={item.id} className="bg-white transition duration-150 hover:bg-[#FAFBFD]">
+                                                <td className="px-4 py-4 align-middle text-sm font-semibold text-[#111827]">{item.name}</td>
+                                                <td className="px-4 py-4 align-middle">
+                                                  <input
+                                                    value={item.price || ''}
+                                                    onChange={(e) => updateCatalogProductField(item.id, 'price', e.target.value)}
+                                                    className="w-full max-w-[140px] rounded-2xl border border-[#E5E7EB] bg-[#F8FAFB] px-3 py-2 text-sm text-[#111827] outline-none transition focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7]"
+                                                  />
                                                 </td>
-                                                <td className="px-2 py-2 align-middle">
-                                                  <select value={(item as any).currency || 'USD'} onChange={(e) => updateCatalogProductField(item.id, 'currency', e.target.value)} className="w-20 rounded border border-[#E5E7EB] px-2 py-1 text-sm">
+                                                <td className="px-4 py-4 align-middle">
+                                                  <select
+                                                    value={(item as any).currency || 'USD'}
+                                                    onChange={(e) => updateCatalogProductField(item.id, 'currency', e.target.value)}
+                                                    className="w-full max-w-[110px] rounded-2xl border border-[#E5E7EB] bg-[#F8FAFB] px-3 py-2 text-sm text-[#111827] outline-none transition focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7] appearance-none"
+                                                  >
                                                     <option>USD</option>
                                                     <option>KES</option>
                                                     <option>EUR</option>
                                                     <option>NGN</option>
                                                   </select>
                                                 </td>
-                                                <td className="px-2 py-2 align-middle">
-                                                  <select value={(item as any).billingPeriod || 'One-time'} onChange={(e) => updateCatalogProductField(item.id, 'billingPeriod', e.target.value)} className="w-28 rounded border border-[#E5E7EB] px-2 py-1 text-sm">
+                                                <td className="px-4 py-4 align-middle">
+                                                  <select
+                                                    value={(item as any).billingPeriod || 'One-time'}
+                                                    onChange={(e) => updateCatalogProductField(item.id, 'billingPeriod', e.target.value)}
+                                                    className="w-full max-w-[150px] rounded-2xl border border-[#E5E7EB] bg-[#F8FAFB] px-3 py-2 text-sm text-[#111827] outline-none transition focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7] appearance-none"
+                                                  >
                                                     <option>One-time</option>
                                                     <option>Monthly</option>
                                                     <option>Yearly</option>
                                                     <option>Usage-based</option>
                                                   </select>
                                                 </td>
-                                                <td className="px-2 py-2 align-middle">
-                                                  <input type="number" value={(item as any).discount ?? ''} onChange={(e) => updateCatalogProductField(item.id, 'discount', e.target.value ? Number(e.target.value) : '')} className="w-16 rounded border border-[#E5E7EB] px-2 py-1 text-sm" />
+                                                <td className="px-4 py-4 align-middle">
+                                                  <input
+                                                    type="number"
+                                                    value={(item as any).discount ?? ''}
+                                                    onChange={(e) => updateCatalogProductField(item.id, 'discount', e.target.value ? Number(e.target.value) : '')}
+                                                    className="w-full max-w-[110px] rounded-2xl border border-[#E5E7EB] bg-[#F8FAFB] px-3 py-2 text-sm text-[#111827] outline-none transition focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7]"
+                                                  />
                                                 </td>
-                                                <td className="px-2 py-2 align-middle">
-                                                  <select value={(item as any).status || item.availability || 'Available'} onChange={(e) => updateCatalogProductField(item.id, 'status', e.target.value)} className="w-28 rounded border border-[#E5E7EB] px-2 py-1 text-sm">
+                                                <td className="px-4 py-4 align-middle">
+                                                  <select
+                                                    value={(item as any).status || item.availability || 'Available'}
+                                                    onChange={(e) => updateCatalogProductField(item.id, 'status', e.target.value)}
+                                                    className="w-full max-w-[150px] rounded-2xl border border-[#E5E7EB] bg-[#F8FAFB] px-3 py-2 text-sm text-[#111827] outline-none transition focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7] appearance-none"
+                                                  >
                                                     <option>Available</option>
                                                     <option>Low stock</option>
                                                     <option>By appointment</option>
@@ -6149,14 +6181,20 @@ export default function DashboardLayout() {
                                           </tbody>
                                         </table>
                                       </div>
-                                      <div className="mt-4 flex items-center justify-between gap-4">
-                                        <div className="text-sm text-[#64748B]">Pricing is now editable directly from the Products workspace.</div>
-                                        <div>
-                                          <button onClick={() => {
-                                            setPricingSaved(true);
-                                            window.setTimeout(() => setPricingSaved(false), 1800);
-                                          }} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Save Product Pricing</button>
-                                          {pricingSaved ? <span className="ml-3 text-sm text-[#16A34A]">Saved</span> : null}
+
+                                      <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                                        <div className="text-sm leading-6 text-[#64748B]">Pricing changes are saved when you click the button. All values remain editable in this workspace.</div>
+                                        <div className="flex items-center gap-3">
+                                          <button
+                                            onClick={() => {
+                                              setPricingSaved(true);
+                                              window.setTimeout(() => setPricingSaved(false), 1800);
+                                            }}
+                                            className="rounded-[14px] bg-[#22C55E] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
+                                          >
+                                            Save Product Pricing
+                                          </button>
+                                          {pricingSaved ? <span className="text-sm font-semibold text-[#16A34A]">Saved</span> : null}
                                         </div>
                                       </div>
                                     </section>
