@@ -5677,7 +5677,7 @@ export default function DashboardLayout() {
                             ) : (
                               <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-6">
                                 <div className="mb-6">
-                                  <div className="overflow-x-auto pb-1">
+                                  <div className="overflow-x-auto pb-1 custom-scrollbar">
                                     <div className="flex min-w-max items-center gap-3 px-1 py-1">
                                       {[
                                         { label: "Products", value: "Products & Services" as CatalogueSubsection },
@@ -5707,15 +5707,15 @@ export default function DashboardLayout() {
                                             key={lesson.label}
                                             type="button"
                                             onClick={() => setCatalogueSubsection(lesson.value as CatalogueSubsection)}
-                                            className={`inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border px-4 py-2 text-sm font-semibold transition-all duration-200 ${isActive ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534] shadow-[0_6px_16px_rgba(34,197,94,0.12)]" : isCompleted ? "border-[#BBF7D0] bg-[#F0FDF4] text-[#166534] shadow-sm" : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#86EFAC] hover:text-[#111827]"}`}
+                                            className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition ${isActive ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534] shadow-sm" : isCompleted ? "border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#86EFAC] hover:text-[#111827]"}`}
                                           >
                                             {isCompleted ? (
                                               <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#16A34A] text-[11px] text-white">
                                                 <Check className="h-3.5 w-3.5" />
                                               </span>
                                             ) : (
-                                              <span className={`flex h-5 w-5 items-center justify-center rounded-full text-[11px] ${isActive ? "bg-[#22C55E] text-white" : isFuture ? "bg-[#F3F4F6] text-[#64748B]" : "bg-[#F3F4F6] text-[#64748B]"}`}>
-                                                {index + 1}
+                                              <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${isCompleted ? "bg-[#22C55E] text-white" : isActive ? "bg-[#111827] text-white" : "bg-[#F8FAFC] text-[#64748B]"}`}>
+                                                {isCompleted ? <Check className="h-3.5 w-3.5" /> : <span className="text-[11px]">{index + 1}</span>}
                                               </span>
                                             )}
                                             <span>{lesson.label}</span>
