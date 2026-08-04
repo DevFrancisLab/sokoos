@@ -5492,6 +5492,15 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
                                 </div>
+                                <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
+                                  <div>
+                                    <p className="text-sm font-semibold text-[#111827]">Media</p>
+                                    <p className="mt-1 text-xs text-[#6B7280]">Give your AI images, documents, and files it can use to better assist customers.</p>
+                                  </div>
+                                  <div className="rounded-[10px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
+                                    <span className="font-semibold">Est.</span> {mediaAssets.length > 0 ? "In progress" : "Not started"}
+                                  </div>
+                                </div>
                                 <div
                                   onDrop={onDrop}
                                   onDragOver={onDragOver}
@@ -5588,6 +5597,15 @@ export default function DashboardLayout() {
                                         );
                                       })}
                                     </div>
+                                  </div>
+                                </div>
+                                <div className="mb-6 flex flex-wrap items-start justify-between gap-3">
+                                  <div>
+                                    <p className="text-sm font-semibold text-[#111827]">Import Catalogue</p>
+                                    <p className="mt-1 text-xs text-[#6B7280]">Quickly teach your AI using your existing catalogue.</p>
+                                  </div>
+                                  <div className="rounded-[10px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
+                                    <span className="font-semibold">Est.</span> {Object.keys(importState).length > 0 ? "In progress" : "Not started"}
                                   </div>
                                 </div>
                                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
