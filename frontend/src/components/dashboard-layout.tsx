@@ -4448,14 +4448,14 @@ export default function DashboardLayout() {
                         ? "Identity training"
                         : activeWorkspaceSection === "Catalogue"
                         ? "Catalogue Training"
-                        : "AI Employee workspace"}
+                        : "KNOWLEDGE TRAINING"}
                     </p>
                     <p className="mt-1 text-sm text-[#475569]">
                       {activeWorkspaceSection === "Identity"
                         ? "Onboard your AI employee one focused decision at a time."
                         : activeWorkspaceSection === "Catalogue"
                         ? "Train your AI to understand everything you sell so it can recommend products and services with confidence."
-                        : "Train and manage your AI employee."}
+                        : "Build and refine your knowledge base so your AI responds with relevant, trusted answers."}
                     </p>
                   </div>
                 </div>
@@ -5449,11 +5449,8 @@ export default function DashboardLayout() {
                                     <div className="flex min-w-max items-center gap-3 px-1 py-1">
                                       {[
                                         { label: "Products", value: "Products & Services" as CatalogueSubsection },
-                                        { label: "Pricing", value: "Pricing" as CatalogueSubsection },
-                                        { label: "Availability", value: "Availability" as CatalogueSubsection },
-                                        { label: "Categories", value: "Categories" as CatalogueSubsection },
-                                        { label: "Media", value: "Media Library" as CatalogueSubsection },
-                                        { label: "Import Catalogue", value: "Imports" as CatalogueSubsection },
+                                        { label: "Services", value: "Pricing" as CatalogueSubsection },
+                                        { label: "Inventory", value: "Availability" as CatalogueSubsection },
                                         { label: "Review", value: "Review" as CatalogueSubsection },
                                       ].map((lesson, index) => {
                                         const lessonOrder: CatalogueSubsection[] = [
@@ -5556,20 +5553,14 @@ export default function DashboardLayout() {
                                     <div className="flex min-w-max items-center gap-3 px-1 py-1">
                                       {[
                                         { label: "Products", value: "Products & Services" as CatalogueSubsection },
-                                        { label: "Pricing", value: "Pricing" as CatalogueSubsection },
-                                        { label: "Availability", value: "Availability" as CatalogueSubsection },
-                                        { label: "Categories", value: "Categories" as CatalogueSubsection },
-                                        { label: "Media", value: "Media Library" as CatalogueSubsection },
-                                        { label: "Import Catalogue", value: "Imports" as CatalogueSubsection },
+                                        { label: "Services", value: "Pricing" as CatalogueSubsection },
+                                        { label: "Inventory", value: "Availability" as CatalogueSubsection },
                                         { label: "Review", value: "Review" as CatalogueSubsection },
                                       ].map((lesson, index) => {
                                         const lessonOrder: CatalogueSubsection[] = [
                                           "Products & Services",
                                           "Pricing",
                                           "Availability",
-                                          "Categories",
-                                          "Media Library",
-                                          "Imports",
                                           "Review",
                                         ];
                                         const selectedIndex = lessonOrder.indexOf(catalogueSubsection);
@@ -5805,20 +5796,14 @@ export default function DashboardLayout() {
                                     <div className="flex min-w-max items-center gap-3 px-1 py-1">
                                       {[
                                         { label: "Products", value: "Products & Services" as CatalogueSubsection },
-                                        { label: "Pricing", value: "Pricing" as CatalogueSubsection },
-                                        { label: "Availability", value: "Availability" as CatalogueSubsection },
-                                        { label: "Categories", value: "Categories" as CatalogueSubsection },
-                                        { label: "Media", value: "Media Library" as CatalogueSubsection },
-                                        { label: "Import Catalogue", value: "Imports" as CatalogueSubsection },
+                                        { label: "Services", value: "Pricing" as CatalogueSubsection },
+                                        { label: "Inventory", value: "Availability" as CatalogueSubsection },
                                         { label: "Review", value: "Review" as CatalogueSubsection },
                                       ].map((lesson, index) => {
                                         const lessonOrder: CatalogueSubsection[] = [
                                           "Products & Services",
                                           "Pricing",
                                           "Availability",
-                                          "Categories",
-                                          "Media Library",
-                                          "Imports",
                                           "Review",
                                         ];
                                         const selectedIndex = lessonOrder.indexOf(catalogueSubsection);
