@@ -1350,10 +1350,10 @@ export default function DashboardLayout() {
   const identityLessonCompletionNames = ["Business Identity", "Brand Voice", "Greetings", "Languages", "Business Hours", "Locations", "Complete Identity"];
   const knowledgeLessons = ["Knowledge Sources", "Review"];
   const knowledgeSourceLessonTitles = {
-    company: "Company Information",
-    faqs: "FAQs",
-    documents: "Documents",
-    website: "Website",
+    company: "Business Information",
+    faqs: "Frequently Asked Questions",
+    documents: "Resources",
+    website: "Products & Services",
   } as const;
   const knowledgeLessonSequence = [
     "Knowledge Sources",
@@ -3099,10 +3099,10 @@ export default function DashboardLayout() {
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             {[
-              { key: "company", title: "Company Information", desc: "Teach your AI about your company, mission, industries and customers.", Icon: User },
-              { key: "faqs", title: "FAQs", desc: "Teach the AI the questions customers ask most often and the preferred answers.", Icon: MessageCircle },
-              { key: "documents", title: "Documents", desc: "Upload contracts, brochures and policy files for accurate referencing.", Icon: Paperclip },
-              { key: "website", title: "Website", desc: "Sync information directly from your website.", Icon: Globe },
+              { key: "company", title: "Company Information", desc: "Give your AI important company information it should remember.", Icon: User },
+              { key: "faqs", title: "FAQs", desc: "Teach your AI the answers customers ask most.", Icon: MessageCircle },
+              { key: "documents", title: "Documents", desc: "Provide documents and references your AI can use.", Icon: Paperclip },
+              { key: "website", title: "Website", desc: "Teach your AI everything you offer.", Icon: Globe },
             ].map((item) => {
               const selected = selectedKnowledgeSources.includes(item.key);
               return (
@@ -3138,12 +3138,12 @@ export default function DashboardLayout() {
       if (!sourceKey) return null;
       const title = knowledgeSourceLessonTitles[sourceKey as keyof typeof knowledgeSourceLessonTitles] ?? sourceKey;
       const desc = sourceKey === "company"
-        ? "Teach your AI about your company, mission, products, and customers so it can respond with the right voice."
+        ? "Give your AI important company information it should remember."
         : sourceKey === "faqs"
-          ? "Add frequently asked questions and preferred answers so your AI can handle customer questions consistently."
+          ? "Teach your AI the answers customers ask most."
           : sourceKey === "documents"
-            ? "Upload documents like contracts, brochures, and guides to give your AI accurate reference material."
-            : "Connect your website so the AI can learn from your public pages and product content.";
+            ? "Provide documents and references your AI can use."
+            : "Teach your AI everything you offer.";
       const Icon = sourceKey === "company" ? User : sourceKey === "faqs" ? MessageCircle : sourceKey === "documents" ? Paperclip : Globe;
 
       return (
@@ -3176,7 +3176,7 @@ export default function DashboardLayout() {
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><Sparkles className="h-5 w-5" /></div>
             <div>
               <p className="text-[20px] font-semibold text-[#111827]">Review</p>
-              <p className="mt-2 text-sm leading-6 text-[#6B7280]">Confirm the knowledge sources you’ve added before finishing training.</p>
+              <p className="mt-2 text-sm leading-6 text-[#6B7280]">Confirm your AI has everything it needs to answer confidently.</p>
             </div>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -3186,7 +3186,7 @@ export default function DashboardLayout() {
                 {selectedKnowledgeSources.length > 0 ? (
                   selectedKnowledgeSources.map((source) => (
                     <div key={source} className="rounded-lg bg-[#F8FAFC] px-3 py-2">
-                      {source === "company" ? "Company Information" : source === "faqs" ? "FAQs" : source === "documents" ? "Documents" : source === "website" ? "Website" : source}
+                      {source === "company" ? "Business Information" : source === "faqs" ? "Frequently Asked Questions" : source === "documents" ? "Resources" : source === "website" ? "Products & Services" : source}
                     </div>
                   ))
                 ) : (
@@ -4444,9 +4444,19 @@ export default function DashboardLayout() {
                 <div className="border-b border-[#E5E7EB] pb-4">
                   <div className="max-w-3xl">
                     <p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]">
-                      {activeWorkspaceSection === "Identity" ? "Identity training" : "AI Employee workspace"}
+                      {activeWorkspaceSection === "Identity"
+                        ? "Identity training"
+                        : activeWorkspaceSection === "Catalogue"
+                        ? "Catalogue Training"
+                        : "AI Employee workspace"}
                     </p>
-                    <p className="mt-1 text-sm text-[#475569]">{activeWorkspaceSection === "Identity" ? "Onboard your AI employee one focused decision at a time." : "Train and manage your AI employee."}</p>
+                    <p className="mt-1 text-sm text-[#475569]">
+                      {activeWorkspaceSection === "Identity"
+                        ? "Onboard your AI employee one focused decision at a time."
+                        : activeWorkspaceSection === "Catalogue"
+                        ? "Train your AI to understand everything you sell so it can recommend products and services with confidence."
+                        : "Train and manage your AI employee."}
+                    </p>
                   </div>
                 </div>
 
@@ -4469,8 +4479,8 @@ export default function DashboardLayout() {
                     ) : <>
                     <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                       <div>
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#166534]">AI onboarding curriculum</p>
-                        <p className="mt-1 text-base font-semibold text-[#111827]">Complete one lesson at a time and the next one opens automatically.</p>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#166534]">Identity Training</p>
+                        <p className="mt-1 text-base font-semibold text-[#111827]">Help your AI understand who your business is, what it stands for, and how it should represent your brand in every customer conversation.</p>
                       </div>
                       <div className="rounded-full bg-[#ECFDF5] px-3 py-1 text-sm font-semibold text-[#166534]">
                         {trainingCompletedSteps.length}/{identityLessons.length} lessons complete
@@ -4515,7 +4525,7 @@ export default function DashboardLayout() {
                                     <div>
                                       <p className="text-[20px] font-semibold text-[#111827]">Business Identity</p>
                                       <p className="mt-2 text-sm leading-6 text-[#6B7280]">
-                                        Tell your AI who your business is and how it should represent you.
+                                        Teach your AI who you are and what your business does.
                                       </p>
                                     </div>
                                   </div>
@@ -4609,7 +4619,7 @@ export default function DashboardLayout() {
                                     <div>
                                       <p className="text-[20px] font-semibold text-[#111827]">Brand Voice</p>
                                       <p className="mt-2 text-sm leading-6 text-[#6B7280]">
-                                        Teach your AI how it should sound so every reply feels consistent and on-brand.
+                                        Teach your AI how to communicate in your brand's tone.
                                       </p>
                                     </div>
                                   </div>
@@ -4740,7 +4750,7 @@ export default function DashboardLayout() {
                                     <div>
                                       <p className="text-[20px] font-semibold text-[#111827]">Greetings</p>
                                       <p className="mt-2 text-sm leading-6 text-[#6B7280]">
-                                        Teach your AI how conversations begin so every first reply feels warm and consistent.
+                                        Teach your AI how to greet customers and start conversations consistently.
                                       </p>
                                     </div>
                                   </div>
@@ -4824,8 +4834,8 @@ export default function DashboardLayout() {
                                         <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#22C55E] text-white"><Check className="h-3.5 w-3.5" /></span>
                                         <p className="text-sm font-semibold text-[#166534]">Default conversation starters</p>
                                       </div>
-                                      <p className="mt-3 text-sm leading-6 text-[#475569]">
-                                        These greetings become the default opening lines your AI uses when customers reach out. They help your assistant sound consistent, welcoming, and ready to help from the first message.
+                                      <p className="mt-2 text-sm leading-6 text-[#475569]">
+                                        Teach your AI where your business operates so it can confirm service areas and coverage.
                                       </p>
                                       <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm">
                                         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#64748B]">Example</p>
@@ -4850,7 +4860,7 @@ export default function DashboardLayout() {
                                     <div>
                                       <p className="text-[20px] font-semibold text-[#111827]">Languages</p>
                                       <p className="mt-2 text-sm leading-6 text-[#6B7280]">
-                                        Choose the languages your AI can understand and use when customers reach out.
+                                        Teach your AI which languages to understand and use when customers reach out.
                                       </p>
                                     </div>
                                   </div>
@@ -4938,7 +4948,7 @@ export default function DashboardLayout() {
                                     <div>
                                       <p className="text-[20px] font-semibold text-[#111827]">Business Hours</p>
                                       <p className="mt-2 text-sm leading-6 text-[#6B7280]">
-                                        Set the weekly rhythm of your business so the AI can answer whether you are open.
+                                        Teach your AI when your business is open so it can answer availability questions.
                                       </p>
                                     </div>
                                   </div>
@@ -5743,7 +5753,7 @@ export default function DashboardLayout() {
                                     <div className="flex flex-wrap items-start justify-between gap-3">
                                       <div>
                                         <p className="text-sm font-semibold text-[#111827]">Availability</p>
-                                        <p className="mt-1 text-xs text-[#6B7280]">Teach your AI when products can be sold.</p>
+                                        <p className="mt-1 text-xs text-[#6B7280]">Teach your AI when products and services can be sold.</p>
                                       </div>
                                       <div className="rounded-[10px] border border-[#EEF2F6] bg-[#F8FAFB] px-3 py-2">
                                         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#64748B]">AI tip</p>
@@ -5757,7 +5767,7 @@ export default function DashboardLayout() {
                                     <div className="flex flex-wrap items-start justify-between gap-3">
                                       <div>
                                         <p className="text-sm font-semibold text-[#111827]">Review</p>
-                                        <p className="mt-1 text-xs text-[#6B7280]">Verify everything before your AI starts selling.</p>
+                                        <p className="mt-1 text-xs text-[#6B7280]">Verify your catalogue before your AI starts recommending products.</p>
                                       </div>
                                       <div className="rounded-[10px] border border-[#EEF2F6] bg-[#F8FAFB] px-3 py-2">
                                         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#64748B]">AI tip</p>
@@ -5781,10 +5791,38 @@ export default function DashboardLayout() {
                                         <span className="font-semibold">Est.</span> {catalogProducts.length > 0 ? "In progress" : "Not started"}
                                       </div>
                                     </div>
+                                  ) : catalogueSubsection === "Media Library" ? (
+                                    <div className="flex flex-wrap items-start justify-between gap-3">
+                                      <div>
+                                        <p className="text-sm font-semibold text-[#111827]">Media</p>
+                                        <p className="mt-1 text-xs text-[#6B7280]">Give your AI images, documents, and files it can use to better assist customers.</p>
+                                      </div>
+                                      <div className="rounded-[10px] border border-[#EEF2F6] bg-[#F8FAFB] px-3 py-2">
+                                        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#64748B]">AI tip</p>
+                                        <p className="mt-1 text-xs text-[#475569]">Upload rich media so the AI has more helpful references.</p>
+                                      </div>
+                                      <div className="rounded-[10px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
+                                        <span className="font-semibold">Est.</span> {mediaAssets.length > 0 ? "In progress" : "Not started"}
+                                      </div>
+                                    </div>
+                                  ) : catalogueSubsection === "Imports" ? (
+                                    <div className="flex flex-wrap items-start justify-between gap-3">
+                                      <div>
+                                        <p className="text-sm font-semibold text-[#111827]">Import Catalogue</p>
+                                        <p className="mt-1 text-xs text-[#6B7280]">Quickly teach your AI using your existing catalogue.</p>
+                                      </div>
+                                      <div className="rounded-[10px] border border-[#EEF2F6] bg-[#F8FAFB] px-3 py-2">
+                                        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#64748B]">AI tip</p>
+                                        <p className="mt-1 text-xs text-[#475569]">Import existing catalogue data to speed up training.</p>
+                                      </div>
+                                      <div className="rounded-[10px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
+                                        <span className="font-semibold">Est.</span> {Object.keys(importState).length > 0 ? "In progress" : "Not started"}
+                                      </div>
+                                    </div>
                                   ) : (
                                     <div className="flex flex-wrap items-start justify-between gap-3">
                                       <div>
-                                        <p className="text-sm font-semibold text-[#111827]">Products & Services</p>
+                                        <p className="text-sm font-semibold text-[#111827]">Products</p>
                                         <p className="mt-1 text-xs text-[#6B7280]">Teach your AI what you sell.</p>
                                       </div>
                                       <div className="rounded-[10px] border border-[#EEF2F6] bg-[#F8FAFB] px-3 py-2">
