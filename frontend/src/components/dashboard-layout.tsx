@@ -5942,23 +5942,44 @@ export default function DashboardLayout() {
                                         <div className="rounded-full border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-1 text-sm font-semibold text-[#64748B]">Step 1</div>
                                       </div>
 
-                                      <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                                      <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                                         {[
                                           { key: "Product", desc: "Physical product" },
                                           { key: "Service", desc: "Bookable service" },
                                           { key: "Subscription", desc: "Recurring plan" },
                                           { key: "Digital Product", desc: "Downloadable item" },
-                                        ].map((t) => (
-                                          <button key={t.key} onClick={() => addProduct(t.key)} className="text-left rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-4 transition hover:-translate-y-0.5 hover:shadow-sm">
-                                            <div className="flex items-start gap-3">
-                                              <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-white text-[#475569] shadow-sm"><Package className="h-4 w-4" /></div>
-                                              <div className="min-w-0 flex-1">
-                                                <p className="text-sm font-semibold text-[#111827]">{t.key}</p>
-                                                <p className="mt-1 text-xs text-[#64748B]">{t.desc}</p>
+                                        ].map((t) => {
+                                          const isSelected = selectedProductType === t.key;
+                                          return (
+                                            <button
+                                              key={t.key}
+                                              onClick={() => {
+                                                setSelectedProductType(t.key);
+                                                addProduct(t.key);
+                                              }}
+                                              className={`group flex min-h-[170px] w-full flex-col justify-between rounded-[24px] border bg-white p-5 text-left shadow-sm transition duration-200 ease-out ${isSelected ? 'border-[#22C55E] bg-[#ECFDF5]' : 'border-[#E5E7EB] hover:-translate-y-1 hover:border-[#22C55E] hover:bg-[#ECFDF5] hover:shadow-md'}`}
+                                              type="button"
+                                            >
+                                              <div className="flex items-center justify-between gap-4">
+                                                <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-[#EEF6FF] text-[#2563EB] shadow-sm">
+                                                  <Package className="h-5 w-5" />
+                                                </div>
+                                                <div className={`flex h-9 w-9 items-center justify-center rounded-full border text-[11px] font-semibold ${isSelected ? 'border-[#22C55E] bg-[#22C55E] text-white' : 'border-[#E5E7EB] bg-white text-[#64748B]'}`}>
+                                                  {isSelected ? <Check className="h-4 w-4" /> : t.key.slice(0, 1)}
+                                                </div>
                                               </div>
-                                            </div>
-                                          </button>
-                                        ))}
+
+                                              <div className="mt-6 flex-1">
+                                                <p className="text-base font-semibold text-[#111827]">{t.key}</p>
+                                                <p className="mt-2 text-sm leading-6 text-[#64748B]">{t.desc}</p>
+                                              </div>
+
+                                              <div className="mt-4 text-sm font-semibold text-[#166534] opacity-0 transition-all duration-200 group-hover:opacity-100">
+                                                Select {t.key}
+                                              </div>
+                                            </button>
+                                          );
+                                        })}
                                       </div>
                                     </section>
 
