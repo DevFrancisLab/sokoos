@@ -6324,56 +6324,51 @@ export default function DashboardLayout() {
 
                                     {(() => {
                                       const hasProducts = catalogProducts.length > 0;
-                                      const categoriesCount = Array.from(new Set(catalogProducts.map((p) => p.category).filter(Boolean))).length;
-                                      const hasCategories = categoriesCount > 0;
-                                      const hasMedia = mediaAssets.length > 0;
-                                      const pricingComplete = hasProducts && catalogProducts.every((p) => p.price && p.price !== '$0.00');
-                                      const pricingConfiguredCount = catalogProducts.filter((p) => p.price && p.price !== '$0.00').length;
-                                      const availabilityComplete = hasProducts && catalogProducts.every((p) => (p as any).availability && (p as any).availability !== '');
-                                      const availabilityConfiguredCount = catalogProducts.filter((p) => (p as any).availability && (p as any).availability !== '').length;
-                                      const bundlesComplete = promotions.length > 0;
+                                      const totalProducts = catalogProducts.length;
+                                      const totalServices = catalogServices.length;
+                                      const totalUploadedMedia = mediaAssets.length;
+                                      const productsMissing = hasProducts ? [] : ['Add at least one product'];
+                                      const servicesMissing = totalServices > 0 ? [] : ['Add at least one service'];
+                                      const inventoryMissing = catalogProducts
+                                        .filter((p) => !(p as any).currentStock && (p as any).currentStock !== 0 || !(p as any).stockStatus || !(p as any).warehouseLocation || !(p as any).availability)
+                                        .map((p) => p.name || 'Unnamed product');
+                                      const inventoryComplete = hasProducts && inventoryMissing.length === 0;
+                                      const reviewComplete = hasProducts && totalServices > 0 && inventoryComplete;
+                                      const inStockCount = catalogProducts.filter((p) => ((p as any).stockStatus || 'In stock') === 'In stock').length;
+                                      const lowStockCount = catalogProducts.filter((p) => (p as any).stockStatus === 'Low stock').length;
+                                      const outOfStockCount = catalogProducts.filter((p) => (p as any).stockStatus === 'Out of stock').length;
+                                      const backorderedCount = catalogProducts.filter((p) => (p as any).stockStatus === 'Backordered').length;
+                                      const inventoryStatus = hasProducts
+                                        ? `${inStockCount} in stock, ${lowStockCount} low stock, ${outOfStockCount} out of stock${backorderedCount ? `, ${backorderedCount} backordered` : ''}`
+                                        : 'No inventory data';
                                       const sections = [
                                         {
                                           key: 'Products',
                                           done: hasProducts,
                                           jump: 'Products & Services',
-                                          configuredCount: catalogProducts.length,
-                                          missingItems: hasProducts ? [] : ['Add at least one product'],
-                                        },
-                                        {
-                                          key: 'Categories',
-                                          done: hasCategories,
-                                          jump: 'Categories',
-                                          configuredCount: categoriesCount,
-                                          missingItems: hasCategories ? [] : ['Add at least one category'],
-                                        },
-                                        {
-                                          key: 'Media',
-                                          done: hasMedia,
-                                          jump: 'Products & Services',
-                                          configuredCount: mediaAssets.length,
-                                          missingItems: hasMedia ? [] : ['Upload at least one asset'],
+                                          configuredCount: totalProducts,
+                                          missingItems: productsMissing,
                                         },
                                         {
                                           key: 'Services',
-                                          done: pricingComplete,
+                                          done: totalServices > 0,
                                           jump: 'Pricing',
-                                          configuredCount: pricingConfiguredCount,
-                                          missingItems: pricingConfiguredCount === catalogProducts.length ? [] : catalogProducts.filter((p) => !p.price || p.price === '$0.00').map((p) => p.name || 'Unnamed product'),
+                                          configuredCount: totalServices,
+                                          missingItems: servicesMissing,
                                         },
                                         {
-                                          key: 'Availability',
-                                          done: availabilityComplete,
+                                          key: 'Inventory',
+                                          done: inventoryComplete,
                                           jump: 'Availability',
-                                          configuredCount: availabilityConfiguredCount,
-                                          missingItems: availabilityConfiguredCount === catalogProducts.length ? [] : catalogProducts.filter((p) => !(p as any).availability || (p as any).availability === '').map((p) => p.name || 'Unnamed product'),
+                                          configuredCount: totalProducts,
+                                          missingItems: inventoryMissing,
                                         },
                                         {
-                                          key: 'Bundles',
-                                          done: bundlesComplete,
-                                          jump: 'Bundles & Promotions',
-                                          configuredCount: promotions.length,
-                                          missingItems: bundlesComplete ? [] : ['Add a bundle or promotion'],
+                                          key: 'Review',
+                                          done: reviewComplete,
+                                          jump: 'Review',
+                                          configuredCount: reviewComplete ? 1 : 0,
+                                          missingItems: reviewComplete ? [] : ['Complete Products, Services, and Inventory'],
                                         },
                                       ];
 
@@ -6431,10 +6426,32 @@ export default function DashboardLayout() {
 
                                           <div className="rounded-[12px] border border-[#EEF2F6] bg-[#F8FAFB] p-4">
                                             <p className="text-sm font-semibold text-[#111827]">Review summary</p>
-                                            {!allDone ? (
-                                              <div className="mt-2 text-sm text-[#64748B]">Some sections are still incomplete — complete them to improve AI recommendations.</div>
-                                            ) : (
-                                              <div className="mt-2 text-sm text-[#16A34A]">Everything looks ready to finish your catalogue.</div>
+                                            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                                              <div className="rounded-[10px] border border-[#E5E7EB] bg-white p-3 text-sm">
+                                                <p className="text-xs uppercase tracking-[0.12em] text-[#64748B]">Total products</p>
+                                                <p className="mt-1 text-lg font-semibold text-[#111827]">{totalProducts}</p>
+                                              </div>
+                                              <div className="rounded-[10px] border border-[#E5E7EB] bg-white p-3 text-sm">
+                                                <p className="text-xs uppercase tracking-[0.12em] text-[#64748B]">Total services</p>
+                                                <p className="mt-1 text-lg font-semibold text-[#111827]">{totalServices}</p>
+                                              </div>
+                                              <div className="rounded-[10px] border border-[#E5E7EB] bg-white p-3 text-sm">
+                                                <p className="text-xs uppercase tracking-[0.12em] text-[#64748B]">Total uploaded media</p>
+                                                <p className="mt-1 text-lg font-semibold text-[#111827]">{totalUploadedMedia}</p>
+                                              </div>
+                                              <div className="rounded-[10px] border border-[#E5E7EB] bg-white p-3 text-sm">
+                                                <p className="text-xs uppercase tracking-[0.12em] text-[#64748B]">Inventory status</p>
+                                                <p className="mt-1 text-lg font-semibold text-[#111827]">{inventoryStatus}</p>
+                                              </div>
+                                            </div>
+                                            {(!allDone || inventoryMissing.length > 0) && (
+                                              <div className="mt-4 rounded-[10px] border border-[#FDE8C7] bg-[#FFFBEB] p-3 text-sm text-[#B45309]">
+                                                <p className="font-semibold">Missing required information</p>
+                                                <p className="mt-1">{inventoryMissing.length > 0 ? `Missing inventory details for ${inventoryMissing.join(', ')}` : 'Complete any incomplete section to finish catalogue setup.'}</p>
+                                              </div>
+                                            )}
+                                            {allDone && inventoryMissing.length === 0 && (
+                                              <div className="mt-4 text-sm text-[#16A34A]">All required sections are complete.</div>
                                             )}
                                           </div>
 
