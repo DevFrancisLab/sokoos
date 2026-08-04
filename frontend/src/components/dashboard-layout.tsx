@@ -5923,30 +5923,30 @@ export default function DashboardLayout() {
                                           { title: "Pricing", detail: "Set prices and billing", done: catalogProducts.length > 0 },
                                           { title: "Product Media", detail: "Attach visuals and video", done: mediaAssets.length > 0 },
                                         ].map((step, index) => (
-                                          <div key={step.title} className={`rounded-[14px] border p-3 ${step.done ? "border-[#D1FAE5] bg-[#F0FDF4]" : "border-[#EEF2F6] bg-white"}`}>
-                                            <div className="flex items-center gap-2">
-                                              <div className={`flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-semibold ${step.done ? "bg-[#22C55E] text-white" : "bg-[#F1F5F9] text-[#64748B]"}`}>
+                                          <div key={step.title} className={`rounded-[22px] border p-4 shadow-sm ${step.done ? "border-[#D1FAE5] bg-[#F0FDF4]" : "border-[#E8EDF3] bg-white"}`}>
+                                            <div className="flex items-center gap-3">
+                                              <div className={`flex h-8 w-8 items-center justify-center rounded-full text-[11px] font-semibold ${step.done ? "bg-[#22C55E] text-white" : "bg-[#F1F5F9] text-[#64748B]"}`}>
                                                 {index + 1}
                                               </div>
                                               <p className="text-sm font-semibold text-[#111827]">{step.title}</p>
                                             </div>
-                                            <p className="mt-2 text-xs text-[#64748B]">{step.detail}</p>
+                                            <p className="mt-3 text-xs text-[#64748B]">{step.detail}</p>
                                           </div>
                                         ))}
                                       </div>
                                     </div>
 
-                                    <section className="rounded-[18px] border border-[#EEF2F6] bg-white p-5 shadow-sm">
-                                      <div className="flex flex-wrap items-start justify-between gap-3">
+                                    <section className="rounded-[24px] border border-[#E8EDF3] bg-white p-6 shadow-sm">
+                                      <div className="flex flex-wrap items-start justify-between gap-4">
                                         <div>
-                                          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Section 1</p>
-                                          <p className="mt-1 text-lg font-semibold text-[#111827]">Product Types</p>
-                                          <p className="mt-2 text-sm text-[#64748B]">Choose the formats you offer so your AI can route customer requests correctly.</p>
+                                          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#64748B]">Section 1</p>
+                                          <p className="mt-2 text-2xl font-semibold text-[#111827]">Product Types</p>
+                                          <p className="mt-3 max-w-2xl text-sm leading-6 text-[#475569]">Choose the formats you offer so your AI can route customer requests correctly.</p>
                                         </div>
-                                        <div className="rounded-full border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-1 text-sm font-semibold text-[#64748B]">Step 1</div>
+                                        <div className="rounded-3xl border border-[#E5E7EB] bg-[#F8FAFC] px-4 py-2 text-sm font-semibold text-[#64748B]">Step 1</div>
                                       </div>
 
-                                      <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                                      <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
                                         {[
                                           { key: "Product", desc: "Physical product" },
                                           { key: "Service", desc: "Bookable service" },
@@ -5961,7 +5961,7 @@ export default function DashboardLayout() {
                                                 setSelectedProductType(t.key);
                                                 addProduct(t.key);
                                               }}
-                                              className={`group flex min-h-[170px] w-full flex-col justify-between rounded-[24px] border bg-white p-5 text-left shadow-sm transition duration-200 ease-out ${isSelected ? 'border-[#22C55E] bg-[#ECFDF5]' : 'border-[#E5E7EB] hover:-translate-y-1 hover:border-[#22C55E] hover:bg-[#ECFDF5] hover:shadow-md'}`}
+                                              className={`group flex min-h-[190px] w-full flex-col justify-between rounded-[28px] border bg-white p-6 text-left shadow-sm transition duration-200 ease-out ${isSelected ? 'border-[#22C55E] bg-[#ECFDF5]' : 'border-[#E8EDF3] hover:-translate-y-1 hover:border-[#22C55E] hover:bg-[#ECFDF5] hover:shadow-md'}`}
                                               type="button"
                                             >
                                               <div className="flex items-center justify-between gap-4">
@@ -5987,22 +5987,22 @@ export default function DashboardLayout() {
                                       </div>
                                     </section>
 
-                                    <section className="rounded-[18px] border border-[#EEF2F6] bg-white p-5 shadow-sm">
+                                    <section className="rounded-[24px] border border-[#E8EDF3] bg-white p-6 shadow-sm">
                                       <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
                                         <div>
-                                          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Section 2</p>
-                                          <p className="mt-1 text-lg font-semibold text-[#111827]">Products</p>
-                                          <p className="mt-2 text-sm text-[#64748B]">Manage your product catalogue with quick actions, search, and a modern product list.</p>
+                                          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#64748B]">Section 2</p>
+                                          <p className="mt-2 text-2xl font-semibold text-[#111827]">Products</p>
+                                          <p className="mt-3 max-w-2xl text-sm leading-6 text-[#475569]">Manage your product catalogue with quick actions, search, and a modern product list.</p>
                                         </div>
                                         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-3">
-                                          <button type="button" onClick={() => addProduct()} className="inline-flex items-center justify-center rounded-[14px] bg-[#111827] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#334155]">Add Product</button>
-                                          <button type="button" onClick={() => setCatalogueSubsection("Imports")} className="inline-flex items-center justify-center rounded-[14px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm font-semibold text-[#111827] transition hover:bg-[#F8FAFB]">Import</button>
+                                          <button type="button" onClick={() => addProduct()} className="inline-flex items-center justify-center rounded-[16px] bg-[#111827] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#334155]">Add Product</button>
+                                          <button type="button" onClick={() => setCatalogueSubsection("Imports")} className="inline-flex items-center justify-center rounded-[16px] border border-[#E5E7EB] bg-white px-5 py-3 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#F8FAFB]">Import</button>
                                         </div>
                                       </div>
 
-                                      <div className="mt-6 grid gap-4 sm:grid-cols-[1fr_auto] items-center">
-                                        <div className="rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFB] p-3 shadow-sm">
-                                          <div className="flex flex-wrap items-center gap-3">
+                                      <div className="mt-6 grid gap-4 lg:grid-cols-[1fr_auto] items-start">
+                                        <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4 shadow-sm">
+                                          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                             <div className="min-w-[240px] flex-1">
                                               <label className="text-xs font-semibold uppercase tracking-[0.24em] text-[#64748B]" htmlFor="product-search">Search products</label>
                                               <input
@@ -6010,10 +6010,10 @@ export default function DashboardLayout() {
                                                 value={productSearch}
                                                 onChange={(e) => setProductSearch(e.target.value)}
                                                 placeholder="Search products, categories, or descriptions"
-                                                className="mt-2 h-11 w-full rounded-[14px] border border-[#E5E7EB] bg-white px-4 text-sm text-[#111827] shadow-sm outline-none transition focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7]"
+                                                className="mt-2 h-12 w-full rounded-[18px] border border-[#E5E7EB] bg-white px-4 text-sm text-[#111827] shadow-sm outline-none transition focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7]"
                                               />
                                             </div>
-                                            <div className="rounded-[14px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm font-semibold text-[#111827] shadow-sm">
+                                            <div className="rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm font-semibold text-[#111827] shadow-sm">
                                               {catalogProducts.length} products
                                             </div>
                                           </div>
@@ -6023,18 +6023,20 @@ export default function DashboardLayout() {
                                       {(() => {
                                         if (catalogProducts.length === 0) {
                                           return (
-                                            <div className="mt-6 rounded-[20px] border border-dashed border-[#E5E7EB] bg-[#F8FAFB] p-10 text-center">
-                                              <div className="mx-auto mb-6 flex h-36 w-36 items-center justify-center rounded-[24px] bg-white shadow-sm">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 text-[#94A3B8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7h18M7 7v10a2 2 0 002 2h6a2 2 0 002-2V7" />
-                                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 3v4M8 3v4" />
-                                                </svg>
+                                            <div className="mt-6 rounded-[24px] border border-dashed border-[#CBD5E1] bg-[#F8FAFB] p-10 text-center shadow-sm">
+                                              <div className="mx-auto mb-6 flex h-36 w-36 items-center justify-center rounded-[2rem] bg-white shadow-sm">
+                                                <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-[#DBEAFE] text-[#1D4ED8]">
+                                                  <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6.75h16M7.5 10.75h9M6 15.75h12" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.5 5.75 12 9.25l3.5-3.5" />
+                                                  </svg>
+                                                </div>
                                               </div>
                                               <p className="text-2xl font-semibold text-[#111827]">No products yet</p>
-                                              <p className="mt-2 text-sm text-[#64748B]">Add your first product or import a catalogue to start building your list.</p>
-                                              <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                                                <button onClick={() => addProduct()} className="rounded-[14px] bg-[#22C55E] px-5 py-3 text-sm font-semibold text-white">Add Product</button>
-                                                <button onClick={() => setCatalogueSubsection("Imports")} className="rounded-[14px] border border-[#E5E7EB] bg-white px-5 py-3 text-sm font-semibold text-[#111827]">Import Catalogue</button>
+                                              <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#475569]">Start by adding your first product so your AI can recommend it to customers.</p>
+                                              <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                                                <button onClick={() => addProduct()} className="rounded-[16px] bg-[#0F172A] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#111827]">Add product</button>
+                                                <button onClick={() => setCatalogueSubsection("Imports")} className="rounded-[16px] border border-[#E5E7EB] bg-white px-6 py-3 text-sm font-semibold text-[#334155] shadow-sm transition hover:bg-[#F8FAFB]">Import catalogue</button>
                                               </div>
                                             </div>
                                           );
@@ -6052,13 +6054,13 @@ export default function DashboardLayout() {
                                         }
 
                                         return (
-                                          <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                                          <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                                             {filtered.map((item) => (
-                                              <div key={item.id} className="flex h-full flex-col overflow-hidden rounded-[24px] border border-[#E5E7EB] bg-white shadow-sm transition duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md">
+                                              <div key={item.id} className="flex h-full flex-col overflow-hidden rounded-[28px] border border-[#E8EDF3] bg-white shadow-sm transition duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
                                                 <div className="aspect-[4/3] overflow-hidden bg-[#F8FAFB]">
-                                                  <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
+                                                  <img src={item.image} alt={item.name} className="h-full w-full object-cover transition duration-300 group-hover:scale-105" />
                                                 </div>
-                                                <div className="flex flex-1 flex-col p-5">
+                                                <div className="flex flex-1 flex-col p-6">
                                                   <div className="flex items-start justify-between gap-4">
                                                     <div>
                                                       <p className="text-base font-semibold text-[#111827]">{item.name}</p>
@@ -6074,12 +6076,12 @@ export default function DashboardLayout() {
                                                       <p className="text-xs uppercase tracking-[0.24em] text-[#94A3B8]">Price</p>
                                                       <p className="mt-1 text-lg font-semibold text-[#111827]">{item.price}</p>
                                                     </div>
-                                                    <div className="rounded-3xl bg-[#F8FAFB] px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-[#64748B]">{item.category}</div>
+                                                    <div className="rounded-[20px] bg-[#F8FAFB] px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-[#64748B]">{item.category}</div>
                                                   </div>
 
                                                   <div className="mt-6 flex items-center gap-3">
-                                                    <button type="button" className="inline-flex flex-1 items-center justify-center rounded-[14px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm font-semibold text-[#111827] transition hover:border-[#111827] hover:bg-[#F8FAFB]">Quick Edit</button>
-                                                    <button type="button" onClick={() => deleteCatalogProduct(item.id)} className="inline-flex items-center justify-center rounded-[14px] bg-[#FEF3F2] px-4 py-3 text-sm font-semibold text-[#B91C1C] transition hover:bg-[#FEE2E2]">Delete</button>
+                                                    <button type="button" className="inline-flex flex-1 items-center justify-center rounded-[16px] border border-[#E5E7EB] bg-white px-5 py-3 text-sm font-semibold text-[#111827] transition hover:border-[#111827] hover:bg-[#F8FAFB]">Quick Edit</button>
+                                                    <button type="button" onClick={() => deleteCatalogProduct(item.id)} className="inline-flex items-center justify-center rounded-[16px] bg-[#FEF3F2] px-5 py-3 text-sm font-semibold text-[#B91C1C] transition hover:bg-[#FEE2E2]">Delete</button>
                                                   </div>
                                                 </div>
                                               </div>
@@ -6277,7 +6279,21 @@ export default function DashboardLayout() {
                                       </div>
 
                                       <div className="mt-6 space-y-6">
-                                        {mediaAssets.filter((asset) => asset.mime?.startsWith("image")).length > 0 && (
+                                        {mediaAssets.filter((asset) => asset.mime?.startsWith("image")).length === 0 ? (
+                                          <div className="rounded-[24px] border border-dashed border-[#CBD5E1] bg-[#F8FAFF] p-8 text-center shadow-sm">
+                                            <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-white shadow-sm text-[#1D4ED8]">
+                                              <svg viewBox="0 0 24 24" className="h-10 w-10" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                                <path d="M4 6.5h16M4 12.5h16M4 18.5h16" strokeLinecap="round" strokeLinejoin="round" />
+                                                <path d="M9 8.5 12 11.5l3-3" strokeLinecap="round" strokeLinejoin="round" />
+                                              </svg>
+                                            </div>
+                                            <p className="text-lg font-semibold text-[#111827]">No images yet</p>
+                                            <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#475569]">Upload product photos to make your catalogue more engaging and easier to recommend.</p>
+                                            <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                                              <button type="button" onClick={() => fileInputRef.current?.click()} className="inline-flex items-center justify-center rounded-[16px] bg-[#0F172A] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#111827]">Upload images</button>
+                                            </div>
+                                          </div>
+                                        ) : (
                                           <div>
                                             <div className="mb-4 flex items-center justify-between gap-3">
                                               <div>
@@ -6321,7 +6337,21 @@ export default function DashboardLayout() {
                                           </div>
                                         )}
 
-                                        {mediaAssets.filter((asset) => asset.mime?.startsWith("video")).length > 0 && (
+                                        {mediaAssets.filter((asset) => asset.mime?.startsWith("video")).length === 0 ? (
+                                          <div className="rounded-[24px] border border-dashed border-[#CBD5E1] bg-[#F8FAFF] p-8 text-center shadow-sm">
+                                            <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-white shadow-sm text-[#1D4ED8]">
+                                              <svg viewBox="0 0 24 24" className="h-10 w-10" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                                <path d="M10 8l6 4-6 4V8Z" strokeLinecap="round" strokeLinejoin="round" />
+                                                <path d="M4 5.5h16M4 18.5h16" strokeLinecap="round" strokeLinejoin="round" />
+                                              </svg>
+                                            </div>
+                                            <p className="text-lg font-semibold text-[#111827]">No videos yet</p>
+                                            <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#475569]">Upload short videos so your AI can show customers product details with motion and context.</p>
+                                            <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                                              <button type="button" onClick={() => fileInputRef.current?.click()} className="inline-flex items-center justify-center rounded-[16px] bg-[#0F172A] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#111827]">Upload videos</button>
+                                            </div>
+                                          </div>
+                                        ) : (
                                           <div>
                                             <div className="mb-4 flex items-center justify-between gap-3">
                                               <div>
@@ -6767,19 +6797,20 @@ export default function DashboardLayout() {
                                       // Empty state when there are no products at all
                                       if (catalogProducts.length === 0) {
                                         return (
-                                          <div className="rounded-[12px] border border-dashed border-[#E5E7EB] bg-white p-10 text-center">
-                                            <div className="mx-auto mb-6 h-36 w-36 rounded-lg bg-[#F8FAFB] flex items-center justify-center">
-                                              <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 text-[#94A3B8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7h18M7 7v10a2 2 0 002 2h6a2 2 0 002-2V7" />
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 3v4M8 3v4" />
-                                              </svg>
+                                          <div className="rounded-[24px] border border-dashed border-[#CBD5E1] bg-[#F8FAFB] p-10 text-center shadow-sm">
+                                            <div className="mx-auto mb-6 flex h-36 w-36 items-center justify-center rounded-[2rem] bg-white shadow-sm">
+                                              <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-[#DBEAFE] text-[#1D4ED8]">
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6.75h16M7.5 10.75h9M6 15.75h12" />
+                                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.5 5.75 12 9.25l3.5-3.5" />
+                                                </svg>
+                                              </div>
                                             </div>
                                             <p className="text-2xl font-semibold text-[#111827]">No products yet</p>
-                                            <p className="mt-2 text-sm text-[#64748B]">Add your products and services so your AI can recommend them to customers.</p>
-
-                                            <div className="mt-6 flex items-center justify-center gap-3">
-                                              <button onClick={() => addProduct()} className="rounded-[12px] bg-[#22C55E] px-4 py-2 text-sm font-semibold text-white">Add Product</button>
-                                              <button onClick={() => setCatalogueSubsection("Imports")} className="rounded-[12px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold">Import Catalogue</button>
+                                            <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#475569]">Add your products and services so your AI can recommend them to customers.</p>
+                                            <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                                              <button onClick={() => addProduct()} className="rounded-[16px] bg-[#0F172A] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#111827]">Add product</button>
+                                              <button onClick={() => setCatalogueSubsection("Imports")} className="rounded-[16px] border border-[#E5E7EB] bg-white px-6 py-3 text-sm font-semibold text-[#334155] shadow-sm transition hover:bg-[#F8FAFB]">Import catalogue</button>
                                             </div>
                                           </div>
                                         );
