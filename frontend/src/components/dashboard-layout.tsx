@@ -5837,10 +5837,6 @@ export default function DashboardLayout() {
                                         <p className="text-sm font-semibold text-[#111827]">Pricing</p>
                                         <p className="mt-1 text-xs text-[#6B7280]">Teach your AI how much everything costs.</p>
                                       </div>
-                                      <div className="rounded-[10px] border border-[#EEF2F6] bg-[#F8FAFB] px-3 py-2">
-                                        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#64748B]">AI tip</p>
-                                        <p className="mt-1 text-xs text-[#475569]">Add clear pricing so replies stay accurate.</p>
-                                      </div>
                                       <div className="rounded-[10px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
                                         <span className="font-semibold">Est.</span> {catalogProducts.length > 0 ? "In progress" : "Not started"}
                                       </div>
@@ -5850,10 +5846,6 @@ export default function DashboardLayout() {
                                       <div>
                                         <p className="text-sm font-semibold text-[#111827]">Availability</p>
                                         <p className="mt-1 text-xs text-[#6B7280]">Teach your AI when products and services can be sold.</p>
-                                      </div>
-                                      <div className="rounded-[10px] border border-[#EEF2F6] bg-[#F8FAFB] px-3 py-2">
-                                        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#64748B]">AI tip</p>
-                                        <p className="mt-1 text-xs text-[#475569]">Share stock status to avoid bad recommendations.</p>
                                       </div>
                                       <div className="rounded-[10px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
                                         <span className="font-semibold">Est.</span> {catalogProducts.length > 0 ? "In progress" : "Not started"}
@@ -5865,10 +5857,6 @@ export default function DashboardLayout() {
                                         <p className="text-sm font-semibold text-[#111827]">Review</p>
                                         <p className="mt-1 text-xs text-[#6B7280]">Verify your catalogue before your AI starts recommending products.</p>
                                       </div>
-                                      <div className="rounded-[10px] border border-[#EEF2F6] bg-[#F8FAFB] px-3 py-2">
-                                        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#64748B]">AI tip</p>
-                                        <p className="mt-1 text-xs text-[#475569]">A quick review helps your AI respond confidently.</p>
-                                      </div>
                                       <div className="rounded-[10px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
                                         <span className="font-semibold">Est.</span> {catalogProducts.length > 0 ? "Almost ready" : "Needs setup"}
                                       </div>
@@ -5878,10 +5866,6 @@ export default function DashboardLayout() {
                                       <div>
                                         <p className="text-sm font-semibold text-[#111827]">Categories</p>
                                         <p className="mt-1 text-xs text-[#6B7280]">Organize your catalogue so your AI can recommend accurately.</p>
-                                      </div>
-                                      <div className="rounded-[10px] border border-[#EEF2F6] bg-[#F8FAFB] px-3 py-2">
-                                        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#64748B]">AI tip</p>
-                                        <p className="mt-1 text-xs text-[#475569]">Clear categories improve matching and suggestions.</p>
                                       </div>
                                       <div className="rounded-[10px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
                                         <span className="font-semibold">Est.</span> {catalogProducts.length > 0 ? "In progress" : "Not started"}
@@ -5893,10 +5877,6 @@ export default function DashboardLayout() {
                                         <p className="text-sm font-semibold text-[#111827]">Media</p>
                                         <p className="mt-1 text-xs text-[#6B7280]">Give your AI images, documents, and files it can use to better assist customers.</p>
                                       </div>
-                                      <div className="rounded-[10px] border border-[#EEF2F6] bg-[#F8FAFB] px-3 py-2">
-                                        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#64748B]">AI tip</p>
-                                        <p className="mt-1 text-xs text-[#475569]">Upload rich media so the AI has more helpful references.</p>
-                                      </div>
                                       <div className="rounded-[10px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
                                         <span className="font-semibold">Est.</span> {mediaAssets.length > 0 ? "In progress" : "Not started"}
                                       </div>
@@ -5907,10 +5887,6 @@ export default function DashboardLayout() {
                                         <p className="text-sm font-semibold text-[#111827]">Import Catalogue</p>
                                         <p className="mt-1 text-xs text-[#6B7280]">Quickly teach your AI using your existing catalogue.</p>
                                       </div>
-                                      <div className="rounded-[10px] border border-[#EEF2F6] bg-[#F8FAFB] px-3 py-2">
-                                        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#64748B]">AI tip</p>
-                                        <p className="mt-1 text-xs text-[#475569]">Import existing catalogue data to speed up training.</p>
-                                      </div>
                                       <div className="rounded-[10px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
                                         <span className="font-semibold">Est.</span> {Object.keys(importState).length > 0 ? "In progress" : "Not started"}
                                       </div>
@@ -5920,10 +5896,6 @@ export default function DashboardLayout() {
                                       <div>
                                         <p className="text-sm font-semibold text-[#111827]">Products</p>
                                         <p className="mt-1 text-xs text-[#6B7280]">Teach your AI what you sell.</p>
-                                      </div>
-                                      <div className="rounded-[10px] border border-[#EEF2F6] bg-[#F8FAFB] px-3 py-2">
-                                        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#64748B]">AI tip</p>
-                                        <p className="mt-1 text-xs text-[#475569]">Start with your core offers so recommendations stay relevant.</p>
                                       </div>
                                       <div className="rounded-[10px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
                                         <span className="font-semibold">Est.</span> {catalogProducts.length > 0 ? "In progress" : "Not started"}
