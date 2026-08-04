@@ -1530,6 +1530,9 @@ export default function DashboardLayout() {
   const updateCatalogProductField = (id: string, field: string, value: any) => {
     setCatalogProducts((list) => list.map((p) => (p.id === id ? { ...p, [field]: value } : p)));
   };
+  const deleteCatalogProduct = (id: string) => {
+    setCatalogProducts((list) => list.filter((product) => product.id !== id));
+  };
   const handleAddCategory = () => {
     const trimmedName = newCategoryName.trim();
     if (!trimmedName) return;
@@ -5984,66 +5987,98 @@ export default function DashboardLayout() {
                                     </section>
 
                                     <section className="rounded-[18px] border border-[#EEF2F6] bg-white p-5 shadow-sm">
-                                      <div className="flex flex-wrap items-start justify-between gap-3">
+                                      <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
                                         <div>
                                           <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Section 2</p>
                                           <p className="mt-1 text-lg font-semibold text-[#111827]">Products</p>
-                                          <p className="mt-2 text-sm text-[#64748B]">Add your catalogue items and keep them easy to browse in one place.</p>
+                                          <p className="mt-2 text-sm text-[#64748B]">Manage your product catalogue with quick actions, search, and a modern product list.</p>
                                         </div>
-                                        <div className="rounded-full border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-1 text-sm font-semibold text-[#64748B]">Step 2</div>
+                                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-3">
+                                          <button type="button" onClick={() => addProduct()} className="inline-flex items-center justify-center rounded-[14px] bg-[#111827] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#334155]">Add Product</button>
+                                          <button type="button" onClick={() => setCatalogueSubsection("Imports")} className="inline-flex items-center justify-center rounded-[14px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm font-semibold text-[#111827] transition hover:bg-[#F8FAFB]">Import</button>
+                                        </div>
+                                      </div>
+
+                                      <div className="mt-6 grid gap-4 sm:grid-cols-[1fr_auto] items-center">
+                                        <div className="rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFB] p-3 shadow-sm">
+                                          <div className="flex flex-wrap items-center gap-3">
+                                            <div className="min-w-[240px] flex-1">
+                                              <label className="text-xs font-semibold uppercase tracking-[0.24em] text-[#64748B]" htmlFor="product-search">Search products</label>
+                                              <input
+                                                id="product-search"
+                                                value={productSearch}
+                                                onChange={(e) => setProductSearch(e.target.value)}
+                                                placeholder="Search products, categories, or descriptions"
+                                                className="mt-2 h-11 w-full rounded-[14px] border border-[#E5E7EB] bg-white px-4 text-sm text-[#111827] shadow-sm outline-none transition focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7]"
+                                              />
+                                            </div>
+                                            <div className="rounded-[14px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm font-semibold text-[#111827] shadow-sm">
+                                              {catalogProducts.length} products
+                                            </div>
+                                          </div>
+                                        </div>
                                       </div>
 
                                       {(() => {
                                         if (catalogProducts.length === 0) {
                                           return (
-                                            <div className="mt-6 rounded-[12px] border border-dashed border-[#E5E7EB] bg-white p-10 text-center">
-                                              <div className="mx-auto mb-6 flex h-36 w-36 items-center justify-center rounded-lg bg-[#F8FAFB]">
+                                            <div className="mt-6 rounded-[20px] border border-dashed border-[#E5E7EB] bg-[#F8FAFB] p-10 text-center">
+                                              <div className="mx-auto mb-6 flex h-36 w-36 items-center justify-center rounded-[24px] bg-white shadow-sm">
                                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 text-[#94A3B8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7h18M7 7v10a2 2 0 002 2h6a2 2 0 002-2V7" />
                                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 3v4M8 3v4" />
                                                 </svg>
                                               </div>
                                               <p className="text-2xl font-semibold text-[#111827]">No products yet</p>
-                                              <p className="mt-2 text-sm text-[#64748B]">Add your products and services so your AI can recommend them to customers.</p>
-
-                                              <div className="mt-6 flex items-center justify-center gap-3">
-                                                <button onClick={() => addProduct()} className="rounded-[12px] bg-[#22C55E] px-4 py-2 text-sm font-semibold text-white">Add Product</button>
-                                                <button onClick={() => setCatalogueSubsection("Imports")} className="rounded-[12px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold">Import Catalogue</button>
+                                              <p className="mt-2 text-sm text-[#64748B]">Add your first product or import a catalogue to start building your list.</p>
+                                              <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                                                <button onClick={() => addProduct()} className="rounded-[14px] bg-[#22C55E] px-5 py-3 text-sm font-semibold text-white">Add Product</button>
+                                                <button onClick={() => setCatalogueSubsection("Imports")} className="rounded-[14px] border border-[#E5E7EB] bg-white px-5 py-3 text-sm font-semibold text-[#111827]">Import Catalogue</button>
                                               </div>
                                             </div>
                                           );
                                         }
+
                                         const query = productSearch.trim().toLowerCase();
                                         const filtered = catalogProducts.filter((p) =>
                                           p.name.toLowerCase().includes(query) ||
                                           p.category.toLowerCase().includes(query) ||
                                           (p.description || "").toLowerCase().includes(query),
                                         );
-                                        if (filtered.length === 0) return <p className="mt-6 text-sm text-[#94A3B8]">No products found. Use "Add Product" to create one.</p>;
+
+                                        if (filtered.length === 0) {
+                                          return <p className="mt-6 rounded-[20px] border border-[#F1F5F9] bg-[#F8FAFB] p-6 text-sm text-[#64748B]">No products found. Try another search or add a new product.</p>;
+                                        }
+
                                         return (
-                                          <div className="mt-6 grid gap-4 items-stretch" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}>
+                                          <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                                             {filtered.map((item) => (
-                                              <div key={item.id} className="group h-full overflow-hidden rounded-[16px] border border-[#EEF2F6] bg-white shadow-sm transition duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md">
-                                                <div className="aspect-[4/3] w-full overflow-hidden bg-[#F8FAFB]">
+                                              <div key={item.id} className="flex h-full flex-col overflow-hidden rounded-[24px] border border-[#E5E7EB] bg-white shadow-sm transition duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md">
+                                                <div className="aspect-[4/3] overflow-hidden bg-[#F8FAFB]">
                                                   <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
                                                 </div>
-
-                                                <div className="flex flex-col gap-2 p-3">
-                                                  <div className="min-h-0">
-                                                    <p className="text-sm font-semibold text-[#111827] leading-5 line-clamp-2">{item.name}</p>
-                                                    <p className="mt-1 text-[11px] text-[#6B7280] uppercase tracking-[0.12em]">{item.category}</p>
-
-                                                    <div className="mt-2">
-                                                      <p className="text-sm font-semibold text-[#111827]">{item.price}</p>
+                                                <div className="flex flex-1 flex-col p-5">
+                                                  <div className="flex items-start justify-between gap-4">
+                                                    <div>
+                                                      <p className="text-base font-semibold text-[#111827]">{item.name}</p>
+                                                      <p className="mt-2 text-sm text-[#64748B]">{item.category}</p>
                                                     </div>
-
-                                                    <div className={`mt-2 inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-semibold ${item.availability === 'In stock' || item.availability === 'Available' ? 'border-[#D1FAE5] bg-[#ECFDF5] text-[#065F46]' : 'border-[#FDE8C7] bg-[#FFFBEB] text-[#B45309]'}`}>
+                                                    <span className={`rounded-full px-3 py-1 text-sm font-semibold ${item.availability === 'In stock' || item.availability === 'Available' ? 'bg-[#ECFDF5] text-[#166534] border border-[#D1FAE5]' : 'bg-[#FFFBEB] text-[#B45309] border border-[#FDE8C7]'}`}>
                                                       {item.availability}
-                                                    </div>
+                                                    </span>
                                                   </div>
 
-                                                  <div className="mt-auto pt-2">
-                                                    <button type="button" className="w-full rounded-[10px] border border-[#E5E7EB] bg-white px-2.5 py-2 text-sm font-semibold text-[#111827] transition duration-200 ease-out hover:bg-[#F8FAFB] hover:shadow-sm">Edit</button>
+                                                  <div className="mt-5 flex items-center justify-between gap-4">
+                                                    <div>
+                                                      <p className="text-xs uppercase tracking-[0.24em] text-[#94A3B8]">Price</p>
+                                                      <p className="mt-1 text-lg font-semibold text-[#111827]">{item.price}</p>
+                                                    </div>
+                                                    <div className="rounded-3xl bg-[#F8FAFB] px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-[#64748B]">{item.category}</div>
+                                                  </div>
+
+                                                  <div className="mt-6 flex items-center gap-3">
+                                                    <button type="button" className="inline-flex flex-1 items-center justify-center rounded-[14px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm font-semibold text-[#111827] transition hover:border-[#111827] hover:bg-[#F8FAFB]">Quick Edit</button>
+                                                    <button type="button" onClick={() => deleteCatalogProduct(item.id)} className="inline-flex items-center justify-center rounded-[14px] bg-[#FEF3F2] px-4 py-3 text-sm font-semibold text-[#B91C1C] transition hover:bg-[#FEE2E2]">Delete</button>
                                                   </div>
                                                 </div>
                                               </div>
