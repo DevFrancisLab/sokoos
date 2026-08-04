@@ -5898,31 +5898,151 @@ export default function DashboardLayout() {
                                   )}
                                 </div>
 
-                                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6">
-                                  {[
-                                    { key: "Product", desc: "Physical product" },
-                                    { key: "Service", desc: "Bookable service" },
-                                    { key: "Subscription", desc: "Recurring plan" },
-                                    { key: "Digital Product", desc: "Downloadable item" },
-                                  ].map((t) => (
-                                    <button key={t.key} onClick={() => addProduct(t.key)} className={`text-left rounded-2xl border p-4 transition hover:shadow-sm bg-white`}>
-                                      <div className="flex items-start gap-3">
-                                        <div className="h-9 w-9 flex-shrink-0 rounded-xl bg-[#F1F5F9] items-center justify-center flex text-[#475569]"><Package className="h-4 w-4" /></div>
-                                        <div className="min-w-0 flex-1">
-                                          <p className="text-sm font-semibold text-[#111827]">{t.key}</p>
-                                          <p className="mt-1 text-xs text-[#64748B]">{t.desc}</p>
+                                {catalogueSubsection === "Products & Services" ? (
+                                  <div className="space-y-5">
+                                    <div className="rounded-[20px] border border-[#E5E7EB] bg-gradient-to-br from-[#F8FAFC] via-white to-[#ECFDF5] p-5 shadow-sm">
+                                      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                                        <div className="max-w-2xl">
+                                          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Products lesson</p>
+                                          <p className="mt-2 text-lg font-semibold text-[#111827]">Guide your AI through the products you offer</p>
+                                          <p className="mt-2 text-sm leading-6 text-[#64748B]">Complete these four sections in order so your AI can describe, recommend, price, and present your catalog with confidence.</p>
+                                        </div>
+                                        <div className="rounded-[12px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
+                                          <span className="font-semibold">{catalogProducts.length > 0 ? "In progress" : "Not started"}</span>
                                         </div>
                                       </div>
-                                    </button>
-                                  ))}
-                                </div>
 
-                                {catalogueSubsection === "Products & Services" ? (
-                                  <>
-                                    <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-4 mb-6">
-                                      <p className="text-sm font-semibold text-[#111827]">Product pricing</p>
-                                      <p className="mt-1 text-xs text-[#64748B]">Edit product prices, currency, billing, and discounts directly from the Products workspace.</p>
-                                      <div className="mt-4 overflow-x-auto">
+                                      <div className="mt-5 grid gap-3 md:grid-cols-4">
+                                        {[
+                                          { title: "Product Types", detail: "Choose the formats you offer", done: true },
+                                          { title: "Products", detail: "Add and manage catalog items", done: catalogProducts.length > 0 },
+                                          { title: "Pricing", detail: "Set prices and billing", done: catalogProducts.length > 0 },
+                                          { title: "Product Media", detail: "Attach visuals and video", done: mediaAssets.length > 0 },
+                                        ].map((step, index) => (
+                                          <div key={step.title} className={`rounded-[14px] border p-3 ${step.done ? "border-[#D1FAE5] bg-[#F0FDF4]" : "border-[#EEF2F6] bg-white"}`}>
+                                            <div className="flex items-center gap-2">
+                                              <div className={`flex h-7 w-7 items-center justify-center rounded-full text-[11px] font-semibold ${step.done ? "bg-[#22C55E] text-white" : "bg-[#F1F5F9] text-[#64748B]"}`}>
+                                                {index + 1}
+                                              </div>
+                                              <p className="text-sm font-semibold text-[#111827]">{step.title}</p>
+                                            </div>
+                                            <p className="mt-2 text-xs text-[#64748B]">{step.detail}</p>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+
+                                    <section className="rounded-[18px] border border-[#EEF2F6] bg-white p-5 shadow-sm">
+                                      <div className="flex flex-wrap items-start justify-between gap-3">
+                                        <div>
+                                          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Section 1</p>
+                                          <p className="mt-1 text-lg font-semibold text-[#111827]">Product Types</p>
+                                          <p className="mt-2 text-sm text-[#64748B]">Choose the formats you offer so your AI can route customer requests correctly.</p>
+                                        </div>
+                                        <div className="rounded-full border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-1 text-sm font-semibold text-[#64748B]">Step 1</div>
+                                      </div>
+
+                                      <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                                        {[
+                                          { key: "Product", desc: "Physical product" },
+                                          { key: "Service", desc: "Bookable service" },
+                                          { key: "Subscription", desc: "Recurring plan" },
+                                          { key: "Digital Product", desc: "Downloadable item" },
+                                        ].map((t) => (
+                                          <button key={t.key} onClick={() => addProduct(t.key)} className="text-left rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-4 transition hover:-translate-y-0.5 hover:shadow-sm">
+                                            <div className="flex items-start gap-3">
+                                              <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-white text-[#475569] shadow-sm"><Package className="h-4 w-4" /></div>
+                                              <div className="min-w-0 flex-1">
+                                                <p className="text-sm font-semibold text-[#111827]">{t.key}</p>
+                                                <p className="mt-1 text-xs text-[#64748B]">{t.desc}</p>
+                                              </div>
+                                            </div>
+                                          </button>
+                                        ))}
+                                      </div>
+                                    </section>
+
+                                    <section className="rounded-[18px] border border-[#EEF2F6] bg-white p-5 shadow-sm">
+                                      <div className="flex flex-wrap items-start justify-between gap-3">
+                                        <div>
+                                          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Section 2</p>
+                                          <p className="mt-1 text-lg font-semibold text-[#111827]">Products</p>
+                                          <p className="mt-2 text-sm text-[#64748B]">Add your catalogue items and keep them easy to browse in one place.</p>
+                                        </div>
+                                        <div className="rounded-full border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-1 text-sm font-semibold text-[#64748B]">Step 2</div>
+                                      </div>
+
+                                      {(() => {
+                                        if (catalogProducts.length === 0) {
+                                          return (
+                                            <div className="mt-6 rounded-[12px] border border-dashed border-[#E5E7EB] bg-white p-10 text-center">
+                                              <div className="mx-auto mb-6 flex h-36 w-36 items-center justify-center rounded-lg bg-[#F8FAFB]">
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 text-[#94A3B8]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7h18M7 7v10a2 2 0 002 2h6a2 2 0 002-2V7" />
+                                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 3v4M8 3v4" />
+                                                </svg>
+                                              </div>
+                                              <p className="text-2xl font-semibold text-[#111827]">No products yet</p>
+                                              <p className="mt-2 text-sm text-[#64748B]">Add your products and services so your AI can recommend them to customers.</p>
+
+                                              <div className="mt-6 flex items-center justify-center gap-3">
+                                                <button onClick={() => addProduct()} className="rounded-[12px] bg-[#22C55E] px-4 py-2 text-sm font-semibold text-white">Add Product</button>
+                                                <button onClick={() => setCatalogueSubsection("Imports")} className="rounded-[12px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold">Import Catalogue</button>
+                                              </div>
+                                            </div>
+                                          );
+                                        }
+                                        const query = productSearch.trim().toLowerCase();
+                                        const filtered = catalogProducts.filter((p) =>
+                                          p.name.toLowerCase().includes(query) ||
+                                          p.category.toLowerCase().includes(query) ||
+                                          (p.description || "").toLowerCase().includes(query),
+                                        );
+                                        if (filtered.length === 0) return <p className="mt-6 text-sm text-[#94A3B8]">No products found. Use "Add Product" to create one.</p>;
+                                        return (
+                                          <div className="mt-6 grid gap-4 items-stretch" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}>
+                                            {filtered.map((item) => (
+                                              <div key={item.id} className="group h-full overflow-hidden rounded-[16px] border border-[#EEF2F6] bg-white shadow-sm transition duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md">
+                                                <div className="aspect-[4/3] w-full overflow-hidden bg-[#F8FAFB]">
+                                                  <img src={item.image} alt={item.name} className="h-full w-full object-cover" />
+                                                </div>
+
+                                                <div className="flex flex-col gap-2 p-3">
+                                                  <div className="min-h-0">
+                                                    <p className="text-sm font-semibold text-[#111827] leading-5 line-clamp-2">{item.name}</p>
+                                                    <p className="mt-1 text-[11px] text-[#6B7280] uppercase tracking-[0.12em]">{item.category}</p>
+
+                                                    <div className="mt-2">
+                                                      <p className="text-sm font-semibold text-[#111827]">{item.price}</p>
+                                                    </div>
+
+                                                    <div className={`mt-2 inline-flex items-center rounded-full border px-2 py-0.5 text-[11px] font-semibold ${item.availability === 'In stock' || item.availability === 'Available' ? 'border-[#D1FAE5] bg-[#ECFDF5] text-[#065F46]' : 'border-[#FDE8C7] bg-[#FFFBEB] text-[#B45309]'}`}>
+                                                      {item.availability}
+                                                    </div>
+                                                  </div>
+
+                                                  <div className="mt-auto pt-2">
+                                                    <button type="button" className="w-full rounded-[10px] border border-[#E5E7EB] bg-white px-2.5 py-2 text-sm font-semibold text-[#111827] transition duration-200 ease-out hover:bg-[#F8FAFB] hover:shadow-sm">Edit</button>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            ))}
+                                          </div>
+                                        );
+                                      })()}
+                                    </section>
+
+                                    <section className="rounded-[18px] border border-[#EEF2F6] bg-white p-5 shadow-sm">
+                                      <div className="flex flex-wrap items-start justify-between gap-3">
+                                        <div>
+                                          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Section 3</p>
+                                          <p className="mt-1 text-lg font-semibold text-[#111827]">Pricing</p>
+                                          <p className="mt-2 text-sm text-[#64748B]">Edit prices, currency, billing, and discounts directly from the Products workspace.</p>
+                                        </div>
+                                        <div className="rounded-full border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-1 text-sm font-semibold text-[#64748B]">Step 3</div>
+                                      </div>
+
+                                      <div className="mt-6 overflow-x-auto">
                                         <table className="min-w-full text-sm">
                                           <thead>
                                             <tr className="text-left text-[11px] uppercase tracking-[0.12em] text-[#6B7280]">
@@ -5983,20 +6103,19 @@ export default function DashboardLayout() {
                                           {pricingSaved ? <span className="ml-3 text-sm text-[#16A34A]">Saved</span> : null}
                                         </div>
                                       </div>
-                                    </div>
+                                    </section>
 
-                                    <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-4 mb-6">
+                                    <section className="rounded-[18px] border border-[#EEF2F6] bg-white p-5 shadow-sm">
                                       <div className="flex flex-wrap items-start justify-between gap-3">
                                         <div>
-                                          <p className="text-sm font-semibold text-[#111827]">Product media</p>
-                                          <p className="mt-1 text-xs text-[#64748B]">Upload images and videos for each product so your AI can describe them accurately.</p>
+                                          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Section 4</p>
+                                          <p className="mt-1 text-lg font-semibold text-[#111827]">Product Media</p>
+                                          <p className="mt-2 text-sm text-[#64748B]">Upload images and videos for each product so your AI can describe them accurately.</p>
                                         </div>
-                                        <div className="rounded-[10px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
-                                          <span className="font-semibold">Est.</span> {mediaAssets.length > 0 ? "In progress" : "Not started"}
-                                        </div>
+                                        <div className="rounded-full border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-1 text-sm font-semibold text-[#64748B]">Step 4</div>
                                       </div>
 
-                                      <div className="mt-4 grid gap-4 sm:grid-cols-2">
+                                      <div className="mt-6 grid gap-4 sm:grid-cols-2">
                                         <div className="rounded-[12px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
                                           <p className="text-sm font-semibold text-[#111827]">Upload images</p>
                                           <p className="mt-2 text-sm text-[#64748B]">Add product photos for better visual recommendations.</p>
@@ -6095,8 +6214,8 @@ export default function DashboardLayout() {
                                           </div>
                                         )}
                                       </div>
-                                    </div>
-                                  </>
+                                    </section>
+                                  </div>
                                 ) : catalogueSubsection === "Pricing" ? (
                                   <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-6">
                                     <div className="flex flex-wrap items-start justify-between gap-4">
