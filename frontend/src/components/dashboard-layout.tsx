@@ -5444,6 +5444,54 @@ export default function DashboardLayout() {
 
                             {catalogueSubsection === "Media Library" ? (
                               <div>
+                                <div className="mb-6">
+                                  <div className="overflow-x-auto pb-1 custom-scrollbar">
+                                    <div className="flex min-w-max items-center gap-3 px-1 py-1">
+                                      {[
+                                        { label: "Products", value: "Products & Services" as CatalogueSubsection },
+                                        { label: "Pricing", value: "Pricing" as CatalogueSubsection },
+                                        { label: "Availability", value: "Availability" as CatalogueSubsection },
+                                        { label: "Categories", value: "Categories" as CatalogueSubsection },
+                                        { label: "Media", value: "Media Library" as CatalogueSubsection },
+                                        { label: "Import Catalogue", value: "Imports" as CatalogueSubsection },
+                                        { label: "Review", value: "Review" as CatalogueSubsection },
+                                      ].map((lesson, index) => {
+                                        const lessonOrder: CatalogueSubsection[] = [
+                                          "Products & Services",
+                                          "Pricing",
+                                          "Availability",
+                                          "Categories",
+                                          "Media Library",
+                                          "Imports",
+                                          "Review",
+                                        ];
+                                        const selectedIndex = lessonOrder.indexOf(catalogueSubsection);
+                                        const isActive = selectedIndex === index;
+                                        const isCompleted = selectedIndex >= 0 && index < selectedIndex;
+
+                                        return (
+                                          <button
+                                            key={lesson.label}
+                                            type="button"
+                                            onClick={() => setCatalogueSubsection(lesson.value as CatalogueSubsection)}
+                                            className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition ${isActive ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534] shadow-sm" : isCompleted ? "border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#86EFAC] hover:text-[#111827]"}`}
+                                          >
+                                            {isCompleted ? (
+                                              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#16A34A] text-[11px] text-white">
+                                                <Check className="h-3.5 w-3.5" />
+                                              </span>
+                                            ) : (
+                                              <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${isCompleted ? "bg-[#22C55E] text-white" : isActive ? "bg-[#111827] text-white" : "bg-[#F8FAFC] text-[#64748B]"}`}>
+                                                {isCompleted ? <Check className="h-3.5 w-3.5" /> : <span className="text-[11px]">{index + 1}</span>}
+                                              </span>
+                                            )}
+                                            <span>{lesson.label}</span>
+                                          </button>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
+                                </div>
                                 <div
                                   onDrop={onDrop}
                                   onDragOver={onDragOver}
@@ -5494,6 +5542,54 @@ export default function DashboardLayout() {
                               </div>
                             ) : catalogueSubsection === "Imports" ? (
                               <div>
+                                <div className="mb-6">
+                                  <div className="overflow-x-auto pb-1 custom-scrollbar">
+                                    <div className="flex min-w-max items-center gap-3 px-1 py-1">
+                                      {[
+                                        { label: "Products", value: "Products & Services" as CatalogueSubsection },
+                                        { label: "Pricing", value: "Pricing" as CatalogueSubsection },
+                                        { label: "Availability", value: "Availability" as CatalogueSubsection },
+                                        { label: "Categories", value: "Categories" as CatalogueSubsection },
+                                        { label: "Media", value: "Media Library" as CatalogueSubsection },
+                                        { label: "Import Catalogue", value: "Imports" as CatalogueSubsection },
+                                        { label: "Review", value: "Review" as CatalogueSubsection },
+                                      ].map((lesson, index) => {
+                                        const lessonOrder: CatalogueSubsection[] = [
+                                          "Products & Services",
+                                          "Pricing",
+                                          "Availability",
+                                          "Categories",
+                                          "Media Library",
+                                          "Imports",
+                                          "Review",
+                                        ];
+                                        const selectedIndex = lessonOrder.indexOf(catalogueSubsection);
+                                        const isActive = selectedIndex === index;
+                                        const isCompleted = selectedIndex >= 0 && index < selectedIndex;
+
+                                        return (
+                                          <button
+                                            key={lesson.label}
+                                            type="button"
+                                            onClick={() => setCatalogueSubsection(lesson.value as CatalogueSubsection)}
+                                            className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition ${isActive ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534] shadow-sm" : isCompleted ? "border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#86EFAC] hover:text-[#111827]"}`}
+                                          >
+                                            {isCompleted ? (
+                                              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#16A34A] text-[11px] text-white">
+                                                <Check className="h-3.5 w-3.5" />
+                                              </span>
+                                            ) : (
+                                              <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${isCompleted ? "bg-[#22C55E] text-white" : isActive ? "bg-[#111827] text-white" : "bg-[#F8FAFC] text-[#64748B]"}`}>
+                                                {isCompleted ? <Check className="h-3.5 w-3.5" /> : <span className="text-[11px]">{index + 1}</span>}
+                                              </span>
+                                            )}
+                                            <span>{lesson.label}</span>
+                                          </button>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
+                                </div>
                                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                                   {IMPORT_TYPES.map((t) => (
                                     <div key={t} className="flex h-full flex-col rounded-[14px] border border-[#EEF2F6] bg-white p-4 shadow-sm">
