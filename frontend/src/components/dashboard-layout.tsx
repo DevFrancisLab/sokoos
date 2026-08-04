@@ -5252,9 +5252,9 @@ export default function DashboardLayout() {
                     )}
 
                     {activeWorkspaceSection === "Catalogue" && (
-                      <div className="w-full min-w-0 space-y-6 overflow-x-hidden">
-                        <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_280px] items-start">
-                          <div>
+                      <div className="w-full max-w-[1600px] min-w-0 space-y-4 overflow-x-hidden lg:space-y-5">
+                        <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_320px] xl:gap-6 items-start">
+                          <div className="min-w-0 flex-1">
                             <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
                               <div className="flex flex-wrap items-center gap-3">
                                 <div className="relative">
@@ -6036,7 +6036,7 @@ export default function DashboardLayout() {
                               </div>
                             )}
                           </div>
-                          <aside className="hidden xl:block rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 xl:sticky xl:top-6">
+                          <aside className="hidden xl:block rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] p-4 xl:sticky xl:top-6 xl:min-w-[280px]">
                             {catalogueSubsection === "Review" ? (
                               <div className="space-y-4">
                                 <p className="text-sm font-semibold">Next steps</p>
