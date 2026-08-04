@@ -1583,6 +1583,7 @@ export default function DashboardLayout() {
     size: string;
     url: string;
     mime?: string;
+    duration?: string;
   };
 
   type CatalogueSubsection =
@@ -6329,21 +6330,37 @@ export default function DashboardLayout() {
                                               </div>
                                               <div className="text-sm text-[#64748B]">{mediaAssets.filter((asset) => asset.mime?.startsWith("video")).length} files</div>
                                             </div>
-                                            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+                                            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                                               {mediaAssets.filter((asset) => asset.mime?.startsWith("video")).map((asset) => (
-                                                <div key={asset.id} className="flex h-full flex-col rounded-[14px] border border-[#EEF2F6] bg-white p-3 shadow-sm">
-                                                  <div className="mb-3 flex aspect-[4/3] items-center justify-center overflow-hidden rounded-[10px] bg-[#F8FAFB]">
-                                                    <video src={asset.url} controls className="h-full w-full object-cover" />
-                                                  </div>
-                                                  <div className="flex min-h-0 flex-1 flex-col">
-                                                    <p className="truncate text-sm font-semibold text-[#111827]">{asset.name}</p>
-                                                    <div className="mt-2 space-y-1 text-xs text-[#6B7280]">
-                                                      <p>{asset.fileType} • {asset.size}</p>
-                                                      <p className="text-[#94A3B8]">{asset.uploadDate}</p>
+                                                <div key={asset.id} className="group flex h-full flex-col overflow-hidden rounded-[24px] border border-[#E2E8F0] bg-white text-[#0F172A] shadow-[0_8px_24px_rgba(15,23,42,0.08)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_16px_48px_rgba(15,23,42,0.12)]">
+                                                  <div className="relative overflow-hidden bg-[#F8FAFB]">
+                                                    <div className="aspect-[5/4] overflow-hidden">
+                                                      <video src={asset.url} className="h-full w-full object-cover transition duration-300 group-hover:scale-105" muted loop playsInline />
                                                     </div>
-                                                    <div className="mt-4 flex items-center justify-end gap-2">
-                                                      <button type="button" onClick={() => viewAsset(asset)} className="rounded-[8px] border border-[#E5E7EB] bg-white px-2.5 py-1.5 text-xs font-semibold">Preview</button>
-                                                      <button type="button" onClick={() => deleteAsset(asset.id)} className="rounded-[8px] border border-[#FECACA] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#B91C1C]">Delete</button>
+                                                    <div className="absolute inset-0 flex items-center justify-center bg-black/15 opacity-0 transition duration-300 group-hover:opacity-100">
+                                                      <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/90 text-[#1D4ED8] shadow-sm">
+                                                        <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                                          <path d="m10 8 6 4-6 4V8Z" strokeLinecap="round" strokeLinejoin="round" />
+                                                        </svg>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                  <div className="flex flex-1 flex-col p-5">
+                                                    <div className="space-y-3 text-sm leading-6">
+                                                      <p className="text-base font-semibold tracking-[0.01em] text-[#111827]">{asset.name}</p>
+                                                      <div className="grid gap-2 sm:grid-cols-2">
+                                                        <div className="rounded-[18px] bg-[#F8FAFB] px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#475569]">{asset.duration ?? 'Unknown duration'}</div>
+                                                        <div className="rounded-[18px] bg-[#F8FAFB] px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#475569]">{asset.size}</div>
+                                                      </div>
+                                                      <p className="text-xs uppercase tracking-[0.24em] text-[#64748B]">Uploaded {asset.uploadDate}</p>
+                                                    </div>
+                                                    <div className="mt-auto flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                                      <button type="button" onClick={() => viewAsset(asset)} className="inline-flex w-full items-center justify-center rounded-[16px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm font-semibold text-[#0F172A] transition hover:border-[#CBD5E1] hover:bg-[#F8FAFB] sm:max-w-[48%]">
+                                                        Preview
+                                                      </button>
+                                                      <button type="button" onClick={() => deleteAsset(asset.id)} className="inline-flex w-full items-center justify-center rounded-[16px] bg-[#FEF2F2] px-4 py-3 text-sm font-semibold text-[#B91C1C] transition hover:bg-[#FECACA] sm:max-w-[48%]">
+                                                        Delete
+                                                      </button>
                                                     </div>
                                                   </div>
                                                 </div>
