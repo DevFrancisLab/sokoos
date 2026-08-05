@@ -6189,78 +6189,78 @@ export default function DashboardLayout() {
                                           </div>
                                         </div>
                                       ) : (
-                                        <div className="mt-6 overflow-x-auto">
+                                        <div className="mt-6 overflow-x-auto overflow-y-auto max-h-[520px] rounded-[20px] border border-[#E5E7EB]">
                                           <table className="min-w-[720px] w-full divide-y divide-[#E5E7EB] text-sm">
-                                            <thead>
-                                              <tr className="bg-[#F8FAFB] text-left text-[11px] uppercase tracking-[0.16em] text-[#475569]">
-                                                <th className="px-4 py-3">Product</th>
-                                                <th className="px-4 py-3">Price</th>
-                                                <th className="px-4 py-3">Currency</th>
-                                                <th className="px-4 py-3">Billing period</th>
-                                                <th className="px-4 py-3">Discount</th>
-                                                <th className="px-4 py-3">Status</th>
+                                            <thead className="bg-[#F8FAFB] text-left text-[11px] uppercase tracking-[0.16em] text-[#475569]">
+                                              <tr>
+                                                <th className="sticky top-0 z-10 bg-[#F8FAFB] px-3 py-3 text-left">Product</th>
+                                                <th className="sticky top-0 z-10 bg-[#F8FAFB] px-3 py-3 text-left">Price</th>
+                                                <th className="sticky top-0 z-10 bg-[#F8FAFB] px-3 py-3 text-left">Currency</th>
+                                                <th className="sticky top-0 z-10 bg-[#F8FAFB] px-3 py-3 text-left">Billing period</th>
+                                                <th className="sticky top-0 z-10 bg-[#F8FAFB] px-3 py-3 text-left">Discount</th>
+                                                <th className="sticky top-0 z-10 bg-[#F8FAFB] px-3 py-3 text-left">Status</th>
                                               </tr>
                                             </thead>
-                                            <tbody className="divide-y divide-[#E5E7EB]">
+                                            <tbody className="divide-y divide-[#E5E7EB] bg-white">
                                               {catalogProducts.map((item) => (
-                                              <tr key={item.id} className="bg-white transition duration-150 hover:bg-[#FAFBFD]">
-                                                <td className="px-4 py-4 align-middle text-sm font-semibold text-[#111827]">{item.name}</td>
-                                                <td className="px-4 py-4 align-middle">
-                                                  <input
-                                                    value={item.price || ''}
-                                                    onChange={(e) => updateCatalogProductField(item.id, 'price', e.target.value)}
-                                                    className="w-full max-w-[140px] rounded-2xl border border-[#E5E7EB] bg-[#F8FAFB] px-3 py-2 text-sm text-[#111827] outline-none transition focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7]"
-                                                  />
-                                                </td>
-                                                <td className="px-4 py-4 align-middle">
-                                                  <select
-                                                    value={(item as any).currency || 'USD'}
-                                                    onChange={(e) => updateCatalogProductField(item.id, 'currency', e.target.value)}
-                                                    className="w-full max-w-[110px] rounded-2xl border border-[#E5E7EB] bg-[#F8FAFB] px-3 py-2 text-sm text-[#111827] outline-none transition focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7] appearance-none"
-                                                  >
-                                                    <option>USD</option>
-                                                    <option>KES</option>
-                                                    <option>EUR</option>
-                                                    <option>NGN</option>
-                                                  </select>
-                                                </td>
-                                                <td className="px-4 py-4 align-middle">
-                                                  <select
-                                                    value={(item as any).billingPeriod || 'One-time'}
-                                                    onChange={(e) => updateCatalogProductField(item.id, 'billingPeriod', e.target.value)}
-                                                    className="w-full max-w-[150px] rounded-2xl border border-[#E5E7EB] bg-[#F8FAFB] px-3 py-2 text-sm text-[#111827] outline-none transition focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7] appearance-none"
-                                                  >
-                                                    <option>One-time</option>
-                                                    <option>Monthly</option>
-                                                    <option>Yearly</option>
-                                                    <option>Usage-based</option>
-                                                  </select>
-                                                </td>
-                                                <td className="px-4 py-4 align-middle">
-                                                  <input
-                                                    type="number"
-                                                    value={(item as any).discount ?? ''}
-                                                    onChange={(e) => updateCatalogProductField(item.id, 'discount', e.target.value ? Number(e.target.value) : '')}
-                                                    className="w-full max-w-[110px] rounded-2xl border border-[#E5E7EB] bg-[#F8FAFB] px-3 py-2 text-sm text-[#111827] outline-none transition focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7]"
-                                                  />
-                                                </td>
-                                                <td className="px-4 py-4 align-middle">
-                                                  <select
-                                                    value={(item as any).status || item.availability || 'Available'}
-                                                    onChange={(e) => updateCatalogProductField(item.id, 'status', e.target.value)}
-                                                    className="w-full max-w-[150px] rounded-2xl border border-[#E5E7EB] bg-[#F8FAFB] px-3 py-2 text-sm text-[#111827] outline-none transition focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7] appearance-none"
-                                                  >
-                                                    <option>Available</option>
-                                                    <option>Low stock</option>
-                                                    <option>By appointment</option>
-                                                    <option>Out of stock</option>
-                                                  </select>
-                                                </td>
-                                              </tr>
-                                            ))}
-                                          </tbody>
-                                        </table>
-                                      </div>
+                                                <tr key={item.id} className="bg-white transition duration-200 hover:bg-[#F8FAFB] hover:shadow-sm">
+                                                  <td className="px-3 py-3 align-middle text-base font-semibold text-[#111827]">{item.name}</td>
+                                                  <td className="px-3 py-3 align-middle">
+                                                    <input
+                                                      value={item.price || ''}
+                                                      onChange={(e) => updateCatalogProductField(item.id, 'price', e.target.value)}
+                                                      className="w-full max-w-[140px] rounded-2xl border border-[#E5E7EB] bg-[#F8FAFB] px-3 py-2 text-sm text-[#111827] outline-none transition focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7]"
+                                                    />
+                                                  </td>
+                                                  <td className="px-3 py-3 align-middle">
+                                                    <select
+                                                      value={(item as any).currency || 'USD'}
+                                                      onChange={(e) => updateCatalogProductField(item.id, 'currency', e.target.value)}
+                                                      className="w-full max-w-[110px] rounded-2xl border border-[#E5E7EB] bg-[#F8FAFB] px-3 py-2 text-sm text-[#111827] outline-none transition focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7] appearance-none"
+                                                    >
+                                                      <option>USD</option>
+                                                      <option>KES</option>
+                                                      <option>EUR</option>
+                                                      <option>NGN</option>
+                                                    </select>
+                                                  </td>
+                                                  <td className="px-3 py-3 align-middle">
+                                                    <select
+                                                      value={(item as any).billingPeriod || 'One-time'}
+                                                      onChange={(e) => updateCatalogProductField(item.id, 'billingPeriod', e.target.value)}
+                                                      className="w-full max-w-[150px] rounded-2xl border border-[#E5E7EB] bg-[#F8FAFB] px-3 py-2 text-sm text-[#111827] outline-none transition focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7] appearance-none"
+                                                    >
+                                                      <option>One-time</option>
+                                                      <option>Monthly</option>
+                                                      <option>Yearly</option>
+                                                      <option>Usage-based</option>
+                                                    </select>
+                                                  </td>
+                                                  <td className="px-3 py-3 align-middle">
+                                                    <input
+                                                      type="number"
+                                                      value={(item as any).discount ?? ''}
+                                                      onChange={(e) => updateCatalogProductField(item.id, 'discount', e.target.value ? Number(e.target.value) : '')}
+                                                      className="w-full max-w-[110px] rounded-2xl border border-[#E5E7EB] bg-[#F8FAFB] px-3 py-2 text-sm text-[#111827] outline-none transition focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7]"
+                                                    />
+                                                  </td>
+                                                  <td className="px-3 py-3 align-middle">
+                                                    <select
+                                                      value={(item as any).status || item.availability || 'Available'}
+                                                      onChange={(e) => updateCatalogProductField(item.id, 'status', e.target.value)}
+                                                      className="w-full max-w-[150px] rounded-2xl border border-[#E5E7EB] bg-[#F8FAFB] px-3 py-2 text-sm text-[#111827] outline-none transition focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7] appearance-none"
+                                                    >
+                                                      <option>Available</option>
+                                                      <option>Low stock</option>
+                                                      <option>By appointment</option>
+                                                      <option>Out of stock</option>
+                                                    </select>
+                                                  </td>
+                                                </tr>
+                                              ))}
+                                            </tbody>
+                                          </table>
+                                        </div>
                                     )}
 
                                       <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
