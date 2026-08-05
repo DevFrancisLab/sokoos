@@ -1601,11 +1601,13 @@ export default function DashboardLayout() {
 
   const [catalogueSubsection, setCatalogueSubsection] = useState<CatalogueSubsection>("Products & Services");
   const [pricingSaved, setPricingSaved] = useState(false);
+  const [pricingSectionComplete, setPricingSectionComplete] = useState(false);
   const [availabilitySaved, setAvailabilitySaved] = useState(false);
   const [importMenuOpen, setImportMenuOpen] = useState(false);
   const [addProductMenuOpen, setAddProductMenuOpen] = useState(false);
   const [showAddProductForm, setShowAddProductForm] = useState(false);
   const [selectedProductType, setSelectedProductType] = useState<string | null>(null);
+  const [completedProductStepIds, setCompletedProductStepIds] = useState<string[]>([]);
   const [addProductFormData, setAddProductFormData] = useState<{ name: string; category: string; price: string; availability: string; image?: string } | null>(null);
   const [mediaAssets, setMediaAssets] = useState<MediaAsset[]>([
     {
@@ -1679,15 +1681,55 @@ export default function DashboardLayout() {
     return () => observer.disconnect();
   }, [catalogProducts.length, mediaAssets.length]);
 
+  const getProductCompletionMessage = (id: string) => {
+    switch (id) {
+      case "product-types":
+        return "Product Types complete — your AI can now distinguish between your catalog formats.";
+      case "products":
+        return "Products complete — your catalogue has been added and is ready to be managed.";
+      case "pricing":
+        return "Pricing complete — your product prices are saved and ready to publish.";
+      case "product-media":
+        return "Product Media complete — your catalogue now includes visual assets.";
+      default:
+        return "Section complete — your products lesson is moving forward.";
+    }
+  };
+
   const productSteps = useMemo(
     () => [
-      { id: "product-types", title: "Product Types", detail: "Choose the formats you offer", done: true },
+      { id: "product-types", title: "Product Types", detail: "Choose the formats you offer", done: selectedProductType !== null },
       { id: "products", title: "Products", detail: "Add and manage catalog items", done: catalogProducts.length > 0 },
-      { id: "pricing", title: "Pricing", detail: "Set prices and billing", done: catalogProducts.length > 0 },
+      { id: "pricing", title: "Pricing", detail: "Set prices and billing", done: pricingSectionComplete },
       { id: "product-media", title: "Product Media", detail: "Attach visuals and video", done: mediaAssets.length > 0 },
     ],
-    [catalogProducts.length, mediaAssets.length],
+    [catalogProducts.length, mediaAssets.length, pricingSectionComplete, selectedProductType],
   );
+
+  const productLessonCompleted = productSteps.filter((step) => step.done).length;
+  const productLessonProgress = Math.round((productLessonCompleted / productSteps.length) * 100);
+
+  const productCompletionMounted = useRef(false);
+
+  useEffect(() => {
+    if (!productCompletionMounted.current) {
+      productCompletionMounted.current = true;
+      return;
+    }
+
+    const completedIds = productSteps.filter((step) => step.done).map((step) => step.id);
+    const newlyCompleted = completedIds.filter((id) => !completedProductStepIds.includes(id));
+    if (newlyCompleted.length === 0) return;
+
+    setCompletedProductStepIds((current) => [...current, ...newlyCompleted]);
+
+    newlyCompleted.forEach((id, index) => {
+      window.setTimeout(() => {
+        setCompletionToast(getProductCompletionMessage(id));
+        window.setTimeout(() => setCompletionToast(null), 2200);
+      }, index * 2400);
+    });
+  }, [completedProductStepIds, productSteps]);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const serviceFileInputRef = useRef<HTMLInputElement | null>(null);
@@ -5953,6 +5995,18 @@ export default function DashboardLayout() {
                                           <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Products lesson</p>
                                           <p className="mt-2 text-lg font-semibold text-[#111827]">Guide your AI through the products you offer</p>
                                           <p className="mt-2 text-sm leading-6 text-[#64748B]">Complete these four sections in order so your AI can describe, recommend, price, and present your catalog with confidence.</p>
+                                          <div className="mt-6 rounded-[24px] border border-[#E5E7EB] bg-white p-4 shadow-sm sm:p-5">
+                                            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                              <div>
+                                                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Progress</p>
+                                                <p className="mt-2 text-sm font-semibold text-[#111827]">{productLessonCompleted} of {productSteps.length} sections completed</p>
+                                              </div>
+                                              <p className="text-sm font-semibold text-[#111827]">{productLessonProgress}%</p>
+                                            </div>
+                                            <div className="mt-4 h-3 overflow-hidden rounded-full bg-[#E5E7EB]">
+                                              <div className="h-full rounded-full bg-gradient-to-r from-[#22C55E] to-[#4ADE80]" style={{ width: `${productLessonProgress}%` }} />
+                                            </div>
+                                          </div>
                                         </div>
                                         <div className="rounded-[12px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
                                           <span className="font-semibold">{catalogProducts.length > 0 ? "In progress" : "Not started"}</span>
@@ -6269,6 +6323,7 @@ export default function DashboardLayout() {
                                           <button
                                             onClick={() => {
                                               setPricingSaved(true);
+                                              setPricingSectionComplete(true);
                                               window.setTimeout(() => setPricingSaved(false), 1800);
                                             }}
                                             className="rounded-[14px] bg-[#22C55E] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
