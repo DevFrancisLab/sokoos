@@ -6084,10 +6084,10 @@ export default function DashboardLayout() {
                                                   </svg>
                                                 </div>
                                               </div>
-                                              <p className="text-2xl font-semibold text-[#111827]">No products yet</p>
-                                              <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#475569]">Start by adding your first product so your AI can recommend it to customers.</p>
+                                              <p className="text-2xl font-semibold text-[#111827]">No Products Yet</p>
+                                              <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#475569]">Add your first product so your AI can recommend it.</p>
                                               <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                                                <button onClick={() => addProduct()} className="rounded-[16px] bg-[#0F172A] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#111827]">Add product</button>
+                                                <button onClick={() => addProduct()} className="rounded-[16px] bg-[#0F172A] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#111827]">Add Product</button>
                                                 <button onClick={() => setCatalogueSubsection("Imports")} className="rounded-[16px] border border-[#E5E7EB] bg-white px-6 py-3 text-sm font-semibold text-[#334155] shadow-sm transition hover:bg-[#F8FAFB]">Import catalogue</button>
                                               </div>
                                             </div>
@@ -6172,20 +6172,37 @@ export default function DashboardLayout() {
                                         </div>
                                       </div>
 
-                                      <div className="mt-6 overflow-x-auto">
-                                        <table className="min-w-[720px] w-full divide-y divide-[#E5E7EB] text-sm">
-                                          <thead>
-                                            <tr className="bg-[#F8FAFB] text-left text-[11px] uppercase tracking-[0.16em] text-[#475569]">
-                                              <th className="px-4 py-3">Product</th>
-                                              <th className="px-4 py-3">Price</th>
-                                              <th className="px-4 py-3">Currency</th>
-                                              <th className="px-4 py-3">Billing period</th>
-                                              <th className="px-4 py-3">Discount</th>
-                                              <th className="px-4 py-3">Status</th>
-                                            </tr>
-                                          </thead>
-                                          <tbody className="divide-y divide-[#E5E7EB]">
-                                            {catalogProducts.map((item) => (
+                                      {catalogProducts.length === 0 ? (
+                                        <div className="mt-6 rounded-[24px] border border-dashed border-[#CBD5E1] bg-[#F8FAFB] p-10 text-center shadow-sm">
+                                          <div className="mx-auto mb-6 flex h-36 w-36 items-center justify-center rounded-[2rem] bg-white shadow-sm">
+                                            <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-[#DBEAFE] text-[#1D4ED8]">
+                                              <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6.75h16M7.5 10.75h9M6 15.75h12" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.5 5.75 12 9.25l3.5-3.5" />
+                                              </svg>
+                                            </div>
+                                          </div>
+                                          <p className="text-2xl font-semibold text-[#111827]">No pricing rows yet</p>
+                                          <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#475569]">Add a product so your AI can recommend pricing with confidence.</p>
+                                          <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                                            <button onClick={() => addProduct()} className="rounded-[16px] bg-[#0F172A] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#111827]">Add Product</button>
+                                          </div>
+                                        </div>
+                                      ) : (
+                                        <div className="mt-6 overflow-x-auto">
+                                          <table className="min-w-[720px] w-full divide-y divide-[#E5E7EB] text-sm">
+                                            <thead>
+                                              <tr className="bg-[#F8FAFB] text-left text-[11px] uppercase tracking-[0.16em] text-[#475569]">
+                                                <th className="px-4 py-3">Product</th>
+                                                <th className="px-4 py-3">Price</th>
+                                                <th className="px-4 py-3">Currency</th>
+                                                <th className="px-4 py-3">Billing period</th>
+                                                <th className="px-4 py-3">Discount</th>
+                                                <th className="px-4 py-3">Status</th>
+                                              </tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-[#E5E7EB]">
+                                              {catalogProducts.map((item) => (
                                               <tr key={item.id} className="bg-white transition duration-150 hover:bg-[#FAFBFD]">
                                                 <td className="px-4 py-4 align-middle text-sm font-semibold text-[#111827]">{item.name}</td>
                                                 <td className="px-4 py-4 align-middle">
@@ -6244,6 +6261,7 @@ export default function DashboardLayout() {
                                           </tbody>
                                         </table>
                                       </div>
+                                    )}
 
                                       <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                         <div className="text-sm leading-6 text-[#64748B]">Pricing changes are saved when you click the button. All values remain editable in this workspace.</div>
@@ -6347,10 +6365,10 @@ export default function DashboardLayout() {
                                                 <path d="M9 8.5 12 11.5l3-3" strokeLinecap="round" strokeLinejoin="round" />
                                               </svg>
                                             </div>
-                                            <p className="text-lg font-semibold text-[#111827]">No images yet</p>
-                                            <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#475569]">Upload product photos to make your catalogue more engaging and easier to recommend.</p>
+                                            <p className="text-lg font-semibold text-[#111827]">No Images Yet</p>
+                                            <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#475569]">Upload product photos so your AI can describe your products visually.</p>
                                             <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                                              <button type="button" onClick={() => fileInputRef.current?.click()} className="inline-flex items-center justify-center rounded-[16px] bg-[#0F172A] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#111827]">Upload images</button>
+                                              <button type="button" onClick={() => fileInputRef.current?.click()} className="inline-flex items-center justify-center rounded-[16px] bg-[#0F172A] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#111827]">Upload Images</button>
                                             </div>
                                           </div>
                                         ) : (
@@ -6405,10 +6423,10 @@ export default function DashboardLayout() {
                                                 <path d="M4 5.5h16M4 18.5h16" strokeLinecap="round" strokeLinejoin="round" />
                                               </svg>
                                             </div>
-                                            <p className="text-lg font-semibold text-[#111827]">No videos yet</p>
-                                            <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#475569]">Upload short videos so your AI can show customers product details with motion and context.</p>
+                                            <p className="text-lg font-semibold text-[#111827]">No Videos Yet</p>
+                                            <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#475569]">Upload product videos to improve customer recommendations.</p>
                                             <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                                              <button type="button" onClick={() => fileInputRef.current?.click()} className="inline-flex items-center justify-center rounded-[16px] bg-[#0F172A] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#111827]">Upload videos</button>
+                                              <button type="button" onClick={() => fileInputRef.current?.click()} className="inline-flex items-center justify-center rounded-[16px] bg-[#0F172A] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#111827]">Upload Videos</button>
                                             </div>
                                           </div>
                                         ) : (
