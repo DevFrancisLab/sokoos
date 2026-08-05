@@ -5992,10 +5992,10 @@ export default function DashboardLayout() {
 
                                       <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
                                         {[
-                                          { key: "Product", desc: "Physical product" },
-                                          { key: "Service", desc: "Bookable service" },
-                                          { key: "Subscription", desc: "Recurring plan" },
-                                          { key: "Digital Product", desc: "Downloadable item" },
+                                          { key: "Product", icon: "📦", desc: "Physical goods", examples: ["Shoes", "Laptop"] },
+                                          { key: "Service", icon: "🛠", desc: "Work customers book", examples: ["Haircut", "Plumbing"] },
+                                          { key: "Subscription", icon: "🔄", desc: "Recurring payments", examples: ["Gym Membership", "SaaS Plan"] },
+                                          { key: "Digital Product", icon: "💾", desc: "Downloadable items", examples: ["Ebook", "Template"] },
                                         ].map((t) => {
                                           const isSelected = selectedProductType === t.key;
                                           return (
@@ -6008,9 +6008,9 @@ export default function DashboardLayout() {
                                               className={`group flex min-h-[190px] w-full flex-col justify-between rounded-[28px] border bg-white p-6 text-left shadow-sm transition duration-200 ease-out ${isSelected ? 'border-[#22C55E] bg-[#ECFDF5]' : 'border-[#E8EDF3] hover:-translate-y-1 hover:border-[#22C55E] hover:bg-[#ECFDF5] hover:shadow-md'}`}
                                               type="button"
                                             >
-                                              <div className="flex items-center justify-between gap-4">
-                                                <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-[#EEF6FF] text-[#2563EB] shadow-sm">
-                                                  <Package className="h-5 w-5" />
+                                              <div className="flex items-start justify-between gap-4">
+                                                <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-[#EEF6FF] text-2xl shadow-sm">
+                                                  {t.icon}
                                                 </div>
                                                 <div className={`flex h-9 w-9 items-center justify-center rounded-full border text-[11px] font-semibold ${isSelected ? 'border-[#22C55E] bg-[#22C55E] text-white' : 'border-[#E5E7EB] bg-white text-[#64748B]'}`}>
                                                   {isSelected ? <Check className="h-4 w-4" /> : t.key.slice(0, 1)}
@@ -6020,6 +6020,14 @@ export default function DashboardLayout() {
                                               <div className="mt-6 flex-1">
                                                 <p className="text-base font-semibold text-[#111827]">{t.key}</p>
                                                 <p className="mt-2 text-sm leading-6 text-[#64748B]">{t.desc}</p>
+                                                <div className="mt-4 text-sm text-[#475569]">
+                                                  <p className="font-semibold text-[#111827]">Examples:</p>
+                                                  <ul className="mt-2 list-inside list-disc space-y-1 text-[#64748B]">
+                                                    {t.examples.map((example) => (
+                                                      <li key={example}>{example}</li>
+                                                    ))}
+                                                  </ul>
+                                                </div>
                                               </div>
 
                                               <div className="mt-4 text-sm font-semibold text-[#166534] opacity-0 transition-all duration-200 group-hover:opacity-100">
