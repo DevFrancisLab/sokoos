@@ -1669,6 +1669,138 @@ export default function DashboardLayout() {
     const url = URL.createObjectURL(file);
     updateCatalogProductField(selectedProduct.id, "image", url);
   };
+
+  const renderPricingEditor = () => (
+    <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-6">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p className="text-lg font-semibold text-[#111827]">Services editor</p>
+          <p className="mt-2 text-sm text-[#64748B]">Manage service details, booking options, and media for your AI recommendations.</p>
+        </div>
+        <button type="button" onClick={addService} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Add Service</button>
+      </div>
+
+      <div className="mt-6 overflow-x-auto">
+        <table className="min-w-full text-sm">
+          <thead>
+            <tr className="text-left text-[11px] uppercase tracking-[0.12em] text-[#6B7280]">
+              <th className="px-2 py-2">Service</th>
+              <th className="px-2 py-2">Category</th>
+              <th className="px-2 py-2">Price</th>
+              <th className="px-2 py-2">Duration</th>
+              <th className="px-2 py-2">Area</th>
+              <th className="px-2 py-2">Appt.</th>
+            </tr>
+          </thead>
+          <tbody>
+            {catalogServices.map((service) => (
+              <tr key={service.id} className={`border-t cursor-pointer ${service.id === selectedServiceId ? "bg-[#ECFDF5]" : "hover:bg-[#F8FAFB]"}`} onClick={() => setSelectedServiceId(service.id)}>
+                <td className="px-2 py-2 align-middle text-sm text-[#111827]">{service.name}</td>
+                <td className="px-2 py-2 align-middle text-sm text-[#475569]">{service.category}</td>
+                <td className="px-2 py-2 align-middle text-sm text-[#475569]">{service.price}</td>
+                <td className="px-2 py-2 align-middle text-sm text-[#475569]">{service.duration}</td>
+                <td className="px-2 py-2 align-middle text-sm text-[#475569]">{service.area}</td>
+                <td className="px-2 py-2 align-middle text-sm text-[#475569]">{service.appointmentRequired ? "Yes" : "No"}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="mt-6 grid gap-4 lg:grid-cols-[1.3fr_0.9fr]">
+        <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-6">
+          <p className="text-sm font-semibold text-[#111827]">Service details</p>
+          <div className="mt-5 space-y-4">
+            <div>
+              <label className="text-xs text-[#6B7280]">Name</label>
+              <input value={selectedService.name} onChange={(e) => updateServiceField(selectedService.id, "name", e.target.value)} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+            </div>
+            <div>
+              <label className="text-xs text-[#6B7280]">Description</label>
+              <textarea value={selectedService.description} onChange={(e) => updateServiceField(selectedService.id, "description", e.target.value)} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm min-h-[96px]" />
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label className="text-xs text-[#6B7280]">Category</label>
+                <input value={selectedService.category} onChange={(e) => updateServiceField(selectedService.id, "category", e.target.value)} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+              </div>
+              <div>
+                <label className="text-xs text-[#6B7280]">Price</label>
+                <input value={selectedService.price} onChange={(e) => updateServiceField(selectedService.id, "price", e.target.value)} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+              </div>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label className="text-xs text-[#6B7280]">Duration</label>
+                <input value={selectedService.duration} onChange={(e) => updateServiceField(selectedService.id, "duration", e.target.value)} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+              </div>
+              <div>
+                <label className="text-xs text-[#6B7280]">Service area</label>
+                <input value={selectedService.area} onChange={(e) => updateServiceField(selectedService.id, "area", e.target.value)} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <label className="inline-flex items-center gap-2 text-sm text-[#111827]">
+                <input type="checkbox" checked={selectedService.appointmentRequired} onChange={(e) => updateServiceField(selectedService.id, "appointmentRequired", e.target.checked)} className="h-4 w-4 rounded border border-[#D1D5DB] text-[#22C55E] focus:ring-[#22C55E]" />
+                Appointment required
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-6">
+          <p className="text-sm font-semibold text-[#111827]">Media and files</p>
+          <p className="mt-2 text-sm text-[#64748B]">Upload images, videos, or supporting documents for this service.</p>
+          <div className="mt-4 rounded-[12px] border-dashed border-2 border-[#E5E7EB] bg-[#FAFAFB] p-4 text-center">
+            <p className="text-sm font-semibold text-[#111827]">Drag & drop files here</p>
+            <p className="mt-2 text-sm text-[#64748B]">Images, videos, documents, or any service resources.</p>
+            <div className="mt-4">
+              <input ref={serviceFileInputRef} type="file" multiple className="hidden" onChange={(e) => handleServiceFiles(e.target.files)} />
+              <button type="button" onClick={() => serviceFileInputRef.current?.click()} className="inline-flex items-center gap-2 rounded-[12px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Upload files</button>
+            </div>
+          </div>
+
+          <div className="mt-5 grid gap-3">
+            <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-4">
+              <p className="text-sm font-semibold text-[#111827]">Files uploaded</p>
+              <p className="mt-1 text-xs text-[#64748B]">{selectedService.mediaAssets.length} assets attached</p>
+            </div>
+            {selectedService.mediaAssets.length > 0 && (
+              <div className="grid gap-4 sm:grid-cols-2">
+                {selectedService.mediaAssets.map((asset) => (
+                  <div key={asset.id} className="flex h-full flex-col rounded-[14px] border border-[#EEF2F6] bg-white p-3 shadow-sm">
+                    <div className="mb-3 flex aspect-[4/3] items-center justify-center overflow-hidden rounded-[10px] bg-[#F8FAFB]">
+                      {asset.mime?.startsWith("image") ? (
+                        <img src={asset.url} alt={asset.name} className="h-full w-full object-cover" />
+                      ) : asset.mime?.startsWith("video") ? (
+                        <video src={asset.url} controls className="h-full w-full object-cover" />
+                      ) : (
+                        <div className="flex flex-col items-center justify-center text-sm text-[#475569]">
+                          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 2h7l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" stroke="#64748B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                          <span className="mt-2">File</span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex min-h-0 flex-1 flex-col">
+                      <p className="truncate text-sm font-semibold text-[#111827]">{asset.name}</p>
+                      <div className="mt-2 space-y-1 text-xs text-[#6B7280]">
+                        <p>{asset.fileType} • {asset.size}</p>
+                        <p className="text-[#94A3B8]">{asset.uploadDate}</p>
+                      </div>
+                      <div className="mt-4 flex items-center justify-end gap-2">
+                        <button type="button" onClick={() => viewServiceAsset(asset)} className="rounded-[8px] border border-[#E5E7EB] bg-white px-2.5 py-1.5 text-xs font-semibold">Preview</button>
+                        <button type="button" onClick={() => deleteServiceAsset(asset.id)} className="rounded-[8px] border border-[#FECACA] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#B91C1C]">Delete</button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
   const [activeProductStep, setActiveProductStep] = useState(0);
   const productStepRefs = useRef<(HTMLElement | null)[]>([]);
   const focusProductStep = (index: number) => {
@@ -1750,6 +1882,7 @@ export default function DashboardLayout() {
   }, [completedProductStepIds, productSteps]);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const productMediaFileInputRef = useRef<HTMLInputElement | null>(null);
   const serviceFileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleFiles = (files: FileList | null) => {
@@ -6168,397 +6301,6 @@ export default function DashboardLayout() {
                                         );
                                       })()}
                                     </section>
-
-                                  </div>
-                                ) : catalogueSubsection === "Pricing" ? (
-                                  <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-6">
-                                    <div className="flex flex-wrap items-start justify-between gap-4">
-                                      <div>
-                                        <p className="text-lg font-semibold text-[#111827]">Services editor</p>
-                                        <p className="mt-2 text-sm text-[#64748B]">Manage service details, booking options, and media for your AI recommendations.</p>
-                                      </div>
-                                      <button type="button" onClick={addService} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Add Service</button>
-                                    </div>
-
-                                    <div className="mt-6 overflow-x-auto">
-                                      <table className="min-w-full text-sm">
-                                        <thead>
-                                          <tr className="text-left text-[11px] uppercase tracking-[0.12em] text-[#6B7280]">
-                                            <th className="px-2 py-2">Service</th>
-                                            <th className="px-2 py-2">Category</th>
-                                            <th className="px-2 py-2">Price</th>
-                                            <th className="px-2 py-2">Duration</th>
-                                            <th className="px-2 py-2">Area</th>
-                                            <th className="px-2 py-2">Appt.</th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          {catalogServices.map((service) => (
-                                            <tr key={service.id} className={`border-t cursor-pointer ${service.id === selectedServiceId ? "bg-[#ECFDF5]" : "hover:bg-[#F8FAFB]"}`} onClick={() => setSelectedServiceId(service.id)}>
-                                              <td className="px-2 py-2 align-middle text-sm text-[#111827]">{service.name}</td>
-                                              <td className="px-2 py-2 align-middle text-sm text-[#475569]">{service.category}</td>
-                                              <td className="px-2 py-2 align-middle text-sm text-[#475569]">{service.price}</td>
-                                              <td className="px-2 py-2 align-middle text-sm text-[#475569]">{service.duration}</td>
-                                              <td className="px-2 py-2 align-middle text-sm text-[#475569]">{service.area}</td>
-                                              <td className="px-2 py-2 align-middle text-sm text-[#475569]">{service.appointmentRequired ? "Yes" : "No"}</td>
-                                            </tr>
-                                          ))}
-                                        </tbody>
-                                      </table>
-                                    </div>
-
-                                    <div className="mt-6 grid gap-4 lg:grid-cols-[1.3fr_0.9fr]">
-                                      <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-6">
-                                        <p className="text-sm font-semibold text-[#111827]">Service details</p>
-                                        <div className="mt-5 space-y-4">
-                                          <div>
-                                            <label className="text-xs text-[#6B7280]">Name</label>
-                                            <input value={selectedService.name} onChange={(e) => updateServiceField(selectedService.id, "name", e.target.value)} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
-                                          </div>
-                                          <div>
-                                            <label className="text-xs text-[#6B7280]">Description</label>
-                                            <textarea value={selectedService.description} onChange={(e) => updateServiceField(selectedService.id, "description", e.target.value)} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm min-h-[96px]" />
-                                          </div>
-                                          <div className="grid gap-4 sm:grid-cols-2">
-                                            <div>
-                                              <label className="text-xs text-[#6B7280]">Category</label>
-                                              <input value={selectedService.category} onChange={(e) => updateServiceField(selectedService.id, "category", e.target.value)} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
-                                            </div>
-                                            <div>
-                                              <label className="text-xs text-[#6B7280]">Price</label>
-                                              <input value={selectedService.price} onChange={(e) => updateServiceField(selectedService.id, "price", e.target.value)} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
-                                            </div>
-                                          </div>
-                                          <div className="grid gap-4 sm:grid-cols-2">
-                                            <div>
-                                              <label className="text-xs text-[#6B7280]">Duration</label>
-                                              <input value={selectedService.duration} onChange={(e) => updateServiceField(selectedService.id, "duration", e.target.value)} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
-                                            </div>
-                                            <div>
-                                              <label className="text-xs text-[#6B7280]">Service area</label>
-                                              <input value={selectedService.area} onChange={(e) => updateServiceField(selectedService.id, "area", e.target.value)} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
-                                            </div>
-                                          </div>
-                                          <div className="flex items-center gap-3">
-                                            <label className="inline-flex items-center gap-2 text-sm text-[#111827]">
-                                              <input type="checkbox" checked={selectedService.appointmentRequired} onChange={(e) => updateServiceField(selectedService.id, "appointmentRequired", e.target.checked)} className="h-4 w-4 rounded border border-[#D1D5DB] text-[#22C55E] focus:ring-[#22C55E]" />
-                                              Appointment required
-                                            </label>
-                                          </div>
-                                        </div>
-                                      </div>
-
-                                      <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-6">
-                                        <p className="text-sm font-semibold text-[#111827]">Media and files</p>
-                                        <p className="mt-2 text-sm text-[#64748B]">Upload images, videos, or supporting documents for this service.</p>
-                                        <div className="mt-4 rounded-[12px] border-dashed border-2 border-[#E5E7EB] bg-[#FAFAFB] p-4 text-center">
-                                          <p className="text-sm font-semibold text-[#111827]">Drag & drop files here</p>
-                                          <p className="mt-2 text-sm text-[#64748B]">Images, videos, documents, or any service resources.</p>
-                                          <div className="mt-4">
-                                            <input ref={serviceFileInputRef} type="file" multiple className="hidden" onChange={(e) => handleServiceFiles(e.target.files)} />
-                                            <button type="button" onClick={() => serviceFileInputRef.current?.click()} className="inline-flex items-center gap-2 rounded-[12px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Upload files</button>
-                                          </div>
-                                        </div>
-
-                                        <div className="mt-5 grid gap-3">
-                                          <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-4">
-                                            <p className="text-sm font-semibold text-[#111827]">Files uploaded</p>
-                                            <p className="mt-1 text-xs text-[#64748B]">{selectedService.mediaAssets.length} assets attached</p>
-                                          </div>
-                                          {selectedService.mediaAssets.length > 0 && (
-                                            <div className="grid gap-4 sm:grid-cols-2">
-                                              {selectedService.mediaAssets.map((asset) => (
-                                                <div key={asset.id} className="flex h-full flex-col rounded-[14px] border border-[#EEF2F6] bg-white p-3 shadow-sm">
-                                                  <div className="mb-3 flex aspect-[4/3] items-center justify-center overflow-hidden rounded-[10px] bg-[#F8FAFB]">
-                                                    {asset.mime?.startsWith("image") ? (
-                                                      <img src={asset.url} alt={asset.name} className="h-full w-full object-cover" />
-                                                    ) : asset.mime?.startsWith("video") ? (
-                                                      <video src={asset.url} controls className="h-full w-full object-cover" />
-                                                    ) : (
-                                                      <div className="flex flex-col items-center justify-center text-sm text-[#475569]">
-                                                        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 2h7l5 5v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" stroke="#64748B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                                                        <span className="mt-2">File</span>
-                                                      </div>
-                                                    )}
-                                                  </div>
-                                                  <div className="flex min-h-0 flex-1 flex-col">
-                                                    <p className="truncate text-sm font-semibold text-[#111827]">{asset.name}</p>
-                                                    <div className="mt-2 space-y-1 text-xs text-[#6B7280]">
-                                                      <p>{asset.fileType} • {asset.size}</p>
-                                                      <p className="text-[#94A3B8]">{asset.uploadDate}</p>
-                                                    </div>
-                                                    <div className="mt-4 flex items-center justify-end gap-2">
-                                                      <button type="button" onClick={() => viewServiceAsset(asset)} className="rounded-[8px] border border-[#E5E7EB] bg-white px-2.5 py-1.5 text-xs font-semibold">Preview</button>
-                                                      <button type="button" onClick={() => deleteServiceAsset(asset.id)} className="rounded-[8px] border border-[#FECACA] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#B91C1C]">Delete</button>
-                                                    </div>
-                                                  </div>
-                                                </div>
-                                              ))}
-                                            </div>
-                                          )}
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                ) : catalogueSubsection === "Availability" ? (
-                                  <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-4">
-                                    <div className="overflow-x-auto">
-                                      <table className="min-w-full text-sm">
-                                        <thead>
-                                          <tr className="text-left text-[11px] uppercase tracking-[0.12em] text-[#6B7280]">
-                                            <th className="px-2 py-2">Product</th>
-                                            <th className="px-2 py-2">Current stock</th>
-                                            <th className="px-2 py-2">Stock status</th>
-                                            <th className="px-2 py-2">Low stock threshold</th>
-                                            <th className="px-2 py-2">Warehouse / branch</th>
-                                            <th className="px-2 py-2">Availability</th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          {catalogProducts.map((item) => (
-                                            <tr key={item.id} className="border-t hover:bg-[#F8FAFB]">
-                                              <td className="px-2 py-2 align-middle text-sm text-[#111827]">{item.name}</td>
-                                              <td className="px-2 py-2 align-middle">
-                                                <input type="number" value={(item as any).currentStock ?? 0} onChange={(e) => updateCatalogProductField(item.id, 'currentStock', Number(e.target.value))} className="w-24 rounded border border-[#E5E7EB] px-2 py-1 text-sm" />
-                                              </td>
-                                              <td className="px-2 py-2 align-middle">
-                                                <select value={(item as any).stockStatus || 'In stock'} onChange={(e) => updateCatalogProductField(item.id, 'stockStatus', e.target.value)} className="w-28 rounded border border-[#E5E7EB] px-2 py-1 text-sm">
-                                                  <option>In stock</option>
-                                                  <option>Low stock</option>
-                                                  <option>Out of stock</option>
-                                                  <option>Backordered</option>
-                                                </select>
-                                              </td>
-                                              <td className="px-2 py-2 align-middle">
-                                                <input type="number" value={(item as any).lowStockThreshold ?? 10} onChange={(e) => updateCatalogProductField(item.id, 'lowStockThreshold', Number(e.target.value))} className="w-24 rounded border border-[#E5E7EB] px-2 py-1 text-sm" />
-                                              </td>
-                                              <td className="px-2 py-2 align-middle">
-                                                <input value={(item as any).warehouseLocation || 'Main warehouse'} onChange={(e) => updateCatalogProductField(item.id, 'warehouseLocation', e.target.value)} className="w-40 rounded border border-[#E5E7EB] px-2 py-1 text-sm" />
-                                              </td>
-                                              <td className="px-2 py-2 align-middle">
-                                                <input value={(item.availability || 'Available')} onChange={(e) => updateCatalogProductField(item.id, 'availability', e.target.value)} className="w-28 rounded border border-[#E5E7EB] px-2 py-1 text-sm" />
-                                              </td>
-                                            </tr>
-                                          ))}
-                                        </tbody>
-                                      </table>
-                                    </div>
-                                    <div className="mt-4 flex items-center justify-between gap-4">
-                                      <div className="text-sm text-[#64748B]">Track stock levels, reorder points, and where inventory is stored.</div>
-                                      <div>
-                                        <button onClick={() => {
-                                          setAvailabilitySaved(true);
-                                          window.setTimeout(() => setAvailabilitySaved(false), 1800);
-                                        }} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Save Inventory</button>
-                                        {availabilitySaved ? <span className="ml-3 text-sm text-[#16A34A]">Saved</span> : null}
-                                      </div>
-                                    </div>
-                                  </div>
-                                ) : catalogueSubsection === "Review" ? (
-                                  <div className="rounded-[12px] border border-[#E5E7EB] bg-white p-6">
-                                    <p className="text-lg font-semibold text-[#111827]">Review</p>
-                                    <p className="mt-2 text-sm text-[#64748B]">A checklist of sections in your catalogue. Complete any missing items before finishing.</p>
-
-                                    {(() => {
-                                      const hasProducts = catalogProducts.length > 0;
-                                      const totalProducts = catalogProducts.length;
-                                      const totalServices = catalogServices.length;
-                                      const totalUploadedMedia = mediaAssets.length;
-                                      const productsMissing = hasProducts ? [] : ['Add at least one product'];
-                                      const servicesMissing = totalServices > 0 ? [] : ['Add at least one service'];
-                                      const inventoryMissing = catalogProducts
-                                        .filter((p) => !(p as any).currentStock && (p as any).currentStock !== 0 || !(p as any).stockStatus || !(p as any).warehouseLocation || !(p as any).availability)
-                                        .map((p) => p.name || 'Unnamed product');
-                                      const inventoryComplete = hasProducts && inventoryMissing.length === 0;
-                                      const reviewComplete = hasProducts && totalServices > 0 && inventoryComplete;
-                                      const inStockCount = catalogProducts.filter((p) => ((p as any).stockStatus || 'In stock') === 'In stock').length;
-                                      const lowStockCount = catalogProducts.filter((p) => (p as any).stockStatus === 'Low stock').length;
-                                      const outOfStockCount = catalogProducts.filter((p) => (p as any).stockStatus === 'Out of stock').length;
-                                      const backorderedCount = catalogProducts.filter((p) => (p as any).stockStatus === 'Backordered').length;
-                                      const inventoryStatus = hasProducts
-                                        ? `${inStockCount} in stock, ${lowStockCount} low stock, ${outOfStockCount} out of stock${backorderedCount ? `, ${backorderedCount} backordered` : ''}`
-                                        : 'No inventory data';
-                                      const sections = [
-                                        {
-                                          key: 'Products',
-                                          done: hasProducts,
-                                          jump: 'Products & Services',
-                                          configuredCount: totalProducts,
-                                          missingItems: productsMissing,
-                                        },
-                                        {
-                                          key: 'Services',
-                                          done: totalServices > 0,
-                                          jump: 'Pricing',
-                                          configuredCount: totalServices,
-                                          missingItems: servicesMissing,
-                                        },
-                                        {
-                                          key: 'Inventory',
-                                          done: inventoryComplete,
-                                          jump: 'Availability',
-                                          configuredCount: totalProducts,
-                                          missingItems: inventoryMissing,
-                                        },
-                                        {
-                                          key: 'Review',
-                                          done: reviewComplete,
-                                          jump: 'Review',
-                                          configuredCount: reviewComplete ? 1 : 0,
-                                          missingItems: reviewComplete ? [] : ['Complete Products, Services, and Inventory'],
-                                        },
-                                      ];
-
-                                      const allDone = sections.every((s) => s.done);
-
-                                      return (
-                                        <div className="mt-6 space-y-5">
-                                          <div className="grid gap-4 md:grid-cols-2">
-                                            {sections.map((s, index) => (
-                                              <div key={`${s.key}-${index}`} className={`rounded-[12px] border p-4 ${s.done ? 'border-[#D1FAE5] bg-[#F0FDF4]' : 'border-[#EEF2F6] bg-white'}`}>
-                                                <div className="flex items-start justify-between gap-3">
-                                                  <div className="flex items-center gap-3">
-                                                    <div className={`flex h-9 w-9 items-center justify-center rounded-full ${s.done ? 'bg-[#DCFCE7] text-[#16A34A]' : 'bg-[#F1F5F9] text-[#64748B]'}`}>
-                                                      {s.done ? (
-                                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                                                      ) : (
-                                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 5v14M5 12h14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
-                                                      )}
-                                                    </div>
-                                                    <div>
-                                                      <p className="text-sm font-semibold text-[#111827]">{s.key}</p>
-                                                      <p className={`text-xs ${s.done ? 'text-[#16A34A]' : 'text-[#64748B]'}`}>{s.done ? 'Completed' : 'Incomplete'}</p>
-                                                    </div>
-                                                  </div>
-                                                  {s.done ? (
-                                                    <span className="rounded-full bg-[#DCFCE7] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-[#166534]">Ready</span>
-                                                  ) : (
-                                                    <button onClick={() => setCatalogueSubsection(s.jump as any)} className="text-sm font-semibold text-[#065F46]">Complete now →</button>
-                                                  )}
-                                                </div>
-
-                                                <div className="mt-4">
-                                                  <p className="text-xs font-medium uppercase tracking-wide text-[#64748B]">Configured items</p>
-                                                  <p className="mt-1 text-lg font-semibold text-[#111827]">{s.configuredCount}</p>
-                                                </div>
-
-                                                <div className="mt-4">
-                                                  <p className="text-xs font-medium uppercase tracking-wide text-[#64748B]">Missing items</p>
-                                                  {s.missingItems.length > 0 ? (
-                                                    <ul className="mt-2 space-y-2 text-sm text-[#64748B]">
-                                                      {s.missingItems.map((item, itemIndex) => (
-                                                        <li key={`${s.key}-${itemIndex}`} className="flex items-start gap-2">
-                                                          <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-[#F59E0B]" />
-                                                          <span>{item}</span>
-                                                        </li>
-                                                      ))}
-                                                    </ul>
-                                                  ) : (
-                                                    <p className="mt-2 text-sm text-[#16A34A]">No missing items</p>
-                                                  )}
-                                                </div>
-                                              </div>
-                                            ))}
-                                          </div>
-
-                                          <div className="rounded-[12px] border border-[#EEF2F6] bg-[#F8FAFB] p-4">
-                                            <p className="text-sm font-semibold text-[#111827]">Review summary</p>
-                                            <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                                              <div className="rounded-[10px] border border-[#E5E7EB] bg-white p-3 text-sm">
-                                                <p className="text-xs uppercase tracking-[0.12em] text-[#64748B]">Total products</p>
-                                                <p className="mt-1 text-lg font-semibold text-[#111827]">{totalProducts}</p>
-                                              </div>
-                                              <div className="rounded-[10px] border border-[#E5E7EB] bg-white p-3 text-sm">
-                                                <p className="text-xs uppercase tracking-[0.12em] text-[#64748B]">Total services</p>
-                                                <p className="mt-1 text-lg font-semibold text-[#111827]">{totalServices}</p>
-                                              </div>
-                                              <div className="rounded-[10px] border border-[#E5E7EB] bg-white p-3 text-sm">
-                                                <p className="text-xs uppercase tracking-[0.12em] text-[#64748B]">Total uploaded media</p>
-                                                <p className="mt-1 text-lg font-semibold text-[#111827]">{totalUploadedMedia}</p>
-                                              </div>
-                                              <div className="rounded-[10px] border border-[#E5E7EB] bg-white p-3 text-sm">
-                                                <p className="text-xs uppercase tracking-[0.12em] text-[#64748B]">Inventory status</p>
-                                                <p className="mt-1 text-lg font-semibold text-[#111827]">{inventoryStatus}</p>
-                                              </div>
-                                            </div>
-                                            {(!allDone || inventoryMissing.length > 0) && (
-                                              <div className="mt-4 rounded-[10px] border border-[#FDE8C7] bg-[#FFFBEB] p-3 text-sm text-[#B45309]">
-                                                <p className="font-semibold">Missing required information</p>
-                                                <p className="mt-1">{inventoryMissing.length > 0 ? `Missing inventory details for ${inventoryMissing.join(', ')}` : 'Complete any incomplete section to finish catalogue setup.'}</p>
-                                              </div>
-                                            )}
-                                            {allDone && inventoryMissing.length === 0 && (
-                                              <div className="mt-4 text-sm text-[#16A34A]">All required sections are complete.</div>
-                                            )}
-                                          </div>
-
-                                          <div className="flex items-center justify-end gap-3">
-                                            <button onClick={() => setCatalogueSubsection('Products & Services' as any)} className="rounded-[10px] border border-[#E5E7EB] px-3 py-2 text-sm">Back</button>
-                                            <button onClick={() => setActiveWorkspaceSection('Sales Playbooks')} className={`rounded-[10px] px-3 py-2 text-sm font-semibold text-white ${allDone ? 'bg-[#16A34A]' : 'bg-[#9AE6B4]'}`}>Finish Catalogue</button>
-                                          </div>
-                                        </div>
-                                      );
-                                    })()}
-                                  </div>
-                                ) : catalogueSubsection === "Categories" ? (
-                                  <div className="space-y-4">
-                                    <div className="flex items-center justify-between gap-3">
-                                      <div className="text-sm text-[#64748B]">Organize products into clear, reusable categories.</div>
-                                      <button type="button" onClick={() => setShowAddCategoryInput(true)} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Add Category</button>
-                                    </div>
-
-                                    {showAddCategoryInput && (
-                                      <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-3">
-                                        <input
-                                          value={newCategoryName}
-                                          onChange={(e) => setNewCategoryName(e.target.value)}
-                                          placeholder="Category name"
-                                          className="w-full rounded-[10px] border border-[#E5E7EB] px-3 py-2 text-sm"
-                                        />
-                                        <div className="mt-3 flex justify-end gap-2">
-                                          <button type="button" onClick={() => { setShowAddCategoryInput(false); setNewCategoryName(""); }} className="rounded-[10px] border border-[#E5E7EB] px-3 py-2 text-sm">Cancel</button>
-                                          <button type="button" onClick={handleAddCategory} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Save</button>
-                                        </div>
-                                      </div>
-                                    )}
-
-                                    <div className="grid gap-3">
-                                      {categories.map((category) => {
-                                        const isEditing = editingCategoryId === category.id;
-                                        const productCount = catalogProducts.filter((product) => product.category === category.name).length;
-
-                                        return (
-                                          <div key={category.id} className="flex items-center justify-between gap-3 rounded-[12px] border border-[#EEF2F6] bg-white p-3">
-                                            <div className="min-w-0 flex-1">
-                                              {isEditing ? (
-                                                <input
-                                                  value={categoryDrafts[category.id] ?? category.name}
-                                                  onChange={(e) => setCategoryDrafts((current) => ({ ...current, [category.id]: e.target.value }))}
-                                                  className="w-full rounded-[10px] border border-[#E5E7EB] px-3 py-2 text-sm"
-                                                />
-                                              ) : (
-                                                <p className="text-sm font-semibold text-[#111827]">{category.name}</p>
-                                              )}
-                                              <p className="mt-1 text-xs text-[#64748B]">{productCount} product{productCount === 1 ? "" : "s"}</p>
-                                            </div>
-
-                                            <div className="flex items-center gap-2">
-                                              {isEditing ? (
-                                                <>
-                                                  <button type="button" onClick={() => handleEditCategory(category.id)} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Save</button>
-                                                  <button type="button" onClick={() => { setEditingCategoryId(null); setCategoryDrafts((current) => { const { [category.id]: _, ...rest } = current; return rest; }); }} className="rounded-[10px] border border-[#E5E7EB] px-3 py-2 text-sm">Cancel</button>
-                                                </>
-                                              ) : (
-                                                <>
-                                                  <button type="button" onClick={() => { setEditingCategoryId(category.id); setCategoryDrafts((current) => ({ ...current, [category.id]: category.name })); }} className="rounded-[10px] border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-semibold text-[#111827]">Edit</button>
-                                                  <button type="button" onClick={() => handleDeleteCategory(category.id)} className="rounded-[10px] border border-[#FECACA] bg-white px-3 py-2 text-sm font-semibold text-[#B91C1C]">Delete</button>
-                                                </>
-                                              )}
-                                            </div>
-                                          </div>
-                                        );
-                                      })}
-                                    </div>
                                   </div>
                                 ) : (
                                   <div className="space-y-4">
@@ -7736,13 +7478,7 @@ export default function DashboardLayout() {
                         </TabsContent>
 
                         <TabsContent value="pricing" className="space-y-5">
-                          <div>
-                            <label className="text-sm font-semibold text-[#111827]">Price</label>
-                            <input value={selectedProduct.price} onChange={(e) => updateCatalogProductField(selectedProduct.id, "price", e.target.value)} className="mt-2 w-full rounded-[16px] border border-[#E5E7EB] px-4 py-3 text-sm" />
-                          </div>
-                          <div>
-                            <p className="text-sm text-[#64748B]">Pricing can be updated directly here and will apply to your catalogue item immediately.</p>
-                          </div>
+                          {renderPricingEditor()}
                         </TabsContent>
 
                         <TabsContent value="media" className="space-y-5">
@@ -7761,14 +7497,51 @@ export default function DashboardLayout() {
                               </label>
                             </div>
                           </div>
-                          <div className="grid gap-3 sm:grid-cols-2">
-                            <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
-                              <p className="text-sm font-semibold text-[#111827]">Images count</p>
-                              <p className="mt-2 text-2xl font-semibold text-[#111827]">{selectedProduct.imagesCount}</p>
+
+                          <div className="rounded-[20px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
+                            <div className="flex items-center justify-between gap-3">
+                              <div>
+                                <p className="text-sm font-semibold text-[#111827]">Product media library</p>
+                                <p className="text-sm text-[#64748B]">Upload, preview, and manage supporting files for this product.</p>
+                              </div>
+                              <button type="button" onClick={() => productMediaFileInputRef.current?.click()} className="rounded-[12px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Upload</button>
                             </div>
-                            <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
-                              <p className="text-sm font-semibold text-[#111827]">Docs attached</p>
-                              <p className="mt-2 text-2xl font-semibold text-[#111827]">{selectedProduct.documentsCount}</p>
+
+                            <input ref={productMediaFileInputRef} type="file" accept="image/*,video/*,.pdf" multiple className="hidden" onChange={(e) => { handleFiles(e.target.files); e.currentTarget.value = ""; }} />
+
+                            <div onDrop={onDrop} onDragOver={onDragOver} className="mt-4 rounded-[16px] border-2 border-dashed border-[#E5E7EB] bg-[#F8FAFB] p-5 text-center">
+                              <p className="text-sm font-semibold text-[#111827]">Drag & drop media files</p>
+                              <p className="mt-2 text-sm text-[#64748B]">Images, videos, and other resources for your product showcase.</p>
+                            </div>
+
+                            <div className="mt-5 space-y-3">
+                              {mediaAssets.length === 0 ? (
+                                <p className="rounded-[12px] border border-[#E5E7EB] bg-[#F8FAFB] p-4 text-sm text-[#64748B]">No media uploaded yet.</p>
+                              ) : (
+                                mediaAssets.map((asset) => (
+                                  <div key={asset.id} className="flex items-center gap-3 rounded-[16px] border border-[#E5E7EB] bg-white p-3">
+                                    <div className="h-16 w-16 overflow-hidden rounded-[12px] bg-[#F8FAFB]">
+                                      {asset.mime?.startsWith("image") ? (
+                                        <img src={asset.url} alt={asset.name} className="h-full w-full object-cover" />
+                                      ) : asset.mime?.startsWith("video") ? (
+                                        <video src={asset.url} className="h-full w-full object-cover" muted playsInline />
+                                      ) : (
+                                        <div className="flex h-full w-full items-center justify-center text-[10px] font-semibold uppercase text-[#64748B]">File</div>
+                                      )}
+                                    </div>
+
+                                    <div className="min-w-0 flex-1">
+                                      <p className="truncate text-sm font-semibold text-[#111827]">{asset.name}</p>
+                                      <p className="mt-1 text-xs text-[#64748B]">{asset.fileType} • {asset.size}</p>
+                                    </div>
+
+                                    <div className="flex items-center gap-2">
+                                      <button type="button" onClick={() => viewAsset(asset)} className="rounded-[8px] border border-[#E5E7EB] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#111827]">Preview</button>
+                                      <button type="button" onClick={() => deleteAsset(asset.id)} className="rounded-[8px] border border-[#FECACA] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#B91C1C]">Delete</button>
+                                    </div>
+                                  </div>
+                                ))
+                              )}
                             </div>
                           </div>
                         </TabsContent>
