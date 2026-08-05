@@ -1856,6 +1856,25 @@ export default function DashboardLayout() {
     [catalogProducts.length, pricingSectionComplete],
   );
 
+  const catalogueHealthMetrics = useMemo(() => {
+    const totalProducts = catalogProducts.length;
+    const pricesCompleted = catalogProducts.filter((product) => typeof product.price === "string" && product.price.trim().length > 0).length;
+    const mediaCompleted = catalogProducts.filter((product) => typeof product.image === "string" && product.image.trim().length > 0 && product.image !== "/assets/sample/placeholder.png").length;
+    const aiReadyCompleted = catalogProducts.filter((product) => {
+      const hasName = typeof product.name === "string" && product.name.trim().length > 0;
+      const hasCategory = typeof product.category === "string" && product.category.trim().length > 0;
+      const hasDescription = typeof product.description === "string" && product.description.trim().length > 0;
+      return hasName && hasCategory && hasDescription;
+    }).length;
+
+    return [
+      { label: "Products", completed: totalProducts, missing: Math.max(0, 1 - totalProducts), percentage: totalProducts > 0 ? 100 : 0 },
+      { label: "Prices", completed: pricesCompleted, missing: Math.max(0, totalProducts - pricesCompleted), percentage: totalProducts > 0 ? Math.round((pricesCompleted / totalProducts) * 100) : 0 },
+      { label: "Media", completed: mediaCompleted, missing: Math.max(0, totalProducts - mediaCompleted), percentage: totalProducts > 0 ? Math.round((mediaCompleted / totalProducts) * 100) : 0 },
+      { label: "AI Ready", completed: aiReadyCompleted, missing: Math.max(0, totalProducts - aiReadyCompleted), percentage: totalProducts > 0 ? Math.round((aiReadyCompleted / totalProducts) * 100) : 0 },
+    ];
+  }, [catalogProducts]);
+
   const productLessonCompleted = productSteps.filter((step) => step.done).length;
   const productLessonProgress = Math.round((productLessonCompleted / productSteps.length) * 100);
 
@@ -6145,47 +6164,44 @@ export default function DashboardLayout() {
 
                                 {catalogueSubsection === "Products & Services" ? (
                                   <div className="space-y-5">
-                                    <div className="rounded-[20px] border border-[#E5E7EB] bg-gradient-to-br from-[#F8FAFC] via-white to-[#ECFDF5] p-5 shadow-sm">
+                                    <div className="rounded-[24px] border border-[#E5E7EB] bg-gradient-to-br from-[#F8FAFC] via-white to-[#ECFDF5] p-5 shadow-sm">
                                       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                                        <div className="max-w-2xl">
-                                          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Catalogue workspace</p>
-                                          <p className="mt-2 text-lg font-semibold text-[#111827]">Guide your AI through the products you offer</p>
-                                          <p className="mt-2 text-sm leading-6 text-[#64748B]">Complete these four panels in order so your AI can describe, recommend, price, and present your catalog with confidence.</p>
-                                          <div className="mt-6 rounded-[24px] border border-[#E5E7EB] bg-white p-4 shadow-sm sm:p-5">
-                                            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                                              <div>
-                                                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Progress</p>
-                                                <p className="mt-2 text-sm font-semibold text-[#111827]">{productLessonCompleted} of {productSteps.length} panels completed</p>
-                                              </div>
-                                              <p className="text-sm font-semibold text-[#111827]">{productLessonProgress}%</p>
-                                            </div>
-                                            <div className="mt-4 h-3 overflow-hidden rounded-full bg-[#E5E7EB]">
-                                              <div className="h-full rounded-full bg-gradient-to-r from-[#22C55E] to-[#4ADE80]" style={{ width: `${productLessonProgress}%` }} />
-                                            </div>
-                                          </div>
+                                        <div>
+                                          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Catalogue status</p>
+                                          <p className="mt-2 text-xl font-semibold text-[#111827]">Catalogue Health</p>
                                         </div>
-                                        <div className="rounded-[12px] border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-2 text-sm text-[#166534]">
-                                          <span className="font-semibold">{catalogProducts.length > 0 ? "In progress" : "Not started"}</span>
+                                        <div className="rounded-full border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-1.5 text-sm font-semibold text-[#166534]">
+                                          {catalogueHealthMetrics.reduce((sum, item) => sum + item.percentage, 0) / catalogueHealthMetrics.length}%
                                         </div>
                                       </div>
 
-                                      <div className="mt-5 grid gap-3 md:grid-cols-4">
-                                        {productSteps.map((step, index) => (
-                                          <button
-                                            key={step.title}
-                                            type="button"
-                                            onClick={() => focusProductStep(index)}
-                                            aria-current={index === activeProductStep ? "true" : undefined}
-                                            className={`rounded-[22px] border p-4 shadow-sm text-left ${step.done ? "border-[#D1FAE5] bg-[#F0FDF4]" : "border-[#E8EDF3] bg-white"} ${index === activeProductStep ? "ring-2 ring-[#111827]" : ""}`}
-                                          >
-                                            <div className="flex items-center gap-3">
-                                              <div className={`flex h-8 w-8 items-center justify-center rounded-full text-[11px] font-semibold ${step.done ? "bg-[#22C55E] text-white" : "bg-[#F1F5F9] text-[#64748B]"}`}>
-                                                {step.done ? <Check className="h-4 w-4" /> : index + 1}
-                                              </div>
-                                              <p className="text-sm font-semibold text-[#111827]">{step.title}</p>
+                                      <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                                        {catalogueHealthMetrics.map((item) => (
+                                          <div key={item.label} className="rounded-[20px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
+                                            <div className="flex items-center justify-between gap-3">
+                                              <p className="text-sm font-semibold text-[#111827]">{item.label}</p>
+                                              <span className="rounded-full bg-[#F3F4F6] px-2 py-1 text-[11px] font-medium text-[#475569]">{item.percentage}%</span>
                                             </div>
-                                            <p className="mt-3 text-xs text-[#64748B]">{step.detail}</p>
-                                          </button>
+
+                                            <div className="mt-4 space-y-2 text-sm text-[#475569]">
+                                              <div className="flex items-center justify-between">
+                                                <span>Completed</span>
+                                                <span className="font-semibold text-[#111827]">{item.completed}</span>
+                                              </div>
+                                              <div className="flex items-center justify-between">
+                                                <span>Missing</span>
+                                                <span className="font-semibold text-[#111827]">{item.missing}</span>
+                                              </div>
+                                              <div className="flex items-center justify-between">
+                                                <span>Percentage</span>
+                                                <span className="font-semibold text-[#111827]">{item.percentage}%</span>
+                                              </div>
+                                            </div>
+
+                                            <div className="mt-4 h-2.5 overflow-hidden rounded-full bg-[#E5E7EB]">
+                                              <div className="h-full rounded-full bg-gradient-to-r from-[#22C55E] to-[#4ADE80]" style={{ width: `${item.percentage}%` }} />
+                                            </div>
+                                          </div>
                                         ))}
                                       </div>
                                     </div>
