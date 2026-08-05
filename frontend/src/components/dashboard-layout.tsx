@@ -43,6 +43,7 @@ import {
   MapPin,
 } from "lucide-react";
 import AiSummaryCard from "./ui/ai-summary-card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TextInput } from "@/components/auth/text-input";
 import { Textarea } from "@/components/ui/textarea";
 import sokoosLogo from "@/assets/sokoos_logo.png";
@@ -1607,6 +1608,9 @@ export default function DashboardLayout() {
   const [showProductTypeDialog, setShowProductTypeDialog] = useState(false);
   const [showAddProductForm, setShowAddProductForm] = useState(false);
   const [selectedProductType, setSelectedProductType] = useState<string | null>(null);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [productDrawerOpen, setProductDrawerOpen] = useState(false);
+  const [productDrawerTab, setProductDrawerTab] = useState<"general" | "pricing" | "media" | "inventory" | "ai-knowledge">("general");
   const [completedProductStepIds, setCompletedProductStepIds] = useState<string[]>([]);
   const [addProductFormData, setAddProductFormData] = useState<{ name: string; category: string; price: string; availability: string; image?: string } | null>(null);
   const [mediaAssets, setMediaAssets] = useState<MediaAsset[]>([
@@ -1649,6 +1653,22 @@ export default function DashboardLayout() {
   ]);
 
   const productSectionIds = ["products","pricing"];
+  const selectedProduct = selectedProductId ? catalogProducts.find((product) => product.id === selectedProductId) ?? null : null;
+  const openProductDrawer = (id: string) => {
+    setSelectedProductId(id);
+    setProductDrawerOpen(true);
+    setProductDrawerTab("general");
+  };
+  const closeProductDrawer = () => {
+    setProductDrawerOpen(false);
+    setSelectedProductId(null);
+  };
+  const handleProductImageUpload = (files: FileList | null) => {
+    if (!files || !selectedProduct) return;
+    const file = files[0];
+    const url = URL.createObjectURL(file);
+    updateCatalogProductField(selectedProduct.id, "image", url);
+  };
   const [activeProductStep, setActiveProductStep] = useState(0);
   const productStepRefs = useRef<(HTMLElement | null)[]>([]);
   const focusProductStep = (index: number) => {
@@ -6108,7 +6128,7 @@ export default function DashboardLayout() {
                                             {filtered.map((item) => {
                                               const productType = item.availability === 'By appointment' ? 'Service' : 'Product';
                                               return (
-                                                <div key={item.id} className="flex h-full flex-col overflow-hidden rounded-[28px] border border-[#E8EDF3] bg-white shadow-sm transition duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
+                                                <div key={item.id} onClick={() => openProductDrawer(item.id)} className="cursor-pointer flex h-full flex-col overflow-hidden rounded-[28px] border border-[#E8EDF3] bg-white shadow-sm transition duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
                                                   <div className="overflow-hidden bg-[#F8FAFB]">
                                                     <div className="aspect-[5/4] overflow-hidden">
                                                       <img src={item.image} alt={item.name} className="h-full w-full object-cover transition duration-300 group-hover:scale-105" />
@@ -6137,8 +6157,8 @@ export default function DashboardLayout() {
                                                     </div>
 
                                                     <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-                                                      <button type="button" className="inline-flex flex-1 items-center justify-center rounded-[16px] border border-[#E5E7EB] bg-white px-5 py-3 text-sm font-semibold text-[#111827] transition hover:border-[#111827] hover:bg-[#F8FAFB]">Quick Edit</button>
-                                                      <button type="button" onClick={() => deleteCatalogProduct(item.id)} className="inline-flex items-center justify-center rounded-[16px] bg-[#FEF3F2] px-5 py-3 text-sm font-semibold text-[#B91C1C] transition hover:bg-[#FEE2E2]">Delete</button>
+                                                      <button type="button" onClick={(e) => { e.stopPropagation(); openProductDrawer(item.id); }} className="inline-flex flex-1 items-center justify-center rounded-[16px] border border-[#E5E7EB] bg-white px-5 py-3 text-sm font-semibold text-[#111827] transition hover:border-[#111827] hover:bg-[#F8FAFB]">Quick Edit</button>
+                                                      <button type="button" onClick={(e) => { e.stopPropagation(); deleteCatalogProduct(item.id); }} className="inline-flex items-center justify-center rounded-[16px] bg-[#FEF3F2] px-5 py-3 text-sm font-semibold text-[#B91C1C] transition hover:bg-[#FEE2E2]">Delete</button>
                                                     </div>
                                                   </div>
                                                 </div>
@@ -7659,6 +7679,139 @@ export default function DashboardLayout() {
                             </li>
                           ))}
                         </ul>
+                      </div>
+                    </div>
+                  </aside>
+                </div>
+              )}
+              {productDrawerOpen && selectedProduct && (
+                <div className="fixed inset-0 z-50">
+                  <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={closeProductDrawer} />
+                  <aside className="absolute right-0 top-0 h-full w-full max-w-[560px] bg-white shadow-2xl">
+                    <div className="flex h-full flex-col">
+                      <div className="flex items-center justify-between border-b border-[#E5E7EB] px-6 py-5">
+                        <div>
+                          <p className="text-sm uppercase tracking-[0.24em] text-[#6B7280]">Product details</p>
+                          <h2 className="mt-2 text-2xl font-semibold text-[#111827]">{selectedProduct.name}</h2>
+                          <p className="mt-2 text-sm text-[#64748B]">Manage this item without leaving your catalogue workspace.</p>
+                        </div>
+                        <button type="button" onClick={closeProductDrawer} className="rounded-full border border-[#E5E7EB] p-2 text-[#6B7280] hover:bg-[#F3F4F6]"><X className="h-5 w-5" /></button>
+                      </div>
+
+                      <div className="px-6 py-5">
+                        <Tabs value={productDrawerTab} onValueChange={(value) => setProductDrawerTab(value as any)}>
+                          <TabsList className="space-x-2">
+                            <TabsTrigger value="general">General</TabsTrigger>
+                            <TabsTrigger value="pricing">Pricing</TabsTrigger>
+                            <TabsTrigger value="media">Media</TabsTrigger>
+                            <TabsTrigger value="inventory">Inventory</TabsTrigger>
+                            <TabsTrigger value="ai-knowledge">AI Knowledge</TabsTrigger>
+                          </TabsList>
+                        </Tabs>
+                      </div>
+
+                      <div className="flex-1 overflow-y-auto px-6 pb-6">
+                        <TabsContent value="general" className="space-y-5">
+                          <div>
+                            <label className="text-sm font-semibold text-[#111827]">Name</label>
+                            <input value={selectedProduct.name} onChange={(e) => updateCatalogProductField(selectedProduct.id, "name", e.target.value)} className="mt-2 w-full rounded-[16px] border border-[#E5E7EB] px-4 py-3 text-sm" />
+                          </div>
+                          <div>
+                            <label className="text-sm font-semibold text-[#111827]">Category</label>
+                            <input value={selectedProduct.category} onChange={(e) => updateCatalogProductField(selectedProduct.id, "category", e.target.value)} className="mt-2 w-full rounded-[16px] border border-[#E5E7EB] px-4 py-3 text-sm" />
+                          </div>
+                          <div>
+                            <label className="text-sm font-semibold text-[#111827]">Description</label>
+                            <Textarea value={selectedProduct.description} onChange={(e) => updateCatalogProductField(selectedProduct.id, "description", e.target.value)} className="mt-2 w-full rounded-[16px] border border-[#E5E7EB] px-4 py-3 text-sm" />
+                          </div>
+                          <div>
+                            <label className="text-sm font-semibold text-[#111827]">Availability</label>
+                            <select value={selectedProduct.availability} onChange={(e) => updateCatalogProductField(selectedProduct.id, "availability", e.target.value)} className="mt-2 w-full rounded-[16px] border border-[#E5E7EB] px-4 py-3 text-sm">
+                              <option>Available</option>
+                              <option>In stock</option>
+                              <option>Out of stock</option>
+                              <option>By appointment</option>
+                            </select>
+                          </div>
+                        </TabsContent>
+
+                        <TabsContent value="pricing" className="space-y-5">
+                          <div>
+                            <label className="text-sm font-semibold text-[#111827]">Price</label>
+                            <input value={selectedProduct.price} onChange={(e) => updateCatalogProductField(selectedProduct.id, "price", e.target.value)} className="mt-2 w-full rounded-[16px] border border-[#E5E7EB] px-4 py-3 text-sm" />
+                          </div>
+                          <div>
+                            <p className="text-sm text-[#64748B]">Pricing can be updated directly here and will apply to your catalogue item immediately.</p>
+                          </div>
+                        </TabsContent>
+
+                        <TabsContent value="media" className="space-y-5">
+                          <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
+                            <div className="aspect-[5/3] overflow-hidden rounded-[16px] bg-white">
+                              <img src={selectedProduct.image} alt={selectedProduct.name} className="h-full w-full object-cover" />
+                            </div>
+                            <div className="mt-4 flex items-center justify-between gap-4">
+                              <div>
+                                <p className="text-sm font-semibold text-[#111827]">Cover image</p>
+                                <p className="text-sm text-[#64748B]">Upload a representative image for this product.</p>
+                              </div>
+                              <label className="inline-flex cursor-pointer items-center rounded-[16px] bg-[#111827] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#111827]/90">
+                                Upload
+                                <input type="file" accept="image/*" className="sr-only" onChange={(e) => handleProductImageUpload(e.target.files)} />
+                              </label>
+                            </div>
+                          </div>
+                          <div className="grid gap-3 sm:grid-cols-2">
+                            <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                              <p className="text-sm font-semibold text-[#111827]">Images count</p>
+                              <p className="mt-2 text-2xl font-semibold text-[#111827]">{selectedProduct.imagesCount}</p>
+                            </div>
+                            <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                              <p className="text-sm font-semibold text-[#111827]">Docs attached</p>
+                              <p className="mt-2 text-2xl font-semibold text-[#111827]">{selectedProduct.documentsCount}</p>
+                            </div>
+                          </div>
+                        </TabsContent>
+
+                        <TabsContent value="inventory" className="space-y-5">
+                          <div className="grid gap-4 sm:grid-cols-2">
+                            <div>
+                              <label className="text-sm font-semibold text-[#111827]">Current stock</label>
+                              <input type="number" value={(selectedProduct as any).currentStock ?? 0} onChange={(e) => updateCatalogProductField(selectedProduct.id, "currentStock", Number(e.target.value))} className="mt-2 w-full rounded-[16px] border border-[#E5E7EB] px-4 py-3 text-sm" />
+                            </div>
+                            <div>
+                              <label className="text-sm font-semibold text-[#111827]">Stock status</label>
+                              <select value={(selectedProduct as any).stockStatus || "In stock"} onChange={(e) => updateCatalogProductField(selectedProduct.id, "stockStatus", e.target.value)} className="mt-2 w-full rounded-[16px] border border-[#E5E7EB] px-4 py-3 text-sm">
+                                <option>In stock</option>
+                                <option>Low stock</option>
+                                <option>Out of stock</option>
+                                <option>Backordered</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div className="grid gap-4 sm:grid-cols-2">
+                            <div>
+                              <label className="text-sm font-semibold text-[#111827]">Low stock threshold</label>
+                              <input type="number" value={(selectedProduct as any).lowStockThreshold ?? 10} onChange={(e) => updateCatalogProductField(selectedProduct.id, "lowStockThreshold", Number(e.target.value))} className="mt-2 w-full rounded-[16px] border border-[#E5E7EB] px-4 py-3 text-sm" />
+                            </div>
+                            <div>
+                              <label className="text-sm font-semibold text-[#111827]">Warehouse / branch</label>
+                              <input value={(selectedProduct as any).warehouseLocation || "Main warehouse"} onChange={(e) => updateCatalogProductField(selectedProduct.id, "warehouseLocation", e.target.value)} className="mt-2 w-full rounded-[16px] border border-[#E5E7EB] px-4 py-3 text-sm" />
+                            </div>
+                          </div>
+                        </TabsContent>
+
+                        <TabsContent value="ai-knowledge" className="space-y-5">
+                          <div>
+                            <p className="text-sm font-semibold text-[#111827]">AI-ready summary</p>
+                            <Textarea value={selectedProduct.description} onChange={(e) => updateCatalogProductField(selectedProduct.id, "description", e.target.value)} className="mt-2 w-full rounded-[16px] border border-[#E5E7EB] px-4 py-3 text-sm" />
+                            <p className="mt-2 text-sm text-[#64748B]">This text helps your AI understand the product for customer conversations.</p>
+                          </div>
+                          <div className="rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
+                            <p className="text-sm font-semibold text-[#111827]">Knowledge insights</p>
+                            <p className="mt-2 text-sm text-[#64748B]">Customers ask about pricing, availability, and delivery. Keep descriptions clear and helpful.</p>
+                          </div>
+                        </TabsContent>
                       </div>
                     </div>
                   </aside>
