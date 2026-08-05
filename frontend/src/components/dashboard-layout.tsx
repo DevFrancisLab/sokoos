@@ -6259,42 +6259,54 @@ export default function DashboardLayout() {
                                         return (
                                           <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
                                             {filtered.map((item) => {
-                                              const productType = item.availability === 'By appointment' ? 'Service' : 'Product';
+                                              const isAvailable = item.availability === 'In stock' || item.availability === 'Available';
+
                                               return (
-                                                <div key={item.id} onClick={() => openProductDrawer(item.id)} className="cursor-pointer flex h-full flex-col overflow-hidden rounded-[28px] border border-[#E8EDF3] bg-white shadow-sm transition duration-200 ease-out hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
-                                                  <div className="overflow-hidden bg-[#F8FAFB]">
-                                                    <div className="aspect-[5/4] overflow-hidden">
-                                                      <img src={item.image} alt={item.name} className="h-full w-full object-cover transition duration-300 group-hover:scale-105" />
-                                                    </div>
+                                                <article key={item.id} className="group flex h-full flex-col overflow-hidden rounded-[28px] border border-[#E7E5E4] bg-[#FDFDFC] shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(15,23,42,0.10)]">
+                                                  <div className="relative overflow-hidden bg-[#F5F5F4]">
+                                                    <img src={item.image} alt={item.name} className="aspect-[5/4] h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]" />
+                                                    <span className={`absolute right-4 top-4 inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-medium ${isAvailable ? 'border-[#D1FAE5] bg-[#ECFDF5] text-[#166534]' : 'border-[#FDE68A] bg-[#FFFBEB] text-[#B45309]'}`}>
+                                                      {item.availability}
+                                                    </span>
                                                   </div>
-                                                  <div className="flex flex-1 flex-col p-6">
-                                                    <div className="flex items-start justify-between gap-4">
-                                                      <div>
-                                                        <p className="text-lg font-semibold text-[#111827]">{item.name}</p>
-                                                        <div className="mt-3 space-y-1 text-sm text-[#64748B]">
-                                                          <p><span className="font-semibold text-[#111827]">Type:</span> {productType}</p>
-                                                          <p><span className="font-semibold text-[#111827]">Category:</span> {item.category}</p>
-                                                        </div>
+
+                                                  <div className="flex flex-1 flex-col p-5">
+                                                    <div className="space-y-3">
+                                                      <div className="flex items-center justify-between gap-3">
+                                                        <p className="text-xl font-semibold leading-6 text-[#111827]">{item.name}</p>
                                                       </div>
-                                                      <span className={`rounded-full px-3 py-1 text-sm font-semibold ${item.availability === 'In stock' || item.availability === 'Available' ? 'bg-[#ECFDF5] text-[#166534] border border-[#D1FAE5]' : 'bg-[#FFFBEB] text-[#B45309] border border-[#FDE8C7]'}`}>
-                                                        {item.availability}
-                                                      </span>
+
+                                                      <div className="flex items-center justify-between gap-3 text-sm text-[#6B7280]">
+                                                        <span className="font-medium text-[#475569]">{item.category}</span>
+                                                        <span className="text-base font-semibold text-[#111827]">{item.price}</span>
+                                                      </div>
                                                     </div>
 
-                                                    <div className="mt-6 flex items-center justify-between gap-4 border-t border-[#E5E7EB] pt-5">
-                                                      <div>
-                                                        <p className="text-xs uppercase tracking-[0.24em] text-[#94A3B8]">Price</p>
-                                                        <p className="mt-1 text-2xl font-semibold text-[#111827]">{item.price}</p>
-                                                      </div>
-                                                      <div className="rounded-[20px] bg-[#F8FAFB] px-4 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-[#64748B]">{item.category}</div>
-                                                    </div>
-
-                                                    <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-                                                      <button type="button" onClick={(e) => { e.stopPropagation(); openProductDrawer(item.id); }} className="inline-flex flex-1 items-center justify-center rounded-[16px] border border-[#E5E7EB] bg-white px-5 py-3 text-sm font-semibold text-[#111827] transition hover:border-[#111827] hover:bg-[#F8FAFB]">Quick Edit</button>
-                                                      <button type="button" onClick={(e) => { e.stopPropagation(); deleteCatalogProduct(item.id); }} className="inline-flex items-center justify-center rounded-[16px] bg-[#FEF3F2] px-5 py-3 text-sm font-semibold text-[#B91C1C] transition hover:bg-[#FEE2E2]">Delete</button>
+                                                    <div className="mt-5 flex items-center gap-2.5 pt-4">
+                                                      <button
+                                                        type="button"
+                                                        onClick={(e) => { e.stopPropagation(); openProductDrawer(item.id); }}
+                                                        className="inline-flex flex-1 items-center justify-center rounded-[12px] bg-[#111827] px-3.5 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-[#1F2937]"
+                                                      >
+                                                        Edit
+                                                      </button>
+                                                      <button
+                                                        type="button"
+                                                        onClick={(e) => { e.stopPropagation(); deleteCatalogProduct(item.id); }}
+                                                        className="inline-flex items-center justify-center rounded-[12px] border border-[#E7E5E4] bg-white px-3.5 py-2.5 text-sm font-medium text-[#111827] transition hover:bg-[#F5F5F4]"
+                                                      >
+                                                        Delete
+                                                      </button>
+                                                      <button
+                                                        type="button"
+                                                        onClick={(e) => { e.stopPropagation(); openProductDrawer(item.id); }}
+                                                        className="inline-flex items-center justify-center rounded-[12px] border border-[#E7E5E4] bg-white px-3.5 py-2.5 text-sm font-medium text-[#111827] transition hover:bg-[#F5F5F4]"
+                                                      >
+                                                        More
+                                                      </button>
                                                     </div>
                                                   </div>
-                                                </div>
+                                                </article>
                                               );
                                             })}
                                           </div>
