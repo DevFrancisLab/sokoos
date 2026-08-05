@@ -1692,7 +1692,7 @@ export default function DashboardLayout() {
       case "product-media":
         return "Product Media complete — your catalogue now includes visual assets.";
       default:
-        return "Section complete — your products lesson is moving forward.";
+        return "Panel complete — your catalogue workspace is moving forward.";
     }
   };
 
@@ -4651,14 +4651,14 @@ export default function DashboardLayout() {
                       {activeWorkspaceSection === "Identity"
                         ? "Identity training"
                         : activeWorkspaceSection === "Catalogue"
-                        ? "Catalogue Training"
+                        ? "Catalogue workspace"
                         : "KNOWLEDGE TRAINING"}
                     </p>
                     <p className="mt-1 text-sm text-[#475569]">
                       {activeWorkspaceSection === "Identity"
                         ? "Onboard your AI employee one focused decision at a time."
                         : activeWorkspaceSection === "Catalogue"
-                        ? "Train your AI to understand everything you sell so it can recommend products and services with confidence."
+                        ? "Manage your AI catalogue so it can recommend products and services with confidence."
                         : "Build and refine your knowledge base so your AI responds with relevant, trusted answers."}
                     </p>
                   </div>
@@ -5992,14 +5992,14 @@ export default function DashboardLayout() {
                                     <div className="rounded-[20px] border border-[#E5E7EB] bg-gradient-to-br from-[#F8FAFC] via-white to-[#ECFDF5] p-5 shadow-sm">
                                       <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                                         <div className="max-w-2xl">
-                                          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Products lesson</p>
+                                          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Catalogue workspace</p>
                                           <p className="mt-2 text-lg font-semibold text-[#111827]">Guide your AI through the products you offer</p>
-                                          <p className="mt-2 text-sm leading-6 text-[#64748B]">Complete these four sections in order so your AI can describe, recommend, price, and present your catalog with confidence.</p>
+                                          <p className="mt-2 text-sm leading-6 text-[#64748B]">Complete these four panels in order so your AI can describe, recommend, price, and present your catalog with confidence.</p>
                                           <div className="mt-6 rounded-[24px] border border-[#E5E7EB] bg-white p-4 shadow-sm sm:p-5">
                                             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                               <div>
                                                 <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Progress</p>
-                                                <p className="mt-2 text-sm font-semibold text-[#111827]">{productLessonCompleted} of {productSteps.length} sections completed</p>
+                                                <p className="mt-2 text-sm font-semibold text-[#111827]">{productLessonCompleted} of {productSteps.length} panels completed</p>
                                               </div>
                                               <p className="text-sm font-semibold text-[#111827]">{productLessonProgress}%</p>
                                             </div>
@@ -6037,11 +6037,11 @@ export default function DashboardLayout() {
                                     <section id="product-types" className="rounded-[24px] border border-[#E8EDF3] bg-white p-6 shadow-sm">
                                       <div className="flex flex-wrap items-start justify-between gap-4">
                                         <div>
-                                          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#64748B]">Section 1</p>
+                                          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#64748B]">Panel 1</p>
                                           <p className="mt-2 text-2xl font-semibold text-[#111827]">Product Types</p>
                                           <p className="mt-3 max-w-2xl text-sm leading-6 text-[#475569]">Choose the formats you offer so your AI can route customer requests correctly.</p>
                                         </div>
-                                        <div className="rounded-3xl border border-[#E5E7EB] bg-[#F8FAFC] px-4 py-2 text-sm font-semibold text-[#64748B]">Step 1</div>
+                                        <div className="rounded-3xl border border-[#E5E7EB] bg-[#F8FAFC] px-4 py-2 text-sm font-semibold text-[#64748B]">Overview 1</div>
                                       </div>
 
                                       <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
@@ -6096,7 +6096,7 @@ export default function DashboardLayout() {
                                     <section id="products" className="rounded-[24px] border border-[#E8EDF3] bg-white p-6 shadow-sm">
                                       <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
                                         <div>
-                                          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#64748B]">Section 2</p>
+                                          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#64748B]">Panel 2</p>
                                           <p className="mt-2 text-2xl font-semibold text-[#111827]">Products</p>
                                           <p className="mt-3 max-w-2xl text-sm leading-6 text-[#475569]">Manage your product catalogue with quick actions, search, and a modern product list.</p>
                                         </div>
@@ -6208,11 +6208,11 @@ export default function DashboardLayout() {
                                     <section id="pricing" className="rounded-[20px] border border-[#E5E7F0] bg-white p-6 shadow-sm">
                                       <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-start lg:gap-8">
                                         <div>
-                                          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Section 3</p>
+                                          <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Panel 3</p>
                                           <p className="mt-2 text-2xl font-semibold text-[#111827]">Pricing</p>
                                           <p className="mt-3 max-w-2xl text-sm leading-6 text-[#475569]">Adjust prices, currencies, billing cycles, discounts, and availability in a clean product pricing management view.</p>
                                         </div>
-                                        <div className="rounded-3xl border border-[#E5E7EB] bg-[#F8FAFB] px-4 py-3 text-sm font-semibold text-[#475569]">Step 3</div>
+                                        <div className="rounded-3xl border border-[#E5E7EB] bg-[#F8FAFB] px-4 py-3 text-sm font-semibold text-[#475569]">Overview 3</div>
                                       </div>
 
                                       <div className="mt-6 grid gap-4 sm:grid-cols-[1fr_auto] sm:items-center">
@@ -6338,11 +6338,11 @@ export default function DashboardLayout() {
                                     <section id="product-media" className="rounded-[24px] border border-[#E8EDF3] bg-white p-6 shadow-sm">
                                       <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-start lg:gap-8">
                                         <div>
-                                          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#64748B]">Section 4</p>
+                                          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#64748B]">Panel 4</p>
                                           <p className="mt-2 text-2xl font-semibold leading-tight text-[#111827]">Product Media</p>
                                           <p className="mt-3 max-w-2xl text-sm leading-6 text-[#475569]">Create a premium media workspace for image and video uploads with clear actions, stronger hierarchy, and clean Material-inspired styling.</p>
                                         </div>
-                                        <div className="rounded-3xl border border-[#E5E7EB] bg-[#F8FAFC] px-4 py-3 text-sm font-semibold text-[#475569]">Step 4</div>
+                                        <div className="rounded-3xl border border-[#E5E7EB] bg-[#F8FAFC] px-4 py-3 text-sm font-semibold text-[#475569]">Overview 4</div>
                                       </div>
 
                                       <div className="mt-6 grid gap-6 xl:grid-cols-2">
