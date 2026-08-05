@@ -6290,65 +6290,65 @@ export default function DashboardLayout() {
                                         <div className="rounded-3xl border border-[#E5E7EB] bg-[#F8FAFC] px-4 py-3 text-sm font-semibold text-[#475569]">Step 4</div>
                                       </div>
 
-                                      <div className="mt-6 grid gap-4 xl:grid-cols-2">
-                                        <div className="rounded-[22px] border border-[#E5E7EB] bg-[#F8FAFB] p-5 shadow-sm">
-                                          <div className="flex items-center gap-4">
-                                            <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-[#DBEAFE] text-[#1D4ED8]">
-                                              <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.5">
-                                                <path d="M4.5 19.5h15a1 1 0 0 0 1-1v-9.5a1 1 0 0 0-1-1h-5.75l-1.75-2.25H4.5a1 1 0 0 0-1 1v11.5a1 1 0 0 0 1 1Z" strokeLinecap="round" strokeLinejoin="round" />
-                                                <path d="m8 13.5 2.5 3 3.5-4.5 4 5.5" strokeLinecap="round" strokeLinejoin="round" />
-                                                <circle cx="7.5" cy="8.5" r="1.5" />
+                                      <div className="mt-6 grid gap-6 xl:grid-cols-2">
+                                        <div className="rounded-[28px] border border-[#E5E7EB] bg-[#F8FAFB] p-6 shadow-sm min-h-[222px]">
+                                          <div className="flex items-start gap-4">
+                                            <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-[#DBEAFE] text-[#1D4ED8]">
+                                              <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                                <path d="M12 4v12" strokeLinecap="round" strokeLinejoin="round" />
+                                                <path d="M8 12l4 4 4-4" strokeLinecap="round" strokeLinejoin="round" />
+                                                <path d="M4 19h16" strokeLinecap="round" strokeLinejoin="round" />
                                               </svg>
                                             </div>
-                                            <div>
-                                              <p className="text-sm font-semibold text-[#111827]">Upload images</p>
-                                              <p className="mt-2 text-sm text-[#64748B]">Add product photos for a richer catalogue experience.</p>
+                                            <div className="flex-1">
+                                              <p className="text-base font-semibold text-[#111827]">Upload images</p>
+                                              <p className="mt-2 text-sm text-[#475569]">Add product photos for a richer catalogue experience.</p>
                                             </div>
                                           </div>
-                                          <div className="mt-6 flex flex-wrap items-center gap-3">
-                                            <label htmlFor="product-image-upload" className="inline-flex items-center gap-2 rounded-[16px] bg-[#1D4ED8] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1E40AF]">
+                                          <div className="mt-7 flex flex-wrap items-center gap-4">
+                                            <label htmlFor="product-image-upload" className="inline-flex items-center gap-2 rounded-[18px] bg-[#1D4ED8] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1E40AF]">
                                               <span>Upload images</span>
                                             </label>
-                                            <span className="text-sm text-[#475569]">{mediaAssets.filter((asset) => asset.mime?.startsWith("image")).length} images</span>
+                                            <p className="text-sm font-medium text-[#111827]">{mediaAssets.filter((asset) => asset.mime?.startsWith("image")).length} images</p>
                                             <input id="product-image-upload" type="file" accept="image/*" multiple className="hidden" onChange={(e) => handleFiles(e.target.files)} />
                                           </div>
                                         </div>
-                                        <div className="rounded-[22px] border border-[#E5E7EB] bg-[#F8FAFB] p-5 shadow-sm">
-                                          <div className="flex items-center gap-4">
-                                            <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-[#FEF3C7] text-[#B45309]">
-                                              <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.5">
-                                                <path d="M6.5 5.5h11a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1v-10a1 1 0 0 1 1-1Z" strokeLinecap="round" strokeLinejoin="round" />
-                                                <path d="m9 9 2.5 2-2.5 2" strokeLinecap="round" strokeLinejoin="round" />
+                                        <div className="rounded-[28px] border border-[#E5E7EB] bg-[#F8FAFB] p-6 shadow-sm min-h-[222px]">
+                                          <div className="flex items-start gap-4">
+                                            <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-[#FEF3C7] text-[#B45309]">
+                                              <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                                <path d="M6 5.5h12a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-11a1 1 0 0 1 1-1Z" strokeLinecap="round" strokeLinejoin="round" />
+                                                <path d="M9 9.5l3 2.5 3-2.5" strokeLinecap="round" strokeLinejoin="round" />
                                               </svg>
                                             </div>
-                                            <div>
-                                              <p className="text-sm font-semibold text-[#111827]">Upload videos</p>
-                                              <p className="mt-2 text-sm text-[#64748B]">Add product videos for motion-rich previews and walkthroughs.</p>
+                                            <div className="flex-1">
+                                              <p className="text-base font-semibold text-[#111827]">Upload videos</p>
+                                              <p className="mt-2 text-sm text-[#475569]">Add product videos for motion-rich previews and walkthroughs.</p>
                                             </div>
                                           </div>
-                                          <div className="mt-6 flex flex-wrap items-center gap-3">
-                                            <label htmlFor="product-video-upload" className="inline-flex items-center gap-2 rounded-[16px] bg-[#1D4ED8] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1E40AF]">
+                                          <div className="mt-7 flex flex-wrap items-center gap-4">
+                                            <label htmlFor="product-video-upload" className="inline-flex items-center gap-2 rounded-[18px] bg-[#1D4ED8] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1E40AF]">
                                               <span>Upload videos</span>
                                             </label>
-                                            <span className="text-sm text-[#475569]">{mediaAssets.filter((asset) => asset.mime?.startsWith("video")).length} videos</span>
+                                            <p className="text-sm font-medium text-[#111827]">{mediaAssets.filter((asset) => asset.mime?.startsWith("video")).length} videos</p>
                                             <input id="product-video-upload" type="file" accept="video/*" multiple className="hidden" onChange={(e) => handleFiles(e.target.files)} />
                                           </div>
                                         </div>
                                       </div>
 
-                                      <div className="mt-6 rounded-[24px] border border-dashed border-[#CBD5E1] bg-[#F8FAFF] p-8 text-center shadow-sm">
-                                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-sm">
-                                          <svg viewBox="0 0 24 24" className="h-8 w-8 text-[#1D4ED8]" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                      <div className="mt-6 rounded-[28px] border border-dashed border-[#CBD5E1] bg-[#EFF6FF] p-10 text-center shadow-sm">
+                                        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-white shadow-sm text-[#1D4ED8]">
+                                          <svg viewBox="0 0 24 24" className="h-10 w-10" fill="none" stroke="currentColor" strokeWidth="1.5">
                                             <path d="M4 16.5v-4a2 2 0 0 1 2-2h3" strokeLinecap="round" strokeLinejoin="round" />
                                             <path d="M16 8.5h2a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-8" strokeLinecap="round" strokeLinejoin="round" />
                                             <path d="M9 12.5 12 9.5l3 3" strokeLinecap="round" strokeLinejoin="round" />
                                             <path d="M12 9.5v6" strokeLinecap="round" strokeLinejoin="round" />
                                           </svg>
                                         </div>
-                                        <p className="mt-4 text-lg font-semibold text-[#111827]">Drag and drop media files</p>
-                                        <p className="mt-2 text-sm leading-6 text-[#475569]">Drop images or videos here to attach them to your catalogue products.</p>
-                                        <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row sm:justify-center">
-                                          <button type="button" onClick={() => fileInputRef.current?.click()} className="inline-flex items-center rounded-[16px] bg-[#1D4ED8] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#1E40AF]">
+                                        <p className="mt-4 text-xl font-semibold text-[#111827]">Drag and drop media files</p>
+                                        <p className="mt-3 text-sm leading-6 text-[#475569]">Drop images or videos here to attach them to your catalogue products.</p>
+                                        <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row sm:justify-center">
+                                          <button type="button" onClick={() => fileInputRef.current?.click()} className="inline-flex items-center justify-center rounded-[18px] bg-[#1D4ED8] px-6 py-3 text-sm font-semibold text-white transition hover:bg-[#1E40AF]">
                                             Browse files
                                           </button>
                                           <span className="text-sm text-[#64748B]">Supports JPEG, PNG, MP4, MOV</span>
@@ -6380,20 +6380,20 @@ export default function DashboardLayout() {
                                               </div>
                                               <div className="text-sm text-[#64748B]">{mediaAssets.filter((asset) => asset.mime?.startsWith("image")).length} files</div>
                                             </div>
-                                            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                                            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                                               {mediaAssets.filter((asset) => asset.mime?.startsWith("image")).map((asset) => (
-                                                <div key={asset.id} className="group flex h-full flex-col overflow-hidden rounded-[24px] border border-[#E2E8F0] bg-white text-[#0F172A] shadow-[0_8px_24px_rgba(15,23,42,0.08)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_16px_48px_rgba(15,23,42,0.12)]">
+                                                <div key={asset.id} className="group flex h-full flex-col overflow-hidden rounded-[28px] border border-[#E2E8F0] bg-white text-[#0F172A] shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-[0_22px_48px_rgba(15,23,42,0.12)]">
                                                   <div className="relative overflow-hidden bg-[#F8FAFB]">
-                                                    <div className="aspect-[5/4] overflow-hidden">
+                                                    <div className="aspect-[4/3] overflow-hidden">
                                                       <img src={asset.url} alt={asset.name} className="h-full w-full object-cover transition duration-300 group-hover:scale-105" />
                                                     </div>
-                                                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/35 to-transparent px-3 py-2 text-left">
+                                                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/40 to-transparent px-4 py-3 text-left">
                                                       <p className="truncate text-sm font-semibold text-white">{asset.name}</p>
                                                     </div>
                                                   </div>
-                                                  <div className="flex flex-1 flex-col p-5">
+                                                  <div className="flex flex-1 flex-col p-6">
                                                     <div className="space-y-2 text-sm leading-5">
-                                                      <p className="text-sm font-semibold tracking-[0.01em] text-[#111827]">{asset.name}</p>
+                                                      <p className="text-base font-semibold text-[#111827]">{asset.name}</p>
                                                       <div className="flex flex-wrap gap-2 text-xs uppercase tracking-[0.24em] text-[#64748B]">
                                                         <span>{asset.size}</span>
                                                         <span>•</span>
@@ -6438,11 +6438,11 @@ export default function DashboardLayout() {
                                               </div>
                                               <div className="text-sm text-[#64748B]">{mediaAssets.filter((asset) => asset.mime?.startsWith("video")).length} files</div>
                                             </div>
-                                            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                                            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                                               {mediaAssets.filter((asset) => asset.mime?.startsWith("video")).map((asset) => (
-                                                <div key={asset.id} className="group flex h-full flex-col overflow-hidden rounded-[24px] border border-[#E2E8F0] bg-white text-[#0F172A] shadow-[0_8px_24px_rgba(15,23,42,0.08)] transition duration-200 hover:-translate-y-1 hover:shadow-[0_16px_48px_rgba(15,23,42,0.12)]">
+                                                <div key={asset.id} className="group flex h-full flex-col overflow-hidden rounded-[28px] border border-[#E2E8F0] bg-white text-[#0F172A] shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-[0_22px_48px_rgba(15,23,42,0.12)]">
                                                   <div className="relative overflow-hidden bg-[#F8FAFB]">
-                                                    <div className="aspect-[5/4] overflow-hidden">
+                                                    <div className="aspect-[4/3] overflow-hidden">
                                                       <video src={asset.url} className="h-full w-full object-cover transition duration-300 group-hover:scale-105" muted loop playsInline />
                                                     </div>
                                                     <div className="absolute inset-0 flex items-center justify-center bg-black/15 opacity-0 transition duration-300 group-hover:opacity-100">
@@ -6453,7 +6453,7 @@ export default function DashboardLayout() {
                                                       </div>
                                                     </div>
                                                   </div>
-                                                  <div className="flex flex-1 flex-col p-5">
+                                                  <div className="flex flex-1 flex-col p-6">
                                                     <div className="space-y-3 text-sm leading-6">
                                                       <p className="text-base font-semibold tracking-[0.01em] text-[#111827]">{asset.name}</p>
                                                       <div className="grid gap-2 sm:grid-cols-2">
