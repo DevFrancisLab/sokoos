@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "@tanstack/react-router";
 import {
   Home,
@@ -1645,6 +1645,49 @@ export default function DashboardLayout() {
       mime: "image/png",
     },
   ]);
+
+  const productSectionIds = ["product-types","products","pricing","product-media"];
+  const [activeProductStep, setActiveProductStep] = useState(0);
+  const productStepRefs = useRef<(HTMLElement | null)[]>([]);
+  const focusProductStep = (index: number) => {
+    const id = productSectionIds[index];
+    const el = document.getElementById(id);
+    if (!el) return;
+    setActiveProductStep(index);
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+  useEffect(() => {
+    const ids = productSectionIds;
+    const els = ids.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
+    if (els.length === 0) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting);
+        if (visible.length > 0) {
+          visible.sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+          const idx = ids.indexOf(visible[0].target.id);
+          if (idx !== -1) setActiveProductStep(idx);
+        } else {
+          const rects = els.map((el) => ({ id: el.id, top: Math.abs(el.getBoundingClientRect().top - 120) }));
+          rects.sort((a, b) => a.top - b.top);
+          setActiveProductStep(ids.indexOf(rects[0].id));
+        }
+      },
+      { threshold: [0.25, 0.5, 0.75], root: null, rootMargin: "-40% 0px -40% 0px" },
+    );
+    els.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [catalogProducts.length, mediaAssets.length]);
+
+  const productSteps = useMemo(
+    () => [
+      { id: "product-types", title: "Product Types", detail: "Choose the formats you offer", done: true },
+      { id: "products", title: "Products", detail: "Add and manage catalog items", done: catalogProducts.length > 0 },
+      { id: "pricing", title: "Pricing", detail: "Set prices and billing", done: catalogProducts.length > 0 },
+      { id: "product-media", title: "Product Media", detail: "Attach visuals and video", done: mediaAssets.length > 0 },
+    ],
+    [catalogProducts.length, mediaAssets.length],
+  );
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const serviceFileInputRef = useRef<HTMLInputElement | null>(null);
@@ -5917,26 +5960,27 @@ export default function DashboardLayout() {
                                       </div>
 
                                       <div className="mt-5 grid gap-3 md:grid-cols-4">
-                                        {[
-                                          { title: "Product Types", detail: "Choose the formats you offer", done: true },
-                                          { title: "Products", detail: "Add and manage catalog items", done: catalogProducts.length > 0 },
-                                          { title: "Pricing", detail: "Set prices and billing", done: catalogProducts.length > 0 },
-                                          { title: "Product Media", detail: "Attach visuals and video", done: mediaAssets.length > 0 },
-                                        ].map((step, index) => (
-                                          <div key={step.title} className={`rounded-[22px] border p-4 shadow-sm ${step.done ? "border-[#D1FAE5] bg-[#F0FDF4]" : "border-[#E8EDF3] bg-white"}`}>
+                                        {productSteps.map((step, index) => (
+                                          <button
+                                            key={step.title}
+                                            type="button"
+                                            onClick={() => focusProductStep(index)}
+                                            aria-current={index === activeProductStep ? "true" : undefined}
+                                            className={`rounded-[22px] border p-4 shadow-sm text-left ${step.done ? "border-[#D1FAE5] bg-[#F0FDF4]" : "border-[#E8EDF3] bg-white"} ${index === activeProductStep ? "ring-2 ring-[#111827]" : ""}`}
+                                          >
                                             <div className="flex items-center gap-3">
                                               <div className={`flex h-8 w-8 items-center justify-center rounded-full text-[11px] font-semibold ${step.done ? "bg-[#22C55E] text-white" : "bg-[#F1F5F9] text-[#64748B]"}`}>
-                                                {index + 1}
+                                                {step.done ? <Check className="h-4 w-4" /> : index + 1}
                                               </div>
                                               <p className="text-sm font-semibold text-[#111827]">{step.title}</p>
                                             </div>
                                             <p className="mt-3 text-xs text-[#64748B]">{step.detail}</p>
-                                          </div>
+                                          </button>
                                         ))}
                                       </div>
                                     </div>
 
-                                    <section className="rounded-[24px] border border-[#E8EDF3] bg-white p-6 shadow-sm">
+                                    <section id="product-types" className="rounded-[24px] border border-[#E8EDF3] bg-white p-6 shadow-sm">
                                       <div className="flex flex-wrap items-start justify-between gap-4">
                                         <div>
                                           <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#64748B]">Section 1</p>
@@ -5987,7 +6031,7 @@ export default function DashboardLayout() {
                                       </div>
                                     </section>
 
-                                    <section className="rounded-[24px] border border-[#E8EDF3] bg-white p-6 shadow-sm">
+                                    <section id="products" className="rounded-[24px] border border-[#E8EDF3] bg-white p-6 shadow-sm">
                                       <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
                                         <div>
                                           <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#64748B]">Section 2</p>
@@ -6091,7 +6135,7 @@ export default function DashboardLayout() {
                                       })()}
                                     </section>
 
-                                    <section className="rounded-[20px] border border-[#E5E7F0] bg-white p-6 shadow-sm">
+                                    <section id="pricing" className="rounded-[20px] border border-[#E5E7F0] bg-white p-6 shadow-sm">
                                       <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-start lg:gap-8">
                                         <div>
                                           <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Section 3</p>
@@ -6202,7 +6246,7 @@ export default function DashboardLayout() {
                                       </div>
                                     </section>
 
-                                    <section className="rounded-[24px] border border-[#E8EDF3] bg-white p-6 shadow-sm">
+                                    <section id="product-media" className="rounded-[24px] border border-[#E8EDF3] bg-white p-6 shadow-sm">
                                       <div className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-start lg:gap-8">
                                         <div>
                                           <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#64748B]">Section 4</p>
