@@ -1604,7 +1604,7 @@ export default function DashboardLayout() {
   const [pricingSectionComplete, setPricingSectionComplete] = useState(false);
   const [availabilitySaved, setAvailabilitySaved] = useState(false);
   const [importMenuOpen, setImportMenuOpen] = useState(false);
-  const [addProductMenuOpen, setAddProductMenuOpen] = useState(false);
+  const [showProductTypeDialog, setShowProductTypeDialog] = useState(false);
   const [showAddProductForm, setShowAddProductForm] = useState(false);
   const [selectedProductType, setSelectedProductType] = useState<string | null>(null);
   const [completedProductStepIds, setCompletedProductStepIds] = useState<string[]>([]);
@@ -1648,7 +1648,7 @@ export default function DashboardLayout() {
     },
   ]);
 
-  const productSectionIds = ["product-types","products","pricing","product-media"];
+  const productSectionIds = ["products","pricing"];
   const [activeProductStep, setActiveProductStep] = useState(0);
   const productStepRefs = useRef<(HTMLElement | null)[]>([]);
   const focusProductStep = (index: number) => {
@@ -1679,7 +1679,7 @@ export default function DashboardLayout() {
     );
     els.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  }, [catalogProducts.length, mediaAssets.length]);
+  }, [catalogProducts.length]);
 
   const getProductCompletionMessage = (id: string) => {
     switch (id) {
@@ -1698,12 +1698,10 @@ export default function DashboardLayout() {
 
   const productSteps = useMemo(
     () => [
-      { id: "product-types", title: "Product Types", detail: "Choose the formats you offer", done: selectedProductType !== null },
       { id: "products", title: "Products", detail: "Add and manage catalog items", done: catalogProducts.length > 0 },
       { id: "pricing", title: "Pricing", detail: "Set prices and billing", done: pricingSectionComplete },
-      { id: "product-media", title: "Product Media", detail: "Attach visuals and video", done: mediaAssets.length > 0 },
     ],
-    [catalogProducts.length, mediaAssets.length, pricingSectionComplete, selectedProductType],
+    [catalogProducts.length, pricingSectionComplete],
   );
 
   const productLessonCompleted = productSteps.filter((step) => step.done).length;
@@ -5526,35 +5524,40 @@ export default function DashboardLayout() {
                             <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
                               <div className="flex flex-wrap items-center gap-3">
                                 <div className="relative">
-                                  <button type="button" onClick={() => setAddProductMenuOpen((s) => !s)} className="inline-flex items-center gap-2 rounded-[12px] bg-[#22C55E] px-3 py-1 text-sm font-semibold text-white transition duration-200 ease-out hover:shadow-sm hover:bg-[#16A34A]">+ Add Product</button>
-
-                                  {addProductMenuOpen && (
-                                    <div className="absolute left-0 mt-2 w-56 rounded-md border bg-white shadow-lg z-50">
-                                      {[
-                                        'Physical Product',
-                                        'Service',
-                                        'Subscription',
-                                        'Digital Product',
-                                        'Rental',
-                                        'Booking',
-                                        'Gift Card',
-                                      ].map((t) => (
-                                        <button
-                                          key={t}
-                                          onClick={() => {
-                                            setSelectedProductType(t);
-                                            setAddProductMenuOpen(false);
-                                            setAddProductFormData({ name: `${t} ${catalogProducts.length + 1}`, category: t, price: '$0.00', availability: 'Available' });
-                                            setShowAddProductForm(true);
-                                          }}
-                                          className="w-full text-left px-3 py-2 text-sm hover:bg-[#F8FAFB]"
-                                        >
-                                          {t}
-                                        </button>
-                                      ))}
-                                    </div>
-                                  )}
+                                  <button type="button" onClick={() => setShowProductTypeDialog(true)} className="inline-flex items-center gap-2 rounded-[12px] bg-[#22C55E] px-3 py-1 text-sm font-semibold text-white transition duration-200 ease-out hover:shadow-sm hover:bg-[#16A34A]">+ Add Product</button>
                                 </div>
+                                {showProductTypeDialog && (
+                                  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+                                    <div className="w-full max-w-md rounded-[12px] bg-white p-6">
+                                      <div className="flex items-center justify-between">
+                                        <h3 className="text-lg font-semibold">What are you adding?</h3>
+                                        <button type="button" onClick={() => setShowProductTypeDialog(false)} className="text-sm text-[#6B7280]">Cancel</button>
+                                      </div>
+                                      <div className="mt-6 grid gap-3">
+                                        {[
+                                          'Physical Product',
+                                          'Service',
+                                          'Subscription',
+                                          'Digital Product',
+                                        ].map((type) => (
+                                          <button
+                                            key={type}
+                                            type="button"
+                                            onClick={() => {
+                                              setSelectedProductType(type);
+                                              setShowProductTypeDialog(false);
+                                              setAddProductFormData({ name: `${type} ${catalogProducts.length + 1}`, category: type, price: '$0.00', availability: 'Available' });
+                                              setShowAddProductForm(true);
+                                            }}
+                                            className="rounded-[16px] border border-[#E5E7EB] bg-white px-4 py-4 text-left text-sm font-semibold text-[#111827] transition hover:bg-[#F8FAFB]"
+                                          >
+                                            {type}
+                                          </button>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
 
                                 <div className="relative">
                                   <button type="button" onClick={() => setImportMenuOpen((s) => !s)} className="inline-flex items-center gap-2 rounded-[12px] border border-[#E5E7EB] bg-white px-3 py-1 text-sm font-semibold transition duration-200 ease-out hover:shadow-sm hover:bg-[#F8FAFB]">
@@ -6034,65 +6037,6 @@ export default function DashboardLayout() {
                                       </div>
                                     </div>
 
-                                    <section id="product-types" className="rounded-[24px] border border-[#E8EDF3] bg-white p-6 shadow-sm">
-                                      <div className="flex flex-wrap items-start justify-between gap-4">
-                                        <div>
-                                          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#64748B]">Panel 1</p>
-                                          <p className="mt-2 text-2xl font-semibold text-[#111827]">Product Types</p>
-                                          <p className="mt-3 max-w-2xl text-sm leading-6 text-[#475569]">Choose the formats you offer so your AI can route customer requests correctly.</p>
-                                        </div>
-                                        <div className="rounded-3xl border border-[#E5E7EB] bg-[#F8FAFC] px-4 py-2 text-sm font-semibold text-[#64748B]">Overview 1</div>
-                                      </div>
-
-                                      <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-                                        {[
-                                          { key: "Product", icon: "📦", desc: "Physical goods", examples: ["Shoes", "Laptop"] },
-                                          { key: "Service", icon: "🛠", desc: "Work customers book", examples: ["Haircut", "Plumbing"] },
-                                          { key: "Subscription", icon: "🔄", desc: "Recurring payments", examples: ["Gym Membership", "SaaS Plan"] },
-                                          { key: "Digital Product", icon: "💾", desc: "Downloadable items", examples: ["Ebook", "Template"] },
-                                        ].map((t) => {
-                                          const isSelected = selectedProductType === t.key;
-                                          return (
-                                            <button
-                                              key={t.key}
-                                              onClick={() => {
-                                                setSelectedProductType(t.key);
-                                                addProduct(t.key);
-                                              }}
-                                              className={`group flex min-h-[190px] w-full flex-col justify-between rounded-[28px] border bg-white p-6 text-left shadow-sm transition duration-200 ease-out ${isSelected ? 'border-[#22C55E] bg-[#ECFDF5]' : 'border-[#E8EDF3] hover:-translate-y-1 hover:border-[#22C55E] hover:bg-[#ECFDF5] hover:shadow-md'}`}
-                                              type="button"
-                                            >
-                                              <div className="flex items-start justify-between gap-4">
-                                                <div className="flex h-12 w-12 items-center justify-center rounded-3xl bg-[#EEF6FF] text-2xl shadow-sm">
-                                                  {t.icon}
-                                                </div>
-                                                <div className={`flex h-9 w-9 items-center justify-center rounded-full border text-[11px] font-semibold ${isSelected ? 'border-[#22C55E] bg-[#22C55E] text-white' : 'border-[#E5E7EB] bg-white text-[#64748B]'}`}>
-                                                  {isSelected ? <Check className="h-4 w-4" /> : t.key.slice(0, 1)}
-                                                </div>
-                                              </div>
-
-                                              <div className="mt-6 flex-1">
-                                                <p className="text-base font-semibold text-[#111827]">{t.key}</p>
-                                                <p className="mt-2 text-sm leading-6 text-[#64748B]">{t.desc}</p>
-                                                <div className="mt-4 text-sm text-[#475569]">
-                                                  <p className="font-semibold text-[#111827]">Examples:</p>
-                                                  <ul className="mt-2 list-inside list-disc space-y-1 text-[#64748B]">
-                                                    {t.examples.map((example) => (
-                                                      <li key={example}>{example}</li>
-                                                    ))}
-                                                  </ul>
-                                                </div>
-                                              </div>
-
-                                              <div className="mt-4 text-sm font-semibold text-[#166534] opacity-0 transition-all duration-200 group-hover:opacity-100">
-                                                Select {t.key}
-                                              </div>
-                                            </button>
-                                          );
-                                        })}
-                                      </div>
-                                    </section>
-
                                     <section id="products" className="rounded-[24px] border border-[#E8EDF3] bg-white p-6 shadow-sm">
                                       <div className="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
                                         <div>
@@ -6101,7 +6045,7 @@ export default function DashboardLayout() {
                                           <p className="mt-3 max-w-2xl text-sm leading-6 text-[#475569]">Manage your product catalogue with quick actions, search, and a modern product list.</p>
                                         </div>
                                         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-3">
-                                          <button type="button" onClick={() => addProduct()} className="inline-flex items-center justify-center rounded-[16px] bg-[#111827] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#334155]">Add Product</button>
+                                          <button type="button" onClick={() => setShowProductTypeDialog(true)} className="inline-flex items-center justify-center rounded-[16px] bg-[#111827] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#334155]">Add Product</button>
                                           <button type="button" onClick={() => setCatalogueSubsection("Imports")} className="inline-flex items-center justify-center rounded-[16px] border border-[#E5E7EB] bg-white px-5 py-3 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#F8FAFB]">Import</button>
                                         </div>
                                       </div>
@@ -6141,7 +6085,7 @@ export default function DashboardLayout() {
                                               <p className="text-2xl font-semibold text-[#111827]">No Products Yet</p>
                                               <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#475569]">Add your first product so your AI can recommend it.</p>
                                               <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                                                <button onClick={() => addProduct()} className="rounded-[16px] bg-[#0F172A] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#111827]">Add Product</button>
+                                                <button onClick={() => setShowProductTypeDialog(true)} className="rounded-[16px] bg-[#0F172A] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#111827]">Add Product</button>
                                                 <button onClick={() => setCatalogueSubsection("Imports")} className="rounded-[16px] border border-[#E5E7EB] bg-white px-6 py-3 text-sm font-semibold text-[#334155] shadow-sm transition hover:bg-[#F8FAFB]">Import catalogue</button>
                                               </div>
                                             </div>
@@ -6614,7 +6558,7 @@ export default function DashboardLayout() {
                                             <p className="text-2xl font-semibold text-[#111827]">No products yet</p>
                                             <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#475569]">Add your products and services so your AI can recommend them to customers.</p>
                                             <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
-                                              <button onClick={() => addProduct()} className="rounded-[16px] bg-[#0F172A] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#111827]">Add product</button>
+                                              <button onClick={() => setShowProductTypeDialog(true)} className="rounded-[16px] bg-[#0F172A] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#111827]">Add product</button>
                                               <button onClick={() => setCatalogueSubsection("Imports")} className="rounded-[16px] border border-[#E5E7EB] bg-white px-6 py-3 text-sm font-semibold text-[#334155] shadow-sm transition hover:bg-[#F8FAFB]">Import catalogue</button>
                                             </div>
                                           </div>
