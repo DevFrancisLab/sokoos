@@ -1417,13 +1417,14 @@ export default function DashboardLayout() {
   };
   const identityLessonCardClass = (step: number) => `rounded-[28px] border bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-300 sm:p-6 ${completedIdentitySteps.includes(step) ? "border-[#86EFAC] shadow-[0_14px_34px_rgba(34,197,94,0.14)]" : "border-[#E5E7EB]"}`;
   const knowledgeLessonCardClass = (step: number) => `rounded-[28px] border bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-300 sm:p-6 ${completedKnowledgeSteps.includes(step) ? "border-[#86EFAC] shadow-[0_14px_34px_rgba(34,197,94,0.14)]" : "border-[#E5E7EB]"}`;
+
   useEffect(() => {
     document.getElementById("ai-workspace-content")?.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
   }, [activeWorkspaceSection]);
-  const CATALOG_ITEMS = [
+  const CATALOG_ITEMS: CatalogProduct[] = [
     {
       id: "p-restaurant-001",
       name: "Ginger Citrus Salad",
@@ -1432,9 +1433,8 @@ export default function DashboardLayout() {
       price: "$8.50",
       description: "Fresh mixed greens, candied ginger, citrus segments, and sesame vinaigrette.",
       availability: "In stock",
-      imagesCount: 3,
-      documentsCount: 0,
       image: "/assets/sample/food-salad.jpg",
+      mediaAssets: [],
     },
     {
       id: "p-retail-001",
@@ -1444,9 +1444,8 @@ export default function DashboardLayout() {
       price: "$19.99",
       description: "Soft 100% cotton tee available in multiple colors and sizes.",
       availability: "Low stock",
-      imagesCount: 4,
-      documentsCount: 1,
       image: "/assets/sample/tee.jpg",
+      mediaAssets: [],
     },
     {
       id: "p-clinic-001",
@@ -1456,9 +1455,8 @@ export default function DashboardLayout() {
       price: "$65.00",
       description: "Comprehensive check-up including vitals and basic blood work.",
       availability: "By appointment",
-      imagesCount: 1,
-      documentsCount: 2,
       image: "/assets/sample/clinic.jpg",
+      mediaAssets: [],
     },
     {
       id: "p-school-001",
@@ -1468,9 +1466,8 @@ export default function DashboardLayout() {
       price: "$12.00",
       description: "Grade 3 math workbook with exercises and answer key.",
       availability: "In stock",
-      imagesCount: 2,
-      documentsCount: 1,
       image: "/assets/sample/workbook.jpg",
+      mediaAssets: [],
     },
     {
       id: "p-realestate-001",
@@ -1480,9 +1477,8 @@ export default function DashboardLayout() {
       price: "$250,000",
       description: "Modern apartment with river views, 2 bed, 2 bath, parking included.",
       availability: "Available",
-      imagesCount: 8,
-      documentsCount: 3,
       image: "/assets/sample/apartment.jpg",
+      mediaAssets: [],
     },
     {
       id: "p-salon-001",
@@ -1492,9 +1488,8 @@ export default function DashboardLayout() {
       price: "$45.00",
       description: "Repairing deep-conditioning treatment with scalp massage.",
       availability: "In stock",
-      imagesCount: 2,
-      documentsCount: 0,
       image: "/assets/sample/salon.jpg",
+      mediaAssets: [],
     },
     {
       id: "p-electronics-001",
@@ -1504,12 +1499,11 @@ export default function DashboardLayout() {
       price: "$129.99",
       description: "Wireless over-ear headphones with 30h battery life.",
       availability: "In stock",
-      imagesCount: 5,
-      documentsCount: 2,
       image: "/assets/sample/headphones.jpg",
+      mediaAssets: [],
     },
   ];
-  const [catalogProducts, setCatalogProducts] = useState(() => CATALOG_ITEMS);
+  const [catalogProducts, setCatalogProducts] = useState<CatalogProduct[]>(() => CATALOG_ITEMS.map((product) => ({ ...product, mediaAssets: product.mediaAssets ?? [] })));
   const [productSearch, setProductSearch] = useState("");
   const CATALOG_TABS = ["All", "Products", "Services", "Subscriptions", "Digital Products"] as const;
   type CatalogueTab = (typeof CATALOG_TABS)[number];
@@ -1535,9 +1529,8 @@ export default function DashboardLayout() {
       price: "$0.00",
       description: "Add a short description...",
       availability: "Available",
-      imagesCount: 0,
-      documentsCount: 0,
       image: "/assets/sample/placeholder.png",
+      mediaAssets: [],
     };
     setCatalogProducts((p) => [newItem, ...p]);
   };
@@ -1611,6 +1604,20 @@ export default function DashboardLayout() {
     url: string;
     mime?: string;
     duration?: string;
+    altText?: string;
+    isThumbnail?: boolean;
+  };
+
+  type CatalogProduct = {
+    id: string;
+    name: string;
+    category: string;
+    type: string;
+    price: string;
+    description: string;
+    availability: string;
+    image: string;
+    mediaAssets: MediaAsset[];
   };
 
   const [pricingSaved, setPricingSaved] = useState(false);
@@ -1625,47 +1632,69 @@ export default function DashboardLayout() {
   const [productDrawerTab, setProductDrawerTab] = useState<"general" | "pricing" | "media" | "inventory" | "ai-knowledge">("general");
   const [completedProductStepIds, setCompletedProductStepIds] = useState<string[]>([]);
   const [addProductFormData, setAddProductFormData] = useState<{ name: string; category: string; price: string; availability: string; image?: string; type: string } | null>(null);
-  const [mediaAssets, setMediaAssets] = useState<MediaAsset[]>([
-    {
-      id: "m-img-1",
-      name: "Ginger Citrus Salad.jpg",
-      fileType: "Image",
-      uploadDate: new Date().toLocaleString(),
-      size: "128 KB",
-      url: "/assets/sample/food-salad.jpg",
-      mime: "image/jpeg",
-    },
-    {
-      id: "m-pdf-1",
-      name: "Restaurant Menu.pdf",
-      fileType: "PDF",
-      uploadDate: new Date().toLocaleString(),
-      size: "320 KB",
-      url: "/assets/sample/menu.pdf",
-      mime: "application/pdf",
-    },
-    {
-      id: "m-video-1",
-      name: "Salon Promo.mp4",
-      fileType: "Video",
-      uploadDate: new Date().toLocaleString(),
-      size: "6.2 MB",
-      url: "/assets/sample/promo.mp4",
-      mime: "video/mp4",
-    },
-    {
-      id: "m-logo-1",
-      name: "Clinic Logo.png",
-      fileType: "Logo",
-      uploadDate: new Date().toLocaleString(),
-      size: "48 KB",
-      url: "/assets/sample/clinic.jpg",
-      mime: "image/png",
-    },
-  ]);
-
   const productSectionIds = ["products","pricing"];
   const selectedProduct = selectedProductId ? catalogProducts.find((product) => product.id === selectedProductId) ?? null : null;
+  const createProductMediaAssets = (files: FileList | null) => {
+    if (!files) return [];
+    return Array.from(files).map((file) => ({
+      id: `asset-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      name: file.name,
+      fileType: file.type.split("/")[0] || "file",
+      uploadDate: new Date().toLocaleString(),
+      size: `${Math.round(file.size / 1024)} KB`,
+      url: URL.createObjectURL(file),
+      mime: file.type,
+      altText: "",
+      isThumbnail: false,
+    }));
+  };
+  const addProductMediaAssets = (productId: string, files: FileList | null) => {
+    if (!files) return;
+    const assets = createProductMediaAssets(files);
+    setCatalogProducts((list: CatalogProduct[]) =>
+      list.map((product) =>
+        product.id === productId ? { ...product, mediaAssets: [...assets, ...(product.mediaAssets ?? [])] } : product
+      )
+    );
+  };
+  const updateProductMediaAssetField = (productId: string, assetId: string, field: string, value: any) => {
+    setCatalogProducts((list: CatalogProduct[]) =>
+      list.map((product) =>
+        product.id === productId
+          ? {
+              ...product,
+              mediaAssets: (product.mediaAssets ?? []).map((asset) =>
+                asset.id === assetId ? { ...asset, [field]: value } : asset
+              ),
+            }
+          : product
+      )
+    );
+  };
+  const deleteProductMediaAsset = (productId: string, assetId: string) => {
+    setCatalogProducts((list: CatalogProduct[]) =>
+      list.map((product) =>
+        product.id === productId
+          ? { ...product, mediaAssets: (product.mediaAssets ?? []).filter((asset) => asset.id !== assetId) }
+          : product
+      )
+    );
+  };
+  const selectProductThumbnail = (productId: string, assetId: string) => {
+    setCatalogProducts((list: CatalogProduct[]) =>
+      list.map((product) =>
+        product.id === productId
+          ? {
+              ...product,
+              mediaAssets: (product.mediaAssets ?? []).map((asset) => ({
+                ...asset,
+                isThumbnail: asset.id === assetId,
+              })),
+            }
+          : product
+      )
+    );
+  };
   const openProductDrawer = (id: string) => {
     setSelectedProductId(id);
     setProductDrawerOpen(true);
@@ -1871,7 +1900,7 @@ export default function DashboardLayout() {
   const catalogueHealthMetrics = useMemo(() => {
     const totalProducts = catalogProducts.length;
     const pricesCompleted = catalogProducts.filter((product) => typeof product.price === "string" && product.price.trim().length > 0).length;
-    const mediaCompleted = catalogProducts.filter((product) => typeof product.image === "string" && product.image.trim().length > 0 && product.image !== "/assets/sample/placeholder.png").length;
+    const mediaCompleted = catalogProducts.filter((product) => (product.mediaAssets ?? []).length > 0).length;
     const aiReadyCompleted = catalogProducts.filter((product) => {
       const hasName = typeof product.name === "string" && product.name.trim().length > 0;
       const hasCategory = typeof product.category === "string" && product.category.trim().length > 0;
@@ -1912,23 +1941,13 @@ export default function DashboardLayout() {
     });
   }, [completedProductStepIds, productSteps]);
 
-  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const productMediaFileInputRef = useRef<HTMLInputElement | null>(null);
   const serviceFileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const handleFiles = (files: FileList | null) => {
+  const handleProductMediaFiles = (productId: string, files: FileList | null) => {
     if (!files || files.length === 0) return;
-    const arr = Array.from(files).map((f) => ({
-      id: `asset-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-      name: f.name,
-      fileType: f.type.split("/")[0] || "file",
-      uploadDate: new Date().toLocaleString(),
-      size: `${Math.round(f.size / 1024)} KB`,
-      url: URL.createObjectURL(f),
-      mime: f.type,
-    }));
-    setMediaAssets((prev) => [...arr, ...prev]);
-    if (fileInputRef.current) fileInputRef.current.value = "";
+    addProductMediaAssets(productId, files);
+    if (productMediaFileInputRef.current) productMediaFileInputRef.current.value = "";
   };
 
   type ServiceItem = {
@@ -2091,42 +2110,21 @@ export default function DashboardLayout() {
       price: data.price,
       description: "",
       availability: data.availability,
-      imagesCount: 0,
-      documentsCount: 0,
       image: data.image || "/assets/sample/placeholder.png",
+      mediaAssets: [],
     };
     setCatalogProducts((p) => [newItem, ...p]);
   };
 
-  const onDrop = (e: React.DragEvent<HTMLDivElement>) => {
+  const onDrop = (e: React.DragEvent<HTMLDivElement>, productId: string) => {
     e.preventDefault();
-    handleFiles(e.dataTransfer.files);
+    addProductMediaAssets(productId, e.dataTransfer.files);
   };
 
   const onDragOver = (e: React.DragEvent<HTMLDivElement>) => e.preventDefault();
 
-  const viewAsset = (asset: MediaAsset) => {
-    window.open(asset.url, "_blank");
-  };
-
-  const renameAsset = (id: string) => {
-    const a = mediaAssets.find((m) => m.id === id);
-    if (!a) return;
-    const newName = window.prompt("Rename file", a.name);
-    if (newName) setMediaAssets((prev) => prev.map((m) => (m.id === id ? { ...m, name: newName } : m)));
-  };
-
-  const deleteAsset = (id: string) => {
-    const a = mediaAssets.find((m) => m.id === id);
-    if (!a) return;
-    if (!window.confirm(`Delete ${a.name}?`)) return;
-    // revoke object URL if it was created dynamically
-    try {
-      if (a.url.startsWith("blob:")) URL.revokeObjectURL(a.url);
-    } catch (e) {
-      /* ignore */
-    }
-    setMediaAssets((prev) => prev.filter((m) => m.id !== id));
+  const viewAsset = (url: string) => {
+    window.open(url, "_blank");
   };
 
   const IMPORT_TYPES = ["Excel", "CSV", "PDF Catalogues", "Website Import"] as const;
@@ -3257,13 +3255,14 @@ export default function DashboardLayout() {
   const currentTrainingLessonCount = activeWorkspaceSection === "Knowledge Hub" ? knowledgeLessonSequence.length : identityLessons.length;
   const currentTrainingStepNumber = activeWorkspaceSection === "Knowledge Hub" ? activeKnowledgeStep + 1 : activeIdentityStep + 1;
   const aiReadiness = overallTrainingComplete ? 100 : Math.min(100, Math.round(18 + (completedTrainingLessonCount / Math.max(1, totalTrainingLessonCount)) * 82));
+  const totalProductMediaAssets = catalogProducts.reduce((count, product) => count + (product.mediaAssets?.length ?? 0), 0);
   const knowledgeSourceSummary = [
     { label: "Website", value: "42 pages", Icon: Globe, ready: websiteImportStatus !== "syncing" },
     { label: "FAQ", value: `${faqItems.length} items`, Icon: MessageCircle, ready: faqItems.length > 0 },
     { label: "Products", value: `${knowledgeProducts.length} products`, Icon: Package, ready: knowledgeProducts.length > 0 },
     { label: "Policies", value: `${Object.values(policies).filter(Boolean).length}`, Icon: Shield, ready: Object.values(policies).some(Boolean) },
     { label: "Documents", value: `${knowledgeDocuments.length}`, Icon: Paperclip, ready: knowledgeDocuments.length > 0 },
-    { label: "Images", value: `${mediaAssets.length}`, Icon: Image, ready: mediaAssets.length > 0 },
+    { label: "Images", value: `${totalProductMediaAssets} files`, Icon: Image, ready: totalProductMediaAssets > 0 },
     { label: "Catalogues", value: `${CATALOG_ITEMS.length}`, Icon: BookOpen, ready: CATALOG_ITEMS.length > 0 },
   ];
   const knowledgeCoverage = Math.round((knowledgeSourceSummary.filter((source) => source.ready).length / knowledgeSourceSummary.length) * 100);
@@ -7092,37 +7091,65 @@ export default function DashboardLayout() {
                               <button type="button" onClick={() => productMediaFileInputRef.current?.click()} className="rounded-[12px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Upload</button>
                             </div>
 
-                            <input ref={productMediaFileInputRef} type="file" accept="image/*,video/*,.pdf" multiple className="hidden" onChange={(e) => { handleFiles(e.target.files); e.currentTarget.value = ""; }} />
+                            <input
+                              ref={productMediaFileInputRef}
+                              type="file"
+                              accept="image/*,video/*,.pdf"
+                              multiple
+                              className="hidden"
+                              onChange={(e) => {
+                                if (selectedProduct) handleProductMediaFiles(selectedProduct.id, e.target.files);
+                                e.currentTarget.value = "";
+                              }}
+                            />
 
-                            <div onDrop={onDrop} onDragOver={onDragOver} className="mt-4 rounded-[16px] border-2 border-dashed border-[#E5E7EB] bg-[#F8FAFB] p-5 text-center">
+                            <div onDrop={(e) => selectedProduct && onDrop(e, selectedProduct.id)} onDragOver={onDragOver} className="mt-4 rounded-[16px] border-2 border-dashed border-[#E5E7EB] bg-[#F8FAFB] p-5 text-center">
                               <p className="text-sm font-semibold text-[#111827]">Drag & drop media files</p>
                               <p className="mt-2 text-sm text-[#64748B]">Images, videos, and other resources for your product showcase.</p>
                             </div>
 
                             <div className="mt-5 space-y-3">
-                              {mediaAssets.length === 0 ? (
+                              {(selectedProduct.mediaAssets ?? []).length === 0 ? (
                                 <p className="rounded-[12px] border border-[#E5E7EB] bg-[#F8FAFB] p-4 text-sm text-[#64748B]">No media uploaded yet.</p>
                               ) : (
-                                mediaAssets.map((asset) => (
-                                  <div key={asset.id} className="flex items-center gap-3 rounded-[16px] border border-[#E5E7EB] bg-white p-3">
-                                    <div className="h-16 w-16 overflow-hidden rounded-[12px] bg-[#F8FAFB]">
-                                      {asset.mime?.startsWith("image") ? (
-                                        <img src={asset.url} alt={asset.name} className="h-full w-full object-cover" />
-                                      ) : asset.mime?.startsWith("video") ? (
-                                        <video src={asset.url} className="h-full w-full object-cover" muted playsInline />
-                                      ) : (
-                                        <div className="flex h-full w-full items-center justify-center text-[10px] font-semibold uppercase text-[#64748B]">File</div>
-                                      )}
-                                    </div>
+                                (selectedProduct.mediaAssets ?? []).map((asset) => (
+                                  <div key={asset.id} className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                                      <div className="h-20 w-20 flex-none overflow-hidden rounded-[12px] bg-[#F8FAFB]">
+                                        {asset.mime?.startsWith("image") ? (
+                                          <img src={asset.url} alt={asset.altText || asset.name} className="h-full w-full object-cover" />
+                                        ) : asset.mime?.startsWith("video") ? (
+                                          <video src={asset.url} className="h-full w-full object-cover" muted playsInline />
+                                        ) : (
+                                          <div className="flex h-full w-full items-center justify-center text-[10px] font-semibold uppercase text-[#64748B]">File</div>
+                                        )}
+                                      </div>
 
-                                    <div className="min-w-0 flex-1">
-                                      <p className="truncate text-sm font-semibold text-[#111827]">{asset.name}</p>
-                                      <p className="mt-1 text-xs text-[#64748B]">{asset.fileType} • {asset.size}</p>
-                                    </div>
+                                      <div className="min-w-0 flex-1">
+                                        <p className="truncate text-sm font-semibold text-[#111827]">{asset.name}</p>
+                                        <p className="mt-1 text-xs text-[#64748B]">{asset.fileType} • {asset.size}</p>
+                                        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                                          <input
+                                            type="text"
+                                            value={asset.altText ?? ""}
+                                            onChange={(e) => updateProductMediaAssetField(selectedProduct.id, asset.id, "altText", e.target.value)}
+                                            placeholder="Alt text"
+                                            className="w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm"
+                                          />
+                                          <button
+                                            type="button"
+                                            onClick={() => selectProductThumbnail(selectedProduct.id, asset.id)}
+                                            className={`rounded-[12px] px-3 py-2 text-sm font-semibold ${asset.isThumbnail ? "bg-[#111827] text-white" : "bg-[#F8FAFB] text-[#111827] border border-[#E5E7EB]"}`}
+                                          >
+                                            {asset.isThumbnail ? "Thumbnail" : "Set thumbnail"}
+                                          </button>
+                                        </div>
+                                      </div>
 
-                                    <div className="flex items-center gap-2">
-                                      <button type="button" onClick={() => viewAsset(asset)} className="rounded-[8px] border border-[#E5E7EB] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#111827]">Preview</button>
-                                      <button type="button" onClick={() => deleteAsset(asset.id)} className="rounded-[8px] border border-[#FECACA] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#B91C1C]">Delete</button>
+                                      <div className="flex flex-none flex-col items-stretch gap-2 sm:items-end">
+                                        <button type="button" onClick={() => viewAsset(asset.url)} className="rounded-[8px] border border-[#E5E7EB] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#111827]">Preview</button>
+                                        <button type="button" onClick={() => deleteProductMediaAsset(selectedProduct.id, asset.id)} className="rounded-[8px] border border-[#FECACA] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#B91C1C]">Delete</button>
+                                      </div>
                                     </div>
                                   </div>
                                 ))
