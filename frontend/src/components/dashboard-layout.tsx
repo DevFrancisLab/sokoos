@@ -42,6 +42,8 @@ import {
   Loader2,
   MapPin,
   MoreVertical,
+  LayoutGrid,
+  List,
 } from "lucide-react";
 import AiSummaryCard from "./ui/ai-summary-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -1505,6 +1507,7 @@ export default function DashboardLayout() {
   ];
   const [catalogProducts, setCatalogProducts] = useState<CatalogProduct[]>(() => CATALOG_ITEMS.map((product) => ({ ...product, mediaAssets: product.mediaAssets ?? [] })));
   const [productSearch, setProductSearch] = useState("");
+  const [catalogView, setCatalogView] = useState<'grid' | 'table'>('grid');
   const CATALOG_TABS = ["All", "Products", "Services", "Subscriptions", "Digital Products"] as const;
   type CatalogueTab = (typeof CATALOG_TABS)[number];
   const [selectedCatalogueTab, setSelectedCatalogueTab] = useState<CatalogueTab>("All");
@@ -5822,16 +5825,27 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
                                   <div className="mt-4 flex flex-wrap items-center gap-3">
-                                    {CATALOG_TABS.map((tab) => (
-                                      <button
-                                        key={tab}
-                                        type="button"
-                                        onClick={() => setSelectedCatalogueTab(tab)}
-                                        className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${selectedCatalogueTab === tab ? 'border-[#111827] bg-[#111827] text-white shadow-sm' : 'border-[#E5E7EB] bg-white text-[#475569] hover:border-[#CBD5E1] hover:bg-[#F8FAFB]'}`}
-                                      >
-                                        {tab}
+                                    <div className="flex flex-wrap items-center gap-3">
+                                      {CATALOG_TABS.map((tab) => (
+                                        <button
+                                          key={tab}
+                                          type="button"
+                                          onClick={() => setSelectedCatalogueTab(tab)}
+                                          className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${selectedCatalogueTab === tab ? 'border-[#111827] bg-[#111827] text-white shadow-sm' : 'border-[#E5E7EB] bg-white text-[#475569] hover:border-[#CBD5E1] hover:bg-[#F8FAFB]'}`}
+                                        >
+                                          {tab}
+                                        </button>
+                                      ))}
+                                    </div>
+
+                                    <div className="ml-auto inline-flex items-center gap-2 rounded-full bg-white/50 p-1">
+                                      <button aria-label="Grid view" title="Grid view" onClick={() => setCatalogView('grid')} className={`inline-flex items-center justify-center rounded-md p-2 ${catalogView === 'grid' ? 'bg-[#111827] text-white shadow-sm' : 'text-[#475569] hover:bg-[#F3F4F6]'}`}>
+                                        <LayoutGrid className="h-4 w-4" />
                                       </button>
-                                    ))}
+                                      <button aria-label="Table view" title="Table view" onClick={() => setCatalogView('table')} className={`inline-flex items-center justify-center rounded-md p-2 ${catalogView === 'table' ? 'bg-[#111827] text-white shadow-sm' : 'text-[#475569] hover:bg-[#F3F4F6]'}`}>
+                                        <List className="h-4 w-4" />
+                                      </button>
+                                    </div>
                                   </div>
 
                                   {catalogProducts.length === 0 ? (
@@ -5854,52 +5868,110 @@ export default function DashboardLayout() {
                                   ) : filtered.length === 0 ? (
                                     <div className="mt-6 rounded-[20px] border border-[#F1F5F9] bg-[#F8FAFB] p-6 text-sm text-[#64748B]">No items found. Try another search or add a new product.</div>
                                   ) : (
-                                    <div className="mt-6 grid gap-5 xl:grid-cols-3">
-                                      {filtered.map((item) => {
-                                        const itemAiReady = Boolean(item.name?.trim() && item.category?.trim() && item.description?.trim());
-                                        const isAvailable = item.availability === 'In stock' || item.availability === 'Available';
-                                        return (
-                                          <article role="button" tabIndex={0} onClick={() => openProductDrawer(item.id)} onKeyDown={(e) => e.key === 'Enter' && openProductDrawer(item.id)} key={item.id} className="group cursor-pointer flex h-full flex-col overflow-hidden rounded-[28px] border border-[#E7E5E4] bg-[#FDFDFC] shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(15,23,42,0.10)]">
-                                            <div className="relative overflow-hidden bg-[#F5F5F4]">
-                                              <img src={item.image} alt={item.name} className="h-56 w-full object-cover transition duration-300 group-hover:scale-[1.02]" />
-                                              <div className="absolute right-3 top-3" onClick={(e) => e.stopPropagation()}>
-                                                <DropdownMenu>
-                                                  <DropdownMenuTrigger asChild>
-                                                    <button type="button" className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-[#475569] shadow-sm ring-1 ring-[#E5E7EB] transition hover:bg-white">
-                                                      <MoreVertical className="h-4 w-4" />
-                                                    </button>
-                                                  </DropdownMenuTrigger>
-                                                  <DropdownMenuContent align="end" className="w-40">
-                                                    <DropdownMenuItem onSelect={() => openProductDrawer(item.id)}>Edit</DropdownMenuItem>
-                                                    <DropdownMenuItem onSelect={() => duplicateCatalogProduct(item.id)}>Duplicate</DropdownMenuItem>
-                                                    <DropdownMenuItem onSelect={() => deleteCatalogProduct(item.id)}>Delete</DropdownMenuItem>
-                                                    <DropdownMenuItem onSelect={() => archiveCatalogProduct(item.id)}>Archive</DropdownMenuItem>
-                                                  </DropdownMenuContent>
-                                                </DropdownMenu>
-                                              </div>
-                                            </div>
-
-                                            <div className="flex flex-1 flex-col gap-3 p-4">
-                                              <div className="flex items-start justify-between gap-4">
-                                                <div className="min-w-0">
-                                                  <p className="text-lg font-semibold text-[#111827] line-clamp-1">{item.name}</p>
-                                                  <p className="mt-1 text-sm text-[#64748B] line-clamp-1">{item.category}</p>
+                                    <div className="mt-6">
+                                      {catalogView === 'grid' ? (
+                                        <div className="grid gap-5 xl:grid-cols-3">
+                                          {filtered.map((item) => {
+                                            const itemAiReady = Boolean(item.name?.trim() && item.category?.trim() && item.description?.trim());
+                                            const isAvailable = item.availability === 'In stock' || item.availability === 'Available';
+                                            return (
+                                              <article role="button" tabIndex={0} onClick={() => openProductDrawer(item.id)} onKeyDown={(e) => e.key === 'Enter' && openProductDrawer(item.id)} key={item.id} className="group cursor-pointer flex h-full flex-col overflow-hidden rounded-[28px] border border-[#E7E5E4] bg-[#FDFDFC] shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(15,23,42,0.10)]">
+                                                <div className="relative overflow-hidden bg-[#F5F5F4]">
+                                                  <img src={item.image} alt={item.name} className="h-56 w-full object-cover transition duration-300 group-hover:scale-[1.02]" />
+                                                  <div className="absolute right-3 top-3" onClick={(e) => e.stopPropagation()}>
+                                                    <DropdownMenu>
+                                                      <DropdownMenuTrigger asChild>
+                                                        <button type="button" className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-[#475569] shadow-sm ring-1 ring-[#E5E7EB] transition hover:bg-white">
+                                                          <MoreVertical className="h-4 w-4" />
+                                                        </button>
+                                                      </DropdownMenuTrigger>
+                                                      <DropdownMenuContent align="end" className="w-40">
+                                                        <DropdownMenuItem onSelect={() => openProductDrawer(item.id)}>Edit</DropdownMenuItem>
+                                                        <DropdownMenuItem onSelect={() => duplicateCatalogProduct(item.id)}>Duplicate</DropdownMenuItem>
+                                                        <DropdownMenuItem onSelect={() => deleteCatalogProduct(item.id)}>Delete</DropdownMenuItem>
+                                                        <DropdownMenuItem onSelect={() => archiveCatalogProduct(item.id)}>Archive</DropdownMenuItem>
+                                                      </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                  </div>
                                                 </div>
-                                                <p className="text-sm font-semibold text-[#111827]">{item.price}</p>
-                                              </div>
 
-                                              <div className="flex flex-wrap items-center gap-2">
-                                                <span className={`rounded-full px-3 py-1 text-xs font-semibold ${isAvailable ? 'bg-[#ECFDF5] text-[#166534]' : 'bg-[#FFFBEB] text-[#B45309]'}`}>
-                                                  {item.availability}
-                                                </span>
-                                                <span className={`rounded-full px-3 py-1 text-xs font-semibold ${itemAiReady ? 'bg-[#ECFDF5] text-[#166534]' : 'bg-[#FFFBEB] text-[#B45309]'}`}>
-                                                  {itemAiReady ? 'AI Ready' : 'Needs details'}
-                                                </span>
-                                              </div>
-                                            </div>
-                                          </article>
-                                        );
-                                      })}
+                                                <div className="flex flex-1 flex-col gap-3 p-4">
+                                                  <div className="flex items-start justify-between gap-4">
+                                                    <div className="min-w-0">
+                                                      <p className="text-lg font-semibold text-[#111827] line-clamp-1">{item.name}</p>
+                                                      <p className="mt-1 text-sm text-[#64748B] line-clamp-1">{item.category}</p>
+                                                    </div>
+                                                    <p className="text-sm font-semibold text-[#111827]">{item.price}</p>
+                                                  </div>
+
+                                                  <div className="flex flex-wrap items-center gap-2">
+                                                    <span className={`rounded-full px-3 py-1 text-xs font-semibold ${isAvailable ? 'bg-[#ECFDF5] text-[#166534]' : 'bg-[#FFFBEB] text-[#B45309]'}`}>
+                                                      {item.availability}
+                                                    </span>
+                                                    <span className={`rounded-full px-3 py-1 text-xs font-semibold ${itemAiReady ? 'bg-[#ECFDF5] text-[#166534]' : 'bg-[#FFFBEB] text-[#B45309]'}`}>
+                                                      {itemAiReady ? 'AI Ready' : 'Needs details'}
+                                                    </span>
+                                                  </div>
+                                                </div>
+                                              </article>
+                                            );
+                                          })}
+                                        </div>
+                                      ) : (
+                                        <div className="overflow-hidden rounded-[12px] border border-[#E5E7EB]">
+                                          <table className="min-w-full text-sm">
+                                            <thead className="bg-[#F8FAFB]">
+                                              <tr>
+                                                <th className="px-4 py-3 text-left font-semibold text-[#475569]">Image</th>
+                                                <th className="px-4 py-3 text-left font-semibold text-[#475569]">Name</th>
+                                                <th className="px-4 py-3 text-left font-semibold text-[#475569]">Category</th>
+                                                <th className="px-4 py-3 text-left font-semibold text-[#475569]">Price</th>
+                                                <th className="px-4 py-3 text-left font-semibold text-[#475569]">Inventory</th>
+                                                <th className="px-4 py-3 text-left font-semibold text-[#475569]">AI Ready</th>
+                                                <th className="px-4 py-3 text-left font-semibold text-[#475569]">Status</th>
+                                                <th className="px-4 py-3 text-right font-semibold text-[#475569]">Actions</th>
+                                              </tr>
+                                            </thead>
+                                            <tbody className="divide-y bg-white">
+                                              {filtered.map((item) => {
+                                                const itemAiReady = Boolean(item.name?.trim() && item.category?.trim() && item.description?.trim());
+                                                return (
+                                                  <tr key={item.id} onClick={() => openProductDrawer(item.id)} className="hover:bg-white hover:shadow-sm transition-transform hover:-translate-y-1 cursor-pointer">
+                                                    <td className="px-4 py-3 align-top">
+                                                      <img src={item.image} alt={item.name} className="h-12 w-12 rounded-md object-cover" />
+                                                    </td>
+                                                    <td className="px-4 py-3 align-top">
+                                                      <div className="text-sm font-semibold text-[#111827]">{item.name}</div>
+                                                    </td>
+                                                    <td className="px-4 py-3 align-top text-sm text-[#64748B]">{item.category}</td>
+                                                    <td className="px-4 py-3 align-top text-sm text-[#111827]">{item.price}</td>
+                                                    <td className="px-4 py-3 align-top text-sm text-[#111827]">{(item as any).currentStock ?? '-'}</td>
+                                                    <td className="px-4 py-3 align-top">
+                                                      <span className={`rounded-full px-3 py-1 text-xs font-semibold ${itemAiReady ? 'bg-[#ECFDF5] text-[#166534]' : 'bg-[#FFFBEB] text-[#B45309]'}`}>{itemAiReady ? 'AI Ready' : 'Needs details'}</span>
+                                                    </td>
+                                                    <td className="px-4 py-3 align-top text-sm">{item.availability}</td>
+                                                    <td className="px-4 py-3 align-top text-right" onClick={(e) => e.stopPropagation()}>
+                                                      <DropdownMenu>
+                                                        <DropdownMenuTrigger asChild>
+                                                          <button type="button" className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-white text-[#475569] shadow-sm ring-1 ring-[#E5E7EB] transition hover:bg-white">
+                                                            <MoreVertical className="h-4 w-4" />
+                                                          </button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent align="end" className="w-40">
+                                                          <DropdownMenuItem onSelect={() => openProductDrawer(item.id)}>Edit</DropdownMenuItem>
+                                                          <DropdownMenuItem onSelect={() => duplicateCatalogProduct(item.id)}>Duplicate</DropdownMenuItem>
+                                                          <DropdownMenuItem onSelect={() => deleteCatalogProduct(item.id)}>Delete</DropdownMenuItem>
+                                                          <DropdownMenuItem onSelect={() => archiveCatalogProduct(item.id)}>Archive</DropdownMenuItem>
+                                                        </DropdownMenuContent>
+                                                      </DropdownMenu>
+                                                    </td>
+                                                  </tr>
+                                                );
+                                              })}
+                                            </tbody>
+                                          </table>
+                                        </div>
+                                      )}
                                     </div>
                                   )}
                                 </div>
