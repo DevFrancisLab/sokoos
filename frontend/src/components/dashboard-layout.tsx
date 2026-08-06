@@ -1712,6 +1712,26 @@ export default function DashboardLayout() {
     setProductDrawerOpen(true);
     setProductDrawerTab("general");
   };
+  const openProductDrawerToTab = (id: string, tab: "general" | "pricing" | "media" | "inventory" | "ai") => {
+    setSelectedProductId(id);
+    setProductDrawerTab(tab);
+    setProductDrawerOpen(true);
+  };
+
+  const fixMissingDescriptions = () => {
+    const target = catalogProducts.find((p) => !(p.description && p.description.trim().length > 0));
+    if (target) openProductDrawerToTab(target.id, "ai");
+  };
+
+  const fixMissingImages = () => {
+    const target = catalogProducts.find((p) => !(p.image && p.image.trim().length > 0) && ((p.mediaAssets ?? []).length === 0));
+    if (target) openProductDrawerToTab(target.id, "media");
+  };
+
+  const fixMissingFaqs = () => {
+    const target = catalogProducts.find((p) => !((p as any).faqs && (p as any).faqs.length > 0));
+    if (target) openProductDrawerToTab(target.id, "ai");
+  };
   const closeProductDrawer = () => {
     setProductDrawerOpen(false);
     setSelectedProductId(null);
@@ -5764,32 +5784,36 @@ export default function DashboardLayout() {
                               </div>
 
                               <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
-                                <div className="flex items-center justify-between gap-4">
-                                  <div>
-                                    <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#64748B]">Catalogue Health</p>
-                                    <p className="mt-2 text-sm text-[#475569]">Compact readiness summary for your catalogue items.</p>
+                                <div className="flex items-start justify-between gap-4">
+                                  <div className="min-w-0">
+                                    <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#64748B]">AI Insights</p>
+                                    <p className="mt-2 text-sm text-[#111827]">Your AI is actively learning from your catalogue and guiding conversations.</p>
                                   </div>
-                                  <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-sm font-semibold text-[#166534]">
-                                    {catalogueHealthMetrics.reduce((sum, item) => sum + item.percentage, 0) / catalogueHealthMetrics.length}%
-                                  </span>
+                                  <div className="text-right">
+                                    <div className="text-sm text-[#64748B]">Confidence</div>
+                                    <div className="mt-1 text-2xl font-semibold text-[#111827]">{Math.round(catalogueHealthMetrics.reduce((sum, item) => sum + item.percentage, 0) / catalogueHealthMetrics.length)}%</div>
+                                  </div>
                                 </div>
 
-                                <div className="mt-4 space-y-3">
-                                  {catalogueHealthMetrics.map((metric, index) => (
-                                    <div key={metric.label} className="flex items-center gap-3 rounded-full border border-[#E5E7EB] bg-white px-3 py-2 text-sm text-[#111827] shadow-sm">
-                                      <Check className="h-4 w-4 text-[#16A34A]" />
-                                      <span className="font-medium">{metric.label}{metric.label === 'Products' ? ` (${metric.completed})` : ''}</span>
-                                    </div>
-                                  ))}
-                                </div>
+                                <div className="mt-4 grid gap-2">
+                                  <p className="text-sm text-[#475569]">Your AI can confidently answer <span className="font-semibold text-[#111827]">{Math.round(catalogueHealthMetrics.reduce((sum, item) => sum + item.percentage, 0) / catalogueHealthMetrics.length)}%</span> of customer product questions.</p>
 
-                                <div className="mt-4">
-                                  <div className="mb-2 flex items-center justify-between text-sm text-[#64748B]">
-                                    <span>Overall score</span>
-                                    <span className="font-semibold text-[#111827]">{catalogueHealthMetrics.reduce((sum, item) => sum + item.percentage, 0) / catalogueHealthMetrics.length}%</span>
-                                  </div>
-                                  <div className="h-2 overflow-hidden rounded-full bg-[#E5E7EB]">
-                                    <div className="h-full rounded-full bg-[#22C55E]" style={{ width: `${catalogueHealthMetrics.reduce((sum, item) => sum + item.percentage, 0) / catalogueHealthMetrics.length}%` }} />
+                                  <div className="mt-2 rounded-[12px] border border-[#E5E7EB] bg-white p-3">
+                                    <p className="text-sm font-semibold text-[#111827]">Missing information</p>
+                                    <ul className="mt-2 space-y-2 text-sm text-[#64748B]">
+                                      <li className="flex items-center justify-between">
+                                        <span>• {catalogProducts.filter((p) => !(p.description && p.description.trim().length > 0)).length} products missing descriptions</span>
+                                        <button onClick={fixMissingDescriptions} className="ml-4 rounded-md bg-[#111827] px-3 py-1 text-xs font-semibold text-white transition hover:bg-[#1F2937]">Fix</button>
+                                      </li>
+                                      <li className="flex items-center justify-between">
+                                        <span>• {catalogProducts.filter((p) => !(p.image && p.image.trim().length > 0) && ((p.mediaAssets ?? []).length === 0)).length} products missing images</span>
+                                        <button onClick={fixMissingImages} className="ml-4 rounded-md bg-[#111827] px-3 py-1 text-xs font-semibold text-white transition hover:bg-[#1F2937]">Fix</button>
+                                      </li>
+                                      <li className="flex items-center justify-between">
+                                        <span>• {catalogProducts.filter((p) => !((p as any).faqs && (p as any).faqs.length > 0)).length} products missing FAQs</span>
+                                        <button onClick={fixMissingFaqs} className="ml-4 rounded-md bg-[#111827] px-3 py-1 text-xs font-semibold text-white transition hover:bg-[#1F2937]">Fix</button>
+                                      </li>
+                                    </ul>
                                   </div>
                                 </div>
                               </div>
