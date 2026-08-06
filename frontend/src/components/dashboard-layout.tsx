@@ -1527,12 +1527,16 @@ export default function DashboardLayout() {
       category: type,
       type,
       price: "$0.00",
-      description: "Add a short description...",
+      description: "",
       availability: "Available",
       image: "/assets/sample/placeholder.png",
       mediaAssets: [],
     };
     setCatalogProducts((p) => [newItem, ...p]);
+    // Open the product editor immediately so users don't need to scroll
+    setSelectedProductId(id);
+    setProductDrawerTab("general");
+    setProductDrawerOpen(true);
   };
   const updateCatalogProductField = (id: string, field: string, value: any) => {
     setCatalogProducts((list) => list.map((p) => (p.id === id ? { ...p, [field]: value } : p)));
@@ -1618,6 +1622,11 @@ export default function DashboardLayout() {
     availability: string;
     image: string;
     mediaAssets: MediaAsset[];
+    priceNote?: string;
+    currentStock?: number;
+    stockStatus?: string;
+    lowStockThreshold?: number;
+    warehouseLocation?: string;
   };
 
   const [pricingSaved, setPricingSaved] = useState(false);
@@ -1629,7 +1638,7 @@ export default function DashboardLayout() {
   const [selectedProductType, setSelectedProductType] = useState<string | null>(null);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [productDrawerOpen, setProductDrawerOpen] = useState(false);
-  const [productDrawerTab, setProductDrawerTab] = useState<"general" | "pricing" | "media" | "inventory" | "ai-knowledge">("general");
+  const [productDrawerTab, setProductDrawerTab] = useState<"general" | "pricing" | "media" | "inventory" | "ai">("general");
   const [completedProductStepIds, setCompletedProductStepIds] = useState<string[]>([]);
   const [addProductFormData, setAddProductFormData] = useState<{ name: string; category: string; price: string; availability: string; image?: string; type: string } | null>(null);
   const productSectionIds = ["products","pricing"];
@@ -5724,7 +5733,7 @@ export default function DashboardLayout() {
 
                               <div className="rounded-[20px] border border-[#E5E7EB] bg-white p-4">
                                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#64748B]">Add Product</p>
-                                <button type="button" onClick={() => setShowProductTypeDialog(true)} className="mt-3 inline-flex w-full items-center justify-center rounded-[16px] bg-[#111827] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937]">Add product</button>
+                                <button type="button" onClick={() => addProduct('Product')} className="mt-3 inline-flex w-full items-center justify-center rounded-[16px] bg-[#111827] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937]">Add product</button>
                               </div>
 
                               <div className="relative rounded-[20px] border border-[#E5E7EB] bg-white p-4">
@@ -5838,7 +5847,7 @@ export default function DashboardLayout() {
                                       <p className="text-2xl font-semibold text-[#111827]">No catalogue items yet</p>
                                       <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#475569]">Add your first item so your AI can recommend products and services with confidence.</p>
                                       <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                                        <button type="button" onClick={() => setShowProductTypeDialog(true)} className="rounded-[16px] bg-[#111827] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937]">Add product</button>
+                                        <button type="button" onClick={() => addProduct('Product')} className="rounded-[16px] bg-[#111827] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937]">Add product</button>
                                         <button type="button" onClick={() => setImportMenuOpen(true)} className="rounded-[16px] border border-[#E5E7EB] bg-white px-6 py-3 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#F8FAFB]">Import catalogue</button>
                                       </div>
                                     </div>
@@ -5850,10 +5859,10 @@ export default function DashboardLayout() {
                                         const itemAiReady = Boolean(item.name?.trim() && item.category?.trim() && item.description?.trim());
                                         const isAvailable = item.availability === 'In stock' || item.availability === 'Available';
                                         return (
-                                          <article key={item.id} className="group flex h-full flex-col overflow-hidden rounded-[28px] border border-[#E7E5E4] bg-[#FDFDFC] shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(15,23,42,0.10)]">
+                                          <article role="button" tabIndex={0} onClick={() => openProductDrawer(item.id)} onKeyDown={(e) => e.key === 'Enter' && openProductDrawer(item.id)} key={item.id} className="group cursor-pointer flex h-full flex-col overflow-hidden rounded-[28px] border border-[#E7E5E4] bg-[#FDFDFC] shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(15,23,42,0.10)]">
                                             <div className="relative overflow-hidden bg-[#F5F5F4]">
                                               <img src={item.image} alt={item.name} className="h-56 w-full object-cover transition duration-300 group-hover:scale-[1.02]" />
-                                              <div className="absolute right-3 top-3">
+                                              <div className="absolute right-3 top-3" onClick={(e) => e.stopPropagation()}>
                                                 <DropdownMenu>
                                                   <DropdownMenuTrigger asChild>
                                                     <button type="button" className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-[#475569] shadow-sm ring-1 ring-[#E5E7EB] transition hover:bg-white">
@@ -5899,77 +5908,7 @@ export default function DashboardLayout() {
                           </div>
                         </div>
 
-                        {showProductTypeDialog && (
-                          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-                            <div className="w-full max-w-md rounded-[12px] bg-white p-6">
-                              <div className="flex items-center justify-between">
-                                <h3 className="text-lg font-semibold">What are you adding?</h3>
-                                <button type="button" onClick={() => setShowProductTypeDialog(false)} className="text-sm text-[#6B7280]">Cancel</button>
-                              </div>
-                              <div className="mt-6 grid gap-3">
-                                {['Physical Product', 'Service', 'Subscription', 'Digital Product'].map((type) => (
-                                  <button
-                                    key={type}
-                                    type="button"
-                                    onClick={() => {
-                                      setSelectedProductType(type);
-                                      setShowProductTypeDialog(false);
-                                      setAddProductFormData({ name: `${type} ${catalogProducts.length + 1}`, category: type, price: '$0.00', availability: 'Available', type });
-                                      setShowAddProductForm(true);
-                                    }}
-                                    className="rounded-[16px] border border-[#E5E7EB] bg-white px-4 py-4 text-left text-sm font-semibold text-[#111827] transition hover:bg-[#F8FAFB]"
-                                  >
-                                    {type}
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                        )}
-
-                        {showAddProductForm && addProductFormData && (
-                          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-                            <div className="w-full max-w-lg rounded-[12px] bg-white p-6">
-                              <div className="flex items-center justify-between">
-                                <h3 className="text-lg font-semibold">Add {selectedProductType}</h3>
-                                <button onClick={() => { setShowAddProductForm(false); setSelectedProductType(null); }} className="text-sm text-[#6B7280]">Close</button>
-                              </div>
-
-                              <div className="mt-4 space-y-3">
-                                <div>
-                                  <label className="text-xs text-[#6B7280]">Name</label>
-                                  <input value={addProductFormData.name} onChange={(e) => setAddProductFormData((d) => d ? { ...d, name: e.target.value } : d)} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-3">
-                                  <div>
-                                    <label className="text-xs text-[#6B7280]">Category</label>
-                                    <input value={addProductFormData.category} onChange={(e) => setAddProductFormData((d) => d ? { ...d, category: e.target.value } : d)} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
-                                  </div>
-                                  <div>
-                                    <label className="text-xs text-[#6B7280]">Price</label>
-                                    <input value={addProductFormData.price} onChange={(e) => setAddProductFormData((d) => d ? { ...d, price: e.target.value } : d)} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
-                                  </div>
-                                </div>
-
-                                <div>
-                                  <label className="text-xs text-[#6B7280]">Availability</label>
-                                  <select value={addProductFormData.availability} onChange={(e) => setAddProductFormData((d) => d ? { ...d, availability: e.target.value } : d)} className="mt-1 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm">
-                                    <option>Available</option>
-                                    <option>In stock</option>
-                                    <option>Out of stock</option>
-                                    <option>By appointment</option>
-                                  </select>
-                                </div>
-                              </div>
-
-                              <div className="mt-6 flex justify-end gap-3">
-                                <button onClick={() => { setShowAddProductForm(false); setSelectedProductType(null); }} className="rounded-[10px] border border-[#E5E7EB] px-3 py-2 text-sm">Cancel</button>
-                                <button onClick={() => { if (addProductFormData) addProductWithData(addProductFormData); setShowAddProductForm(false); setSelectedProductType(null); }} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Create Product</button>
-                              </div>
-                            </div>
-                          </div>
-                        )}
+                        {/* Dialogs removed: catalogue now focuses on item list only. Use drawer to edit items. */}
                       </div>
                     )}
 
@@ -7011,9 +6950,9 @@ export default function DashboardLayout() {
                 </div>
               )}
               {productDrawerOpen && selectedProduct && (
-                <div className="fixed inset-0 z-50">
+                  <div className="fixed inset-0 z-50">
                   <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={closeProductDrawer} />
-                  <aside className="absolute right-0 top-0 h-full w-full max-w-[560px] bg-white shadow-2xl">
+                  <aside className="fixed right-0 top-0 h-full w-full md:w-[560px] md:max-w-[560px] bg-white shadow-2xl">
                     <div className="flex h-full flex-col">
                       <div className="flex items-center justify-between border-b border-[#E5E7EB] px-6 py-5">
                         <div>
@@ -7031,28 +6970,28 @@ export default function DashboardLayout() {
                             <TabsTrigger value="pricing">Pricing</TabsTrigger>
                             <TabsTrigger value="media">Media</TabsTrigger>
                             <TabsTrigger value="inventory">Inventory</TabsTrigger>
-                            <TabsTrigger value="ai-knowledge">AI Knowledge</TabsTrigger>
+                            <TabsTrigger value="ai">AI</TabsTrigger>
                           </TabsList>
                         </Tabs>
                       </div>
 
                       <div className="flex-1 overflow-y-auto px-6 pb-6">
-                        <TabsContent value="general" className="space-y-5">
+                        <TabsContent value="general" className="grid gap-4 md:grid-cols-2">
                           <div>
                             <label className="text-sm font-semibold text-[#111827]">Name</label>
-                            <input value={selectedProduct.name} onChange={(e) => updateCatalogProductField(selectedProduct.id, "name", e.target.value)} className="mt-2 w-full rounded-[16px] border border-[#E5E7EB] px-4 py-3 text-sm" />
+                            <input value={selectedProduct.name} onChange={(e) => updateCatalogProductField(selectedProduct.id, "name", e.target.value)} className="mt-2 w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm" />
                           </div>
                           <div>
                             <label className="text-sm font-semibold text-[#111827]">Category</label>
-                            <input value={selectedProduct.category} onChange={(e) => updateCatalogProductField(selectedProduct.id, "category", e.target.value)} className="mt-2 w-full rounded-[16px] border border-[#E5E7EB] px-4 py-3 text-sm" />
+                            <input value={selectedProduct.category} onChange={(e) => updateCatalogProductField(selectedProduct.id, "category", e.target.value)} className="mt-2 w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm" />
                           </div>
-                          <div>
-                            <label className="text-sm font-semibold text-[#111827]">Description</label>
-                            <Textarea value={selectedProduct.description} onChange={(e) => updateCatalogProductField(selectedProduct.id, "description", e.target.value)} className="mt-2 w-full rounded-[16px] border border-[#E5E7EB] px-4 py-3 text-sm" />
+                          <div className="md:col-span-2">
+                            <label className="text-sm font-semibold text-[#111827]">Short description</label>
+                            <Textarea value={selectedProduct.description} onChange={(e) => updateCatalogProductField(selectedProduct.id, "description", e.target.value)} className="mt-2 w-full min-h-[72px] rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm" />
                           </div>
                           <div>
                             <label className="text-sm font-semibold text-[#111827]">Availability</label>
-                            <select value={selectedProduct.availability} onChange={(e) => updateCatalogProductField(selectedProduct.id, "availability", e.target.value)} className="mt-2 w-full rounded-[16px] border border-[#E5E7EB] px-4 py-3 text-sm">
+                            <select value={selectedProduct.availability} onChange={(e) => updateCatalogProductField(selectedProduct.id, "availability", e.target.value)} className="mt-2 w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm">
                               <option>Available</option>
                               <option>In stock</option>
                               <option>Out of stock</option>
@@ -7061,8 +7000,24 @@ export default function DashboardLayout() {
                           </div>
                         </TabsContent>
 
-                        <TabsContent value="pricing" className="space-y-5">
-                          {renderPricingEditor()}
+                        <TabsContent value="pricing" className="grid gap-4 md:grid-cols-2">
+                          <div>
+                            <label className="text-sm font-semibold text-[#111827]">Price</label>
+                            <input type="text" value={selectedProduct.price} onChange={(e) => updateCatalogProductField(selectedProduct.id, "price", e.target.value)} className="mt-2 w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm" />
+                          </div>
+                          <div>
+                            <label className="text-sm font-semibold text-[#111827]">Product type</label>
+                            <select value={selectedProduct.type} onChange={(e) => updateCatalogProductField(selectedProduct.id, "type", e.target.value)} className="mt-2 w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm">
+                              <option>Product</option>
+                              <option>Service</option>
+                              <option>Subscription</option>
+                              <option>Digital Product</option>
+                            </select>
+                          </div>
+                          <div className="md:col-span-2">
+                            <label className="text-sm font-semibold text-[#111827]">Pricing note</label>
+                            <Textarea value={(selectedProduct as any).priceNote ?? ""} onChange={(e) => updateCatalogProductField(selectedProduct.id, "priceNote", e.target.value)} className="mt-2 w-full min-h-[64px] rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm" placeholder="Add a short pricing detail for your catalogue" />
+                          </div>
                         </TabsContent>
 
                         <TabsContent value="media" className="space-y-5">
@@ -7158,41 +7113,37 @@ export default function DashboardLayout() {
                           </div>
                         </TabsContent>
 
-                        <TabsContent value="inventory" className="space-y-5">
-                          <div className="grid gap-4 sm:grid-cols-2">
-                            <div>
-                              <label className="text-sm font-semibold text-[#111827]">Current stock</label>
-                              <input type="number" value={(selectedProduct as any).currentStock ?? 0} onChange={(e) => updateCatalogProductField(selectedProduct.id, "currentStock", Number(e.target.value))} className="mt-2 w-full rounded-[16px] border border-[#E5E7EB] px-4 py-3 text-sm" />
-                            </div>
-                            <div>
-                              <label className="text-sm font-semibold text-[#111827]">Stock status</label>
-                              <select value={(selectedProduct as any).stockStatus || "In stock"} onChange={(e) => updateCatalogProductField(selectedProduct.id, "stockStatus", e.target.value)} className="mt-2 w-full rounded-[16px] border border-[#E5E7EB] px-4 py-3 text-sm">
-                                <option>In stock</option>
-                                <option>Low stock</option>
-                                <option>Out of stock</option>
-                                <option>Backordered</option>
-                              </select>
-                            </div>
+                        <TabsContent value="inventory" className="grid gap-4 md:grid-cols-2">
+                          <div>
+                            <label className="text-sm font-semibold text-[#111827]">Current stock</label>
+                            <input type="number" value={(selectedProduct as any).currentStock ?? 0} onChange={(e) => updateCatalogProductField(selectedProduct.id, "currentStock", Number(e.target.value))} className="mt-2 w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm" />
                           </div>
-                          <div className="grid gap-4 sm:grid-cols-2">
-                            <div>
-                              <label className="text-sm font-semibold text-[#111827]">Low stock threshold</label>
-                              <input type="number" value={(selectedProduct as any).lowStockThreshold ?? 10} onChange={(e) => updateCatalogProductField(selectedProduct.id, "lowStockThreshold", Number(e.target.value))} className="mt-2 w-full rounded-[16px] border border-[#E5E7EB] px-4 py-3 text-sm" />
-                            </div>
-                            <div>
-                              <label className="text-sm font-semibold text-[#111827]">Warehouse / branch</label>
-                              <input value={(selectedProduct as any).warehouseLocation || "Main warehouse"} onChange={(e) => updateCatalogProductField(selectedProduct.id, "warehouseLocation", e.target.value)} className="mt-2 w-full rounded-[16px] border border-[#E5E7EB] px-4 py-3 text-sm" />
-                            </div>
+                          <div>
+                            <label className="text-sm font-semibold text-[#111827]">Stock status</label>
+                            <select value={(selectedProduct as any).stockStatus || "In stock"} onChange={(e) => updateCatalogProductField(selectedProduct.id, "stockStatus", e.target.value)} className="mt-2 w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm">
+                              <option>In stock</option>
+                              <option>Low stock</option>
+                              <option>Out of stock</option>
+                              <option>Backordered</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label className="text-sm font-semibold text-[#111827]">Low stock threshold</label>
+                            <input type="number" value={(selectedProduct as any).lowStockThreshold ?? 10} onChange={(e) => updateCatalogProductField(selectedProduct.id, "lowStockThreshold", Number(e.target.value))} className="mt-2 w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm" />
+                          </div>
+                          <div>
+                            <label className="text-sm font-semibold text-[#111827]">Warehouse / branch</label>
+                            <input value={(selectedProduct as any).warehouseLocation || "Main warehouse"} onChange={(e) => updateCatalogProductField(selectedProduct.id, "warehouseLocation", e.target.value)} className="mt-2 w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm" />
                           </div>
                         </TabsContent>
 
-                        <TabsContent value="ai-knowledge" className="space-y-5">
-                          <div>
+                        <TabsContent value="ai" className="grid gap-4 md:grid-cols-2">
+                          <div className="md:col-span-2">
                             <p className="text-sm font-semibold text-[#111827]">AI-ready summary</p>
-                            <Textarea value={selectedProduct.description} onChange={(e) => updateCatalogProductField(selectedProduct.id, "description", e.target.value)} className="mt-2 w-full rounded-[16px] border border-[#E5E7EB] px-4 py-3 text-sm" />
+                            <Textarea value={selectedProduct.description} onChange={(e) => updateCatalogProductField(selectedProduct.id, "description", e.target.value)} className="mt-2 w-full min-h-[72px] rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm" />
                             <p className="mt-2 text-sm text-[#64748B]">This text helps your AI understand the product for customer conversations.</p>
                           </div>
-                          <div className="rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
+                          <div className="rounded-[12px] border border-[#E5E7EB] bg-[#F8FAFB] p-3">
                             <p className="text-sm font-semibold text-[#111827]">Knowledge insights</p>
                             <p className="mt-2 text-sm text-[#64748B]">Customers ask about pricing, availability, and delivery. Keep descriptions clear and helpful.</p>
                           </div>
