@@ -41,9 +41,11 @@ import {
   Mail,
   Loader2,
   MapPin,
+  MoreVertical,
 } from "lucide-react";
 import AiSummaryCard from "./ui/ai-summary-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { TextInput } from "@/components/auth/text-input";
 import { Textarea } from "@/components/ui/textarea";
 import sokoosLogo from "@/assets/sokoos_logo.png";
@@ -1543,6 +1545,19 @@ export default function DashboardLayout() {
     setCatalogProducts((list) => list.map((p) => (p.id === id ? { ...p, [field]: value } : p)));
   };
   const deleteCatalogProduct = (id: string) => {
+    setCatalogProducts((list) => list.filter((product) => product.id !== id));
+  };
+  const duplicateCatalogProduct = (id: string) => {
+    const original = catalogProducts.find((product) => product.id === id);
+    if (!original) return;
+    const duplicated = {
+      ...original,
+      id: `p-${Date.now()}`,
+      name: `${original.name} copy`,
+    };
+    setCatalogProducts((list) => [duplicated, ...list]);
+  };
+  const archiveCatalogProduct = (id: string) => {
     setCatalogProducts((list) => list.filter((product) => product.id !== id));
   };
   const handleAddCategory = () => {
@@ -5738,23 +5753,32 @@ export default function DashboardLayout() {
                               </div>
 
                               <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
-                                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#64748B]">AI Catalogue Health</p>
-                                <div className="mt-4 space-y-4">
-                                  <div className="flex items-center justify-between gap-3">
-                                    <p className="text-base font-semibold text-[#111827]">Overall health</p>
-                                    <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-sm font-semibold text-[#166534]">
-                                      {catalogueHealthMetrics.reduce((sum, item) => sum + item.percentage, 0) / catalogueHealthMetrics.length}%
-                                    </span>
+                                <div className="flex items-center justify-between gap-4">
+                                  <div>
+                                    <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#64748B]">Catalogue Health</p>
+                                    <p className="mt-2 text-sm text-[#475569]">Compact readiness summary for your catalogue items.</p>
                                   </div>
-                                  <div className="grid gap-3">
-                                    {catalogueHealthMetrics.map((metric) => (
-                                      <div key={metric.label} className="rounded-[16px] border border-[#E5E7EB] bg-white p-3">
-                                        <div className="flex items-center justify-between text-sm text-[#475569]">
-                                          <span>{metric.label}</span>
-                                          <span className="font-semibold text-[#111827]">{metric.percentage}%</span>
-                                        </div>
-                                      </div>
-                                    ))}
+                                  <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-sm font-semibold text-[#166534]">
+                                    {catalogueHealthMetrics.reduce((sum, item) => sum + item.percentage, 0) / catalogueHealthMetrics.length}%
+                                  </span>
+                                </div>
+
+                                <div className="mt-4 space-y-3">
+                                  {catalogueHealthMetrics.map((metric, index) => (
+                                    <div key={metric.label} className="flex items-center gap-3 rounded-full border border-[#E5E7EB] bg-white px-3 py-2 text-sm text-[#111827] shadow-sm">
+                                      <Check className="h-4 w-4 text-[#16A34A]" />
+                                      <span className="font-medium">{metric.label}{metric.label === 'Products' ? ` (${metric.completed})` : ''}</span>
+                                    </div>
+                                  ))}
+                                </div>
+
+                                <div className="mt-4">
+                                  <div className="mb-2 flex items-center justify-between text-sm text-[#64748B]">
+                                    <span>Overall score</span>
+                                    <span className="font-semibold text-[#111827]">{catalogueHealthMetrics.reduce((sum, item) => sum + item.percentage, 0) / catalogueHealthMetrics.length}%</span>
+                                  </div>
+                                  <div className="h-2 overflow-hidden rounded-full bg-[#E5E7EB]">
+                                    <div className="h-full rounded-full bg-[#22C55E]" style={{ width: `${catalogueHealthMetrics.reduce((sum, item) => sum + item.percentage, 0) / catalogueHealthMetrics.length}%` }} />
                                   </div>
                                 </div>
                               </div>
@@ -5829,33 +5853,40 @@ export default function DashboardLayout() {
                                         return (
                                           <article key={item.id} className="group flex h-full flex-col overflow-hidden rounded-[28px] border border-[#E7E5E4] bg-[#FDFDFC] shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(15,23,42,0.10)]">
                                             <div className="relative overflow-hidden bg-[#F5F5F4]">
-                                              <img src={item.image} alt={item.name} className="aspect-[5/4] h-full w-full object-cover transition duration-300 group-hover:scale-[1.02]" />
-                                              <span className={`absolute right-4 top-4 inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-medium ${isAvailable ? 'border-[#D1FAE5] bg-[#ECFDF5] text-[#166534]' : 'border-[#FDE68A] bg-[#FFFBEB] text-[#B45309]'}`}>
-                                                {item.availability}
-                                              </span>
+                                              <img src={item.image} alt={item.name} className="h-56 w-full object-cover transition duration-300 group-hover:scale-[1.02]" />
+                                              <div className="absolute right-3 top-3">
+                                                <DropdownMenu>
+                                                  <DropdownMenuTrigger asChild>
+                                                    <button type="button" className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-[#475569] shadow-sm ring-1 ring-[#E5E7EB] transition hover:bg-white">
+                                                      <MoreVertical className="h-4 w-4" />
+                                                    </button>
+                                                  </DropdownMenuTrigger>
+                                                  <DropdownMenuContent align="end" className="w-40">
+                                                    <DropdownMenuItem onSelect={() => openProductDrawer(item.id)}>Edit</DropdownMenuItem>
+                                                    <DropdownMenuItem onSelect={() => duplicateCatalogProduct(item.id)}>Duplicate</DropdownMenuItem>
+                                                    <DropdownMenuItem onSelect={() => deleteCatalogProduct(item.id)}>Delete</DropdownMenuItem>
+                                                    <DropdownMenuItem onSelect={() => archiveCatalogProduct(item.id)}>Archive</DropdownMenuItem>
+                                                  </DropdownMenuContent>
+                                                </DropdownMenu>
+                                              </div>
                                             </div>
 
-                                            <div className="flex flex-1 flex-col p-5">
-                                              <div className="space-y-3">
-                                                <div className="flex items-start justify-between gap-4">
-                                                  <div className="min-w-0">
-                                                    <p className="text-xl font-semibold leading-6 text-[#111827]">{item.name}</p>
-                                                    <p className="mt-2 text-sm text-[#64748B]">{item.category}</p>
-                                                  </div>
-                                                  <p className="text-base font-semibold text-[#111827]">{item.price}</p>
+                                            <div className="flex flex-1 flex-col gap-3 p-4">
+                                              <div className="flex items-start justify-between gap-4">
+                                                <div className="min-w-0">
+                                                  <p className="text-lg font-semibold text-[#111827] line-clamp-1">{item.name}</p>
+                                                  <p className="mt-1 text-sm text-[#64748B] line-clamp-1">{item.category}</p>
                                                 </div>
-                                                <p className="text-sm leading-6 text-[#475569] line-clamp-3">{item.description}</p>
+                                                <p className="text-sm font-semibold text-[#111827]">{item.price}</p>
                                               </div>
 
-                                              <div className="mt-5 flex flex-wrap gap-2 text-[11px]">
-                                                <span className="inline-flex items-center rounded-full border border-[#E5E7EB] bg-[#F8FAFB] px-2.5 py-1 text-[#475569]">Media {item.imagesCount}</span>
-                                                <span className="inline-flex items-center rounded-full border border-[#E5E7EB] bg-[#F8FAFB] px-2.5 py-1 text-[#475569]">Docs {item.documentsCount}</span>
-                                                <span className={`inline-flex items-center rounded-full px-2.5 py-1 ${itemAiReady ? 'border border-[#D1FAE5] bg-[#ECFDF5] text-[#166534]' : 'border border-[#FDE8C7] bg-[#FFFBEB] text-[#B45309]'}`}>{itemAiReady ? 'AI ready' : 'Needs details'}</span>
-                                              </div>
-
-                                              <div className="mt-5 flex flex-wrap gap-2">
-                                                <button type="button" onClick={(e) => { e.stopPropagation(); openProductDrawer(item.id); }} className="inline-flex flex-1 items-center justify-center rounded-[12px] bg-[#111827] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937]">Edit</button>
-                                                <button type="button" onClick={(e) => { e.stopPropagation(); deleteCatalogProduct(item.id); }} className="inline-flex items-center justify-center rounded-[12px] border border-[#E7E5E4] bg-white px-3.5 py-2.5 text-sm font-semibold text-[#111827] transition hover:bg-[#F5F5F4]">Delete</button>
+                                              <div className="flex flex-wrap items-center gap-2">
+                                                <span className={`rounded-full px-3 py-1 text-xs font-semibold ${isAvailable ? 'bg-[#ECFDF5] text-[#166534]' : 'bg-[#FFFBEB] text-[#B45309]'}`}>
+                                                  {item.availability}
+                                                </span>
+                                                <span className={`rounded-full px-3 py-1 text-xs font-semibold ${itemAiReady ? 'bg-[#ECFDF5] text-[#166534]' : 'bg-[#FFFBEB] text-[#B45309]'}`}>
+                                                  {itemAiReady ? 'AI Ready' : 'Needs details'}
+                                                </span>
                                               </div>
                                             </div>
                                           </article>
