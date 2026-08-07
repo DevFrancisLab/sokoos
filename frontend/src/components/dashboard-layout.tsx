@@ -3722,6 +3722,53 @@ export default function DashboardLayout() {
 
   const SalesLessonTabs = () => {
     const [activeSalesStep, setActiveSalesStep] = useState(0);
+
+    const initialObjectives = [
+      'Sell products or services',
+      'Generate qualified leads',
+      'Book appointments',
+      'Collect customer information',
+      'Answer pre-sales questions',
+      'Increase order value (Upsell)',
+      'Retain existing customers',
+    ];
+
+    const [objectives, setObjectives] = useState(
+      initialObjectives.map((label, i) => ({ id: `obj-${i + 1}`, label, selected: false })),
+    );
+
+    const dragId = useRef<string | null>(null);
+
+    const onToggle = (id: string) => {
+      setObjectives((s) => s.map((o) => (o.id === id ? { ...o, selected: !o.selected } : o)));
+    };
+
+    const onDragStart = (e: React.DragEvent, id: string) => {
+      dragId.current = id;
+      e.dataTransfer.effectAllowed = 'move';
+    };
+
+    const onDragOver = (e: React.DragEvent) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+    };
+
+    const onDrop = (e: React.DragEvent, targetId: string) => {
+      e.preventDefault();
+      const srcId = dragId.current;
+      if (!srcId || srcId === targetId) return;
+      setObjectives((s) => {
+        const copy = [...s];
+        const srcIndex = copy.findIndex((x) => x.id === srcId);
+        const tgtIndex = copy.findIndex((x) => x.id === targetId);
+        if (srcIndex === -1 || tgtIndex === -1) return s;
+        const [moved] = copy.splice(srcIndex, 1);
+        copy.splice(tgtIndex, 0, moved);
+        return copy;
+      });
+      dragId.current = null;
+    };
+
     return (
       <div className="mt-4">
         <p className="mt-1 text-base font-semibold text-[#111827]">Teach your AI how to sell with focused lessons.</p>
@@ -3741,6 +3788,40 @@ export default function DashboardLayout() {
             );
           })}
         </div>
+
+        {/* Lesson content: only implement Sales Objectives (step 0) per request */}
+        {activeSalesStep === 0 && (
+          <section className="mt-4 rounded-[20px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
+            <div className="mb-3">
+              <h3 className="text-[18px] font-semibold text-[#111827]">Sales Objectives</h3>
+              <p className="mt-1 text-sm text-[#6B7280]">Choose what success looks like for your AI employee. These objectives help it prioritize customer conversations.</p>
+            </div>
+
+            <div className="grid gap-3">
+              {objectives.map((obj, idx) => (
+                <div
+                  key={obj.id}
+                  draggable
+                  onDragStart={(e) => onDragStart(e, obj.id)}
+                  onDragOver={onDragOver}
+                  onDrop={(e) => onDrop(e, obj.id)}
+                  className="flex items-center gap-3 rounded-[12px] border border-[#E5E7EB] bg-white p-3 shadow-sm"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="select-none text-sm font-semibold text-[#64748B]">{idx + 1}</div>
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input type="checkbox" checked={obj.selected} onChange={() => onToggle(obj.id)} className="h-4 w-4 rounded border border-[#E5E7EB] text-[#111827]" />
+                      <span className="text-sm text-[#111827]">{obj.label}</span>
+                    </label>
+                  </div>
+                  <div className="ml-auto text-xs text-[#94A3B8]">Drag to reorder priority</div>
+                </div>
+              ))}
+            </div>
+
+            <p className="mt-3 text-sm text-[#64748B]">Your AI will prioritize higher-ranked objectives during conversations.</p>
+          </section>
+        )}
       </div>
     );
   };
