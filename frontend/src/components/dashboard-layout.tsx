@@ -6445,8 +6445,8 @@ export default function DashboardLayout() {
                       <div className="space-y-6">
                         <div className="flex flex-col gap-4 rounded-[24px] border border-[#E5E7EB] bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
                           <div>
-                            <p className="text-sm font-semibold text-[#111827]">Sales playbooks</p>
-                            <p className="mt-2 text-sm text-[#6B7280]">Define how your AI Employee sells in customer conversations.</p>
+                            <p className="text-sm font-semibold text-[#111827]">Sales Playbook</p>
+                            <p className="mt-2 text-sm text-[#6B7280]">Train your AI employee to qualify customers, recommend the right solutions, negotiate within your rules, know when to involve a human, and confidently close conversations.</p>
                           </div>
                           <div className="flex gap-2">
                             <button type="button" onClick={addPlaybook} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Create Playbook</button>
