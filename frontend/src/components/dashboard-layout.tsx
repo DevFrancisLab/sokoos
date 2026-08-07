@@ -5,14 +5,12 @@ import {
   Inbox,
   Calendar,
   Megaphone,
-  Users,
   Box,
   Cpu,
   Activity,
   Settings,
   Menu,
   X,
-  ChevronLeft,
   ChevronRight,
   ChevronDown,
   Search,
@@ -37,18 +35,13 @@ import {
   Plug,
   BarChart3,
   CircleAlert,
-  Hash,
-  Mail,
-  Loader2,
   MapPin,
   MoreVertical,
   LayoutGrid,
   List,
 } from "lucide-react";
-import AiSummaryCard from "./ui/ai-summary-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { TextInput } from "@/components/auth/text-input";
 import { Textarea } from "@/components/ui/textarea";
 import sokoosLogo from "@/assets/sokoos_logo.png";
 
@@ -196,6 +189,11 @@ const parseServiceAreas = (value?: string | string[]) => {
     .split(",")
     .map((item) => item.trim())
     .filter(Boolean);
+};
+
+const calculateCatalogueHealthConfidence = (metrics: Array<{ percentage: number }>) => {
+  if (metrics.length === 0) return 0;
+  return Math.round(metrics.reduce((sum, item) => sum + item.percentage, 0) / metrics.length);
 };
 
 const RECENT_AI_ACTIVITY = [
@@ -1524,6 +1522,12 @@ export default function DashboardLayout() {
     },
   ];
   const [businessModelSelections, setBusinessModelSelections] = useState<string[]>([]);
+  const toggleBusinessModelSelection = (option: string) => {
+    setBusinessModelSelections((current) =>
+      current.includes(option) ? current.filter((item) => item !== option) : [...current, option],
+    );
+    setHasUnsavedChanges(true);
+  };
   const [catalogProducts, setCatalogProducts] = useState<CatalogProduct[]>(() => CATALOG_ITEMS.map((product) => ({ ...product, mediaAssets: product.mediaAssets ?? [] })));
   const [productSearch, setProductSearch] = useState("");
   const [catalogView, setCatalogView] = useState<'grid' | 'table'>('grid');
@@ -2029,6 +2033,11 @@ export default function DashboardLayout() {
       { label: "AI Ready", completed: aiReadyCompleted, missing: Math.max(0, totalProducts - aiReadyCompleted), percentage: totalProducts > 0 ? Math.round((aiReadyCompleted / totalProducts) * 100) : 0 },
     ];
   }, [catalogProducts]);
+
+  const catalogueHealthConfidence = useMemo(
+    () => calculateCatalogueHealthConfidence(catalogueHealthMetrics),
+    [catalogueHealthMetrics],
+  );
 
   const productLessonCompleted = productSteps.filter((step) => step.done).length;
   const productLessonProgress = Math.round((productLessonCompleted / productSteps.length) * 100);
@@ -5211,14 +5220,7 @@ export default function DashboardLayout() {
                                                 <input
                                                   type="checkbox"
                                                   checked={isSelected}
-                                                  onChange={() => {
-                                                    setBusinessModelSelections((current) =>
-                                                      current.includes(option)
-                                                        ? current.filter((item) => item !== option)
-                                                        : [...current, option],
-                                                    );
-                                                    setHasUnsavedChanges(true);
-                                                  }}
+                                                  onChange={() => toggleBusinessModelSelection(option)}
                                                   className="h-4 w-4 rounded border-[#CBD5E1] text-[#22C55E] focus:ring-[#22C55E]"
                                                 />
                                                 <span>{option}</span>
@@ -5986,8 +5988,8 @@ export default function DashboardLayout() {
                             </div>
 
                             <div className="w-full xl:max-w-[1100px]">
-                              <div className="flex flex-col gap-3 lg:flex-row lg:items-stretch">
-                                <div className="min-w-[220px] flex-1 rounded-[18px] border border-[#E5E7EB] bg-[#F8FAFB] p-3">
+                              <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-stretch sm:justify-between">
+                                <div className="w-full min-w-0 flex-1 rounded-[18px] border border-[#E5E7EB] bg-[#F8FAFB] p-3">
                                   <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Search</p>
                                   <input
                                     type="text"
@@ -5998,8 +6000,8 @@ export default function DashboardLayout() {
                                   />
                                 </div>
 
-                                <div className="flex flex-wrap gap-3 lg:flex-nowrap">
-                                  <div className="min-w-[150px] flex-1 rounded-[18px] border border-[#E5E7EB] bg-white p-3">
+                                <div className="flex flex-wrap gap-3 lg:flex-nowrap lg:items-stretch">
+                                  <div className="w-full min-w-0 flex-1 rounded-[18px] border border-[#E5E7EB] bg-white p-3">
                                     <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Add Item</p>
                                     <button type="button" onClick={handleAddItemClick} className="mt-2 inline-flex w-full items-center justify-center rounded-[14px] bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937]">Add item</button>
                                     {addItemChoiceOpen && (
@@ -6032,7 +6034,7 @@ export default function DashboardLayout() {
                                     )}
                                   </div>
 
-                                  <div className="relative min-w-[150px] flex-1 rounded-[18px] border border-[#E5E7EB] bg-white p-3">
+                                  <div className="relative w-full min-w-0 flex-1 rounded-[18px] border border-[#E5E7EB] bg-white p-3">
                                     <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Import</p>
                                     <button type="button" onClick={() => setImportMenuOpen((s) => !s)} className="mt-2 inline-flex w-full items-center justify-center rounded-[14px] border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#F8FAFB]">
                                       Import
@@ -6056,7 +6058,7 @@ export default function DashboardLayout() {
                                     )}
                                   </div>
 
-                                  <div className="min-w-[240px] flex-1 rounded-[18px] border border-[#E5E7EB] bg-[#F8FAFB] p-3">
+                                  <div className="w-full min-w-0 flex-1 rounded-[18px] border border-[#E5E7EB] bg-[#F8FAFB] p-3">
                                     <div className="flex items-start justify-between gap-3">
                                       <div className="min-w-0">
                                         <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Catalogue Health</p>
@@ -6064,12 +6066,12 @@ export default function DashboardLayout() {
                                       </div>
                                       <div className="text-right">
                                         <div className="text-sm text-[#64748B]">Confidence</div>
-                                        <div className="mt-1 text-xl font-semibold text-[#111827]">{Math.round(catalogueHealthMetrics.reduce((sum, item) => sum + item.percentage, 0) / catalogueHealthMetrics.length)}%</div>
+                                        <div className="mt-1 text-xl font-semibold text-[#111827]">{catalogueHealthConfidence}%</div>
                                       </div>
                                     </div>
 
                                     <div className="mt-3 grid gap-2">
-                                      <p className="text-sm text-[#475569]">Your AI can confidently answer <span className="font-semibold text-[#111827]">{Math.round(catalogueHealthMetrics.reduce((sum, item) => sum + item.percentage, 0) / catalogueHealthMetrics.length)}%</span> of customer product questions.</p>
+                                      <p className="text-sm text-[#475569]">Your AI can confidently answer <span className="font-semibold text-[#111827]">{catalogueHealthConfidence}%</span> of customer product questions.</p>
 
                                       <div className="space-y-2 rounded-[12px] border border-[#E5E7EB] bg-white p-2.5">
                                         {catalogueHealthMetrics.map((item) => {
@@ -6136,12 +6138,22 @@ export default function DashboardLayout() {
                                   return searchableText.includes(query);
                                 })
                                 .filter((product) => {
-                                  if (selectedCatalogueTab === "All") return true;
-                                  if (selectedCatalogueTab === "Products") return product.type === "Product" || product.type === "Physical Product";
-                                  if (selectedCatalogueTab === "Digital Products") return product.type === "Digital Product";
-                                  if (selectedCatalogueTab === "Subscription") return product.type === "Subscription";
-                                  if (selectedCatalogueTab === "Rentals") return product.type === "Rental";
-                                  return product.type === selectedCatalogueTab;
+                                  switch (selectedCatalogueTab) {
+                                    case "All":
+                                      return true;
+                                    case "Products":
+                                      return product.type === "Product";
+                                    case "Services":
+                                      return product.type === "Service";
+                                    case "Subscription":
+                                      return product.type === "Subscription";
+                                    case "Digital Products":
+                                      return product.type === "Digital Product";
+                                    case "Rentals":
+                                      return product.type === "Rental";
+                                    default:
+                                      return true;
+                                  }
                                 });
 
                               return (
@@ -6216,7 +6228,7 @@ export default function DashboardLayout() {
                                   ) : (
                                     <div className="mt-6">
                                       {catalogView === 'grid' ? (
-                                        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                                        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
                                           {filtered.map((item) => {
                                             const itemAiReady = Boolean(item.name?.trim() && item.category?.trim() && item.description?.trim());
                                             const isAvailable = item.availability === 'In stock' || item.availability === 'Available';
