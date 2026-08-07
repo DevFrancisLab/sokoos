@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { type ChangeEvent, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "@tanstack/react-router";
 import {
   Home,
@@ -153,6 +153,24 @@ const EMPTY_BUSINESS_INFO = {
   serviceAreas: "",
   paymentMethods: "",
 };
+
+const BUSINESS_INDUSTRY_OPTIONS = [
+  "Restaurant",
+  "Retail Shop",
+  "Hardware Store",
+  "Electronics Store",
+  "Pharmacy",
+  "Salon",
+  "Clinic",
+  "School",
+  "ISP",
+  "Real Estate",
+  "Hotel",
+  "Agency",
+  "Manufacturer",
+  "Wholesaler",
+  "Other",
+];
 
 const normalizeBusinessInfo = (value?: Partial<typeof EMPTY_BUSINESS_INFO>) => ({
   ...EMPTY_BUSINESS_INFO,
@@ -2692,6 +2710,9 @@ export default function DashboardLayout() {
   const [recommendAlternatives, setRecommendAlternatives] = useState(true);
   const [closeSalesAutomatically, setCloseSalesAutomatically] = useState(false);
   const [businessInfo, setBusinessInfo] = useState(() => normalizeBusinessInfo());
+  const [industrySearch, setIndustrySearch] = useState("");
+  const [isIndustryDropdownOpen, setIsIndustryDropdownOpen] = useState(false);
+  const [otherIndustryValue, setOtherIndustryValue] = useState("");
   const [serviceAreaInput, setServiceAreaInput] = useState("");
   const [companyAbout, setCompanyAbout] = useState<string>("");
   const [companyMission, setCompanyMission] = useState<string>("");
@@ -2701,6 +2722,27 @@ export default function DashboardLayout() {
   const [targetCustomers, setTargetCustomers] = useState<string>("");
   const [differentiators, setDifferentiators] = useState<string>("");
   const [customerProblems, setCustomerProblems] = useState<string>("");
+
+  const filteredIndustryOptions = useMemo(() => {
+    const searchValue = industrySearch.trim().toLowerCase();
+    if (!searchValue) return BUSINESS_INDUSTRY_OPTIONS;
+    return BUSINESS_INDUSTRY_OPTIONS.filter((option) => option.toLowerCase().includes(searchValue));
+  }, [industrySearch]);
+
+  const businessIndustryValue = businessInfo.type === "Other"
+    ? otherIndustryValue.trim()
+    : businessInfo.type.trim();
+
+  useEffect(() => {
+    if (!businessInfo.type || businessInfo.type === "Other") return;
+
+    if (BUSINESS_INDUSTRY_OPTIONS.includes(businessInfo.type)) {
+      setOtherIndustryValue("");
+      return;
+    }
+
+    setOtherIndustryValue(businessInfo.type);
+  }, [businessInfo.type]);
 
   useEffect(() => {
     setCompanyAbout(businessInfo.about || "");
@@ -2852,6 +2894,21 @@ export default function DashboardLayout() {
     }, 450);
     return () => window.clearTimeout(autosaveTimer);
   }, [hasUnsavedChanges]);
+
+  const handleIndustrySelection = (value: string) => {
+    setBusinessInfo((current) => ({ ...current, type: value }));
+    setOtherIndustryValue("");
+    setIndustrySearch("");
+    setIsIndustryDropdownOpen(false);
+    setHasUnsavedChanges(true);
+  };
+
+  const handleOtherIndustryChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const nextValue = event.target.value;
+    setOtherIndustryValue(nextValue);
+    setBusinessInfo((current) => ({ ...current, type: nextValue }));
+    setHasUnsavedChanges(true);
+  };
 
   const handleResetChanges = () => {
     setWelcomeMessage("Hello 👋 How can we help?");
@@ -4972,17 +5029,69 @@ export default function DashboardLayout() {
 
                                       <div className="relative w-full space-y-2">
                                         <label className="block text-sm font-semibold text-[#111827]" htmlFor="industry">
-                                          Business Type
+                                          Business Industry
                                         </label>
-                                        <input
-                                          id="industry"
-                                          required
-                                          value={businessInfo.type}
-                                          onChange={(event) => setBusinessInfo((current) => ({ ...current, type: event.target.value }))}
-                                          placeholder="e.g. Retail, Hospitality, Services"
-                                          className={`${AI_TRAINING_FIELD} w-full`}
-                                        />
-                                        {businessInfo.type && <Check className="pointer-events-none absolute right-3 top-[39px] h-4 w-4 text-[#22C55E]" aria-label="Business type is ready" />}
+                                        <div className="relative">
+                                          <button
+                                            type="button"
+                                            id="industry"
+                                            onClick={() => {
+                                              setIsIndustryDropdownOpen((current) => !current);
+                                              setIndustrySearch("");
+                                            }}
+                                            className={`${AI_TRAINING_FIELD} flex w-full items-center justify-between text-left`}
+                                          >
+                                            <span className={businessIndustryValue ? "text-[#111827]" : "text-[#64748B]"}>
+                                              {businessIndustryValue || "Select an industry"}
+                                            </span>
+                                            <ChevronDown className={`h-4 w-4 text-[#64748B] transition ${isIndustryDropdownOpen ? "rotate-180" : ""}`} />
+                                          </button>
+                                          {businessIndustryValue && <Check className="pointer-events-none absolute right-10 top-[13px] h-4 w-4 text-[#22C55E]" aria-label="Business industry is ready" />}
+                                          {isIndustryDropdownOpen && (
+                                            <div className="absolute z-20 mt-2 w-full rounded-2xl border border-[#E5E7EB] bg-white p-2 shadow-[0_12px_24px_rgba(15,23,42,0.12)]">
+                                              <div className="flex items-center gap-2 rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-2">
+                                                <Search className="h-4 w-4 text-[#64748B]" />
+                                                <input
+                                                  type="text"
+                                                  value={industrySearch}
+                                                  onChange={(event) => setIndustrySearch(event.target.value)}
+                                                  placeholder="Search industries"
+                                                  className="w-full border-none bg-transparent text-sm text-[#111827] outline-none placeholder:text-[#94A3B8]"
+                                                />
+                                              </div>
+                                              <div className="mt-2 max-h-56 space-y-1 overflow-y-auto">
+                                                {filteredIndustryOptions.map((option) => (
+                                                  <button
+                                                    key={option}
+                                                    type="button"
+                                                    onClick={() => handleIndustrySelection(option)}
+                                                    className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm font-medium transition ${businessInfo.type === option ? "bg-[#ECFDF5] text-[#166534]" : "text-[#334155] hover:bg-[#F8FAFC] hover:text-[#111827]"}`}
+                                                  >
+                                                    <span>{option}</span>
+                                                    {businessInfo.type === option && <Check className="h-4 w-4 text-[#22C55E]" />}
+                                                  </button>
+                                                ))}
+                                                {filteredIndustryOptions.length === 0 && (
+                                                  <div className="px-3 py-2 text-sm text-[#64748B]">No industries found.</div>
+                                                )}
+                                              </div>
+                                            </div>
+                                          )}
+                                        </div>
+                                        {businessInfo.type === "Other" && (
+                                          <div className="space-y-2">
+                                            <label className="block text-sm font-semibold text-[#111827]" htmlFor="other-industry">
+                                              Specify Industry
+                                            </label>
+                                            <input
+                                              id="other-industry"
+                                              value={otherIndustryValue}
+                                              onChange={handleOtherIndustryChange}
+                                              placeholder="Enter your industry"
+                                              className={`${AI_TRAINING_FIELD} w-full`}
+                                            />
+                                          </div>
+                                        )}
                                       </div>
 
                                       <div className="relative w-full space-y-2">
@@ -5019,7 +5128,7 @@ export default function DashboardLayout() {
                                   <div className="flex items-center justify-end border-t border-[#EEF2F6] pt-5">
                                     <button
                                       type="button"
-                                      disabled={!businessInfo.name.trim() || !businessInfo.type.trim() || !businessInfo.country.trim() || !businessInfo.about.trim()}
+                                      disabled={!businessInfo.name.trim() || !businessIndustryValue || !businessInfo.country.trim() || !businessInfo.about.trim()}
                                       onClick={() => completeIdentityLesson(0)}
                                       className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45"
                                     >
