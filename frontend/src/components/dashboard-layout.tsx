@@ -1593,6 +1593,33 @@ export default function DashboardLayout() {
     setProductDrawerTab("general");
     setProductDrawerOpen(true);
   };
+
+  const handleAddItemSelection = (type: string) => {
+    setAddItemChoiceOpen(false);
+    addProduct(type);
+  };
+
+  const handleAddItemClick = () => {
+    const normalizedModels = businessModelSelections.filter(Boolean);
+
+    if (normalizedModels.length <= 1) {
+      const singleModel = normalizedModels[0];
+      if (singleModel === "Services") {
+        handleAddItemSelection("Service");
+      } else if (singleModel === "Subscriptions") {
+        handleAddItemSelection("Subscription");
+      } else if (singleModel === "Digital Products") {
+        handleAddItemSelection("Digital Product");
+      } else if (singleModel === "Rentals") {
+        handleAddItemSelection("Rental");
+      } else {
+        handleAddItemSelection("Product");
+      }
+      return;
+    }
+
+    setAddItemChoiceOpen(true);
+  };
   const updateCatalogProductField = (id: string, field: string, value: any) => {
     setCatalogProducts((list) => list.map((p) => (p.id === id ? { ...p, [field]: value } : p)));
   };
@@ -1677,6 +1704,8 @@ export default function DashboardLayout() {
     availability: string;
     image: string;
     mediaAssets: MediaAsset[];
+    sku?: string;
+    tags?: string[];
     priceNote?: string;
     currentStock?: number;
     stockStatus?: string;
@@ -1693,6 +1722,7 @@ export default function DashboardLayout() {
   const [selectedProductType, setSelectedProductType] = useState<string | null>(null);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [productDrawerOpen, setProductDrawerOpen] = useState(false);
+  const [addItemChoiceOpen, setAddItemChoiceOpen] = useState(false);
   const [productDrawerTab, setProductDrawerTab] = useState<"general" | "pricing" | "media" | "inventory" | "ai">("general");
   const [completedProductStepIds, setCompletedProductStepIds] = useState<string[]>([]);
   const [addProductFormData, setAddProductFormData] = useState<{ name: string; category: string; price: string; availability: string; image?: string; type: string } | null>(null);
@@ -5947,86 +5977,138 @@ export default function DashboardLayout() {
                     )}
 
                     {activeWorkspaceSection === "Catalogue" && (
-                      <div className="w-full max-w-[1600px] min-w-0 space-y-6 overflow-x-hidden lg:space-y-8">
-                        <div className="rounded-[28px] border border-[#E5E7EB] bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
-                          <div className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
+                      <div className="w-full max-w-[1600px] min-w-0 space-y-4 overflow-x-hidden lg:space-y-5">
+                        <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-5">
+                          <div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
                             <div className="min-w-0">
-                              <h1 className="text-3xl font-semibold tracking-[-0.02em] text-[#111827]">Catalogue Workspace</h1>
-                              <p className="mt-3 max-w-3xl text-sm leading-6 text-[#475569]">Manage your catalogue items, pricing, inventory, media, and AI readiness in one modern workspace.</p>
+                              <h1 className="text-2xl font-semibold tracking-[-0.02em] text-[#111827]">Catalogue Workspace</h1>
+                              <p className="mt-1 max-w-3xl text-sm leading-5 text-[#475569]">Manage your catalogue items, pricing, inventory, media, and AI readiness in one modern workspace.</p>
                             </div>
 
-                            <div className="grid w-full max-w-[560px] grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                              <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
-                                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#64748B]">Search</p>
-                                <input
-                                  type="text"
-                                  value={productSearch}
-                                  onChange={(e) => setProductSearch(e.target.value)}
-                                  placeholder="Search products, categories, descriptions"
-                                  className="mt-3 w-full rounded-[16px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#111827] shadow-sm outline-none transition focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7]"
-                                />
-                              </div>
-
-                              <div className="rounded-[20px] border border-[#E5E7EB] bg-white p-4">
-                                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#64748B]">Add Product</p>
-                                <button type="button" onClick={() => addProduct('Product')} className="mt-3 inline-flex w-full items-center justify-center rounded-[16px] bg-[#111827] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937]">Add product</button>
-                              </div>
-
-                              <div className="relative rounded-[20px] border border-[#E5E7EB] bg-white p-4">
-                                <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#64748B]">Import</p>
-                                <button type="button" onClick={() => setImportMenuOpen((s) => !s)} className="mt-3 inline-flex w-full items-center justify-center rounded-[16px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#F8FAFB]">
-                                  Import
-                                  <ChevronDown className="ml-2 h-4 w-4 text-[#6B7280]" />
-                                </button>
-                                {importMenuOpen && (
-                                  <div className="absolute right-0 top-full z-50 mt-2 w-48 rounded-[18px] border border-[#E5E7EB] bg-white shadow-lg">
-                                    <label className="block cursor-pointer px-3 py-3 text-sm text-[#111827] transition hover:bg-[#F8FAFB]">
-                                      CSV
-                                      <input type="file" accept=".csv" className="hidden" onChange={(e) => { setImportMenuOpen(false); simulateImport('CSV', e.target.files?.[0] ?? null); }} />
-                                    </label>
-                                    <label className="block cursor-pointer px-3 py-3 text-sm text-[#111827] transition hover:bg-[#F8FAFB]">
-                                      Excel
-                                      <input type="file" accept=".xlsx,.xls" className="hidden" onChange={(e) => { setImportMenuOpen(false); simulateImport('Excel', e.target.files?.[0] ?? null); }} />
-                                    </label>
-                                    <label className="block cursor-pointer rounded-b-[18px] px-3 py-3 text-sm text-[#111827] transition hover:bg-[#F8FAFB]">
-                                      PDF
-                                      <input type="file" accept=".pdf" className="hidden" onChange={(e) => { setImportMenuOpen(false); simulateImport('PDF Catalogues', e.target.files?.[0] ?? null); }} />
-                                    </label>
-                                  </div>
-                                )}
-                              </div>
-
-                              <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
-                                <div className="flex items-start justify-between gap-4">
-                                  <div className="min-w-0">
-                                    <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#64748B]">AI Insights</p>
-                                    <p className="mt-2 text-sm text-[#111827]">Your AI is actively learning from your catalogue and guiding conversations.</p>
-                                  </div>
-                                  <div className="text-right">
-                                    <div className="text-sm text-[#64748B]">Confidence</div>
-                                    <div className="mt-1 text-2xl font-semibold text-[#111827]">{Math.round(catalogueHealthMetrics.reduce((sum, item) => sum + item.percentage, 0) / catalogueHealthMetrics.length)}%</div>
-                                  </div>
+                            <div className="w-full xl:max-w-[1100px]">
+                              <div className="flex flex-col gap-3 lg:flex-row lg:items-stretch">
+                                <div className="min-w-[220px] flex-1 rounded-[18px] border border-[#E5E7EB] bg-[#F8FAFB] p-3">
+                                  <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Search</p>
+                                  <input
+                                    type="text"
+                                    value={productSearch}
+                                    onChange={(e) => setProductSearch(e.target.value)}
+                                    placeholder="Search by name, category, SKU, tags, or description"
+                                    className="mt-2 w-full rounded-[14px] border border-[#E5E7EB] bg-white px-3 py-2.5 text-sm text-[#111827] shadow-sm outline-none transition focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7]"
+                                  />
                                 </div>
 
-                                <div className="mt-4 grid gap-2">
-                                  <p className="text-sm text-[#475569]">Your AI can confidently answer <span className="font-semibold text-[#111827]">{Math.round(catalogueHealthMetrics.reduce((sum, item) => sum + item.percentage, 0) / catalogueHealthMetrics.length)}%</span> of customer product questions.</p>
+                                <div className="flex flex-wrap gap-3 lg:flex-nowrap">
+                                  <div className="min-w-[150px] flex-1 rounded-[18px] border border-[#E5E7EB] bg-white p-3">
+                                    <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Add Item</p>
+                                    <button type="button" onClick={handleAddItemClick} className="mt-2 inline-flex w-full items-center justify-center rounded-[14px] bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937]">Add item</button>
+                                    {addItemChoiceOpen && (
+                                      <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/30 px-4">
+                                        <div className="w-full max-w-md rounded-[24px] border border-[#E5E7EB] bg-white p-5 shadow-[0_20px_48px_rgba(15,23,42,0.16)]">
+                                          <p className="text-lg font-semibold text-[#111827]">What would you like to add?</p>
+                                          <div className="mt-4 grid gap-2">
+                                            {[
+                                              { label: "Product", value: "Product" },
+                                              { label: "Service", value: "Service" },
+                                              { label: "Subscription", value: "Subscription" },
+                                              { label: "Digital Product", value: "Digital Product" },
+                                              { label: "Rental", value: "Rental" },
+                                            ].map((option) => (
+                                              <button
+                                                key={option.value}
+                                                type="button"
+                                                onClick={() => handleAddItemSelection(option.value)}
+                                                className="rounded-[14px] border border-[#E5E7EB] bg-[#F8FAFB] px-4 py-3 text-left text-sm font-semibold text-[#111827] transition hover:border-[#22C55E] hover:bg-[#ECFDF5]"
+                                              >
+                                                {option.label}
+                                              </button>
+                                            ))}
+                                          </div>
+                                          <div className="mt-5 flex justify-end">
+                                            <button type="button" onClick={() => setAddItemChoiceOpen(false)} className="rounded-[12px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#475569] transition hover:bg-[#F8FAFB]">Cancel</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
 
-                                  <div className="mt-2 rounded-[12px] border border-[#E5E7EB] bg-white p-3">
-                                    <p className="text-sm font-semibold text-[#111827]">Missing information</p>
-                                    <ul className="mt-2 space-y-2 text-sm text-[#64748B]">
-                                      <li className="flex items-center justify-between">
-                                        <span>• {catalogProducts.filter((p) => !(p.description && p.description.trim().length > 0)).length} products missing descriptions</span>
-                                        <button onClick={fixMissingDescriptions} className="ml-4 rounded-md bg-[#111827] px-3 py-1 text-xs font-semibold text-white transition hover:bg-[#1F2937]">Fix</button>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span>• {catalogProducts.filter((p) => !(p.image && p.image.trim().length > 0) && ((p.mediaAssets ?? []).length === 0)).length} products missing images</span>
-                                        <button onClick={fixMissingImages} className="ml-4 rounded-md bg-[#111827] px-3 py-1 text-xs font-semibold text-white transition hover:bg-[#1F2937]">Fix</button>
-                                      </li>
-                                      <li className="flex items-center justify-between">
-                                        <span>• {catalogProducts.filter((p) => !((p as any).faqs && (p as any).faqs.length > 0)).length} products missing FAQs</span>
-                                        <button onClick={fixMissingFaqs} className="ml-4 rounded-md bg-[#111827] px-3 py-1 text-xs font-semibold text-white transition hover:bg-[#1F2937]">Fix</button>
-                                      </li>
-                                    </ul>
+                                  <div className="relative min-w-[150px] flex-1 rounded-[18px] border border-[#E5E7EB] bg-white p-3">
+                                    <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Import</p>
+                                    <button type="button" onClick={() => setImportMenuOpen((s) => !s)} className="mt-2 inline-flex w-full items-center justify-center rounded-[14px] border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#F8FAFB]">
+                                      Import
+                                      <ChevronDown className="ml-2 h-4 w-4 text-[#6B7280]" />
+                                    </button>
+                                    {importMenuOpen && (
+                                      <div className="absolute right-0 top-full z-50 mt-2 w-48 rounded-[18px] border border-[#E5E7EB] bg-white shadow-lg">
+                                        <label className="block cursor-pointer px-3 py-3 text-sm text-[#111827] transition hover:bg-[#F8FAFB]">
+                                          CSV
+                                          <input type="file" accept=".csv" className="hidden" onChange={(e) => { setImportMenuOpen(false); simulateImport('CSV', e.target.files?.[0] ?? null); }} />
+                                        </label>
+                                        <label className="block cursor-pointer px-3 py-3 text-sm text-[#111827] transition hover:bg-[#F8FAFB]">
+                                          Excel
+                                          <input type="file" accept=".xlsx,.xls" className="hidden" onChange={(e) => { setImportMenuOpen(false); simulateImport('Excel', e.target.files?.[0] ?? null); }} />
+                                        </label>
+                                        <label className="block cursor-pointer rounded-b-[18px] px-3 py-3 text-sm text-[#111827] transition hover:bg-[#F8FAFB]">
+                                          PDF
+                                          <input type="file" accept=".pdf" className="hidden" onChange={(e) => { setImportMenuOpen(false); simulateImport('PDF Catalogues', e.target.files?.[0] ?? null); }} />
+                                        </label>
+                                      </div>
+                                    )}
+                                  </div>
+
+                                  <div className="min-w-[240px] flex-1 rounded-[18px] border border-[#E5E7EB] bg-[#F8FAFB] p-3">
+                                    <div className="flex items-start justify-between gap-3">
+                                      <div className="min-w-0">
+                                        <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Catalogue Health</p>
+                                        <p className="mt-1 text-sm text-[#111827]">Your AI is actively learning from your catalogue and guiding conversations.</p>
+                                      </div>
+                                      <div className="text-right">
+                                        <div className="text-sm text-[#64748B]">Confidence</div>
+                                        <div className="mt-1 text-xl font-semibold text-[#111827]">{Math.round(catalogueHealthMetrics.reduce((sum, item) => sum + item.percentage, 0) / catalogueHealthMetrics.length)}%</div>
+                                      </div>
+                                    </div>
+
+                                    <div className="mt-3 grid gap-2">
+                                      <p className="text-sm text-[#475569]">Your AI can confidently answer <span className="font-semibold text-[#111827]">{Math.round(catalogueHealthMetrics.reduce((sum, item) => sum + item.percentage, 0) / catalogueHealthMetrics.length)}%</span> of customer product questions.</p>
+
+                                      <div className="space-y-2 rounded-[12px] border border-[#E5E7EB] bg-white p-2.5">
+                                        {catalogueHealthMetrics.map((item) => {
+                                          const blockCount = Math.max(0, Math.min(10, Math.round(item.percentage / 10)));
+                                          return (
+                                            <div key={item.label} className="flex items-center gap-2 text-sm">
+                                              <div className="w-16 shrink-0 text-[12px] font-semibold uppercase tracking-[0.18em] text-[#64748B]">{item.label}</div>
+                                              <div className="flex flex-1 items-center gap-1">
+                                                {Array.from({ length: 10 }, (_, index) => (
+                                                  <span
+                                                    key={`${item.label}-${index}`}
+                                                    className={`h-2 w-2 rounded-full ${index < blockCount ? "bg-[#22C55E]" : "bg-[#E5E7EB]"}`}
+                                                  />
+                                                ))}
+                                              </div>
+                                              <div className="w-10 shrink-0 text-right text-sm font-semibold text-[#111827]">{item.percentage}%</div>
+                                            </div>
+                                          );
+                                        })}
+                                      </div>
+
+                                      <div className="rounded-[12px] border border-[#E5E7EB] bg-white p-2.5">
+                                        <p className="text-sm font-semibold text-[#111827]">Missing information</p>
+                                        <ul className="mt-2 space-y-2 text-sm text-[#64748B]">
+                                          <li className="flex items-center justify-between gap-2">
+                                            <span>• {catalogProducts.filter((p) => !(p.description && p.description.trim().length > 0)).length} products missing descriptions</span>
+                                            <button onClick={fixMissingDescriptions} className="rounded-md bg-[#111827] px-3 py-1 text-xs font-semibold text-white transition hover:bg-[#1F2937]">Fix</button>
+                                          </li>
+                                          <li className="flex items-center justify-between gap-2">
+                                            <span>• {catalogProducts.filter((p) => !(p.image && p.image.trim().length > 0) && ((p.mediaAssets ?? []).length === 0)).length} products missing images</span>
+                                            <button onClick={fixMissingImages} className="ml-2 rounded-md bg-[#111827] px-3 py-1 text-xs font-semibold text-white transition hover:bg-[#1F2937]">Fix</button>
+                                          </li>
+                                          <li className="flex items-center justify-between gap-2">
+                                            <span>• {catalogProducts.filter((p) => !((p as any).faqs && (p as any).faqs.length > 0)).length} products missing FAQs</span>
+                                            <button onClick={fixMissingFaqs} className="rounded-md bg-[#111827] px-3 py-1 text-xs font-semibold text-white transition hover:bg-[#1F2937]">Fix</button>
+                                          </li>
+                                        </ul>
+                                      </div>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
@@ -6037,11 +6119,22 @@ export default function DashboardLayout() {
                             {(() => {
                               const query = productSearch.trim().toLowerCase();
                               const filtered = catalogProducts
-                                .filter((product) =>
-                                  product.name.toLowerCase().includes(query)
-                                  || product.category.toLowerCase().includes(query)
-                                  || (product.description || "").toLowerCase().includes(query)
-                                )
+                                .filter((product) => {
+                                  if (!query) return true;
+
+                                  const searchableText = [
+                                    product.name,
+                                    product.category,
+                                    product.sku ?? "",
+                                    ...(product.tags ?? []),
+                                    product.description,
+                                  ]
+                                    .filter((value): value is string => typeof value === "string")
+                                    .join(" ")
+                                    .toLowerCase();
+
+                                  return searchableText.includes(query);
+                                })
                                 .filter((product) => {
                                   if (selectedCatalogueTab === "All") return true;
                                   if (selectedCatalogueTab === "Products") return product.type === "Product" || product.type === "Physical Product";
@@ -6097,10 +6190,24 @@ export default function DashboardLayout() {
                                           </svg>
                                         </div>
                                       </div>
-                                      <p className="text-2xl font-semibold text-[#111827]">No catalogue items yet</p>
+                                      <p className="text-2xl font-semibold text-[#111827]">
+                                        {businessModelSelections.length === 0
+                                          ? "Select a business model to get started"
+                                          : businessModelSelections.length > 1
+                                            ? "No catalogue items yet"
+                                            : businessModelSelections[0] === "Services"
+                                              ? "No services yet"
+                                              : businessModelSelections[0] === "Subscriptions"
+                                                ? "No subscription plans yet"
+                                                : businessModelSelections[0] === "Digital Products"
+                                                  ? "No digital products yet"
+                                                  : businessModelSelections[0] === "Rentals"
+                                                    ? "No rentals yet"
+                                                    : "No products yet"}
+                                      </p>
                                       <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#475569]">Add your first item so your AI can recommend products and services with confidence.</p>
                                       <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                                        <button type="button" onClick={() => addProduct('Product')} className="rounded-[16px] bg-[#111827] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937]">Add product</button>
+                                        <button type="button" onClick={handleAddItemClick} className="rounded-[16px] bg-[#111827] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937]">Add item</button>
                                         <button type="button" onClick={() => setImportMenuOpen(true)} className="rounded-[16px] border border-[#E5E7EB] bg-white px-6 py-3 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#F8FAFB]">Import catalogue</button>
                                       </div>
                                     </div>
@@ -6109,18 +6216,19 @@ export default function DashboardLayout() {
                                   ) : (
                                     <div className="mt-6">
                                       {catalogView === 'grid' ? (
-                                        <div className="grid gap-5 xl:grid-cols-3">
+                                        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
                                           {filtered.map((item) => {
                                             const itemAiReady = Boolean(item.name?.trim() && item.category?.trim() && item.description?.trim());
                                             const isAvailable = item.availability === 'In stock' || item.availability === 'Available';
                                             return (
-                                              <article role="button" tabIndex={0} onClick={() => openProductDrawer(item.id)} onKeyDown={(e) => e.key === 'Enter' && openProductDrawer(item.id)} key={item.id} className="group cursor-pointer flex h-full flex-col overflow-hidden rounded-[28px] border border-[#E7E5E4] bg-[#FDFDFC] shadow-[0_1px_2px_rgba(15,23,42,0.04),0_8px_24px_rgba(15,23,42,0.06)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(15,23,42,0.10)]">
-                                                <div className="relative overflow-hidden bg-[#F5F5F4]">
-                                                  <img src={item.image} alt={item.name} className="h-56 w-full object-cover transition duration-300 group-hover:scale-[1.02]" />
+                                              <article role="button" tabIndex={0} onClick={() => openProductDrawer(item.id)} onKeyDown={(e) => e.key === 'Enter' && openProductDrawer(item.id)} key={item.id} className="group flex h-full flex-col overflow-hidden rounded-[24px] border border-[#E5E7EB] bg-white shadow-[0_6px_16px_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_14px_34px_rgba(15,23,42,0.12)]">
+                                                <div className="relative aspect-[4/3] overflow-hidden bg-[#F5F5F4]">
+                                                  <img src={item.image} alt={item.name} className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]" />
+                                                  <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent" />
                                                   <div className="absolute right-3 top-3" onClick={(e) => e.stopPropagation()}>
                                                     <DropdownMenu>
                                                       <DropdownMenuTrigger asChild>
-                                                        <button type="button" className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-[#475569] shadow-sm ring-1 ring-[#E5E7EB] transition hover:bg-white">
+                                                        <button type="button" className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-[#475569] shadow-sm ring-1 ring-[#E5E7EB] transition hover:bg-white">
                                                           <MoreVertical className="h-4 w-4" />
                                                         </button>
                                                       </DropdownMenuTrigger>
@@ -6134,13 +6242,15 @@ export default function DashboardLayout() {
                                                   </div>
                                                 </div>
 
-                                                <div className="flex flex-1 flex-col gap-3 p-4">
-                                                  <div className="flex items-start justify-between gap-4">
-                                                    <div className="min-w-0">
-                                                      <p className="text-lg font-semibold text-[#111827] line-clamp-1">{item.name}</p>
-                                                      <p className="mt-1 text-sm text-[#64748B] line-clamp-1">{item.category}</p>
+                                                <div className="flex flex-1 flex-col justify-between gap-4 p-5">
+                                                  <div className="space-y-2">
+                                                    <div className="flex items-start justify-between gap-3">
+                                                      <div className="min-w-0">
+                                                        <p className="text-base font-semibold text-[#111827] line-clamp-1">{item.name}</p>
+                                                        <p className="mt-1 text-sm text-[#64748B] line-clamp-1">{item.category}</p>
+                                                      </div>
+                                                      <p className="shrink-0 text-sm font-semibold text-[#111827]">{item.price}</p>
                                                     </div>
-                                                    <p className="text-sm font-semibold text-[#111827]">{item.price}</p>
                                                   </div>
 
                                                   <div className="flex flex-wrap items-center gap-2">
