@@ -3789,7 +3789,7 @@ export default function DashboardLayout() {
           })}
         </div>
 
-        {/* Lesson content: only implement Sales Objectives (step 0) per request */}
+        {/* Lesson content: implement Sales Objectives (step 0) and Customer Qualification (step 1) per request */}
         {activeSalesStep === 0 && (
           <section className="mt-4 rounded-[20px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
             <div className="mb-3">
@@ -3822,6 +3822,74 @@ export default function DashboardLayout() {
             <p className="mt-3 text-sm text-[#64748B]">Your AI will prioritize higher-ranked objectives during conversations.</p>
           </section>
         )}
+
+        {activeSalesStep === 1 && (
+          <section className="mt-4 rounded-[20px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
+            <div className="mb-3">
+              <h3 className="text-[18px] font-semibold text-[#111827]">Customer Qualification</h3>
+              <p className="mt-1 text-sm text-[#6B7280]">Teach your AI what information to collect before making recommendations.</p>
+            </div>
+
+            <QuestionsList />
+          </section>
+        )}
+      </div>
+    );
+  };
+
+  // QuestionsList: UI-only component for Lesson 2 (Customer Qualification)
+  const QuestionsList = () => {
+    type Q = { id: string; text: string; required: boolean; editing?: boolean };
+    const [questions, setQuestions] = useState<Q[]>([
+      { id: 'q-1', text: 'Budget', required: false },
+      { id: 'q-2', text: 'Preferred location', required: false },
+      { id: 'q-3', text: 'Timeline', required: false },
+      { id: 'q-4', text: 'Company size', required: false },
+      { id: 'q-5', text: 'Industry', required: false },
+    ]);
+
+    const addQuestion = () => {
+      const id = `q-${Date.now()}`;
+      setQuestions((s) => [...s, { id, text: 'New question', required: false, editing: true }]);
+    };
+
+    const toggleRequired = (id: string) => setQuestions((s) => s.map((q) => (q.id === id ? { ...q, required: !q.required } : q)));
+    const deleteQuestion = (id: string) => setQuestions((s) => s.filter((q) => q.id !== id));
+    const startEdit = (id: string) => setQuestions((s) => s.map((q) => (q.id === id ? { ...q, editing: true } : q)));
+    const saveEdit = (id: string, text: string) => setQuestions((s) => s.map((q) => (q.id === id ? { ...q, text, editing: false } : q)));
+
+    return (
+      <div>
+        <div className="space-y-3">
+          {questions.map((q, idx) => (
+            <div key={q.id} className="flex items-center gap-3 rounded-[12px] border border-[#E5E7EB] bg-white p-3 shadow-sm">
+              <div className="select-none text-sm font-semibold text-[#64748B]">{idx + 1}</div>
+
+              <div className="flex-1">
+                {q.editing ? (
+                  <div className="flex gap-2">
+                    <input defaultValue={q.text} className="w-full rounded-md border border-[#E5E7EB] px-2 py-1 text-sm" onBlur={(e) => saveEdit(q.id, e.target.value)} />
+                    <button onClick={() => saveEdit(q.id, q.text)} className="rounded-md border border-[#E5E7EB] px-2 py-1 text-sm">Save</button>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm text-[#111827]">{q.text}</div>
+                    <div className="ml-4 flex items-center gap-2">
+                      <label className="inline-flex items-center gap-2 text-sm text-[#475569]"><input type="checkbox" checked={q.required} onChange={() => toggleRequired(q.id)} /> Required</label>
+                      <button onClick={() => startEdit(q.id)} className="rounded-[8px] border border-[#E5E7EB] px-2 py-1 text-xs">Edit</button>
+                      <button onClick={() => deleteQuestion(q.id)} className="rounded-[8px] border border-[#FECACA] px-2 py-1 text-xs text-[#B91C1C]">Delete</button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-3 flex items-center justify-between">
+          <p className="text-sm text-[#64748B]">The AI should later use these questions during conversations.</p>
+          <button type="button" onClick={addQuestion} className="inline-flex items-center gap-2 rounded-[10px] bg-[#111827] px-3 py-2 text-sm font-semibold text-white">Add Question</button>
+        </div>
       </div>
     );
   };
