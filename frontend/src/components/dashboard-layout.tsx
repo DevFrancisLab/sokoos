@@ -3857,6 +3857,19 @@ export default function DashboardLayout() {
             <PricingNegotiation />
           </section>
         )}
+
+        {activeSalesStep === 4 && (
+          <section className="mt-4 rounded-[20px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
+            <div className="mb-3">
+              <h3 className="text-[18px] font-semibold text-[#111827]">Human Handoff</h3>
+              <p className="mt-1 text-sm text-[#6B7280]">Choose when your AI should stop the conversation and involve a human.</p>
+            </div>
+
+            <HumanHandoffOptions />
+
+            <p className="mt-3 text-sm text-[#64748B]">The AI will immediately notify the assigned team member when these situations occur.</p>
+          </section>
+        )}
       </div>
     );
   };
@@ -3998,6 +4011,34 @@ export default function DashboardLayout() {
             </div>
           </div>
         </div>
+      </div>
+    );
+  };
+
+  const HumanHandoffOptions = () => {
+    const triggers = [
+      'Customer requests a human',
+      'Complaint',
+      'Refund request',
+      'Payment issue',
+      'Large order',
+      'Custom quotation',
+      'Technical issue',
+      'VIP customer',
+    ];
+    const [selected, setSelected] = useState<string[]>([]);
+    const toggle = (label: string) => setSelected((s) => (s.includes(label) ? s.filter((x) => x !== label) : [...s, label]));
+
+    return (
+      <div className="grid gap-3">
+        {triggers.map((t, i) => (
+          <button key={t} type="button" onClick={() => toggle(t)} className={`text-left rounded-[12px] border p-3 transition ${selected.includes(t) ? 'border-[#22C55E] bg-[#F7FEF9]' : 'border-[#E5E7EB] bg-white hover:shadow-sm'}`}>
+            <div className="flex items-center justify-between">
+              <div className="text-sm text-[#111827]">{t}</div>
+              <div className="text-sm text-[#64748B]">{selected.includes(t) ? 'Selected' : 'Tap to select'}</div>
+            </div>
+          </button>
+        ))}
       </div>
     );
   };
