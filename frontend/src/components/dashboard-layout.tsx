@@ -3870,6 +3870,19 @@ export default function DashboardLayout() {
             <p className="mt-3 text-sm text-[#64748B]">The AI will immediately notify the assigned team member when these situations occur.</p>
           </section>
         )}
+
+        {activeSalesStep === 5 && (
+          <section className="mt-4 rounded-[20px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
+            <div className="mb-3">
+              <h3 className="text-[18px] font-semibold text-[#111827]">Closing & Follow-up</h3>
+              <p className="mt-1 text-sm text-[#6B7280]">Teach your AI how to end successful conversations and follow up with potential customers.</p>
+            </div>
+
+            <ClosingFollowUp />
+
+            <p className="mt-3 text-sm text-[#64748B]">Follow-ups should only be sent if the customer has not completed the intended action.</p>
+          </section>
+        )}
       </div>
     );
   };
@@ -4039,6 +4052,47 @@ export default function DashboardLayout() {
             </div>
           </button>
         ))}
+      </div>
+    );
+  };
+
+  const ClosingFollowUp = () => {
+    const actions = [
+      'Share checkout link',
+      'Book appointment',
+      'Send quotation',
+      'Collect phone number',
+      'Collect email',
+      'Connect to staff',
+    ];
+    const [selectedActions, setSelectedActions] = useState<string[]>([]);
+    const toggleAction = (label: string) => setSelectedActions((s) => (s.includes(label) ? s.filter((x) => x !== label) : [...s, label]));
+
+    const followUpOptions = ['Never', 'After 2 hours', 'After 24 hours', 'After 3 days'];
+    const [followUpTiming, setFollowUpTiming] = useState<string>(followUpOptions[2]);
+
+    return (
+      <div className="space-y-4">
+        <div className="grid gap-3">
+          {actions.map((a) => (
+            <label key={a} className={`flex items-center gap-3 rounded-[12px] border p-3 ${selectedActions.includes(a) ? 'border-[#22C55E] bg-[#F7FEF9]' : 'border-[#E5E7EB] bg-white'}`}>
+              <input type="checkbox" checked={selectedActions.includes(a)} onChange={() => toggleAction(a)} className="h-4 w-4 rounded border border-[#E5E7EB] text-[#111827]" />
+              <span className="text-sm text-[#111827]">{a}</span>
+            </label>
+          ))}
+        </div>
+
+        <div className="rounded-[12px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
+          <p className="text-sm font-semibold text-[#111827]">Follow-up timing</p>
+          <div className="mt-3 flex items-center gap-3">
+            <select value={followUpTiming} onChange={(e) => setFollowUpTiming(e.target.value)} className="rounded-md border border-[#E5E7EB] px-3 py-2 text-sm">
+              {followUpOptions.map((o) => (
+                <option key={o} value={o}>{o}</option>
+              ))}
+            </select>
+            <div className="text-sm text-[#64748B]">Selected: {followUpTiming}</div>
+          </div>
+        </div>
       </div>
     );
   };
