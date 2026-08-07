@@ -3846,6 +3846,17 @@ export default function DashboardLayout() {
             <p className="mt-3 text-sm text-[#64748B]">Your AI will use these strategies together with your catalogue.</p>
           </section>
         )}
+
+        {activeSalesStep === 3 && (
+          <section className="mt-4 rounded-[20px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
+            <div className="mb-3">
+              <h3 className="text-[18px] font-semibold text-[#111827]">Pricing & Negotiation</h3>
+              <p className="mt-1 text-sm text-[#6B7280]">Define what pricing information and negotiation authority your AI is allowed to use.</p>
+            </div>
+
+            <PricingNegotiation />
+          </section>
+        )}
       </div>
     );
   };
@@ -3932,6 +3943,61 @@ export default function DashboardLayout() {
             </label>
           </div>
         ))}
+      </div>
+    );
+  };
+
+  // PricingNegotiation: UI-only component for Lesson 4 (Pricing & Negotiation)
+  const PricingNegotiation = () => {
+    const [permissions, setPermissions] = useState([
+      { id: 'p-share', label: 'Share prices', enabled: false },
+      { id: 'p-quote', label: 'Generate quotations', enabled: false },
+      { id: 'p-discount', label: 'Offer discounts', enabled: false },
+      { id: 'p-coupons', label: 'Apply coupons', enabled: false },
+      { id: 'p-reserve', label: 'Reserve inventory', enabled: false },
+    ]);
+
+    const togglePerm = (id: string) => setPermissions((s) => s.map((x) => (x.id === id ? { ...x, enabled: !x.enabled } : x)));
+
+    const [maxDiscount, setMaxDiscount] = useState(10);
+    const [approval, setApproval] = useState<'always' | 'above' | 'never'>('above');
+
+    return (
+      <div className="space-y-4">
+        <div className="grid gap-3">
+          {permissions.map((perm) => (
+            <label key={perm.id} className="flex items-center gap-3 rounded-[12px] border border-[#E5E7EB] bg-white p-3 shadow-sm cursor-pointer">
+              <input type="checkbox" checked={perm.enabled} onChange={() => togglePerm(perm.id)} className="h-4 w-4 rounded border border-[#E5E7EB] text-[#111827]" />
+              <span className="text-sm text-[#111827]">{perm.label}</span>
+            </label>
+          ))}
+        </div>
+
+        <div className="rounded-[12px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
+          <p className="text-sm font-semibold text-[#111827]">Maximum discount</p>
+          <div className="mt-3 flex items-center gap-4">
+            <input type="range" min={0} max={20} value={maxDiscount} onChange={(e) => setMaxDiscount(Number(e.target.value))} className="w-full" />
+            <div className="w-20 text-right text-sm font-semibold text-[#111827]">{maxDiscount}%</div>
+          </div>
+
+          <div className="mt-4">
+            <p className="text-sm font-semibold text-[#111827]">Human approval</p>
+            <div className="mt-2 flex gap-3">
+              <label className={`inline-flex items-center gap-2 rounded-md border px-3 py-2 ${approval === 'always' ? 'border-[#111827] bg-[#111827] text-white' : 'border-[#E5E7EB] bg-white text-[#475569]'}`}>
+                <input type="radio" name="approval" checked={approval === 'always'} onChange={() => setApproval('always')} className="sr-only" />
+                Always
+              </label>
+              <label className={`inline-flex items-center gap-2 rounded-md border px-3 py-2 ${approval === 'above' ? 'border-[#111827] bg-[#111827] text-white' : 'border-[#E5E7EB] bg-white text-[#475569]'}`}>
+                <input type="radio" name="approval" checked={approval === 'above'} onChange={() => setApproval('above')} className="sr-only" />
+                Above maximum discount
+              </label>
+              <label className={`inline-flex items-center gap-2 rounded-md border px-3 py-2 ${approval === 'never' ? 'border-[#111827] bg-[#111827] text-white' : 'border-[#E5E7EB] bg-white text-[#475569]'}`}>
+                <input type="radio" name="approval" checked={approval === 'never'} onChange={() => setApproval('never')} className="sr-only" />
+                Never
+              </label>
+            </div>
+          </div>
+        </div>
       </div>
     );
   };
