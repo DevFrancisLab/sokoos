@@ -3709,6 +3709,42 @@ export default function DashboardLayout() {
     </section>
   );
 
+  // Sales playbook lesson navigation (UI-only, local state)
+  const salesLessons = [
+    'Sales Objectives',
+    'Customer Qualification',
+    'Sales Strategy',
+    'Pricing & Negotiation',
+    'Human Handoff',
+    'Closing & Follow-up',
+    'Review',
+  ];
+
+  const SalesLessonTabs = () => {
+    const [activeSalesStep, setActiveSalesStep] = useState(0);
+    return (
+      <div className="mt-4">
+        <p className="mt-1 text-base font-semibold text-[#111827]">Teach your AI how to sell with focused lessons.</p>
+        <div className="mt-3 flex flex-wrap items-center gap-3">
+          {salesLessons.map((lesson, index) => {
+            const active = index === activeSalesStep;
+            return (
+              <button
+                key={lesson}
+                type="button"
+                onClick={() => setActiveSalesStep(index)}
+                aria-current={active ? 'step' : undefined}
+                className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition-colors duration-200 ${active ? 'border-[#22C55E] bg-[#ECFDF5] text-[#166534] shadow-sm' : 'border-[#E5E7EB] bg-white text-[#475569] hover:border-[#86EFAC] hover:text-[#111827]'}`}
+              >
+                <span>{lesson}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
   const CurrentLesson = () => {
     const currentLesson = knowledgeLessonSequence[activeKnowledgeStep] ?? knowledgeLessonSequence[0];
     const isSourceLesson = activeKnowledgeStep > 0 && activeKnowledgeStep < knowledgeLessonSequence.length - 1;
@@ -6416,6 +6452,8 @@ export default function DashboardLayout() {
                             <button type="button" onClick={addPlaybook} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Create Playbook</button>
                           </div>
                         </div>
+
+                        <SalesLessonTabs />
 
                         <div className="grid gap-5 lg:grid-cols-[320px_minmax(0,1fr)]">
                           <div>
