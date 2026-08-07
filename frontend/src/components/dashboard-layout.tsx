@@ -1531,35 +1531,36 @@ export default function DashboardLayout() {
   const [catalogProducts, setCatalogProducts] = useState<CatalogProduct[]>(() => CATALOG_ITEMS.map((product) => ({ ...product, mediaAssets: product.mediaAssets ?? [] })));
   const [productSearch, setProductSearch] = useState("");
   const [catalogView, setCatalogView] = useState<'grid' | 'table'>('grid');
-  type CatalogueTab = "All" | "Products" | "Services" | "Subscription" | "Digital Products" | "Rentals";
+  type CatalogueTab = "All" | "Products" | "Services" | "Subscription" | "Digital Products" | "Memberships" | "Rentals";
+  const BUSINESS_MODEL_TO_CATALOG_TAB: Record<string, Exclude<CatalogueTab, "All">> = {
+    "Physical Products": "Products",
+    Services: "Services",
+    "Digital Products": "Digital Products",
+    Subscriptions: "Subscription",
+    Memberships: "Memberships",
+    Rentals: "Rentals",
+  };
+  const CATALOG_TAB_TO_PRODUCT_TYPE: Record<Exclude<CatalogueTab, "All">, string> = {
+    Products: "Product",
+    Services: "Service",
+    Subscription: "Subscription",
+    "Digital Products": "Digital Product",
+    Memberships: "Membership",
+    Rentals: "Rental",
+  };
   const CATALOG_TABS = useMemo(() => {
     const tabs: CatalogueTab[] = ["All"];
-    const mappedTabs = new Set<CatalogueTab>();
+    const seen = new Set<CatalogueTab>(tabs);
 
     businessModelSelections.forEach((selection) => {
-      switch (selection) {
-        case "Physical Products":
-        case "Products":
-          mappedTabs.add("Products");
-          break;
-        case "Services":
-          mappedTabs.add("Services");
-          break;
-        case "Subscriptions":
-          mappedTabs.add("Subscription");
-          break;
-        case "Digital Products":
-          mappedTabs.add("Digital Products");
-          break;
-        case "Rentals":
-          mappedTabs.add("Rentals");
-          break;
-        default:
-          break;
+      const tab = BUSINESS_MODEL_TO_CATALOG_TAB[selection];
+      if (tab && !seen.has(tab)) {
+        tabs.push(tab);
+        seen.add(tab);
       }
     });
 
-    return [...tabs, ...Array.from(mappedTabs)];
+    return tabs;
   }, [businessModelSelections]);
   const [selectedCatalogueTab, setSelectedCatalogueTab] = useState<CatalogueTab>("All");
   useEffect(() => {
@@ -6138,22 +6139,9 @@ export default function DashboardLayout() {
                                   return searchableText.includes(query);
                                 })
                                 .filter((product) => {
-                                  switch (selectedCatalogueTab) {
-                                    case "All":
-                                      return true;
-                                    case "Products":
-                                      return product.type === "Product";
-                                    case "Services":
-                                      return product.type === "Service";
-                                    case "Subscription":
-                                      return product.type === "Subscription";
-                                    case "Digital Products":
-                                      return product.type === "Digital Product";
-                                    case "Rentals":
-                                      return product.type === "Rental";
-                                    default:
-                                      return true;
-                                  }
+                                  if (selectedCatalogueTab === "All") return true;
+                                  const expectedType = CATALOG_TAB_TO_PRODUCT_TYPE[selectedCatalogueTab as Exclude<CatalogueTab, "All">];
+                                  return expectedType ? product.type === expectedType : true;
                                 });
 
                               return (
