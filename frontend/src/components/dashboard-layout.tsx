@@ -1531,19 +1531,19 @@ export default function DashboardLayout() {
   const [catalogProducts, setCatalogProducts] = useState<CatalogProduct[]>(() => CATALOG_ITEMS.map((product) => ({ ...product, mediaAssets: product.mediaAssets ?? [] })));
   const [productSearch, setProductSearch] = useState("");
   const [catalogView, setCatalogView] = useState<'grid' | 'table'>('grid');
-  type CatalogueTab = "All" | "Products" | "Services" | "Subscription" | "Digital Products" | "Memberships" | "Rentals";
+  type CatalogueTab = "All" | "Products" | "Services" | "Subscriptions" | "Digital Products" | "Memberships" | "Rentals";
   const BUSINESS_MODEL_TO_CATALOG_TAB: Record<string, Exclude<CatalogueTab, "All">> = {
     "Physical Products": "Products",
     Services: "Services",
     "Digital Products": "Digital Products",
-    Subscriptions: "Subscription",
+    Subscriptions: "Subscriptions",
     Memberships: "Memberships",
     Rentals: "Rentals",
   };
   const CATALOG_TAB_TO_PRODUCT_TYPE: Record<Exclude<CatalogueTab, "All">, string> = {
     Products: "Product",
     Services: "Service",
-    Subscription: "Subscription",
+    Subscriptions: "Subscription",
     "Digital Products": "Digital Product",
     Memberships: "Membership",
     Rentals: "Rental",
@@ -1566,7 +1566,7 @@ export default function DashboardLayout() {
   };
   const addButtonLabel = getAddButtonLabel(businessModelSelections);
 
-  const CATALOG_TABS = useMemo(() => {
+  const catalogueFilterTabs = useMemo(() => {
     const tabs: CatalogueTab[] = ["All"];
     const seen = new Set<CatalogueTab>(tabs);
 
@@ -1582,10 +1582,10 @@ export default function DashboardLayout() {
   }, [businessModelSelections]);
   const [selectedCatalogueTab, setSelectedCatalogueTab] = useState<CatalogueTab>("All");
   useEffect(() => {
-    if (!CATALOG_TABS.includes(selectedCatalogueTab)) {
+    if (!catalogueFilterTabs.includes(selectedCatalogueTab)) {
       setSelectedCatalogueTab("All");
     }
-  }, [CATALOG_TABS, selectedCatalogueTab]);
+  }, [catalogueFilterTabs, selectedCatalogueTab]);
   const [categories, setCategories] = useState(() =>
     Array.from(new Set(CATALOG_ITEMS.map((product) => product.category).filter(Boolean))).map((name, index) => ({
       id: `category-${index + 1}`,
@@ -1658,6 +1658,30 @@ export default function DashboardLayout() {
       name: `${original.name} copy`,
     };
     setCatalogProducts((list) => [duplicated, ...list]);
+  };
+  const previewCatalogProduct = (id: string) => {
+    console.log(`Preview catalogue item ${id} - placeholder`);
+  };
+  const trainCatalogProductAI = (id: string) => {
+    console.log(`Train AI for catalogue item ${id} - placeholder`);
+  };
+  const getCatalogueItemReadinessLabel = (item: CatalogProduct) => {
+    const hasDescription = typeof item.description === "string" && item.description.trim().length > 0;
+    const hasImages = Boolean(
+      (item.image && item.image.trim().length > 0) ||
+      ((item.mediaAssets ?? []).length > 0),
+    );
+    const hasFAQs = Boolean((item as any).faqs && (item as any).faqs.length > 0);
+    const hasPrice = typeof item.price === "string" && item.price.trim().length > 0;
+    const hasInventory = typeof item.currentStock === "number";
+
+    if (!hasImages) return "Needs Images";
+    if (!hasFAQs) return "Needs FAQ";
+    if (!hasDescription) return "Needs Description";
+    if (!hasPrice) return "Needs Pricing";
+    if (!hasInventory) return "Needs Inventory";
+
+    return "100% Ready";
   };
   const archiveCatalogProduct = (id: string) => {
     setCatalogProducts((list) => list.filter((product) => product.id !== id));
@@ -6007,107 +6031,113 @@ export default function DashboardLayout() {
                             </div>
 
                             <div className="w-full xl:max-w-[1100px]">
-                              <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(180px,220px)_minmax(180px,220px)_minmax(220px,280px)] items-end">
-                                <div className="min-w-0">
-                                  <input
-                                    type="text"
-                                    value={productSearch}
-                                    onChange={(e) => setProductSearch(e.target.value)}
-                                    placeholder="Search products, services, SKU, category, or tags..."
-                                    className="w-full rounded-[12px] border border-[#E5E7EB] bg-white px-3 py-2 text-sm text-[#111827] shadow-sm outline-none transition focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7]"
-                                  />
-                                </div>
+                              <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                                <div className="flex-1 space-y-3">
+<div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                                        <div className="min-w-0 lg:flex-1">
+                                      <input
+                                        type="text"
+                                        value={productSearch}
+                                        onChange={(e) => setProductSearch(e.target.value)}
+                                        placeholder="Search products, services, SKU, category, or tags..."
+                                        className="w-full rounded-[12px] border border-[#E5E7EB] bg-white px-3 py-2 text-sm text-[#111827] shadow-sm outline-none transition focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7]"
+                                      />
+                                    </div>
 
-                                <div className="min-w-[180px] rounded-[14px] border border-[#E5E7EB] bg-white p-3">
-                                  <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Add Item</p>
-                                  <button type="button" onClick={handleAddItemClick} className="mt-2 inline-flex h-10 w-full items-center justify-center rounded-[12px] bg-[#111827] px-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937]">{addButtonLabel}</button>
-                                  {addItemChoiceOpen && (
-                                    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/30 px-4">
-                                      <div className="w-full max-w-md rounded-[24px] border border-[#E5E7EB] bg-white p-5 shadow-[0_20px_48px_rgba(15,23,42,0.16)]">
-                                        <p className="text-lg font-semibold text-[#111827]">What would you like to add?</p>
-                                        <div className="mt-4 grid gap-2">
-                                          {[
-                                            { label: "Product", value: "Product" },
-                                            { label: "Service", value: "Service" },
-                                            { label: "Subscription", value: "Subscription" },
-                                            { label: "Digital Product", value: "Digital Product" },
-                                            { label: "Rental", value: "Rental" },
-                                          ].map((option) => (
-                                            <button
-                                              key={option.value}
-                                              type="button"
-                                              onClick={() => handleAddItemSelection(option.value)}
-                                              className="rounded-[14px] border border-[#E5E7EB] bg-[#F8FAFB] px-4 py-3 text-left text-sm font-semibold text-[#111827] transition hover:border-[#22C55E] hover:bg-[#ECFDF5]"
-                                            >
-                                              {option.label}
-                                            </button>
-                                          ))}
-                                        </div>
-                                        <div className="mt-5 flex justify-end">
-                                          <button type="button" onClick={() => setAddItemChoiceOpen(false)} className="rounded-[12px] border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#475569] transition hover:bg-[#F8FAFB]">Cancel</button>
-                                        </div>
+                                    <div className="flex flex-wrap items-center gap-2">
+                                      <button type="button" onClick={handleAddItemClick} className="inline-flex h-10 items-center justify-center rounded-[12px] bg-[#111827] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937]">{addButtonLabel}</button>
+                                      <div className="relative">
+                                        <button type="button" onClick={() => setImportMenuOpen((s) => !s)} className="inline-flex h-10 items-center justify-center rounded-[12px] border border-[#E5E7EB] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#F8FAFB]">
+                                          Import
+                                          <ChevronDown className="ml-2 h-4 w-4 text-[#6B7280]" />
+                                        </button>
+                                        {importMenuOpen && (
+                                          <div className="absolute right-0 top-full z-50 mt-2 w-48 rounded-[18px] border border-[#E5E7EB] bg-white shadow-lg">
+                                            <label className="block cursor-pointer px-3 py-3 text-sm text-[#111827] transition hover:bg-[#F8FAFB]">
+                                              CSV
+                                              <input type="file" accept=".csv" className="hidden" onChange={(e) => { setImportMenuOpen(false); simulateImport('CSV', e.target.files?.[0] ?? null); }} />
+                                            </label>
+                                            <label className="block cursor-pointer px-3 py-3 text-sm text-[#111827] transition hover:bg-[#F8FAFB]">
+                                              Excel
+                                              <input type="file" accept=".xlsx,.xls" className="hidden" onChange={(e) => { setImportMenuOpen(false); simulateImport('Excel', e.target.files?.[0] ?? null); }} />
+                                            </label>
+                                            <label className="block cursor-pointer rounded-b-[18px] px-3 py-3 text-sm text-[#111827] transition hover:bg-[#F8FAFB]">
+                                              PDF
+                                              <input type="file" accept=".pdf" className="hidden" onChange={(e) => { setImportMenuOpen(false); simulateImport('PDF Catalogues', e.target.files?.[0] ?? null); }} />
+                                            </label>
+                                          </div>
+                                        )}
                                       </div>
                                     </div>
-                                  )}
-                                </div>
-
-                                <div className="min-w-[180px] rounded-[14px] border border-[#E5E7EB] bg-white p-3">
-                                  <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Import</p>
-                                  <button type="button" onClick={() => setImportMenuOpen((s) => !s)} className="mt-2 inline-flex h-10 w-full items-center justify-center rounded-[12px] border border-[#E5E7EB] bg-white px-3 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#F8FAFB]">
-                                    Import
-                                    <ChevronDown className="ml-2 h-4 w-4 text-[#6B7280]" />
-                                  </button>
-                                  {importMenuOpen && (
-                                    <div className="absolute right-0 top-full z-50 mt-2 w-48 rounded-[18px] border border-[#E5E7EB] bg-white shadow-lg">
-                                      <label className="block cursor-pointer px-3 py-3 text-sm text-[#111827] transition hover:bg-[#F8FAFB]">
-                                        CSV
-                                        <input type="file" accept=".csv" className="hidden" onChange={(e) => { setImportMenuOpen(false); simulateImport('CSV', e.target.files?.[0] ?? null); }} />
-                                      </label>
-                                      <label className="block cursor-pointer px-3 py-3 text-sm text-[#111827] transition hover:bg-[#F8FAFB]">
-                                        Excel
-                                        <input type="file" accept=".xlsx,.xls" className="hidden" onChange={(e) => { setImportMenuOpen(false); simulateImport('Excel', e.target.files?.[0] ?? null); }} />
-                                      </label>
-                                      <label className="block cursor-pointer rounded-b-[18px] px-3 py-3 text-sm text-[#111827] transition hover:bg-[#F8FAFB]">
-                                        PDF
-                                        <input type="file" accept=".pdf" className="hidden" onChange={(e) => { setImportMenuOpen(false); simulateImport('PDF Catalogues', e.target.files?.[0] ?? null); }} />
-                                      </label>
-                                    </div>
-                                  )}
-                                </div>
-
-                                <div className="min-w-[220px] max-w-[280px] rounded-[14px] border border-[#E5E7EB] bg-[#F8FAFB] p-3">
-                                  <div className="flex items-center justify-between gap-3">
-                                    <div className="min-w-0">
-                                      <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Catalogue Health</p>
-                                      <p className="mt-1 text-sm font-semibold text-[#111827]">AI readiness</p>
-                                    </div>
-                                    <div className="text-right">
-                                      <div className="text-[11px] text-[#64748B]">Overall</div>
-                                      <div className="mt-1 text-lg font-semibold text-[#111827]">{catalogueHealthConfidence}%</div>
-                                    </div>
                                   </div>
+                                </div>
 
-                                  <div className="mt-3 space-y-2 text-sm text-[#475569]">
-                                    {catalogueHealthMetrics.map((item) => (
-                                      <div key={item.label} className="flex items-center justify-between gap-2">
-                                        <span>{item.label}</span>
-                                        <span className="font-semibold text-[#111827]">{item.percentage}%</span>
+                                <div className="w-full lg:w-[320px]">
+                                  <div className="lg:sticky lg:top-4 rounded-[14px] border border-[#E5E7EB] bg-[#F8FAFB] p-2.5">
+                                    <div className="flex items-center justify-between gap-3">
+                                      <div className="min-w-0">
+                                        <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Catalogue Health</p>
+                                        <p className="mt-1 text-sm font-semibold text-[#111827]">AI readiness</p>
                                       </div>
-                                    ))}
-                                  </div>
+                                      <div className="text-right">
+                                        <div className="text-[11px] text-[#64748B]">Overall</div>
+                                        <div className="mt-1 text-lg font-semibold text-[#111827]">{catalogueHealthConfidence}%</div>
+                                      </div>
+                                    </div>
 
-                                  <div className="mt-3 rounded-[12px] border border-[#E5E7EB] bg-white p-2 text-[11px] text-[#475569]">
-                                    <div className="flex items-center justify-between gap-2 py-1">
-                                      <span>Missing descriptions</span>
-                                      <span className="font-semibold text-[#111827]">{catalogProducts.filter((p) => !(p.description && p.description.trim().length > 0)).length}</span>
+                                    <div className="mt-3 space-y-3 text-sm text-[#475569]">
+                                      {[
+                                        {
+                                          label: "AI Readiness",
+                                          percentage: catalogueHealthMetrics.find((item) => item.label === "AI Ready")?.percentage ?? 0,
+                                        },
+                                        {
+                                          label: "Products",
+                                          percentage: catalogueHealthMetrics.find((item) => item.label === "Products")?.percentage ?? 0,
+                                        },
+                                        {
+                                          label: "Prices",
+                                          percentage: catalogueHealthMetrics.find((item) => item.label === "Prices")?.percentage ?? 0,
+                                        },
+                                        {
+                                          label: "Media",
+                                          percentage: catalogueHealthMetrics.find((item) => item.label === "Media")?.percentage ?? 0,
+                                        },
+                                        {
+                                          label: "FAQs",
+                                          percentage:
+                                            catalogProducts.length > 0
+                                              ? Math.round(
+                                                  (catalogProducts.filter((product) => (product as any).faqs && (product as any).faqs.length > 0).length / catalogProducts.length) * 100,
+                                                )
+                                              : 0,
+                                        },
+                                      ].map((item) => (
+                                        <div key={item.label} className="space-y-2">
+                                          <div className="flex items-center justify-between gap-2">
+                                            <span>{item.label}</span>
+                                            <span className="font-semibold text-[#111827]">{item.percentage}%</span>
+                                          </div>
+                                          <div className="h-2 rounded-full bg-[#E5E7EB]">
+                                            <div className="h-full rounded-full bg-[#22C55E]" style={{ width: `${item.percentage}%` }} />
+                                          </div>
+                                        </div>
+                                      ))}
                                     </div>
-                                    <div className="flex items-center justify-between gap-2 py-1">
-                                      <span>Missing images</span>
-                                      <span className="font-semibold text-[#111827]">{catalogProducts.filter((p) => !(p.image && p.image.trim().length > 0) && ((p.mediaAssets ?? []).length === 0)).length}</span>
-                                    </div>
-                                    <div className="flex items-center justify-between gap-2 py-1">
-                                      <span>Missing FAQs</span>
-                                      <span className="font-semibold text-[#111827]">{catalogProducts.filter((p) => !((p as any).faqs && (p as any).faqs.length > 0)).length}</span>
+
+                                    <div className="mt-3 rounded-[12px] border border-[#E5E7EB] bg-white p-2 text-[11px] text-[#475569]">
+                                      <div className="flex items-center justify-between gap-2 py-1">
+                                        <span>Missing descriptions</span>
+                                        <span className="font-semibold text-[#111827]">{catalogProducts.filter((p) => !(p.description && p.description.trim().length > 0)).length}</span>
+                                      </div>
+                                      <div className="flex items-center justify-between gap-2 py-1">
+                                        <span>Missing images</span>
+                                        <span className="font-semibold text-[#111827]">{catalogProducts.filter((p) => !(p.image && p.image.trim().length > 0) && ((p.mediaAssets ?? []).length === 0)).length}</span>
+                                      </div>
+                                      <div className="flex items-center justify-between gap-2 py-1">
+                                        <span>Missing FAQs</span>
+                                        <span className="font-semibold text-[#111827]">{catalogProducts.filter((p) => !((p as any).faqs && (p as any).faqs.length > 0)).length}</span>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
@@ -6153,14 +6183,14 @@ export default function DashboardLayout() {
                                       <span className="text-[#64748B]">items</span>
                                     </div>
                                   </div>
-                                  <div className="mt-4 flex flex-wrap items-center gap-3">
-                                    <div className="flex flex-wrap items-center gap-3">
-                                      {CATALOG_TABS.map((tab) => (
+                                  <div className="mt-4 flex flex-wrap items-center gap-2">
+                                    <div className="flex flex-wrap items-center gap-2">
+                                      {catalogueFilterTabs.map((tab) => (
                                         <button
                                           key={tab}
                                           type="button"
                                           onClick={() => setSelectedCatalogueTab(tab)}
-                                          className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${selectedCatalogueTab === tab ? 'border-[#111827] bg-[#111827] text-white shadow-sm' : 'border-[#E5E7EB] bg-white text-[#475569] hover:border-[#CBD5E1] hover:bg-[#F8FAFB]'}`}
+                                          className={`rounded-full border px-3.5 py-1.5 text-xs font-semibold transition ${selectedCatalogueTab === tab ? 'border-[#111827] bg-[#111827] text-white shadow-sm' : 'border-[#E5E7EB] bg-white text-[#475569] hover:border-[#CBD5E1] hover:bg-[#F8FAFB]'}`}
                                         >
                                           {tab}
                                         </button>
@@ -6177,24 +6207,28 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
 
-                                  <div className="mt-4 overflow-x-auto pb-2 sm:overflow-visible">
-                                    <div className="inline-flex min-w-max flex-nowrap gap-3 sm:min-w-full sm:flex-wrap">
-                                      <div className="rounded-full border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] shadow-sm">
-                                        Total items: {filtered.length}
-                                      </div>
-                                      <div className="rounded-full border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] shadow-sm">
-                                        Low stock: {filtered.filter((product) => typeof (product as any).currentStock === 'number' && (product as any).currentStock <= 5).length}
-                                      </div>
-                                      <div className="rounded-full border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] shadow-sm">
-                                        Missing images: {filtered.filter((product) => !(product.image && product.image.trim().length > 0) && ((product.mediaAssets ?? []).length === 0)).length}
-                                      </div>
-                                      <div className="rounded-full border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] shadow-sm">
-                                        Missing FAQs: {filtered.filter((product) => !((product as any).faqs && (product as any).faqs.length > 0)).length}
-                                      </div>
-                                      <div className="rounded-full border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#111827] shadow-sm">
-                                        AI Ready: {filtered.length > 0 ? Math.round(filtered.filter((product) => product.name?.trim() && product.category?.trim() && product.description?.trim()).length / filtered.length * 100) : 0}%
-                                      </div>
-                                    </div>
+                                  <div className="mt-4 flex flex-wrap items-center gap-2">
+                                    <button type="button" onClick={() => {}} className="inline-flex items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-3.5 py-1.5 text-xs font-semibold text-[#111827] shadow-sm transition hover:border-[#CBD5E1] hover:bg-[#F8FAFB]">
+                                      Total Items: {filtered.length}
+                                    </button>
+                                    <button type="button" onClick={() => {}} className="inline-flex items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-3.5 py-1.5 text-xs font-semibold text-[#111827] shadow-sm transition hover:border-[#CBD5E1] hover:bg-[#F8FAFB]">
+                                      Products: {filtered.filter((product) => product.type === 'Product').length}
+                                    </button>
+                                    <button type="button" onClick={() => {}} className="inline-flex items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-3.5 py-1.5 text-xs font-semibold text-[#111827] shadow-sm transition hover:border-[#CBD5E1] hover:bg-[#F8FAFB]">
+                                      Services: {filtered.filter((product) => product.type === 'Service').length}
+                                    </button>
+                                    <button type="button" onClick={() => {}} className="inline-flex items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-3.5 py-1.5 text-xs font-semibold text-[#111827] shadow-sm transition hover:border-[#CBD5E1] hover:bg-[#F8FAFB]">
+                                      Low Stock: {filtered.filter((product) => typeof (product as any).currentStock === 'number' && (product as any).currentStock <= 5).length}
+                                    </button>
+                                    <button type="button" onClick={() => {}} className="inline-flex items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-3.5 py-1.5 text-xs font-semibold text-[#111827] shadow-sm transition hover:border-[#CBD5E1] hover:bg-[#F8FAFB]">
+                                      Missing Images: {filtered.filter((product) => !(product.image && product.image.trim().length > 0) && ((product.mediaAssets ?? []).length === 0)).length}
+                                    </button>
+                                    <button type="button" onClick={() => {}} className="inline-flex items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-3.5 py-1.5 text-xs font-semibold text-[#111827] shadow-sm transition hover:border-[#CBD5E1] hover:bg-[#F8FAFB]">
+                                      Missing FAQs: {filtered.filter((product) => !((product as any).faqs && (product as any).faqs.length > 0)).length}
+                                    </button>
+                                    <button type="button" onClick={() => {}} className="inline-flex items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-3.5 py-1.5 text-xs font-semibold text-[#111827] shadow-sm transition hover:border-[#CBD5E1] hover:bg-[#F8FAFB]">
+                                      AI Ready: {filtered.length > 0 ? Math.round(filtered.filter((product) => product.name?.trim() && product.category?.trim() && product.description?.trim()).length / filtered.length * 100) : 0}%
+                                    </button>
                                   </div>
 
                                   {catalogProducts.length === 0 ? (
@@ -6229,17 +6263,42 @@ export default function DashboardLayout() {
                                       </div>
                                     </div>
                                   ) : filtered.length === 0 ? (
-                                    <div className="mt-6 rounded-[20px] border border-[#F1F5F9] bg-[#F8FAFB] p-6 text-sm text-[#64748B]">No items found. Try another search or add a new product.</div>
+                                    <div className="mt-10 rounded-[28px] border border-dashed border-[#CBD5E1] bg-[#F8FAFB] p-10 text-center shadow-sm">
+                                      <div className="mx-auto mb-6 flex h-36 w-36 items-center justify-center rounded-[2rem] bg-white shadow-sm">
+                                        <div className="flex h-20 w-20 items-center justify-center rounded-[2rem] bg-[#DBEAFE] text-[#1D4ED8]">
+                                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" className="h-12 w-12">
+                                            <rect x="8" y="14" width="32" height="20" rx="6" fill="#EFF6FF" />
+                                            <path d="M14 20h20" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" />
+                                            <path d="M14 26h12" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" />
+                                            <circle cx="34" cy="18" r="3" fill="#2563EB" />
+                                            <path d="M34 22v8" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" />
+                                            <path d="M31 25h6" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" />
+                                          </svg>
+                                        </div>
+                                      </div>
+                                      <p className="text-2xl font-semibold text-[#111827]">No items found.</p>
+                                      <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#475569]">The selected filter returned no catalogue items. Add your first item to populate the catalogue workspace.</p>
+                                      <button type="button" onClick={handleAddItemClick} className="mt-7 inline-flex items-center justify-center rounded-[16px] bg-[#111827] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937]">Add your first item</button>
+                                    </div>
                                   ) : (
                                     <div className="mt-6">
                                       {catalogView === 'grid' ? (
-                                        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
+                                        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
                                           {filtered.map((item) => {
-                                            const itemAiReady = Boolean(item.name?.trim() && item.category?.trim() && item.description?.trim());
+                                            const readinessLabel = getCatalogueItemReadinessLabel(item);
                                             const isAvailable = item.availability === 'In stock' || item.availability === 'Available';
+                                            const itemTypeLabel = {
+                                              Product: 'Product',
+                                              Service: 'Service',
+                                              Subscription: 'Subscription',
+                                              'Digital Product': 'Digital',
+                                              Rental: 'Rental',
+                                              Membership: 'Membership',
+                                            }[item.type] ?? item.type;
+                                            const itemCategory = typeof item.category === 'string' ? item.category.trim() : '';
                                             return (
                                               <article role="button" tabIndex={0} onClick={() => openProductDrawer(item.id)} onKeyDown={(e) => e.key === 'Enter' && openProductDrawer(item.id)} key={item.id} className="group flex h-full flex-col overflow-hidden rounded-[24px] border border-[#E5E7EB] bg-white shadow-[0_6px_16px_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_14px_34px_rgba(15,23,42,0.12)]">
-                                                <div className="relative aspect-[4/3] overflow-hidden bg-[#F5F5F4]">
+                                                <div className="relative overflow-hidden bg-[#F5F5F4] h-40 sm:h-44">
                                                   <img src={item.image} alt={item.name} className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]" />
                                                   <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent" />
                                                   <div className="absolute right-3 top-3" onClick={(e) => e.stopPropagation()}>
@@ -6252,31 +6311,37 @@ export default function DashboardLayout() {
                                                       <DropdownMenuContent align="end" className="w-40">
                                                         <DropdownMenuItem onSelect={() => openProductDrawer(item.id)}>Edit</DropdownMenuItem>
                                                         <DropdownMenuItem onSelect={() => duplicateCatalogProduct(item.id)}>Duplicate</DropdownMenuItem>
+                                                        <DropdownMenuItem onSelect={() => previewCatalogProduct(item.id)}>Preview</DropdownMenuItem>
+                                                        <DropdownMenuItem onSelect={() => trainCatalogProductAI(item.id)}>Train AI</DropdownMenuItem>
                                                         <DropdownMenuItem onSelect={() => deleteCatalogProduct(item.id)}>Delete</DropdownMenuItem>
-                                                        <DropdownMenuItem onSelect={() => archiveCatalogProduct(item.id)}>Archive</DropdownMenuItem>
                                                       </DropdownMenuContent>
                                                     </DropdownMenu>
                                                   </div>
                                                 </div>
 
                                                 <div className="flex flex-1 flex-col justify-between gap-4 p-5">
-                                                  <div className="space-y-2">
+                                                  <div className="space-y-3">
                                                     <div className="flex items-start justify-between gap-3">
                                                       <div className="min-w-0">
                                                         <p className="text-base font-semibold text-[#111827] line-clamp-1">{item.name}</p>
-                                                        <p className="mt-1 text-sm text-[#64748B] line-clamp-1">{item.category}</p>
+                                                        {itemCategory ? (
+                                                          <p className="mt-1 text-sm text-[#64748B] line-clamp-1">{itemCategory}</p>
+                                                        ) : null}
                                                       </div>
                                                       <p className="shrink-0 text-sm font-semibold text-[#111827]">{item.price}</p>
                                                     </div>
-                                                  </div>
 
-                                                  <div className="flex flex-wrap items-center gap-2">
-                                                    <span className={`rounded-full px-3 py-1 text-xs font-semibold ${isAvailable ? 'bg-[#ECFDF5] text-[#166534]' : 'bg-[#FFFBEB] text-[#B45309]'}`}>
-                                                      {item.availability}
-                                                    </span>
-                                                    <span className={`rounded-full px-3 py-1 text-xs font-semibold ${itemAiReady ? 'bg-[#ECFDF5] text-[#166534]' : 'bg-[#FFFBEB] text-[#B45309]'}`}>
-                                                      {itemAiReady ? 'AI Ready' : 'Needs details'}
-                                                    </span>
+                                                    <div className="flex flex-wrap items-center gap-2">
+                                                      <span className="rounded-full bg-[#F3F4F6] px-3 py-1 text-xs font-semibold text-[#475569]">
+                                                        {itemTypeLabel}
+                                                      </span>
+                                                      <span className={`rounded-full px-3 py-1 text-xs font-semibold ${isAvailable ? 'bg-[#ECFDF5] text-[#166534]' : 'bg-[#FFFBEB] text-[#B45309]'}`}>
+                                                        {item.availability}
+                                                      </span>
+                                                      <span className={`rounded-full px-3 py-1 text-xs font-semibold ${readinessLabel === '100% Ready' ? 'bg-[#ECFDF5] text-[#166534]' : 'bg-[#FFFBEB] text-[#B45309]'}`}>
+                                                        {readinessLabel}
+                                                      </span>
+                                                    </div>
                                                   </div>
                                                 </div>
                                               </article>
@@ -6300,7 +6365,7 @@ export default function DashboardLayout() {
                                             </thead>
                                             <tbody className="divide-y bg-white">
                                               {filtered.map((item) => {
-                                                const itemAiReady = Boolean(item.name?.trim() && item.category?.trim() && item.description?.trim());
+                                                const readinessLabel = getCatalogueItemReadinessLabel(item);
                                                 return (
                                                   <tr key={item.id} onClick={() => openProductDrawer(item.id)} className="hover:bg-white hover:shadow-sm transition-transform hover:-translate-y-1 cursor-pointer">
                                                     <td className="px-4 py-3 align-top">
@@ -6313,7 +6378,7 @@ export default function DashboardLayout() {
                                                     <td className="px-4 py-3 align-top text-sm text-[#111827]">{item.price}</td>
                                                     <td className="px-4 py-3 align-top text-sm text-[#111827]">{(item as any).currentStock ?? '-'}</td>
                                                     <td className="px-4 py-3 align-top">
-                                                      <span className={`rounded-full px-3 py-1 text-xs font-semibold ${itemAiReady ? 'bg-[#ECFDF5] text-[#166534]' : 'bg-[#FFFBEB] text-[#B45309]'}`}>{itemAiReady ? 'AI Ready' : 'Needs details'}</span>
+                                                      <span className={`rounded-full px-3 py-1 text-xs font-semibold ${readinessLabel === '100% Ready' ? 'bg-[#ECFDF5] text-[#166534]' : 'bg-[#FFFBEB] text-[#B45309]'}`}>{readinessLabel}</span>
                                                     </td>
                                                     <td className="px-4 py-3 align-top text-sm">{item.availability}</td>
                                                     <td className="px-4 py-3 align-top text-right" onClick={(e) => e.stopPropagation()}>
@@ -6326,8 +6391,9 @@ export default function DashboardLayout() {
                                                         <DropdownMenuContent align="end" className="w-40">
                                                           <DropdownMenuItem onSelect={() => openProductDrawer(item.id)}>Edit</DropdownMenuItem>
                                                           <DropdownMenuItem onSelect={() => duplicateCatalogProduct(item.id)}>Duplicate</DropdownMenuItem>
+                                                          <DropdownMenuItem onSelect={() => previewCatalogProduct(item.id)}>Preview</DropdownMenuItem>
+                                                          <DropdownMenuItem onSelect={() => trainCatalogProductAI(item.id)}>Train AI</DropdownMenuItem>
                                                           <DropdownMenuItem onSelect={() => deleteCatalogProduct(item.id)}>Delete</DropdownMenuItem>
-                                                          <DropdownMenuItem onSelect={() => archiveCatalogProduct(item.id)}>Archive</DropdownMenuItem>
                                                         </DropdownMenuContent>
                                                       </DropdownMenu>
                                                     </td>
