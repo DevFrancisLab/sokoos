@@ -1523,12 +1523,46 @@ export default function DashboardLayout() {
       mediaAssets: [],
     },
   ];
+  const [businessModelSelections, setBusinessModelSelections] = useState<string[]>([]);
   const [catalogProducts, setCatalogProducts] = useState<CatalogProduct[]>(() => CATALOG_ITEMS.map((product) => ({ ...product, mediaAssets: product.mediaAssets ?? [] })));
   const [productSearch, setProductSearch] = useState("");
   const [catalogView, setCatalogView] = useState<'grid' | 'table'>('grid');
-  const CATALOG_TABS = ["All", "Products", "Services", "Subscriptions", "Digital Products"] as const;
-  type CatalogueTab = (typeof CATALOG_TABS)[number];
+  type CatalogueTab = "All" | "Products" | "Services" | "Subscription" | "Digital Products" | "Rentals";
+  const CATALOG_TABS = useMemo(() => {
+    const tabs: CatalogueTab[] = ["All"];
+    const mappedTabs = new Set<CatalogueTab>();
+
+    businessModelSelections.forEach((selection) => {
+      switch (selection) {
+        case "Physical Products":
+        case "Products":
+          mappedTabs.add("Products");
+          break;
+        case "Services":
+          mappedTabs.add("Services");
+          break;
+        case "Subscriptions":
+          mappedTabs.add("Subscription");
+          break;
+        case "Digital Products":
+          mappedTabs.add("Digital Products");
+          break;
+        case "Rentals":
+          mappedTabs.add("Rentals");
+          break;
+        default:
+          break;
+      }
+    });
+
+    return [...tabs, ...Array.from(mappedTabs)];
+  }, [businessModelSelections]);
   const [selectedCatalogueTab, setSelectedCatalogueTab] = useState<CatalogueTab>("All");
+  useEffect(() => {
+    if (!CATALOG_TABS.includes(selectedCatalogueTab)) {
+      setSelectedCatalogueTab("All");
+    }
+  }, [CATALOG_TABS, selectedCatalogueTab]);
   const [categories, setCategories] = useState(() =>
     Array.from(new Set(CATALOG_ITEMS.map((product) => product.category).filter(Boolean))).map((name, index) => ({
       id: `category-${index + 1}`,
@@ -2713,7 +2747,6 @@ export default function DashboardLayout() {
   const [industrySearch, setIndustrySearch] = useState("");
   const [isIndustryDropdownOpen, setIsIndustryDropdownOpen] = useState(false);
   const [otherIndustryValue, setOtherIndustryValue] = useState("");
-  const [businessModelSelections, setBusinessModelSelections] = useState<string[]>([]);
   const [serviceAreaInput, setServiceAreaInput] = useState("");
   const [companyAbout, setCompanyAbout] = useState<string>("");
   const [companyMission, setCompanyMission] = useState<string>("");
@@ -2868,6 +2901,8 @@ export default function DashboardLayout() {
       launched: aiEmployeeLaunched,
       scrollY: typeof window !== "undefined" ? window.scrollY : 0,
       businessInfo: normalizeBusinessInfo(businessInfo),
+      businessIndustry: businessIndustryValue,
+      businessModels: businessModelSelections,
       businessHours,
     };
 
@@ -2940,6 +2975,10 @@ export default function DashboardLayout() {
       serviceAreas: "Nairobi, Kiambu, Thika",
       paymentMethods: "Mobile Money, Bank Transfer, Cash",
     }));
+    setBusinessModelSelections([]);
+    setOtherIndustryValue("");
+    setIndustrySearch("");
+    setIsIndustryDropdownOpen(false);
     setPrimaryLanguage("English");
     setSecondaryLanguage("Kiswahili");
     setSupportedLanguages(["English", "Kiswahili"]);
@@ -3414,11 +3453,34 @@ export default function DashboardLayout() {
     const saved = window.localStorage.getItem("sokoos-ai-training-progress-v2");
     if (saved) {
       try {
-        const progress = JSON.parse(saved) as { step?: number; completed?: number[]; launched?: boolean; scrollY?: number; businessInfo?: typeof businessInfo; businessHours?: string };
+        const progress = JSON.parse(saved) as {
+          step?: number;
+          completed?: number[];
+          launched?: boolean;
+          scrollY?: number;
+          businessInfo?: typeof businessInfo;
+          businessIndustry?: string;
+          businessModels?: string[];
+          businessHours?: string;
+        };
         if (isDevMode) {
           window.localStorage.removeItem("sokoos-ai-training-progress-v2");
         } else {
           if (progress.businessInfo) setBusinessInfo(normalizeBusinessInfo(progress.businessInfo));
+          if (typeof progress.businessIndustry === "string") {
+            const industryValue = progress.businessIndustry.trim();
+            if (industryValue) {
+              if (BUSINESS_INDUSTRY_OPTIONS.includes(industryValue)) {
+                setBusinessInfo((current) => normalizeBusinessInfo({ ...current, type: industryValue }));
+              } else {
+                setBusinessInfo((current) => normalizeBusinessInfo({ ...current, type: "Other" }));
+                setOtherIndustryValue(industryValue);
+              }
+            }
+          }
+          if (Array.isArray(progress.businessModels)) {
+            setBusinessModelSelections(progress.businessModels.filter((value): value is string => typeof value === "string" && value.trim().length > 0));
+          }
           if (typeof progress.businessHours === "string") setBusinessHours(progress.businessHours);
           if (typeof progress.step === "number") setActiveIdentityStep(progress.step);
           if (Array.isArray(progress.completed)) setCompletedIdentitySteps(sanitizeStepIndices(progress.completed, identityLessons.length));
@@ -3461,6 +3523,8 @@ export default function DashboardLayout() {
       launched: aiEmployeeLaunched,
       scrollY: window.scrollY,
       businessInfo,
+      businessIndustry: businessIndustryValue,
+      businessModels: businessModelSelections,
       businessHours,
     }));
   }, [activeIdentityStep, completedIdentitySteps, activeKnowledgeStep, completedKnowledgeSteps, selectedKnowledgeSources, aiEmployeeLaunched, businessHours, businessInfo, onboardingRestored]);
@@ -5982,6 +6046,8 @@ export default function DashboardLayout() {
                                   if (selectedCatalogueTab === "All") return true;
                                   if (selectedCatalogueTab === "Products") return product.type === "Product" || product.type === "Physical Product";
                                   if (selectedCatalogueTab === "Digital Products") return product.type === "Digital Product";
+                                  if (selectedCatalogueTab === "Subscription") return product.type === "Subscription";
+                                  if (selectedCatalogueTab === "Rentals") return product.type === "Rental";
                                   return product.type === selectedCatalogueTab;
                                 });
 
