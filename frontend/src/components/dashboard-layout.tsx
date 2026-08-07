@@ -3833,6 +3833,19 @@ export default function DashboardLayout() {
             <QuestionsList />
           </section>
         )}
+ 
+        {activeSalesStep === 2 && (
+          <section className="mt-4 rounded-[20px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
+            <div className="mb-3">
+              <h3 className="text-[18px] font-semibold text-[#111827]">Sales Strategy</h3>
+              <p className="mt-1 text-sm text-[#6B7280]">Decide how your AI recommends products and services during conversations.</p>
+            </div>
+
+            <StrategyOptions />
+
+            <p className="mt-3 text-sm text-[#64748B]">Your AI will use these strategies together with your catalogue.</p>
+          </section>
+        )}
       </div>
     );
   };
@@ -3890,6 +3903,35 @@ export default function DashboardLayout() {
           <p className="text-sm text-[#64748B]">The AI should later use these questions during conversations.</p>
           <button type="button" onClick={addQuestion} className="inline-flex items-center gap-2 rounded-[10px] bg-[#111827] px-3 py-2 text-sm font-semibold text-white">Add Question</button>
         </div>
+      </div>
+    );
+  };
+
+  // StrategyOptions: UI-only component for Lesson 3 (Sales Strategy)
+  const StrategyOptions = () => {
+    const initial = [
+      'Recommend the best match',
+      'Recommend best sellers',
+      'Recommend premium options',
+      'Recommend budget alternatives',
+      'Recommend complementary items',
+      'Recommend promotional items',
+      'Recommend newest items',
+    ];
+    const [options, setOptions] = useState(initial.map((label, i) => ({ id: `s-${i + 1}`, label, enabled: false })));
+
+    const toggle = (id: string) => setOptions((s) => s.map((o) => (o.id === id ? { ...o, enabled: !o.enabled } : o)));
+
+    return (
+      <div className="grid gap-3">
+        {options.map((opt) => (
+          <div key={opt.id} className="flex items-center gap-3 rounded-[12px] border border-[#E5E7EB] bg-white p-3 shadow-sm">
+            <label className="flex items-center gap-3 w-full cursor-pointer">
+              <input type="checkbox" checked={opt.enabled} onChange={() => toggle(opt.id)} className="h-4 w-4 rounded border border-[#E5E7EB] text-[#111827]" />
+              <span className="text-sm text-[#111827]">{opt.label}</span>
+            </label>
+          </div>
+        ))}
       </div>
     );
   };
