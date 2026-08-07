@@ -3883,6 +3883,41 @@ export default function DashboardLayout() {
             <p className="mt-3 text-sm text-[#64748B]">Follow-ups should only be sent if the customer has not completed the intended action.</p>
           </section>
         )}
+
+        {activeSalesStep === 6 && (
+          <section className="mt-4 rounded-[20px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
+            <div className="mb-3">
+              <h3 className="text-[18px] font-semibold text-[#111827]">Review</h3>
+              <p className="mt-1 text-sm text-[#6B7280]">Review your AI employee's sales behaviour before continuing.</p>
+            </div>
+
+            <div className="grid gap-3">
+              {[
+                { key: 'objectives', label: 'Sales Objectives', configured: objectives.some((o) => o.selected) || activeSalesStep > 0 },
+                { key: 'qualification', label: 'Customer Qualification', configured: activeSalesStep > 1 },
+                { key: 'strategy', label: 'Sales Strategy', configured: activeSalesStep > 2 },
+                { key: 'pricing', label: 'Pricing & Negotiation', configured: activeSalesStep > 3 },
+                { key: 'handoff', label: 'Human Handoff', configured: activeSalesStep > 4 },
+                { key: 'closing', label: 'Closing & Follow-up', configured: activeSalesStep > 5 },
+              ].map((sec) => (
+                <div key={sec.key} className="flex items-center justify-between rounded-[12px] border border-[#E5E7EB] bg-white p-3">
+                  <div className="text-sm text-[#111827]">{sec.label}</div>
+                  <div className="flex items-center gap-3">
+                    {sec.configured ? (
+                      <span className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF5] px-3 py-1 text-sm font-semibold text-[#166534]"><Check className="h-4 w-4" />Configured</span>
+                    ) : (
+                      <span className="text-sm text-[#94A3B8]">Not configured</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-4 flex items-center justify-end gap-3">
+              <button type="button" onClick={() => { handleSaveChanges(); setActiveWorkspaceSection('Policies'); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue to Policies</button>
+            </div>
+          </section>
+        )}
       </div>
     );
   };
