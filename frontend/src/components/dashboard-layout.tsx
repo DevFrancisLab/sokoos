@@ -2713,6 +2713,7 @@ export default function DashboardLayout() {
   const [industrySearch, setIndustrySearch] = useState("");
   const [isIndustryDropdownOpen, setIsIndustryDropdownOpen] = useState(false);
   const [otherIndustryValue, setOtherIndustryValue] = useState("");
+  const [businessModelSelections, setBusinessModelSelections] = useState<string[]>([]);
   const [serviceAreaInput, setServiceAreaInput] = useState("");
   const [companyAbout, setCompanyAbout] = useState<string>("");
   const [companyMission, setCompanyMission] = useState<string>("");
@@ -5092,6 +5093,45 @@ export default function DashboardLayout() {
                                             />
                                           </div>
                                         )}
+                                      </div>
+
+                                      <div className="relative w-full space-y-3 md:col-span-2">
+                                        <label className="block text-sm font-semibold text-[#111827]">
+                                          Business Model
+                                        </label>
+                                        <div className="grid gap-2 sm:grid-cols-2">
+                                          {[
+                                            "Physical Products",
+                                            "Services",
+                                            "Digital Products",
+                                            "Subscriptions",
+                                            "Memberships",
+                                            "Rentals",
+                                          ].map((option) => {
+                                            const isSelected = businessModelSelections.includes(option);
+                                            return (
+                                              <label
+                                                key={option}
+                                                className={`flex items-center gap-3 rounded-xl border px-3 py-3 text-sm font-medium transition ${isSelected ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#334155] hover:border-[#86EFAC] hover:bg-[#F8FAFC]"}`}
+                                              >
+                                                <input
+                                                  type="checkbox"
+                                                  checked={isSelected}
+                                                  onChange={() => {
+                                                    setBusinessModelSelections((current) =>
+                                                      current.includes(option)
+                                                        ? current.filter((item) => item !== option)
+                                                        : [...current, option],
+                                                    );
+                                                    setHasUnsavedChanges(true);
+                                                  }}
+                                                  className="h-4 w-4 rounded border-[#CBD5E1] text-[#22C55E] focus:ring-[#22C55E]"
+                                                />
+                                                <span>{option}</span>
+                                              </label>
+                                            );
+                                          })}
+                                        </div>
                                       </div>
 
                                       <div className="relative w-full space-y-2">
