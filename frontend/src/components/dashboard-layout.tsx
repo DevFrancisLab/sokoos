@@ -1580,6 +1580,11 @@ export default function DashboardLayout() {
 
     return tabs;
   }, [businessModelSelections]);
+  const catalogueFilterTabOrder: CatalogueTab[] = ["All", "Products", "Services", "Subscriptions", "Digital Products", "Memberships", "Rentals"];
+  const sortedCatalogueFilterTabs = useMemo(
+    () => [...catalogueFilterTabs].sort((a, b) => catalogueFilterTabOrder.indexOf(a) - catalogueFilterTabOrder.indexOf(b)),
+    [catalogueFilterTabs],
+  );
   const [selectedCatalogueTab, setSelectedCatalogueTab] = useState<CatalogueTab>("All");
   useEffect(() => {
     if (!catalogueFilterTabs.includes(selectedCatalogueTab)) {
@@ -6022,124 +6027,110 @@ export default function DashboardLayout() {
                     )}
 
                     {activeWorkspaceSection === "Catalogue" && (
-                      <div className="w-full max-w-[1600px] min-w-0 space-y-4 overflow-x-hidden lg:space-y-5">
-                        <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-5">
-                          <div className="flex flex-col gap-3 xl:flex-row xl:items-end xl:justify-between">
+                      <div className="w-full max-w-[1600px] min-w-0 space-y-6 overflow-x-hidden lg:space-y-6">
+                        <div className="rounded-[32px] border border-[#E5E7EB] bg-white p-6 shadow-[0_20px_40px_rgba(15,23,42,0.08)] sm:p-7">
+                          <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
                             <div className="min-w-0">
-                              <h1 className="text-2xl font-semibold tracking-[-0.02em] text-[#111827]">Catalogue Workspace</h1>
-                              <p className="mt-1 max-w-3xl text-sm leading-5 text-[#475569]">Manage your catalogue items, pricing, inventory, media, and AI readiness in one modern workspace.</p>
+                              <h1 className="text-3xl font-semibold tracking-[-0.02em] text-[#111827]">Catalogue Workspace</h1>
+                              <p className="mt-2 max-w-3xl text-sm leading-6 text-[#475569]">Manage your catalogue items, pricing, inventory, media, and AI readiness in one modern workspace.</p>
                             </div>
 
-                            <div className="w-full xl:max-w-[1100px]">
-                              <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                                <div className="flex-1 space-y-3">
-<div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                                        <div className="min-w-0 lg:flex-1">
-                                      <input
-                                        type="text"
-                                        value={productSearch}
-                                        onChange={(e) => setProductSearch(e.target.value)}
-                                        placeholder="Search products, services, SKU, category, or tags..."
-                                        className="w-full rounded-[12px] border border-[#E5E7EB] bg-white px-3 py-2 text-sm text-[#111827] shadow-sm outline-none transition focus:border-[#22C55E] focus:ring-2 focus:ring-[#DCFCE7]"
-                                      />
-                                    </div>
-
-                                    <div className="flex flex-wrap items-center gap-2">
-                                      <button type="button" onClick={handleAddItemClick} className="inline-flex h-10 items-center justify-center rounded-[12px] bg-[#111827] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937]">{addButtonLabel}</button>
-                                      <div className="relative">
-                                        <button type="button" onClick={() => setImportMenuOpen((s) => !s)} className="inline-flex h-10 items-center justify-center rounded-[12px] border border-[#E5E7EB] bg-white px-4 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#F8FAFB]">
-                                          Import
-                                          <ChevronDown className="ml-2 h-4 w-4 text-[#6B7280]" />
-                                        </button>
-                                        {importMenuOpen && (
-                                          <div className="absolute right-0 top-full z-50 mt-2 w-48 rounded-[18px] border border-[#E5E7EB] bg-white shadow-lg">
-                                            <label className="block cursor-pointer px-3 py-3 text-sm text-[#111827] transition hover:bg-[#F8FAFB]">
-                                              CSV
-                                              <input type="file" accept=".csv" className="hidden" onChange={(e) => { setImportMenuOpen(false); simulateImport('CSV', e.target.files?.[0] ?? null); }} />
-                                            </label>
-                                            <label className="block cursor-pointer px-3 py-3 text-sm text-[#111827] transition hover:bg-[#F8FAFB]">
-                                              Excel
-                                              <input type="file" accept=".xlsx,.xls" className="hidden" onChange={(e) => { setImportMenuOpen(false); simulateImport('Excel', e.target.files?.[0] ?? null); }} />
-                                            </label>
-                                            <label className="block cursor-pointer rounded-b-[18px] px-3 py-3 text-sm text-[#111827] transition hover:bg-[#F8FAFB]">
-                                              PDF
-                                              <input type="file" accept=".pdf" className="hidden" onChange={(e) => { setImportMenuOpen(false); simulateImport('PDF Catalogues', e.target.files?.[0] ?? null); }} />
-                                            </label>
-                                          </div>
-                                        )}
-                                      </div>
-                                    </div>
+                            <div className="w-full lg:w-[340px]">
+                              <div className="lg:sticky lg:top-4 rounded-[26px] border border-[#E5E7EB] bg-[#F8FBFF] p-4 shadow-sm">
+                                <div className="flex items-center justify-between gap-4">
+                                  <div className="min-w-0">
+                                    <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Catalogue Health</p>
+                                    <p className="mt-1 text-sm font-semibold text-[#111827]">AI readiness</p>
+                                  </div>
+                                  <div className="text-right">
+                                    <div className="text-[11px] text-[#64748B]">Overall</div>
+                                    <div className="mt-1 text-lg font-semibold text-[#111827]">{catalogueHealthConfidence}%</div>
                                   </div>
                                 </div>
 
-                                <div className="w-full lg:w-[320px]">
-                                  <div className="lg:sticky lg:top-4 rounded-[14px] border border-[#E5E7EB] bg-[#F8FAFB] p-2.5">
-                                    <div className="flex items-center justify-between gap-3">
-                                      <div className="min-w-0">
-                                        <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Catalogue Health</p>
-                                        <p className="mt-1 text-sm font-semibold text-[#111827]">AI readiness</p>
+                                <div className="mt-4 space-y-3 text-sm text-[#475569]">
+                                  {[
+                                    {
+                                      label: "AI Readiness",
+                                      percentage: catalogueHealthMetrics.find((item) => item.label === "AI Ready")?.percentage ?? 0,
+                                    },
+                                    {
+                                      label: "Products",
+                                      percentage: catalogueHealthMetrics.find((item) => item.label === "Products")?.percentage ?? 0,
+                                    },
+                                    {
+                                      label: "Prices",
+                                      percentage: catalogueHealthMetrics.find((item) => item.label === "Prices")?.percentage ?? 0,
+                                    },
+                                    {
+                                      label: "Media",
+                                      percentage: catalogueHealthMetrics.find((item) => item.label === "Media")?.percentage ?? 0,
+                                    },
+                                    {
+                                      label: "FAQs",
+                                      percentage:
+                                        catalogProducts.length > 0
+                                          ? Math.round(
+                                              (catalogProducts.filter((product) => (product as any).faqs && (product as any).faqs.length > 0).length / catalogProducts.length) * 100,
+                                            )
+                                          : 0,
+                                    },
+                                  ].map((item) => (
+                                    <div key={item.label} className="space-y-2">
+                                      <div className="flex items-center justify-between gap-2 text-xs text-[#475569]">
+                                        <span>{item.label}</span>
+                                        <span className="font-semibold text-[#111827]">{item.percentage}%</span>
                                       </div>
-                                      <div className="text-right">
-                                        <div className="text-[11px] text-[#64748B]">Overall</div>
-                                        <div className="mt-1 text-lg font-semibold text-[#111827]">{catalogueHealthConfidence}%</div>
+                                      <div className="h-2 rounded-full bg-[#E5E7EB]">
+                                        <div className="h-full rounded-full bg-[#22C55E]" style={{ width: `${item.percentage}%` }} />
                                       </div>
                                     </div>
+                                  ))}
+                                </div>
 
-                                    <div className="mt-3 space-y-3 text-sm text-[#475569]">
-                                      {[
-                                        {
-                                          label: "AI Readiness",
-                                          percentage: catalogueHealthMetrics.find((item) => item.label === "AI Ready")?.percentage ?? 0,
-                                        },
-                                        {
-                                          label: "Products",
-                                          percentage: catalogueHealthMetrics.find((item) => item.label === "Products")?.percentage ?? 0,
-                                        },
-                                        {
-                                          label: "Prices",
-                                          percentage: catalogueHealthMetrics.find((item) => item.label === "Prices")?.percentage ?? 0,
-                                        },
-                                        {
-                                          label: "Media",
-                                          percentage: catalogueHealthMetrics.find((item) => item.label === "Media")?.percentage ?? 0,
-                                        },
-                                        {
-                                          label: "FAQs",
-                                          percentage:
-                                            catalogProducts.length > 0
-                                              ? Math.round(
-                                                  (catalogProducts.filter((product) => (product as any).faqs && (product as any).faqs.length > 0).length / catalogProducts.length) * 100,
-                                                )
-                                              : 0,
-                                        },
-                                      ].map((item) => (
-                                        <div key={item.label} className="space-y-2">
-                                          <div className="flex items-center justify-between gap-2">
-                                            <span>{item.label}</span>
-                                            <span className="font-semibold text-[#111827]">{item.percentage}%</span>
-                                          </div>
-                                          <div className="h-2 rounded-full bg-[#E5E7EB]">
-                                            <div className="h-full rounded-full bg-[#22C55E]" style={{ width: `${item.percentage}%` }} />
-                                          </div>
-                                        </div>
-                                      ))}
-                                    </div>
-
-                                    <div className="mt-3 rounded-[12px] border border-[#E5E7EB] bg-white p-2 text-[11px] text-[#475569]">
-                                      <div className="flex items-center justify-between gap-2 py-1">
-                                        <span>Missing descriptions</span>
-                                        <span className="font-semibold text-[#111827]">{catalogProducts.filter((p) => !(p.description && p.description.trim().length > 0)).length}</span>
-                                      </div>
-                                      <div className="flex items-center justify-between gap-2 py-1">
-                                        <span>Missing images</span>
-                                        <span className="font-semibold text-[#111827]">{catalogProducts.filter((p) => !(p.image && p.image.trim().length > 0) && ((p.mediaAssets ?? []).length === 0)).length}</span>
-                                      </div>
-                                      <div className="flex items-center justify-between gap-2 py-1">
-                                        <span>Missing FAQs</span>
-                                        <span className="font-semibold text-[#111827]">{catalogProducts.filter((p) => !((p as any).faqs && (p as any).faqs.length > 0)).length}</span>
-                                      </div>
-                                    </div>
+                                <div className="mt-4 rounded-[12px] border border-[#E5E7EB] bg-white p-3 text-[11px] text-[#475569]">
+                                  <div className="flex items-center justify-between gap-2 py-1">
+                                    <span>Missing descriptions</span>
+                                    <span className="font-semibold text-[#111827]">{catalogProducts.filter((p) => !(p.description && p.description.trim().length > 0)).length}</span>
                                   </div>
+                                  <div className="flex items-center justify-between gap-2 py-1">
+                                    <span>Missing images</span>
+                                    <span className="font-semibold text-[#111827]">{catalogProducts.filter((p) => !(p.image && p.image.trim().length > 0) && ((p.mediaAssets ?? []).length === 0)).length}</span>
+                                  </div>
+                                  <div className="flex items-center justify-between gap-2 py-1">
+                                    <span>Missing FAQs</span>
+                                    <span className="font-semibold text-[#111827]">{catalogProducts.filter((p) => !((p as any).faqs && (p as any).faqs.length > 0)).length}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="mt-5 w-full xl:max-w-[1100px]">
+                            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+                              <div className="flex items-center gap-3">
+                                <button type="button" onClick={handleAddItemClick} className="inline-flex h-11 items-center justify-center rounded-[16px] bg-[#111827] px-5 text-sm font-semibold text-white shadow-sm transition duration-200 hover:bg-[#1F2937]">{addButtonLabel}</button>
+                                <div className="relative">
+                                  <button type="button" onClick={() => setImportMenuOpen((s) => !s)} className="inline-flex h-11 items-center justify-center rounded-[16px] border border-[#E5E7EB] bg-white px-5 text-sm font-semibold text-[#111827] shadow-sm transition duration-200 hover:bg-[#F8FAFB]">
+                                    Import
+                                    <ChevronDown className="ml-2 h-4 w-4 text-[#6B7280]" />
+                                  </button>
+                                  {importMenuOpen && (
+                                    <div className="absolute right-0 top-full z-50 mt-2 w-48 rounded-[18px] border border-[#E5E7EB] bg-white shadow-lg">
+                                      <label className="block cursor-pointer px-3 py-3 text-sm text-[#111827] transition hover:bg-[#F8FAFB]">
+                                        CSV
+                                        <input type="file" accept=".csv" className="hidden" onChange={(e) => { setImportMenuOpen(false); simulateImport('CSV', e.target.files?.[0] ?? null); }} />
+                                      </label>
+                                      <label className="block cursor-pointer px-3 py-3 text-sm text-[#111827] transition hover:bg-[#F8FAFB]">
+                                        Excel
+                                        <input type="file" accept=".xlsx,.xls" className="hidden" onChange={(e) => { setImportMenuOpen(false); simulateImport('Excel', e.target.files?.[0] ?? null); }} />
+                                      </label>
+                                      <label className="block cursor-pointer rounded-b-[18px] px-3 py-3 text-sm text-[#111827] transition hover:bg-[#F8FAFB]">
+                                        PDF
+                                        <input type="file" accept=".pdf" className="hidden" onChange={(e) => { setImportMenuOpen(false); simulateImport('PDF Catalogues', e.target.files?.[0] ?? null); }} />
+                                      </label>
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                             </div>
@@ -6183,14 +6174,14 @@ export default function DashboardLayout() {
                                       <span className="text-[#64748B]">items</span>
                                     </div>
                                   </div>
-                                  <div className="mt-4 flex flex-wrap items-center gap-2">
-                                    <div className="flex flex-wrap items-center gap-2">
-                                      {catalogueFilterTabs.map((tab) => (
-                                        <button
-                                          key={tab}
-                                          type="button"
-                                          onClick={() => setSelectedCatalogueTab(tab)}
-                                          className={`rounded-full border px-3.5 py-1.5 text-xs font-semibold transition ${selectedCatalogueTab === tab ? 'border-[#111827] bg-[#111827] text-white shadow-sm' : 'border-[#E5E7EB] bg-white text-[#475569] hover:border-[#CBD5E1] hover:bg-[#F8FAFB]'}`}
+<div className="mt-4 flex flex-wrap items-center gap-3">
+                                          <div className="flex flex-wrap items-center gap-3">
+                                            {[...sortedCatalogueFilterTabs].map((tab) => (
+                                              <button
+                                                key={tab}
+                                                type="button"
+                                                onClick={() => setSelectedCatalogueTab(tab)}
+                                                className={`inline-flex h-10 items-center justify-center rounded-full border px-4 text-xs font-semibold transition-colors duration-200 ${selectedCatalogueTab === tab ? 'border-[#111827] bg-[#111827] text-white shadow-sm' : 'border-[#E5E7EB] bg-white text-[#475569] hover:border-[#CBD5E1] hover:bg-[#F8FAFB]'}`}
                                         >
                                           {tab}
                                         </button>
@@ -6198,72 +6189,54 @@ export default function DashboardLayout() {
                                     </div>
 
                                     <div className="ml-auto inline-flex items-center gap-2 rounded-full bg-white/50 p-1">
-                                      <button aria-label="Grid view" title="Grid view" onClick={() => setCatalogView('grid')} className={`inline-flex items-center justify-center rounded-md p-2 ${catalogView === 'grid' ? 'bg-[#111827] text-white shadow-sm' : 'text-[#475569] hover:bg-[#F3F4F6]'}`}>
+                                      <button aria-label="Grid view" title="Grid view" onClick={() => setCatalogView('grid')} className={`inline-flex h-10 w-10 items-center justify-center rounded-full ${catalogView === 'grid' ? 'bg-[#111827] text-white shadow-sm' : 'text-[#475569] hover:bg-[#F3F4F6]'}`}>
                                         <LayoutGrid className="h-4 w-4" />
                                       </button>
-                                      <button aria-label="Table view" title="Table view" onClick={() => setCatalogView('table')} className={`inline-flex items-center justify-center rounded-md p-2 ${catalogView === 'table' ? 'bg-[#111827] text-white shadow-sm' : 'text-[#475569] hover:bg-[#F3F4F6]'}`}>
+                                      <button aria-label="Table view" title="Table view" onClick={() => setCatalogView('table')} className={`inline-flex h-10 w-10 items-center justify-center rounded-full ${catalogView === 'table' ? 'bg-[#111827] text-white shadow-sm' : 'text-[#475569] hover:bg-[#F3F4F6]'}`}>
                                         <List className="h-4 w-4" />
                                       </button>
                                     </div>
                                   </div>
 
-                                  <div className="mt-4 flex flex-wrap items-center gap-2">
-                                    <button type="button" onClick={() => {}} className="inline-flex items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-3.5 py-1.5 text-xs font-semibold text-[#111827] shadow-sm transition hover:border-[#CBD5E1] hover:bg-[#F8FAFB]">
+                                  <div className="mt-3 flex flex-wrap items-center gap-3">
+                                    <button type="button" onClick={() => {}} className="inline-flex h-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-4 text-xs font-semibold text-[#111827] shadow-sm transition-colors duration-200 hover:border-[#CBD5E1] hover:bg-[#F8FAFB]">
                                       Total Items: {filtered.length}
                                     </button>
-                                    <button type="button" onClick={() => {}} className="inline-flex items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-3.5 py-1.5 text-xs font-semibold text-[#111827] shadow-sm transition hover:border-[#CBD5E1] hover:bg-[#F8FAFB]">
-                                      Products: {filtered.filter((product) => product.type === 'Product').length}
-                                    </button>
-                                    <button type="button" onClick={() => {}} className="inline-flex items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-3.5 py-1.5 text-xs font-semibold text-[#111827] shadow-sm transition hover:border-[#CBD5E1] hover:bg-[#F8FAFB]">
-                                      Services: {filtered.filter((product) => product.type === 'Service').length}
-                                    </button>
-                                    <button type="button" onClick={() => {}} className="inline-flex items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-3.5 py-1.5 text-xs font-semibold text-[#111827] shadow-sm transition hover:border-[#CBD5E1] hover:bg-[#F8FAFB]">
+                                    <button type="button" onClick={() => {}} className="inline-flex h-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-4 text-xs font-semibold text-[#111827] shadow-sm transition hover:border-[#CBD5E1] hover:bg-[#F8FAFB]">
                                       Low Stock: {filtered.filter((product) => typeof (product as any).currentStock === 'number' && (product as any).currentStock <= 5).length}
                                     </button>
-                                    <button type="button" onClick={() => {}} className="inline-flex items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-3.5 py-1.5 text-xs font-semibold text-[#111827] shadow-sm transition hover:border-[#CBD5E1] hover:bg-[#F8FAFB]">
+                                    <button type="button" onClick={() => {}} className="inline-flex h-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-4 text-xs font-semibold text-[#111827] shadow-sm transition hover:border-[#CBD5E1] hover:bg-[#F8FAFB]">
                                       Missing Images: {filtered.filter((product) => !(product.image && product.image.trim().length > 0) && ((product.mediaAssets ?? []).length === 0)).length}
                                     </button>
-                                    <button type="button" onClick={() => {}} className="inline-flex items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-3.5 py-1.5 text-xs font-semibold text-[#111827] shadow-sm transition hover:border-[#CBD5E1] hover:bg-[#F8FAFB]">
+                                    <button type="button" onClick={() => {}} className="inline-flex h-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-4 text-xs font-semibold text-[#111827] shadow-sm transition hover:border-[#CBD5E1] hover:bg-[#F8FAFB]">
                                       Missing FAQs: {filtered.filter((product) => !((product as any).faqs && (product as any).faqs.length > 0)).length}
                                     </button>
-                                    <button type="button" onClick={() => {}} className="inline-flex items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-3.5 py-1.5 text-xs font-semibold text-[#111827] shadow-sm transition hover:border-[#CBD5E1] hover:bg-[#F8FAFB]">
+                                    <button type="button" onClick={() => {}} className="inline-flex h-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-4 text-xs font-semibold text-[#111827] shadow-sm transition hover:border-[#CBD5E1] hover:bg-[#F8FAFB]">
                                       AI Ready: {filtered.length > 0 ? Math.round(filtered.filter((product) => product.name?.trim() && product.category?.trim() && product.description?.trim()).length / filtered.length * 100) : 0}%
                                     </button>
                                   </div>
 
                                   {catalogProducts.length === 0 ? (
-                                    <div className="mt-10 rounded-[28px] border border-dashed border-[#CBD5E1] bg-[#F8FAFB] p-10 text-center shadow-sm">
-                                      <div className="mx-auto mb-6 flex h-36 w-36 items-center justify-center rounded-[2rem] bg-white shadow-sm">
-                                        <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-[#DBEAFE] text-[#1D4ED8]">
-                                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="h-10 w-10">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6.75h16M7.5 10.75h9M6 15.75h12" />
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8.5 5.75 12 9.25l3.5-3.5" />
+                                    <div className="mt-6 rounded-[28px] border border-dashed border-[#CBD5E1] bg-[#F8FAFB] p-8 text-center shadow-sm">
+                                      <div className="mx-auto mb-6 flex h-40 w-40 items-center justify-center rounded-[2rem] bg-white shadow-sm">
+                                        <div className="flex h-24 w-24 items-center justify-center rounded-[1.75rem] bg-[#DBEAFE] text-[#1D4ED8]">
+                                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" className="h-16 w-16">
+                                            <rect x="8" y="20" width="48" height="32" rx="8" fill="#EFF6FF" />
+                                            <path d="M16 28h32" stroke="#2563EB" strokeWidth="3" strokeLinecap="round" />
+                                            <path d="M16 36h20" stroke="#2563EB" strokeWidth="3" strokeLinecap="round" />
+                                            <path d="M30 20v-8a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v8" stroke="#2563EB" strokeWidth="3" strokeLinecap="round" />
+                                            <circle cx="44" cy="34" r="4" fill="#2563EB" />
                                           </svg>
                                         </div>
                                       </div>
-                                      <p className="text-2xl font-semibold text-[#111827]">
-                                        {businessModelSelections.length === 0
-                                          ? "Select a business model to get started"
-                                          : businessModelSelections.length > 1
-                                            ? "No catalogue items yet"
-                                            : businessModelSelections[0] === "Services"
-                                              ? "No services yet"
-                                              : businessModelSelections[0] === "Subscriptions"
-                                                ? "No subscription plans yet"
-                                                : businessModelSelections[0] === "Digital Products"
-                                                  ? "No digital products yet"
-                                                  : businessModelSelections[0] === "Rentals"
-                                                    ? "No rentals yet"
-                                                    : "No products yet"}
-                                      </p>
-                                      <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#475569]">Add your first item so your AI can recommend products and services with confidence.</p>
-                                      <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:justify-center">
-                                        <button type="button" onClick={handleAddItemClick} className="rounded-[16px] bg-[#111827] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937]">{addButtonLabel}</button>
-                                        <button type="button" onClick={() => setImportMenuOpen(true)} className="rounded-[16px] border border-[#E5E7EB] bg-white px-6 py-3 text-sm font-semibold text-[#111827] shadow-sm transition hover:bg-[#F8FAFB]">Import catalogue</button>
+                                      <p className="text-2xl font-semibold text-[#111827]">No catalogue items yet</p>
+                                      <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-[#475569]">Add your first product or service to train your AI.</p>
+                                      <div className="mt-6 flex justify-center">
+                                        <button type="button" onClick={handleAddItemClick} className="inline-flex h-12 items-center justify-center rounded-[16px] bg-[#111827] px-6 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937]">Add Item</button>
                                       </div>
                                     </div>
                                   ) : filtered.length === 0 ? (
-                                    <div className="mt-10 rounded-[28px] border border-dashed border-[#CBD5E1] bg-[#F8FAFB] p-10 text-center shadow-sm">
+                                    <div className="mt-6 rounded-[28px] border border-dashed border-[#CBD5E1] bg-[#F8FAFB] p-10 text-center shadow-sm">
                                       <div className="mx-auto mb-6 flex h-36 w-36 items-center justify-center rounded-[2rem] bg-white shadow-sm">
                                         <div className="flex h-20 w-20 items-center justify-center rounded-[2rem] bg-[#DBEAFE] text-[#1D4ED8]">
                                           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" className="h-12 w-12">
@@ -6278,12 +6251,12 @@ export default function DashboardLayout() {
                                       </div>
                                       <p className="text-2xl font-semibold text-[#111827]">No items found.</p>
                                       <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#475569]">The selected filter returned no catalogue items. Add your first item to populate the catalogue workspace.</p>
-                                      <button type="button" onClick={handleAddItemClick} className="mt-7 inline-flex items-center justify-center rounded-[16px] bg-[#111827] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937]">Add your first item</button>
+                                      <button type="button" onClick={handleAddItemClick} className="mt-6 inline-flex items-center justify-center rounded-[16px] bg-[#111827] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937]">Add your first item</button>
                                     </div>
                                   ) : (
                                     <div className="mt-6">
                                       {catalogView === 'grid' ? (
-                                        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+                                        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                                           {filtered.map((item) => {
                                             const readinessLabel = getCatalogueItemReadinessLabel(item);
                                             const isAvailable = item.availability === 'In stock' || item.availability === 'Available';
@@ -6296,15 +6269,28 @@ export default function DashboardLayout() {
                                               Membership: 'Membership',
                                             }[item.type] ?? item.type;
                                             const itemCategory = typeof item.category === 'string' ? item.category.trim() : '';
+                                            const hasFaqs = (item as any).faqs && (item as any).faqs.length > 0;
+                                            const faqLabel = hasFaqs ? 'FAQ Ready' : 'Needs FAQ';
+                                            const faqClass = hasFaqs ? 'bg-[#ECFDF5] text-[#166534]' : 'bg-[#FEF3C7] text-[#B45309]';
+
                                             return (
-                                              <article role="button" tabIndex={0} onClick={() => openProductDrawer(item.id)} onKeyDown={(e) => e.key === 'Enter' && openProductDrawer(item.id)} key={item.id} className="group flex h-full flex-col overflow-hidden rounded-[24px] border border-[#E5E7EB] bg-white shadow-[0_6px_16px_rgba(15,23,42,0.04)] transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_14px_34px_rgba(15,23,42,0.12)]">
+                                              <article role="button" tabIndex={0} onClick={() => openProductDrawer(item.id)} onKeyDown={(e) => e.key === 'Enter' && openProductDrawer(item.id)} key={item.id} className="group flex h-full flex-col overflow-hidden rounded-[24px] border border-[#E5E7EB] bg-white shadow-[0_10px_24px_rgba(15,23,42,0.06)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_18px_34px_rgba(15,23,42,0.12)]">
                                                 <div className="relative overflow-hidden bg-[#F5F5F4] h-40 sm:h-44">
-                                                  <img src={item.image} alt={item.name} className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]" />
+                                                  {item.image ? (
+                                                    <img src={item.image} alt={item.name} className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]" />
+                                                  ) : (
+                                                    <div className="flex h-full w-full items-center justify-center bg-[#E5E7EB]">
+                                                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="h-12 w-12 text-[#94A3B8]" aria-hidden="true">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7.5a4.5 4.5 0 0 1 9 0 4.5 4.5 0 1 1 9 0v6a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-6Z" />
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6.75 15.75 9 13.5l1.5 1.5 3-3 3.75 3.75" />
+                                                      </svg>
+                                                    </div>
+                                                  )}
                                                   <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent" />
                                                   <div className="absolute right-3 top-3" onClick={(e) => e.stopPropagation()}>
                                                     <DropdownMenu>
                                                       <DropdownMenuTrigger asChild>
-                                                        <button type="button" className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-[#475569] shadow-sm ring-1 ring-[#E5E7EB] transition hover:bg-white">
+                                                        <button type="button" className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-[#475569] shadow-sm ring-1 ring-[#E5E7EB] transition-colors duration-200 hover:bg-white">
                                                           <MoreVertical className="h-4 w-4" />
                                                         </button>
                                                       </DropdownMenuTrigger>
@@ -6323,7 +6309,7 @@ export default function DashboardLayout() {
                                                   <div className="space-y-3">
                                                     <div className="flex items-start justify-between gap-3">
                                                       <div className="min-w-0">
-                                                        <p className="text-base font-semibold text-[#111827] line-clamp-1">{item.name}</p>
+                                                        <p className="text-base font-semibold text-[#111827] line-clamp-2">{item.name}</p>
                                                         {itemCategory ? (
                                                           <p className="mt-1 text-sm text-[#64748B] line-clamp-1">{itemCategory}</p>
                                                         ) : null}
@@ -6331,15 +6317,18 @@ export default function DashboardLayout() {
                                                       <p className="shrink-0 text-sm font-semibold text-[#111827]">{item.price}</p>
                                                     </div>
 
-                                                    <div className="flex flex-wrap items-center gap-2">
-                                                      <span className="rounded-full bg-[#F3F4F6] px-3 py-1 text-xs font-semibold text-[#475569]">
+                                                    <div className="flex flex-wrap gap-2">
+                                                      <span className="inline-flex h-9 items-center rounded-full border border-[#E5E7EB] bg-[#F8FAFB] px-3.5 text-xs font-semibold text-[#475569]">
                                                         {itemTypeLabel}
                                                       </span>
-                                                      <span className={`rounded-full px-3 py-1 text-xs font-semibold ${isAvailable ? 'bg-[#ECFDF5] text-[#166534]' : 'bg-[#FFFBEB] text-[#B45309]'}`}>
+                                                      <span className={`inline-flex h-9 items-center rounded-full px-3.5 text-xs font-semibold ${isAvailable ? 'bg-[#ECFDF5] text-[#166534]' : 'bg-[#FFFBEB] text-[#B45309]'}`}>
                                                         {item.availability}
                                                       </span>
-                                                      <span className={`rounded-full px-3 py-1 text-xs font-semibold ${readinessLabel === '100% Ready' ? 'bg-[#ECFDF5] text-[#166534]' : 'bg-[#FFFBEB] text-[#B45309]'}`}>
+                                                      <span className={`inline-flex h-9 items-center rounded-full px-3.5 text-xs font-semibold ${readinessLabel === '100% Ready' ? 'bg-[#ECFDF5] text-[#166534]' : 'bg-[#FFFBEB] text-[#B45309]'}`}>
                                                         {readinessLabel}
+                                                      </span>
+                                                      <span className={`inline-flex h-9 items-center rounded-full px-3.5 text-xs font-semibold ${faqClass}`}>
+                                                        {faqLabel}
                                                       </span>
                                                     </div>
                                                   </div>
