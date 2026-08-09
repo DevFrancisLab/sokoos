@@ -2627,6 +2627,10 @@ export default function DashboardLayout() {
 
   const [paymentNotes, setPaymentNotes] = useState('Add any business-specific payment instructions that customers should know.');
 
+  const [notApplicableSections, setNotApplicableSections] = useState<string[]>([]);
+  const isNotApplicable = (id: string) => notApplicableSections.includes(id);
+  const toggleNotApplicable = (id: string) => setNotApplicableSections((s) => s.includes(id) ? s.filter((x) => x !== id) : [...s, id]);
+
   const togglePaymentMethodEnabled = (id: string) => setPaymentMethods((s) => s.map((method) => method.id === id ? { ...method, enabled: !method.enabled } : method));
 
   const togglePaymentMethodEditing = (id: string) => setPaymentMethods((s) => s.map((method) => method.id === id ? { ...method, editing: !method.editing } : method));
@@ -7296,8 +7300,15 @@ export default function DashboardLayout() {
                                   {sec.id === 'pol-1' ? (
                                     <>
                                       <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
-                                        <p className="text-sm font-semibold text-[#111827]">Customer Policies</p>
-                                        <p className="mt-2 text-sm text-[#475569]">Define the policies your AI should explain when customers ask about returns, refunds, cancellations, warranties, or other customer-facing rules.</p>
+                                        <div className="flex items-start justify-between">
+                                          <div>
+                                            <p className="text-sm font-semibold text-[#111827]">Customer Policies</p>
+                                            <p className="mt-2 text-sm text-[#475569]">Define the policies your AI should explain when customers ask about returns, refunds, cancellations, warranties, or other customer-facing rules.</p>
+                                          </div>
+                                          <div>
+                                            <button type="button" onClick={() => toggleNotApplicable('pol-1')} className={`rounded-full px-3 py-1.5 text-xs font-semibold ${isNotApplicable('pol-1') ? 'bg-[#F3F4F6] text-[#64748B]' : 'bg-white border border-[#E5E7EB]'}`}>{isNotApplicable('pol-1') ? 'Not applicable' : 'Mark not applicable'}</button>
+                                          </div>
+                                        </div>
                                       </div>
 
                                       <div className="space-y-4">
@@ -7352,8 +7363,15 @@ export default function DashboardLayout() {
                                   ) : sec.id === 'pol-2' ? (
                                     <>
                                       <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
-                                        <p className="text-sm font-semibold text-[#111827]">Pricing & Payment</p>
-                                        <p className="mt-2 text-sm text-[#475569]">Define the payment and pricing rules your AI should communicate accurately to customers.</p>
+                                        <div className="flex items-start justify-between">
+                                          <div>
+                                            <p className="text-sm font-semibold text-[#111827]">Pricing & Payment</p>
+                                            <p className="mt-2 text-sm text-[#475569]">Define the payment and pricing rules your AI should communicate accurately to customers.</p>
+                                          </div>
+                                          <div>
+                                            <button type="button" onClick={() => toggleNotApplicable('pol-2')} className={`rounded-full px-3 py-1.5 text-xs font-semibold ${isNotApplicable('pol-2') ? 'bg-[#F3F4F6] text-[#64748B]' : 'bg-white border border-[#E5E7EB]'}`}>{isNotApplicable('pol-2') ? 'Not applicable' : 'Mark not applicable'}</button>
+                                          </div>
+                                        </div>
                                       </div>
 
                                       <div className="space-y-5">
@@ -7476,8 +7494,15 @@ export default function DashboardLayout() {
                                   ) : sec.id === 'pol-3' ? (
                                     <>
                                       <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
-                                        <p className="text-sm font-semibold text-[#111827]">Orders & Fulfillment</p>
-                                        <p className="mt-2 text-sm text-[#475569]">Teach your AI what customers should expect after placing an order, booking a service, or requesting fulfillment.</p>
+                                        <div className="flex items-start justify-between">
+                                          <div>
+                                            <p className="text-sm font-semibold text-[#111827]">Orders & Fulfillment</p>
+                                            <p className="mt-2 text-sm text-[#475569]">Teach your AI what customers should expect after placing an order, booking a service, or requesting fulfillment.</p>
+                                          </div>
+                                          <div>
+                                            <button type="button" onClick={() => toggleNotApplicable('pol-3')} className={`rounded-full px-3 py-1.5 text-xs font-semibold ${isNotApplicable('pol-3') ? 'bg-[#F3F4F6] text-[#64748B]' : 'bg-white border border-[#E5E7EB]'}`}>{isNotApplicable('pol-3') ? 'Not applicable' : 'Mark not applicable'}</button>
+                                          </div>
+                                        </div>
                                       </div>
 
                                       <div className="space-y-5">
@@ -7665,8 +7690,15 @@ export default function DashboardLayout() {
                                   ) : sec.id === 'pol-4' ? (
                                     <>
                                       <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
-                                        <p className="text-sm font-semibold text-[#111827]">Privacy & Customer Data</p>
-                                        <p className="mt-2 text-sm text-[#475569]">Define what customer information your AI may collect, use, and share during conversations.</p>
+                                        <div className="flex items-start justify-between">
+                                          <div>
+                                            <p className="text-sm font-semibold text-[#111827]">Privacy & Customer Data</p>
+                                            <p className="mt-2 text-sm text-[#475569]">Define what customer information your AI may collect, use, and share during conversations.</p>
+                                          </div>
+                                          <div>
+                                            <button type="button" onClick={() => toggleNotApplicable('pol-4')} className={`rounded-full px-3 py-1.5 text-xs font-semibold ${isNotApplicable('pol-4') ? 'bg-[#F3F4F6] text-[#64748B]' : 'bg-white border border-[#E5E7EB]'}`}>{isNotApplicable('pol-4') ? 'Not applicable' : 'Mark not applicable'}</button>
+                                          </div>
+                                        </div>
                                       </div>
 
                                       <div className="space-y-5">
@@ -7778,8 +7810,15 @@ export default function DashboardLayout() {
                                   ) : sec.id === 'pol-5' ? (
                                     <>
                                       <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
-                                        <p className="text-sm font-semibold text-[#111827]">AI Boundaries</p>
-                                        <p className="mt-2 text-sm text-[#475569]">Define what your AI employee must never do or claim during a customer conversation.</p>
+                                        <div className="flex items-start justify-between">
+                                          <div>
+                                            <p className="text-sm font-semibold text-[#111827]">AI Boundaries</p>
+                                            <p className="mt-2 text-sm text-[#475569]">Define what your AI employee must never do or claim during a customer conversation.</p>
+                                          </div>
+                                          <div>
+                                            <button type="button" onClick={() => toggleNotApplicable('pol-5')} className={`rounded-full px-3 py-1.5 text-xs font-semibold ${isNotApplicable('pol-5') ? 'bg-[#F3F4F6] text-[#64748B]' : 'bg-white border border-[#E5E7EB]'}`}>{isNotApplicable('pol-5') ? 'Not applicable' : 'Mark not applicable'}</button>
+                                          </div>
+                                        </div>
                                       </div>
 
                                       <div className="space-y-4">
@@ -7818,8 +7857,15 @@ export default function DashboardLayout() {
                                   ) : sec.id === 'pol-6' ? (
                                     <>
                                       <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
-                                        <p className="text-sm font-semibold text-[#111827]">Escalation Rules</p>
-                                        <p className="mt-2 text-sm text-[#475569]">Tell your AI when a conversation should be handed to a human.</p>
+                                        <div className="flex items-start justify-between">
+                                          <div>
+                                            <p className="text-sm font-semibold text-[#111827]">Escalation Rules</p>
+                                            <p className="mt-2 text-sm text-[#475569]">Tell your AI when a conversation should be handed to a human.</p>
+                                          </div>
+                                          <div>
+                                            <button type="button" onClick={() => toggleNotApplicable('pol-6')} className={`rounded-full px-3 py-1.5 text-xs font-semibold ${isNotApplicable('pol-6') ? 'bg-[#F3F4F6] text-[#64748B]' : 'bg-white border border-[#E5E7EB]'}`}>{isNotApplicable('pol-6') ? 'Not applicable' : 'Mark not applicable'}</button>
+                                          </div>
+                                        </div>
                                       </div>
 
                                       <div className="space-y-4">
@@ -7866,24 +7912,27 @@ export default function DashboardLayout() {
                                         <div className="rounded-[12px] border border-[#E5E7EB] bg-white p-4">
                                           <div className="grid gap-3">
                                             {[
-                                              { key: 'Customer Policies', configured: customerPolicies.length > 0 },
-                                              { key: 'Pricing & Payment', configured: paymentMethods.length > 0 || pricingRules.length > 0 || paymentTiming.some((t) => t.selected) || (paymentNotes || '').trim() !== '' },
-                                              { key: 'Orders & Fulfillment', configured: orderProcessingRules.length + deliveryRules.length + changesCancellationRules.length + unavailableRules.length > 0 },
-                                              { key: 'Privacy & Customer Data', configured: mayCollectRules.length + doNotRequestRules.length + dataSharingRules.length > 0 },
-                                              { key: 'AI Boundaries', configured: boundaryRules.length > 0 },
-                                              { key: 'Escalation Rules', configured: escalationRules.length > 0 },
-                                            ].map((item) => (
-                                              <div key={item.key} className="flex items-center justify-between">
-                                                <div>
-                                                  <p className="text-sm font-semibold text-[#111827]">{item.key}</p>
+                                              { id: 'pol-1', key: 'Customer Policies', configured: customerPolicies.length > 0 },
+                                              { id: 'pol-2', key: 'Pricing & Payment', configured: paymentMethods.length > 0 || pricingRules.length > 0 || paymentTiming.some((t) => t.selected) || (paymentNotes || '').trim() !== '' },
+                                              { id: 'pol-3', key: 'Orders & Fulfillment', configured: orderProcessingRules.length + deliveryRules.length + changesCancellationRules.length + unavailableRules.length > 0 },
+                                              { id: 'pol-4', key: 'Privacy & Customer Data', configured: mayCollectRules.length + doNotRequestRules.length + dataSharingRules.length > 0 },
+                                              { id: 'pol-5', key: 'AI Boundaries', configured: boundaryRules.length > 0 },
+                                              { id: 'pol-6', key: 'Escalation Rules', configured: escalationRules.length > 0 },
+                                            ].map((item) => {
+                                              const finalConfigured = item.configured || isNotApplicable(item.id);
+                                              return (
+                                                <div key={item.key} className="flex items-center justify-between">
+                                                  <div>
+                                                    <p className="text-sm font-semibold text-[#111827]">{item.key}</p>
+                                                  </div>
+                                                  <div>
+                                                    <span className={`inline-flex h-7 items-center gap-2 rounded-full px-3 text-[12px] font-medium ${finalConfigured ? 'bg-[#DCFCE7] text-[#166534]' : 'bg-[#F3F4F6] text-[#64748B]'}`}>
+                                                      {finalConfigured ? 'Configured' : 'Not configured'}
+                                                    </span>
+                                                  </div>
                                                 </div>
-                                                <div>
-                                                  <span className={`inline-flex h-7 items-center gap-2 rounded-full px-3 text-[12px] font-medium ${item.configured ? 'bg-[#DCFCE7] text-[#166534]' : 'bg-[#F3F4F6] text-[#64748B]'}`}>
-                                                    {item.configured ? 'Configured' : 'Not configured'}
-                                                  </span>
-                                                </div>
-                                              </div>
-                                            ))}
+                                              );
+                                            })}
                                           </div>
                                         </div>
 
