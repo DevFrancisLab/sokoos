@@ -5854,6 +5854,12 @@ export default function DashboardLayout() {
                         ? "Identity training"
                         : activeWorkspaceSection === "Catalogue"
                         ? "Catalogue workspace"
+                        : activeWorkspaceSection === "Skills"
+                        ? "Skills"
+                        : activeWorkspaceSection === "Policies"
+                        ? "Policies"
+                        : activeWorkspaceSection === "Sales Playbooks"
+                        ? "Sales Playbook"
                         : "KNOWLEDGE TRAINING"}
                     </p>
                     <p className="mt-1 text-sm text-[#475569]">
@@ -5861,6 +5867,12 @@ export default function DashboardLayout() {
                         ? "Onboard your AI employee one focused decision at a time."
                         : activeWorkspaceSection === "Catalogue"
                         ? "Manage your AI catalogue so it can recommend products and services with confidence."
+                        : activeWorkspaceSection === "Skills"
+                        ? "Choose what your AI employee can do for your customers and your business."
+                        : activeWorkspaceSection === "Policies"
+                        ? "Teach your AI employee the rules, boundaries, and customer policies it must follow."
+                        : activeWorkspaceSection === "Sales Playbooks"
+                        ? "Train your AI employee to qualify customers, recommend the right solutions, negotiate within your rules, know when to involve a human, and confidently close conversations."
                         : "Build and refine your knowledge base so your AI responds with relevant, trusted answers."}
                     </p>
                   </div>
@@ -7186,14 +7198,8 @@ export default function DashboardLayout() {
 
                     {activeWorkspaceSection === "Sales Playbooks" && (
                       <div className="space-y-6">
-                        <div className="flex flex-col gap-4 rounded-[24px] border border-[#E5E7EB] bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
-                          <div>
-                            <p className="text-sm font-semibold text-[#111827]">Sales Playbook</p>
-                            <p className="mt-2 text-sm text-[#6B7280]">Train your AI employee to qualify customers, recommend the right solutions, negotiate within your rules, know when to involve a human, and confidently close conversations.</p>
-                          </div>
-                          <div className="flex gap-2">
-                            <button type="button" onClick={addPlaybook} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Create Playbook</button>
-                          </div>
+                        <div className="flex justify-end">
+                          <button type="button" onClick={addPlaybook} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Create Playbook</button>
                         </div>
 
                         <SalesLessonTabs />
@@ -7294,7 +7300,7 @@ export default function DashboardLayout() {
                         <div className="flex flex-col gap-4 rounded-[24px] border border-[#E5E7EB] bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
                           <div>
                             <p className="text-sm font-semibold text-[#111827]">Skills</p>
-                            <p className="mt-2 text-sm text-[#6B7280]">Choose the actions your AI Employee can perform.</p>
+                            <p className="mt-2 text-sm text-[#6B7280]">Choose what your AI employee can do for your customers and your business.</p>
                           </div>
                           <div className="flex gap-2">
                             <button onClick={() => setSkills(skills.map(s => ({ ...s, enabled: true, status: 'Active' })))} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Enable All</button>
@@ -7332,11 +7338,6 @@ export default function DashboardLayout() {
 
                     {activeWorkspaceSection === "Policies" && (
                       <div className="space-y-6">
-                        <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-5">
-                          <p className="text-sm font-semibold text-[#111827]">Policies</p>
-                          <p className="mt-3 text-sm text-[#6B7280]">Teach your AI employee the rules, boundaries, and customer policies it must follow.</p>
-                        </div>
-
                         <div className="space-y-4">
                           {policySections.map((sec) => (
                             <div key={sec.id} className="overflow-hidden rounded-[16px] border border-[#E5E7EB] bg-white">
