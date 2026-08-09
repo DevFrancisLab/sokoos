@@ -2528,14 +2528,316 @@ export default function DashboardLayout() {
   };
 
   const [policySections, setPolicySections] = useState<PolicySection[]>([
-    { id: 'pol-1', title: 'Business Rules', content: 'Business rules that govern pricing, discounts, and who can approve special offers.' },
-    { id: 'pol-2', title: 'Refund Policy', content: 'Refunds processed within 30 days with receipt and original packaging.' },
-    { id: 'pol-3', title: 'Cancellation Policy', content: 'Orders can be cancelled within 2 hours of placement; after that contact support.' },
-    { id: 'pol-4', title: 'Delivery Policy', content: 'Standard delivery in 3-5 business days. Express options available.' },
-    { id: 'pol-5', title: 'Escalation Rules', content: 'Escalate to manager for refunds over $1000 or repeated complaints.' },
-    { id: 'pol-6', title: 'Outside Business Hours', content: 'Outside hours, log requests and respond next business day.' },
-    { id: 'pol-7', title: 'Allowed AI Actions', content: 'AI may suggest products and collect basic contact info; it must not provide legal advice.' },
+    { id: 'pol-1', title: 'Customer Policies', content: 'Define the customer-facing policies that guide order handling, returns, and service levels.' },
+    { id: 'pol-2', title: 'Pricing & Payment', content: 'Set rules for pricing, accepted payment methods, discounts, and invoice handling.' },
+    { id: 'pol-3', title: 'Orders & Fulfillment', content: 'Specify order processing, shipping, delivery expectations, and fulfillment exceptions.' },
+    { id: 'pol-4', title: 'Privacy & Customer Data', content: 'Document how customer data is collected, stored, shared, and protected within the system.' },
+    { id: 'pol-5', title: 'AI Boundaries', content: 'Define the actions your AI can take and the tasks it should avoid to keep behavior on policy.' },
+    { id: 'pol-6', title: 'Escalation Rules', content: 'Escalate issues to the right team or manager when requests exceed defined thresholds.' },
+    { id: 'pol-7', title: 'Review', content: 'Review the full policy set to ensure every rule is clear and aligned with your business standards.' },
   ]);
+
+  type CustomerPolicyItem = {
+    id: string;
+    name: string;
+    description: string;
+    enabled: boolean;
+    editing?: boolean;
+  };
+
+  const policyTypeOptions = [
+    'Returns',
+    'Refunds',
+    'Exchanges',
+    'Cancellations',
+    'Warranty',
+    'Delivery',
+    'Shipping',
+    'Appointment cancellation',
+    'Membership cancellation',
+  ];
+
+  const [customerPolicies, setCustomerPolicies] = useState<CustomerPolicyItem[]>([
+    { id: 'cust-1', name: 'Returns', description: 'Customers can return items within 30 days when products are unused and returned in original condition.', enabled: true },
+    { id: 'cust-2', name: 'Refunds', description: 'Refunds are issued after approval when returned items meet policy requirements.', enabled: true },
+    { id: 'cust-3', name: 'Exchanges', description: 'Exchanges are accepted for items returned in original condition, subject to stock availability.', enabled: false },
+    { id: 'cust-4', name: 'Cancellations', description: 'Orders may be cancelled within two hours unless already shipped or fulfilled.', enabled: true },
+  ]);
+
+  const toggleCustomerPolicyEnabled = (id: string) => setCustomerPolicies((s) => s.map((policy) => policy.id === id ? { ...policy, enabled: !policy.enabled } : policy));
+
+  const toggleCustomerPolicyEditing = (id: string) => setCustomerPolicies((s) => s.map((policy) => policy.id === id ? { ...policy, editing: !policy.editing } : policy));
+
+  const updateCustomerPolicyField = (id: string, field: 'name' | 'description', value: string) => {
+    setCustomerPolicies((s) => s.map((policy) => policy.id === id ? { ...policy, [field]: value } : policy));
+  };
+
+  const addCustomerPolicy = (name?: string) => {
+    setCustomerPolicies((s) => [
+      ...s,
+      {
+        id: `cust-${Date.now()}`,
+        name: name ?? 'New policy',
+        description: name ? `Define your ${name.toLowerCase()} policy so AI can answer customer questions accurately.` : 'Describe this policy for your AI to reference when customers ask.',
+        enabled: false,
+        editing: true,
+      },
+    ]);
+  };
+
+  type PaymentMethodItem = {
+    id: string;
+    name: string;
+    enabled: boolean;
+    editing?: boolean;
+  };
+
+  type PricingRuleItem = {
+    id: string;
+    name: string;
+    description: string;
+    enabled: boolean;
+    editing?: boolean;
+  };
+
+  type PaymentTimingItem = {
+    id: string;
+    label: string;
+    selected: boolean;
+  };
+
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethodItem[]>([
+    { id: 'pay-1', name: 'Credit cards', enabled: true },
+    { id: 'pay-2', name: 'Bank transfers', enabled: true },
+    { id: 'pay-3', name: 'Mobile money', enabled: false },
+  ]);
+
+  const [pricingRules, setPricingRules] = useState<PricingRuleItem[]>([
+    { id: 'rule-1', name: 'Taxes included', description: 'Displayed prices include applicable taxes unless otherwise noted.', enabled: true },
+    { id: 'rule-2', name: 'Fixed pricing', description: 'Displayed prices are fixed for standard items unless a custom quotation is required.', enabled: true },
+    { id: 'rule-3', name: 'Quotation required', description: 'Certain requests require a quotation before the final price is confirmed.', enabled: false },
+  ]);
+
+  const [paymentTiming, setPaymentTiming] = useState<PaymentTimingItem[]>([
+    { id: 'timing-1', label: 'Before fulfillment', selected: true },
+    { id: 'timing-2', label: 'At fulfillment', selected: true },
+    { id: 'timing-3', label: 'Deposit required', selected: false },
+    { id: 'timing-4', label: 'Other', selected: false },
+  ]);
+
+  const [paymentNotes, setPaymentNotes] = useState('Add any business-specific payment instructions that customers should know.');
+
+  const togglePaymentMethodEnabled = (id: string) => setPaymentMethods((s) => s.map((method) => method.id === id ? { ...method, enabled: !method.enabled } : method));
+
+  const togglePaymentMethodEditing = (id: string) => setPaymentMethods((s) => s.map((method) => method.id === id ? { ...method, editing: !method.editing } : method));
+
+  const updatePaymentMethodField = (id: string, value: string) => {
+    setPaymentMethods((s) => s.map((method) => method.id === id ? { ...method, name: value } : method));
+  };
+
+  const addPaymentMethod = () => {
+    setPaymentMethods((s) => [
+      ...s,
+      { id: `pay-${Date.now()}`, name: 'New payment method', enabled: false, editing: true },
+    ]);
+  };
+
+  const deletePaymentMethod = (id: string) => setPaymentMethods((s) => s.filter((method) => method.id !== id));
+
+  const togglePricingRuleEnabled = (id: string) => setPricingRules((s) => s.map((rule) => rule.id === id ? { ...rule, enabled: !rule.enabled } : rule));
+
+  const togglePricingRuleEditing = (id: string) => setPricingRules((s) => s.map((rule) => rule.id === id ? { ...rule, editing: !rule.editing } : rule));
+
+  const updatePricingRuleField = (id: string, field: 'name' | 'description', value: string) => {
+    setPricingRules((s) => s.map((rule) => rule.id === id ? { ...rule, [field]: value } : rule));
+  };
+
+  const addPricingRule = () => {
+    setPricingRules((s) => [
+      ...s,
+      { id: `rule-${Date.now()}`, name: 'New pricing rule', description: 'Describe when this pricing rule applies.', enabled: false, editing: true },
+    ]);
+  };
+
+  const deletePricingRule = (id: string) => setPricingRules((s) => s.filter((rule) => rule.id !== id));
+
+  const togglePaymentTiming = (id: string) => setPaymentTiming((s) => s.map((item) => item.id === id ? { ...item, selected: !item.selected } : item));
+
+  // Orders & Fulfillment state and helpers
+  type FulfillmentRuleItem = {
+    id: string;
+    name: string;
+    description: string;
+    enabled: boolean;
+    editing?: boolean;
+  };
+
+  const [orderProcessingRules, setOrderProcessingRules] = useState<FulfillmentRuleItem[]>([
+    { id: 'ord-1', name: 'Processing time', description: 'Typical time to process orders before fulfillment.', enabled: true },
+    { id: 'ord-2', name: 'Order confirmation', description: 'What information is provided in order confirmations.', enabled: true },
+  ]);
+
+  const [deliveryRules, setDeliveryRules] = useState<FulfillmentRuleItem[]>([
+    { id: 'del-1', name: 'Delivery options', description: 'Delivery methods offered (courier, in-house, third-party).', enabled: true },
+    { id: 'del-2', name: 'Pickup options', description: 'Whether customers can pick up orders and where.', enabled: true },
+    { id: 'del-3', name: 'Fulfillment locations', description: 'Locations where orders are fulfilled or shipped from.', enabled: true },
+    { id: 'del-4', name: 'Typical fulfillment timeframe', description: 'Estimated timeframe customers should expect for fulfillment.', enabled: true },
+  ]);
+
+  const [changesCancellationRules, setChangesCancellationRules] = useState<FulfillmentRuleItem[]>([
+    { id: 'chg-1', name: 'Change window', description: 'When customers can change an order after placing it.', enabled: true },
+    { id: 'can-1', name: 'Cancellation policy', description: 'When customers can cancel and any fees that apply.', enabled: true },
+  ]);
+
+  const [unavailableRules, setUnavailableRules] = useState<FulfillmentRuleItem[]>([
+    { id: 'unv-1', name: 'Unavailable items handling', description: 'What happens when an item or service is unavailable (refund, substitute, backorder).', enabled: true },
+  ]);
+
+  const toggleFulfillmentEnabled = (id: string, list: 'order' | 'delivery' | 'changes' | 'unavailable') => {
+    if (list === 'order') setOrderProcessingRules((s) => s.map((r) => r.id === id ? { ...r, enabled: !r.enabled } : r));
+    if (list === 'delivery') setDeliveryRules((s) => s.map((r) => r.id === id ? { ...r, enabled: !r.enabled } : r));
+    if (list === 'changes') setChangesCancellationRules((s) => s.map((r) => r.id === id ? { ...r, enabled: !r.enabled } : r));
+    if (list === 'unavailable') setUnavailableRules((s) => s.map((r) => r.id === id ? { ...r, enabled: !r.enabled } : r));
+  };
+
+  const toggleFulfillmentEditing = (id: string, list: 'order' | 'delivery' | 'changes' | 'unavailable') => {
+    if (list === 'order') setOrderProcessingRules((s) => s.map((r) => r.id === id ? { ...r, editing: !r.editing } : r));
+    if (list === 'delivery') setDeliveryRules((s) => s.map((r) => r.id === id ? { ...r, editing: !r.editing } : r));
+    if (list === 'changes') setChangesCancellationRules((s) => s.map((r) => r.id === id ? { ...r, editing: !r.editing } : r));
+    if (list === 'unavailable') setUnavailableRules((s) => s.map((r) => r.id === id ? { ...r, editing: !r.editing } : r));
+  };
+
+  const updateFulfillmentField = (id: string, field: 'name' | 'description', value: string, list: 'order' | 'delivery' | 'changes' | 'unavailable') => {
+    if (list === 'order') setOrderProcessingRules((s) => s.map((r) => r.id === id ? { ...r, [field]: value } : r));
+    if (list === 'delivery') setDeliveryRules((s) => s.map((r) => r.id === id ? { ...r, [field]: value } : r));
+    if (list === 'changes') setChangesCancellationRules((s) => s.map((r) => r.id === id ? { ...r, [field]: value } : r));
+    if (list === 'unavailable') setUnavailableRules((s) => s.map((r) => r.id === id ? { ...r, [field]: value } : r));
+  };
+
+  const addFulfillmentRule = (list: 'order' | 'delivery' | 'changes' | 'unavailable', name?: string) => {
+    const item = { id: `${list}-${Date.now()}`, name: name ?? 'New rule', description: name ? `${name} details` : 'Describe this rule.', enabled: false, editing: true } as FulfillmentRuleItem;
+    if (list === 'order') setOrderProcessingRules((s) => [...s, item]);
+    if (list === 'delivery') setDeliveryRules((s) => [...s, item]);
+    if (list === 'changes') setChangesCancellationRules((s) => [...s, item]);
+    if (list === 'unavailable') setUnavailableRules((s) => [...s, item]);
+  };
+
+  const deleteFulfillmentRule = (id: string, list: 'order' | 'delivery' | 'changes' | 'unavailable') => {
+    if (list === 'order') setOrderProcessingRules((s) => s.filter((r) => r.id !== id));
+    if (list === 'delivery') setDeliveryRules((s) => s.filter((r) => r.id !== id));
+    if (list === 'changes') setChangesCancellationRules((s) => s.filter((r) => r.id !== id));
+    if (list === 'unavailable') setUnavailableRules((s) => s.filter((r) => r.id !== id));
+  };
+
+  // Privacy & Customer Data state and helpers
+  type PrivacyRuleItem = {
+    id: string;
+    name: string;
+    description: string;
+    enabled: boolean;
+    editing?: boolean;
+  };
+
+  const [mayCollectRules, setMayCollectRules] = useState<PrivacyRuleItem[]>([
+    { id: 'pc-1', name: 'Name', description: 'Customer full name for identification and orders.', enabled: true },
+    { id: 'pc-2', name: 'Phone number', description: 'Phone number for contact and delivery updates.', enabled: true },
+  ]);
+
+  const [doNotRequestRules, setDoNotRequestRules] = useState<PrivacyRuleItem[]>([
+    { id: 'dnr-1', name: 'Passwords', description: 'Do not request account passwords from customers.', enabled: true },
+    { id: 'dnr-2', name: 'Payment card security codes', description: 'Never ask for CVV or full card numbers in chat.', enabled: true },
+  ]);
+
+  const [dataSharingRules, setDataSharingRules] = useState<PrivacyRuleItem[]>([
+    { id: 'ds-1', name: 'Internal support', description: 'Share customer data with internal support for order resolution when necessary.', enabled: true },
+  ]);
+
+  const mayCollectExamples = ['Name', 'Phone number', 'Email', 'Location', 'Order details'];
+  const doNotRequestExamples = ['Passwords', 'Payment card security codes', 'Authentication codes', 'Other sensitive credentials'];
+
+  const togglePrivacyEnabled = (id: string, list: 'collect' | 'doNot' | 'share') => {
+    if (list === 'collect') setMayCollectRules((s) => s.map((r) => r.id === id ? { ...r, enabled: !r.enabled } : r));
+    if (list === 'doNot') setDoNotRequestRules((s) => s.map((r) => r.id === id ? { ...r, enabled: !r.enabled } : r));
+    if (list === 'share') setDataSharingRules((s) => s.map((r) => r.id === id ? { ...r, enabled: !r.enabled } : r));
+  };
+
+  const togglePrivacyEditing = (id: string, list: 'collect' | 'doNot' | 'share') => {
+    if (list === 'collect') setMayCollectRules((s) => s.map((r) => r.id === id ? { ...r, editing: !r.editing } : r));
+    if (list === 'doNot') setDoNotRequestRules((s) => s.map((r) => r.id === id ? { ...r, editing: !r.editing } : r));
+    if (list === 'share') setDataSharingRules((s) => s.map((r) => r.id === id ? { ...r, editing: !r.editing } : r));
+  };
+
+  const updatePrivacyField = (id: string, field: 'name' | 'description', value: string, list: 'collect' | 'doNot' | 'share') => {
+    if (list === 'collect') setMayCollectRules((s) => s.map((r) => r.id === id ? { ...r, [field]: value } : r));
+    if (list === 'doNot') setDoNotRequestRules((s) => s.map((r) => r.id === id ? { ...r, [field]: value } : r));
+    if (list === 'share') setDataSharingRules((s) => s.map((r) => r.id === id ? { ...r, [field]: value } : r));
+  };
+
+  const addPrivacyRule = (list: 'collect' | 'doNot' | 'share', name?: string) => {
+    const item = { id: `${list}-${Date.now()}`, name: name ?? 'New rule', description: name ? `${name} details` : 'Describe this rule.', enabled: false, editing: true } as PrivacyRuleItem;
+    if (list === 'collect') setMayCollectRules((s) => [...s, item]);
+    if (list === 'doNot') setDoNotRequestRules((s) => [...s, item]);
+    if (list === 'share') setDataSharingRules((s) => [...s, item]);
+  };
+
+  const deletePrivacyRule = (id: string, list: 'collect' | 'doNot' | 'share') => {
+    if (list === 'collect') setMayCollectRules((s) => s.filter((r) => r.id !== id));
+    if (list === 'doNot') setDoNotRequestRules((s) => s.filter((r) => r.id !== id));
+    if (list === 'share') setDataSharingRules((s) => s.filter((r) => r.id !== id));
+  };
+
+  // AI Boundaries state and helpers
+  type BoundaryRuleItem = {
+    id: string;
+    name: string;
+    description: string;
+    enabled: boolean;
+    editing?: boolean;
+  };
+
+  const [boundaryRules, setBoundaryRules] = useState<BoundaryRuleItem[]>([
+    { id: 'b-1', name: 'Never invent prices', description: 'The AI must not fabricate prices for products or services.', enabled: true },
+    { id: 'b-2', name: 'Do not claim availability incorrectly', description: 'Never claim an item or service is available when the catalogue does not show it as available.', enabled: true },
+    { id: 'b-3', name: 'Do not promise unconfirmed actions', description: 'Never promise an action has been completed unless the system confirms it.', enabled: true },
+    { id: 'b-4', name: 'Never invent business policies', description: 'Do not make up company policies; refer to configured policies.', enabled: true },
+    { id: 'b-5', name: 'Do not disclose internal information', description: 'Never disclose internal business information in customer conversations.', enabled: true },
+    { id: 'b-6', name: 'Respect authority limits', description: 'Never make promises outside its configured authority.', enabled: true },
+    { id: 'b-7', name: 'Do not provide unknown information', description: 'Never provide information it does not have.', enabled: true },
+    { id: 'b-8', name: 'Ask for human help when unsure', description: 'Ask for human help when it cannot confidently answer.', enabled: true },
+  ]);
+
+  const toggleBoundaryEnabled = (id: string) => setBoundaryRules((s) => s.map((r) => r.id === id ? { ...r, enabled: !r.enabled } : r));
+  const toggleBoundaryEditing = (id: string) => setBoundaryRules((s) => s.map((r) => r.id === id ? { ...r, editing: !r.editing } : r));
+  const updateBoundaryField = (id: string, field: 'name' | 'description', value: string) => setBoundaryRules((s) => s.map((r) => r.id === id ? { ...r, [field]: value } : r));
+  const addBoundaryRule = (name?: string) => setBoundaryRules((s) => [...s, { id: `b-${Date.now()}`, name: name ?? 'New boundary', description: name ? `${name} details` : 'Describe this boundary rule.', enabled: false, editing: true }]);
+  const deleteBoundaryRule = (id: string) => setBoundaryRules((s) => s.filter((r) => r.id !== id));
+
+  // Escalation Rules state and helpers
+  type EscalationRuleItem = {
+    id: string;
+    name: string;
+    description: string;
+    enabled: boolean;
+    editing?: boolean;
+  };
+
+  const [escalationRules, setEscalationRules] = useState<EscalationRuleItem[]>([
+    { id: 'e-1', name: 'Customer explicitly requests a human', description: 'Hand over when a customer asks to speak to a human.', enabled: true },
+    { id: 'e-2', name: 'Serious complaint', description: 'Escalate serious complaints immediately for human review.', enabled: true },
+    { id: 'e-3', name: 'Legal or regulatory concern', description: 'Escalate any legal or regulatory issues to legal/human team.', enabled: true },
+    { id: 'e-4', name: 'Privacy or data request', description: 'Escalate data access or deletion requests to the appropriate human.', enabled: true },
+    { id: 'e-5', name: 'Refund dispute', description: 'Escalate disputes over refunds to human agents.', enabled: true },
+    { id: 'e-6', name: 'Payment problem', description: 'Escalate payment failures or disputes.', enabled: true },
+    { id: 'e-7', name: 'Situation outside documented policies', description: 'Escalate when the request falls outside configured policies.', enabled: true },
+    { id: 'e-8', name: 'Request requiring human approval', description: 'Escalate requests that require manual approval.', enabled: true },
+    { id: 'e-9', name: 'AI is unable to answer confidently', description: 'Escalate when confidence is low or AI cannot answer.', enabled: true },
+  ]);
+
+  const toggleEscalationEnabled = (id: string) => setEscalationRules((s) => s.map((r) => r.id === id ? { ...r, enabled: !r.enabled } : r));
+  const toggleEscalationEditing = (id: string) => setEscalationRules((s) => s.map((r) => r.id === id ? { ...r, editing: !r.editing } : r));
+  const updateEscalationField = (id: string, field: 'name' | 'description', value: string) => setEscalationRules((s) => s.map((r) => r.id === id ? { ...r, [field]: value } : r));
+  const addEscalationRule = (name?: string) => setEscalationRules((s) => [...s, { id: `e-${Date.now()}`, name: name ?? 'New escalation', description: name ? `${name} details` : 'Describe this escalation trigger.', enabled: false, editing: true }]);
+  const deleteEscalationRule = (id: string) => setEscalationRules((s) => s.filter((r) => r.id !== id));
 
   const togglePolicy = (id: string) => setPolicySections((s) => s.map((p) => p.id === id ? { ...p, expanded: !p.expanded } : p));
 
@@ -6976,7 +7278,7 @@ export default function DashboardLayout() {
                       <div className="space-y-6">
                         <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-5">
                           <p className="text-sm font-semibold text-[#111827]">Policies</p>
-                          <p className="mt-3 text-sm text-[#6B7280]">Set what your AI Employee can and cannot do for your business.</p>
+                          <p className="mt-3 text-sm text-[#6B7280]">Teach your AI employee the rules, boundaries, and customer policies it must follow.</p>
                         </div>
 
                         <div className="space-y-2">
@@ -6990,11 +7292,614 @@ export default function DashboardLayout() {
                                 <div className="text-xs text-[#64748B]">{sec.expanded ? 'Collapse' : 'Expand'}</div>
                               </button>
                               {sec.expanded && (
-                                <div className="px-4 pb-4">
-                                  <textarea value={sec.content} onChange={(e) => updatePolicyContent(sec.id, e.target.value)} className="mt-2 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm min-h-[120px]" />
-                                  <div className="mt-2 flex justify-end gap-2">
-                                    <button onClick={() => togglePolicy(sec.id)} className="rounded-[8px] border border-[#E5E7EB] px-3 py-2 text-sm">Done</button>
-                                  </div>
+                                <div className="px-4 pb-4 space-y-4">
+                                  {sec.id === 'pol-1' ? (
+                                    <>
+                                      <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                        <p className="text-sm font-semibold text-[#111827]">Customer Policies</p>
+                                        <p className="mt-2 text-sm text-[#475569]">Define the policies your AI should explain when customers ask about returns, refunds, cancellations, warranties, or other customer-facing rules.</p>
+                                      </div>
+
+                                      <div className="space-y-4">
+                                        {customerPolicies.map((policy) => (
+                                          <div key={policy.id} className="rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFC] p-4">
+                                            <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                                              <div className="space-y-2">
+                                                <div className="flex flex-wrap items-center gap-2">
+                                                  <p className="text-sm font-semibold text-[#111827]">{policy.name}</p>
+                                                  <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${policy.enabled ? 'bg-[#DCFCE7] text-[#166534]' : 'bg-[#FEE2E2] text-[#B91C1C]'}`}>
+                                                    {policy.enabled ? 'Enabled' : 'Disabled'}
+                                                  </span>
+                                                </div>
+                                                <p className="text-sm text-[#475569]">{policy.description}</p>
+                                              </div>
+                                              <div className="flex items-center gap-2">
+                                                <button type="button" onClick={() => toggleCustomerPolicyEnabled(policy.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                  {policy.enabled ? 'Disable' : 'Mark not applicable'}
+                                                </button>
+                                                <button type="button" onClick={() => toggleCustomerPolicyEditing(policy.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                  {policy.editing ? 'Save' : 'Edit'}
+                                                </button>
+                                              </div>
+                                            </div>
+                                            {policy.editing && (
+                                              <div className="mt-3 space-y-3 rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                                <input value={policy.name} onChange={(e) => updateCustomerPolicyField(policy.id, 'name', e.target.value)} className="w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+                                                <textarea value={policy.description} onChange={(e) => updateCustomerPolicyField(policy.id, 'description', e.target.value)} className="w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm min-h-[96px]" />
+                                              </div>
+                                            )}
+                                          </div>
+                                        ))}
+                                      </div>
+
+                                      <div className="rounded-[16px] border border-dashed border-[#E5E7EB] bg-white p-4">
+                                        <p className="text-sm font-semibold text-[#111827]">Common optional policy types</p>
+                                        <div className="mt-3 flex flex-wrap gap-2">
+                                          {policyTypeOptions.map((type) => (
+                                            <button key={type} type="button" onClick={() => addCustomerPolicy(type)} className="rounded-full border border-[#E5E7EB] bg-white px-3 py-1.5 text-xs font-medium text-[#475569] hover:bg-[#F8FAFC]">
+                                              {type}
+                                            </button>
+                                          ))}
+                                        </div>
+                                      </div>
+
+                                      <div className="flex justify-end">
+                                        <button type="button" onClick={() => addCustomerPolicy()} className="rounded-[12px] bg-[#111827] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#1F2937]">
+                                          Add Policy
+                                        </button>
+                                      </div>
+                                    </>
+                                  ) : sec.id === 'pol-2' ? (
+                                    <>
+                                      <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                        <p className="text-sm font-semibold text-[#111827]">Pricing & Payment</p>
+                                        <p className="mt-2 text-sm text-[#475569]">Define the payment and pricing rules your AI should communicate accurately to customers.</p>
+                                      </div>
+
+                                      <div className="space-y-5">
+                                        <div className="rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFC] p-4">
+                                          <div className="flex items-center justify-between gap-4">
+                                            <div>
+                                              <p className="text-sm font-semibold text-[#111827]">Payment Methods</p>
+                                              <p className="mt-2 text-sm text-[#475569]">List the payment methods your AI can communicate to customers.</p>
+                                            </div>
+                                          </div>
+                                          <div className="mt-4 space-y-3">
+                                            {paymentMethods.map((method) => (
+                                              <div key={method.id} className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                                                  <div className="space-y-2">
+                                                    <div className="flex items-center gap-2">
+                                                      <p className="text-sm font-semibold text-[#111827]">{method.name}</p>
+                                                      <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${method.enabled ? 'bg-[#DCFCE7] text-[#166534]' : 'bg-[#FEE2E2] text-[#B91C1C]'}`}>
+                                                        {method.enabled ? 'Accepted' : 'Disabled'}
+                                                      </span>
+                                                    </div>
+                                                  </div>
+                                                  <div className="flex flex-wrap gap-2">
+                                                    <button type="button" onClick={() => togglePaymentMethodEnabled(method.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                      {method.enabled ? 'Disable' : 'Mark not accepted'}
+                                                    </button>
+                                                    <button type="button" onClick={() => togglePaymentMethodEditing(method.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                      {method.editing ? 'Save' : 'Edit'}
+                                                    </button>
+                                                    <button type="button" onClick={() => deletePaymentMethod(method.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                      Delete
+                                                    </button>
+                                                  </div>
+                                                </div>
+                                                {method.editing && (
+                                                  <div className="mt-3">
+                                                    <input value={method.name} onChange={(e) => updatePaymentMethodField(method.id, e.target.value)} className="w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+                                                  </div>
+                                                )}
+                                              </div>
+                                            ))}
+                                          </div>
+                                          <div className="mt-4 flex justify-end">
+                                            <button type="button" onClick={addPaymentMethod} className="rounded-[12px] bg-[#111827] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#1F2937]">
+                                              Add payment method
+                                            </button>
+                                          </div>
+                                        </div>
+
+                                        <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                          <p className="text-sm font-semibold text-[#111827]">Payment Timing</p>
+                                          <p className="mt-2 text-sm text-[#475569]">Select when payments are collected or whether a deposit is required.</p>
+                                          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                                            {paymentTiming.map((item) => (
+                                              <button key={item.id} type="button" onClick={() => togglePaymentTiming(item.id)} className={`rounded-2xl border px-4 py-3 text-left text-sm font-medium transition ${item.selected ? 'border-[#22C55E] bg-[#ECFDF5] text-[#166534]' : 'border-[#E5E7EB] bg-white text-[#475569]'}`}>
+                                                <div className="flex items-center justify-between gap-3">
+                                                  <span>{item.label}</span>
+                                                  <span className="text-xs font-semibold">{item.selected ? 'Selected' : 'Not selected'}</span>
+                                                </div>
+                                              </button>
+                                            ))}
+                                          </div>
+                                        </div>
+
+                                        <div className="rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFC] p-4">
+                                          <div className="flex items-center justify-between gap-4">
+                                            <div>
+                                              <p className="text-sm font-semibold text-[#111827]">Pricing Rules</p>
+                                              <p className="mt-2 text-sm text-[#475569]">Capture pricing guidance the AI should use when describing costs.</p>
+                                            </div>
+                                          </div>
+                                          <div className="mt-4 space-y-3">
+                                            {pricingRules.map((rule) => (
+                                              <div key={rule.id} className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                                                  <div className="space-y-2">
+                                                    <div className="flex items-center gap-2">
+                                                      <p className="text-sm font-semibold text-[#111827]">{rule.name}</p>
+                                                      <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${rule.enabled ? 'bg-[#DCFCE7] text-[#166534]' : 'bg-[#FEE2E2] text-[#B91C1C]'}`}>
+                                                        {rule.enabled ? 'Active' : 'Disabled'}
+                                                      </span>
+                                                    </div>
+                                                    <p className="text-sm text-[#475569]">{rule.description}</p>
+                                                  </div>
+                                                  <div className="flex flex-wrap gap-2">
+                                                    <button type="button" onClick={() => togglePricingRuleEnabled(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                      {rule.enabled ? 'Disable' : 'Enable'}
+                                                    </button>
+                                                    <button type="button" onClick={() => togglePricingRuleEditing(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                      {rule.editing ? 'Save' : 'Edit'}
+                                                    </button>
+                                                    <button type="button" onClick={() => deletePricingRule(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                      Delete
+                                                    </button>
+                                                  </div>
+                                                </div>
+                                                {rule.editing && (
+                                                  <div className="mt-3 space-y-3 rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFC] p-4">
+                                                    <input value={rule.name} onChange={(e) => updatePricingRuleField(rule.id, 'name', e.target.value)} className="w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+                                                    <textarea value={rule.description} onChange={(e) => updatePricingRuleField(rule.id, 'description', e.target.value)} className="w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm min-h-[96px]" />
+                                                  </div>
+                                                )}
+                                              </div>
+                                            ))}
+                                          </div>
+                                          <div className="mt-4 flex justify-end">
+                                            <button type="button" onClick={addPricingRule} className="rounded-[12px] bg-[#111827] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#1F2937]">
+                                              Add pricing rule
+                                            </button>
+                                          </div>
+                                        </div>
+
+                                        <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                          <p className="text-sm font-semibold text-[#111827]">Payment Notes</p>
+                                          <p className="mt-2 text-sm text-[#475569]">Optional instructions for customers about payment and pricing.</p>
+                                          <textarea value={paymentNotes} onChange={(e) => setPaymentNotes(e.target.value)} className="mt-3 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm min-h-[120px]" />
+                                        </div>
+                                      </div>
+                                    </>
+                                  ) : sec.id === 'pol-3' ? (
+                                    <>
+                                      <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                        <p className="text-sm font-semibold text-[#111827]">Orders & Fulfillment</p>
+                                        <p className="mt-2 text-sm text-[#475569]">Teach your AI what customers should expect after placing an order, booking a service, or requesting fulfillment.</p>
+                                      </div>
+
+                                      <div className="space-y-5">
+                                        <div className="rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFC] p-4">
+                                          <div className="flex items-center justify-between gap-4">
+                                            <div>
+                                              <p className="text-sm font-semibold text-[#111827]">Order Processing</p>
+                                              <p className="mt-2 text-sm text-[#475569]">Define processing times and what order confirmations include.</p>
+                                            </div>
+                                          </div>
+                                          <div className="mt-4 space-y-3">
+                                            {orderProcessingRules.map((rule) => (
+                                              <div key={rule.id} className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                                                  <div className="space-y-2">
+                                                    <div className="flex items-center gap-2">
+                                                      <p className="text-sm font-semibold text-[#111827]">{rule.name}</p>
+                                                      <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${rule.enabled ? 'bg-[#DCFCE7] text-[#166534]' : 'bg-[#FEE2E2] text-[#B91C1C]'}`}>
+                                                        {rule.enabled ? 'Active' : 'Disabled'}
+                                                      </span>
+                                                    </div>
+                                                    <p className="text-sm text-[#475569]">{rule.description}</p>
+                                                  </div>
+                                                  <div className="flex flex-wrap gap-2">
+                                                    <button type="button" onClick={() => toggleFulfillmentEnabled(rule.id, 'order')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                      {rule.enabled ? 'Disable' : 'Enable'}
+                                                    </button>
+                                                    <button type="button" onClick={() => toggleFulfillmentEditing(rule.id, 'order')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                      {rule.editing ? 'Save' : 'Edit'}
+                                                    </button>
+                                                    <button type="button" onClick={() => deleteFulfillmentRule(rule.id, 'order')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                      Delete
+                                                    </button>
+                                                  </div>
+                                                </div>
+                                                {rule.editing && (
+                                                  <div className="mt-3">
+                                                    <input value={rule.name} onChange={(e) => updateFulfillmentField(rule.id, 'name', e.target.value, 'order')} className="w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+                                                    <textarea value={rule.description} onChange={(e) => updateFulfillmentField(rule.id, 'description', e.target.value, 'order')} className="mt-2 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm min-h-[96px]" />
+                                                  </div>
+                                                )}
+                                              </div>
+                                            ))}
+                                          </div>
+                                          <div className="mt-4 flex justify-end">
+                                            <button type="button" onClick={() => addFulfillmentRule('order')} className="rounded-[12px] bg-[#111827] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#1F2937]">
+                                              Add order rule
+                                            </button>
+                                          </div>
+                                        </div>
+
+                                        <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                          <p className="text-sm font-semibold text-[#111827]">Delivery / Fulfillment</p>
+                                          <p className="mt-2 text-sm text-[#475569]">Configure delivery, pickup options, fulfillment locations, and typical timeframes.</p>
+                                          <div className="mt-4 space-y-3">
+                                            {deliveryRules.map((rule) => (
+                                              <div key={rule.id} className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                                                  <div className="space-y-2">
+                                                    <div className="flex items-center gap-2">
+                                                      <p className="text-sm font-semibold text-[#111827]">{rule.name}</p>
+                                                      <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${rule.enabled ? 'bg-[#DCFCE7] text-[#166534]' : 'bg-[#FEE2E2] text-[#B91C1C]'}`}>
+                                                        {rule.enabled ? 'Active' : 'Disabled'}
+                                                      </span>
+                                                    </div>
+                                                    <p className="text-sm text-[#475569]">{rule.description}</p>
+                                                  </div>
+                                                  <div className="flex flex-wrap gap-2">
+                                                    <button type="button" onClick={() => toggleFulfillmentEnabled(rule.id, 'delivery')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                      {rule.enabled ? 'Disable' : 'Enable'}
+                                                    </button>
+                                                    <button type="button" onClick={() => toggleFulfillmentEditing(rule.id, 'delivery')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                      {rule.editing ? 'Save' : 'Edit'}
+                                                    </button>
+                                                    <button type="button" onClick={() => deleteFulfillmentRule(rule.id, 'delivery')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                      Delete
+                                                    </button>
+                                                  </div>
+                                                </div>
+                                                {rule.editing && (
+                                                  <div className="mt-3">
+                                                    <input value={rule.name} onChange={(e) => updateFulfillmentField(rule.id, 'name', e.target.value, 'delivery')} className="w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+                                                    <textarea value={rule.description} onChange={(e) => updateFulfillmentField(rule.id, 'description', e.target.value, 'delivery')} className="mt-2 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm min-h-[96px]" />
+                                                  </div>
+                                                )}
+                                              </div>
+                                            ))}
+                                          </div>
+                                          <div className="mt-4 flex justify-end">
+                                            <button type="button" onClick={() => addFulfillmentRule('delivery')} className="rounded-[12px] bg-[#111827] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#1F2937]">
+                                              Add delivery rule
+                                            </button>
+                                          </div>
+                                        </div>
+
+                                        <div className="rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFC] p-4">
+                                          <p className="text-sm font-semibold text-[#111827]">Changes & Cancellation</p>
+                                          <p className="mt-2 text-sm text-[#475569]">Specify when customers can change or cancel orders.</p>
+                                          <div className="mt-4 space-y-3">
+                                            {changesCancellationRules.map((rule) => (
+                                              <div key={rule.id} className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                                                  <div className="space-y-2">
+                                                    <div className="flex items-center gap-2">
+                                                      <p className="text-sm font-semibold text-[#111827]">{rule.name}</p>
+                                                      <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${rule.enabled ? 'bg-[#DCFCE7] text-[#166534]' : 'bg-[#FEE2E2] text-[#B91C1C]'}`}>
+                                                        {rule.enabled ? 'Active' : 'Disabled'}
+                                                      </span>
+                                                    </div>
+                                                    <p className="text-sm text-[#475569]">{rule.description}</p>
+                                                  </div>
+                                                  <div className="flex flex-wrap gap-2">
+                                                    <button type="button" onClick={() => toggleFulfillmentEnabled(rule.id, 'changes')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                      {rule.enabled ? 'Disable' : 'Enable'}
+                                                    </button>
+                                                    <button type="button" onClick={() => toggleFulfillmentEditing(rule.id, 'changes')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                      {rule.editing ? 'Save' : 'Edit'}
+                                                    </button>
+                                                    <button type="button" onClick={() => deleteFulfillmentRule(rule.id, 'changes')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                      Delete
+                                                    </button>
+                                                  </div>
+                                                </div>
+                                                {rule.editing && (
+                                                  <div className="mt-3">
+                                                    <input value={rule.name} onChange={(e) => updateFulfillmentField(rule.id, 'name', e.target.value, 'changes')} className="w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+                                                    <textarea value={rule.description} onChange={(e) => updateFulfillmentField(rule.id, 'description', e.target.value, 'changes')} className="mt-2 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm min-h-[96px]" />
+                                                  </div>
+                                                )}
+                                              </div>
+                                            ))}
+                                          </div>
+                                          <div className="mt-4 flex justify-end">
+                                            <button type="button" onClick={() => addFulfillmentRule('changes')} className="rounded-[12px] bg-[#111827] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#1F2937]">
+                                              Add change/cancellation rule
+                                            </button>
+                                          </div>
+                                        </div>
+
+                                        <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                          <p className="text-sm font-semibold text-[#111827]">Unavailable Items / Services</p>
+                                          <p className="mt-2 text-sm text-[#475569]">Define what should happen when an item or service is unavailable.</p>
+                                          <div className="mt-4 space-y-3">
+                                            {unavailableRules.map((rule) => (
+                                              <div key={rule.id} className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                                                  <div className="space-y-2">
+                                                    <div className="flex items-center gap-2">
+                                                      <p className="text-sm font-semibold text-[#111827]">{rule.name}</p>
+                                                      <span className={`rounded-full px-2 py-0.5 text-[11px] font-semibold ${rule.enabled ? 'bg-[#DCFCE7] text-[#166534]' : 'bg-[#FEE2E2] text-[#B91C1C]'}`}>
+                                                        {rule.enabled ? 'Active' : 'Disabled'}
+                                                      </span>
+                                                    </div>
+                                                    <p className="text-sm text-[#475569]">{rule.description}</p>
+                                                  </div>
+                                                  <div className="flex flex-wrap gap-2">
+                                                    <button type="button" onClick={() => toggleFulfillmentEnabled(rule.id, 'unavailable')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                      {rule.enabled ? 'Disable' : 'Enable'}
+                                                    </button>
+                                                    <button type="button" onClick={() => toggleFulfillmentEditing(rule.id, 'unavailable')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                      {rule.editing ? 'Save' : 'Edit'}
+                                                    </button>
+                                                    <button type="button" onClick={() => deleteFulfillmentRule(rule.id, 'unavailable')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                      Delete
+                                                    </button>
+                                                  </div>
+                                                </div>
+                                                {rule.editing && (
+                                                  <div className="mt-3">
+                                                    <input value={rule.name} onChange={(e) => updateFulfillmentField(rule.id, 'name', e.target.value, 'unavailable')} className="w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+                                                    <textarea value={rule.description} onChange={(e) => updateFulfillmentField(rule.id, 'description', e.target.value, 'unavailable')} className="mt-2 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm min-h-[96px]" />
+                                                  </div>
+                                                )}
+                                              </div>
+                                            ))}
+                                          </div>
+                                          <div className="mt-4 flex justify-end">
+                                            <button type="button" onClick={() => addFulfillmentRule('unavailable')} className="rounded-[12px] bg-[#111827] px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-[#1F2937]">
+                                              Add unavailable-item rule
+                                            </button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </>
+                                  ) : sec.id === 'pol-4' ? (
+                                    <>
+                                      <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                        <p className="text-sm font-semibold text-[#111827]">Privacy & Customer Data</p>
+                                        <p className="mt-2 text-sm text-[#475569]">Define what customer information your AI may collect, use, and share during conversations.</p>
+                                      </div>
+
+                                      <div className="space-y-5">
+                                        <div className="rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFC] p-4">
+                                          <p className="text-sm font-semibold text-[#111827]">Information the AI may collect</p>
+                                          <p className="mt-2 text-sm text-[#475569]">Allow the business to list accepted information the AI may request or use.</p>
+                                          <div className="mt-3 space-y-3">
+                                            {mayCollectRules.map((rule) => (
+                                              <div key={rule.id} className="rounded-[12px] border border-[#E5E7EB] bg-white p-3">
+                                                <div className="flex items-start justify-between gap-3">
+                                                  <div>
+                                                    <p className="text-sm font-semibold">{rule.name}</p>
+                                                    <p className="text-sm text-[#475569]">{rule.description}</p>
+                                                  </div>
+                                                  <div className="flex flex-wrap gap-2">
+                                                    <button type="button" onClick={() => togglePrivacyEnabled(rule.id, 'collect')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">{rule.enabled ? 'Disable' : 'Enable'}</button>
+                                                    <button type="button" onClick={() => togglePrivacyEditing(rule.id, 'collect')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">{rule.editing ? 'Save' : 'Edit'}</button>
+                                                    <button type="button" onClick={() => deletePrivacyRule(rule.id, 'collect')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">Delete</button>
+                                                  </div>
+                                                </div>
+                                                {rule.editing && (
+                                                  <div className="mt-3">
+                                                    <input value={rule.name} onChange={(e) => updatePrivacyField(rule.id, 'name', e.target.value, 'collect')} className="w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+                                                    <textarea value={rule.description} onChange={(e) => updatePrivacyField(rule.id, 'description', e.target.value, 'collect')} className="mt-2 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm min-h-[80px]" />
+                                                  </div>
+                                                )}
+                                              </div>
+                                            ))}
+                                          </div>
+                                          <div className="mt-3 flex flex-wrap gap-2">
+                                            {mayCollectExamples.map((ex) => (
+                                              <button key={ex} type="button" onClick={() => addPrivacyRule('collect', ex)} className="rounded-full border border-[#E5E7EB] bg-white px-3 py-1.5 text-xs font-medium text-[#475569] hover:bg-[#F8FAFC]">{ex}</button>
+                                            ))}
+                                          </div>
+                                          <div className="mt-4 flex justify-end">
+                                            <button type="button" onClick={() => addPrivacyRule('collect')} className="rounded-[12px] bg-[#111827] px-4 py-2 text-sm font-semibold text-white">Add rule</button>
+                                          </div>
+                                        </div>
+
+                                        <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                          <p className="text-sm font-semibold text-[#111827]">Information the AI should not request</p>
+                                          <p className="mt-2 text-sm text-[#475569]">List information your AI must never ask customers to provide during conversations.</p>
+                                          <div className="mt-3 space-y-3">
+                                            {doNotRequestRules.map((rule) => (
+                                              <div key={rule.id} className="rounded-[12px] border border-[#E5E7EB] bg-white p-3">
+                                                <div className="flex items-start justify-between gap-3">
+                                                  <div>
+                                                    <p className="text-sm font-semibold">{rule.name}</p>
+                                                    <p className="text-sm text-[#475569]">{rule.description}</p>
+                                                  </div>
+                                                  <div className="flex flex-wrap gap-2">
+                                                    <button type="button" onClick={() => togglePrivacyEnabled(rule.id, 'doNot')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">{rule.enabled ? 'Disable' : 'Enable'}</button>
+                                                    <button type="button" onClick={() => togglePrivacyEditing(rule.id, 'doNot')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">{rule.editing ? 'Save' : 'Edit'}</button>
+                                                    <button type="button" onClick={() => deletePrivacyRule(rule.id, 'doNot')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">Delete</button>
+                                                  </div>
+                                                </div>
+                                                {rule.editing && (
+                                                  <div className="mt-3">
+                                                    <input value={rule.name} onChange={(e) => updatePrivacyField(rule.id, 'name', e.target.value, 'doNot')} className="w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+                                                    <textarea value={rule.description} onChange={(e) => updatePrivacyField(rule.id, 'description', e.target.value, 'doNot')} className="mt-2 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm min-h-[80px]" />
+                                                  </div>
+                                                )}
+                                              </div>
+                                            ))}
+                                          </div>
+                                          <div className="mt-3 flex flex-wrap gap-2">
+                                            {doNotRequestExamples.map((ex) => (
+                                              <button key={ex} type="button" onClick={() => addPrivacyRule('doNot', ex)} className="rounded-full border border-[#E5E7EB] bg-white px-3 py-1.5 text-xs font-medium text-[#475569] hover:bg-[#F8FAFC]">{ex}</button>
+                                            ))}
+                                          </div>
+                                          <p className="mt-2 text-xs text-[#6B7280]">These are examples and not legal advice.</p>
+                                          <div className="mt-4 flex justify-end">
+                                            <button type="button" onClick={() => addPrivacyRule('doNot')} className="rounded-[12px] bg-[#111827] px-4 py-2 text-sm font-semibold text-white">Add rule</button>
+                                          </div>
+                                        </div>
+
+                                        <div className="rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFC] p-4">
+                                          <p className="text-sm font-semibold text-[#111827]">Data-sharing instructions</p>
+                                          <p className="mt-2 text-sm text-[#475569]">Specify when and with whom customer data may be shared.</p>
+                                          <div className="mt-3 space-y-3">
+                                            {dataSharingRules.map((rule) => (
+                                              <div key={rule.id} className="rounded-[12px] border border-[#E5E7EB] bg-white p-3">
+                                                <div className="flex items-start justify-between gap-3">
+                                                  <div>
+                                                    <p className="text-sm font-semibold">{rule.name}</p>
+                                                    <p className="text-sm text-[#475569]">{rule.description}</p>
+                                                  </div>
+                                                  <div className="flex flex-wrap gap-2">
+                                                    <button type="button" onClick={() => togglePrivacyEnabled(rule.id, 'share')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">{rule.enabled ? 'Disable' : 'Enable'}</button>
+                                                    <button type="button" onClick={() => togglePrivacyEditing(rule.id, 'share')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">{rule.editing ? 'Save' : 'Edit'}</button>
+                                                    <button type="button" onClick={() => deletePrivacyRule(rule.id, 'share')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">Delete</button>
+                                                  </div>
+                                                </div>
+                                                {rule.editing && (
+                                                  <div className="mt-3">
+                                                    <input value={rule.name} onChange={(e) => updatePrivacyField(rule.id, 'name', e.target.value, 'share')} className="w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+                                                    <textarea value={rule.description} onChange={(e) => updatePrivacyField(rule.id, 'description', e.target.value, 'share')} className="mt-2 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm min-h-[80px]" />
+                                                  </div>
+                                                )}
+                                              </div>
+                                            ))}
+                                          </div>
+                                          <div className="mt-4 flex justify-end">
+                                            <button type="button" onClick={() => addPrivacyRule('share')} className="rounded-[12px] bg-[#111827] px-4 py-2 text-sm font-semibold text-white">Add sharing rule</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </>
+                                  ) : sec.id === 'pol-5' ? (
+                                    <>
+                                      <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                        <p className="text-sm font-semibold text-[#111827]">AI Boundaries</p>
+                                        <p className="mt-2 text-sm text-[#475569]">Define what your AI employee must never do or claim during a customer conversation.</p>
+                                      </div>
+
+                                      <div className="space-y-4">
+                                        <div className="rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFC] p-4">
+                                          <p className="text-sm font-semibold text-[#111827]">Boundary Rules</p>
+                                          <p className="mt-2 text-sm text-[#475569]">Configure rules your AI must follow. These are instructions for behavior—not enforcement logic.</p>
+                                          <div className="mt-4 space-y-3">
+                                            {boundaryRules.map((rule) => (
+                                              <div key={rule.id} className="rounded-[12px] border border-[#E5E7EB] bg-white p-3">
+                                                <div className="flex items-start justify-between gap-3">
+                                                  <div>
+                                                    <p className="text-sm font-semibold">{rule.name}</p>
+                                                    <p className="text-sm text-[#475569]">{rule.description}</p>
+                                                  </div>
+                                                  <div className="flex flex-wrap gap-2">
+                                                    <button type="button" onClick={() => toggleBoundaryEnabled(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">{rule.enabled ? 'Disable' : 'Enable'}</button>
+                                                    <button type="button" onClick={() => toggleBoundaryEditing(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">{rule.editing ? 'Save' : 'Edit'}</button>
+                                                    <button type="button" onClick={() => deleteBoundaryRule(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">Delete</button>
+                                                  </div>
+                                                </div>
+                                                {rule.editing && (
+                                                  <div className="mt-3">
+                                                    <input value={rule.name} onChange={(e) => updateBoundaryField(rule.id, 'name', e.target.value)} className="w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+                                                    <textarea value={rule.description} onChange={(e) => updateBoundaryField(rule.id, 'description', e.target.value)} className="mt-2 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm min-h-[80px]" />
+                                                  </div>
+                                                )}
+                                              </div>
+                                            ))}
+                                          </div>
+                                          <div className="mt-4 flex justify-end">
+                                            <button type="button" onClick={() => addBoundaryRule()} className="rounded-[12px] bg-[#111827] px-4 py-2 text-sm font-semibold text-white">Add Boundary</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </>
+                                  ) : sec.id === 'pol-6' ? (
+                                    <>
+                                      <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                        <p className="text-sm font-semibold text-[#111827]">Escalation Rules</p>
+                                        <p className="mt-2 text-sm text-[#475569]">Tell your AI when a conversation should be handed to a human.</p>
+                                      </div>
+
+                                      <div className="space-y-4">
+                                        <div className="rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFC] p-4">
+                                          <p className="text-sm font-semibold text-[#111827]">Escalation triggers</p>
+                                          <p className="mt-2 text-sm text-[#475569]">Configure triggers that indicate a conversation should be escalated to a human.</p>
+                                          <div className="mt-4 space-y-3">
+                                            {escalationRules.map((rule) => (
+                                              <div key={rule.id} className="rounded-[12px] border border-[#E5E7EB] bg-white p-3">
+                                                <div className="flex items-start justify-between gap-3">
+                                                  <div>
+                                                    <p className="text-sm font-semibold">{rule.name}</p>
+                                                    <p className="text-sm text-[#475569]">{rule.description}</p>
+                                                  </div>
+                                                  <div className="flex flex-wrap gap-2">
+                                                    <button type="button" onClick={() => toggleEscalationEnabled(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">{rule.enabled ? 'Disable' : 'Enable'}</button>
+                                                    <button type="button" onClick={() => toggleEscalationEditing(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">{rule.editing ? 'Save' : 'Edit'}</button>
+                                                    <button type="button" onClick={() => deleteEscalationRule(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">Delete</button>
+                                                  </div>
+                                                </div>
+                                                {rule.editing && (
+                                                  <div className="mt-3">
+                                                    <input value={rule.name} onChange={(e) => updateEscalationField(rule.id, 'name', e.target.value)} className="w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm" />
+                                                    <textarea value={rule.description} onChange={(e) => updateEscalationField(rule.id, 'description', e.target.value)} className="mt-2 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm min-h-[80px]" />
+                                                  </div>
+                                                )}
+                                              </div>
+                                            ))}
+                                          </div>
+                                          <div className="mt-4 flex justify-end">
+                                            <button type="button" onClick={() => addEscalationRule()} className="rounded-[12px] bg-[#111827] px-4 py-2 text-sm font-semibold text-white">Add Escalation Rule</button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </>
+                                  ) : sec.id === 'pol-7' ? (
+                                    <>
+                                      <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
+                                        <p className="text-sm font-semibold text-[#111827]">Review</p>
+                                        <p className="mt-2 text-sm text-[#475569]">Review the rules your AI employee will follow before continuing.</p>
+                                      </div>
+
+                                      <div className="space-y-4">
+                                        <div className="rounded-[12px] border border-[#E5E7EB] bg-white p-4">
+                                          <div className="grid gap-3">
+                                            {[
+                                              { key: 'Customer Policies', configured: customerPolicies.length > 0 },
+                                              { key: 'Pricing & Payment', configured: paymentMethods.length > 0 || pricingRules.length > 0 || paymentTiming.some((t) => t.selected) || (paymentNotes || '').trim() !== '' },
+                                              { key: 'Orders & Fulfillment', configured: orderProcessingRules.length + deliveryRules.length + changesCancellationRules.length + unavailableRules.length > 0 },
+                                              { key: 'Privacy & Customer Data', configured: mayCollectRules.length + doNotRequestRules.length + dataSharingRules.length > 0 },
+                                              { key: 'AI Boundaries', configured: boundaryRules.length > 0 },
+                                              { key: 'Escalation Rules', configured: escalationRules.length > 0 },
+                                            ].map((item) => (
+                                              <div key={item.key} className="flex items-center justify-between">
+                                                <div>
+                                                  <p className="text-sm font-semibold text-[#111827]">{item.key}</p>
+                                                </div>
+                                                <div>
+                                                  <span className={`inline-flex h-7 items-center gap-2 rounded-full px-3 text-[12px] font-medium ${item.configured ? 'bg-[#DCFCE7] text-[#166534]' : 'bg-[#F3F4F6] text-[#64748B]'}`}>
+                                                    {item.configured ? 'Configured' : 'Not configured'}
+                                                  </span>
+                                                </div>
+                                              </div>
+                                            ))}
+                                          </div>
+                                        </div>
+
+                                        <div className="flex justify-end">
+                                          <button type="button" onClick={() => { handleSaveChanges(); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                                        </div>
+                                      </div>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <textarea value={sec.content} onChange={(e) => updatePolicyContent(sec.id, e.target.value)} className="mt-2 w-full rounded-md border border-[#E5E7EB] px-3 py-2 text-sm min-h-[120px]" />
+                                      <div className="mt-2 flex justify-end gap-2">
+                                        <button onClick={() => togglePolicy(sec.id)} className="rounded-[8px] border border-[#E5E7EB] px-3 py-2 text-sm">Done</button>
+                                      </div>
+                                    </>
+                                  )}
                                 </div>
                               )}
                             </div>
