@@ -2494,31 +2494,6 @@ export default function DashboardLayout() {
     }));
   };
 
-  type Skill = {
-    id: string;
-    name: string;
-    icon?: string;
-    description: string;
-    enabled: boolean;
-    status: 'Active' | 'Idle' | 'Disabled';
-  };
-
-  const [skills, setSkills] = useState<Skill[]>([
-    { id: 's-1', name: 'Answer Questions', icon: '💬', description: 'Respond to customer queries with helpful answers.', enabled: true, status: 'Active' },
-    { id: 's-2', name: 'Recommend Products', icon: '🛍️', description: 'Suggest products based on customer needs.', enabled: true, status: 'Active' },
-    { id: 's-3', name: 'Upsell Customers', icon: '⬆️', description: 'Recommend higher tier or add-ons.', enabled: false, status: 'Disabled' },
-    { id: 's-4', name: 'Cross-sell', icon: '🔗', description: 'Suggest complementary products.', enabled: false, status: 'Disabled' },
-    { id: 's-5', name: 'Generate Quotes', icon: '🧾', description: 'Create quotations based on selected items.', enabled: true, status: 'Active' },
-    { id: 's-6', name: 'Book Appointments', icon: '📅', description: 'Schedule appointments with customers.', enabled: false, status: 'Disabled' },
-    { id: 's-7', name: 'Collect Leads', icon: '📇', description: 'Capture lead details for follow-up.', enabled: true, status: 'Active' },
-    { id: 's-8', name: 'Generate Invoices', icon: '💳', description: 'Produce invoices for completed sales.', enabled: false, status: 'Disabled' },
-    { id: 's-9', name: 'Follow-up Customers', icon: '🔔', description: 'Send follow-ups or reminders.', enabled: false, status: 'Idle' },
-    { id: 's-10', name: 'Translate Messages', icon: '🌐', description: 'Translate customer messages to preferred language.', enabled: true, status: 'Active' },
-  ]);
-
-  const toggleSkill = (id: string) => {
-    setSkills((s) => s.map((k) => k.id === id ? { ...k, enabled: !k.enabled, status: k.enabled ? 'Disabled' : 'Active' } : k));
-  };
 
   type PolicySection = {
     id: string;
@@ -3825,7 +3800,7 @@ export default function DashboardLayout() {
     Catalogue: Math.min(100, Math.round((knowledgeProducts.length > 0 ? 45 : 0) + (CATALOG_ITEMS.length > 0 ? 35 : 0) + (knowledgeProducts.length > 2 ? 20 : 0))),
     "Sales Playbooks": Math.min(100, upsellProducts || recommendAlternatives ? 100 : 0),
     Policies: Math.min(100, Math.round((Object.values(policies).filter(Boolean).length / 3) * 100)),
-    Skills: Math.min(100, Math.round((skills.filter((skill) => skill.enabled).length / Math.max(1, skills.length)) * 100)),
+    Skills: 0,
     Integrations: Math.min(100, Math.round((Object.values(communicationChannels).filter(Boolean).length / Math.max(1, Object.keys(communicationChannels).length)) * 100)),
     Performance: aiEmployeeLaunched ? 100 : Math.min(100, 20 + (trainingCompletedSteps.length > 0 ? 10 : 0)),
   };
@@ -7884,43 +7859,6 @@ export default function DashboardLayout() {
                     {activeWorkspaceSection === "Skills" && (
                       <div className="space-y-6">
                         <SkillsLessonTabs />
-
-                        <div className="flex flex-col gap-4 rounded-[24px] border border-[#E5E7EB] bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
-                          <div>
-                            <p className="text-sm font-semibold text-[#111827]">Skills</p>
-                            <p className="mt-2 text-sm text-[#6B7280]">Choose what your AI employee can do for your customers and your business.</p>
-                          </div>
-                          <div className="flex gap-2">
-                            <button onClick={() => setSkills(skills.map(s => ({ ...s, enabled: true, status: 'Active' })))} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Enable All</button>
-                            <button onClick={() => setSkills(skills.map(s => ({ ...s, enabled: false, status: 'Disabled' })))} className="rounded-[10px] border border-[#E5E7EB] px-3 py-2 text-sm font-semibold">Disable All</button>
-                          </div>
-                        </div>
-
-                        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-                          {skills.map((sk) => (
-                            <div key={sk.id} className="flex items-start gap-4 rounded-[20px] border border-[#E5E7EB] bg-white p-5">
-                              <div className="h-12 w-12 rounded-md bg-[#F8FAFB] flex items-center justify-center text-2xl">{sk.icon}</div>
-                              <div className="flex-1">
-                                <div className="flex items-start justify-between gap-3">
-                                  <div>
-                                    <p className="text-sm font-semibold">{sk.name}</p>
-                                    <p className="mt-1 text-xs text-[#64748B]">{sk.description}</p>
-                                  </div>
-                                  <div className="text-right">
-                                    <div className="inline-flex items-center gap-2">
-                                      <p className={`text-xs font-medium ${sk.status === 'Active' ? 'text-[#16A34A]' : sk.status === 'Idle' ? 'text-[#F59E0B]' : 'text-[#B91C1C]'}`}>{sk.status}</p>
-                                      <label className="relative inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" checked={sk.enabled} onChange={() => toggleSkill(sk.id)} className="sr-only peer" />
-                                        <div className="w-11 h-6 bg-[#E5E7EB] peer-checked:bg-[#22C55E] rounded-full peer-focus:ring-2 peer-focus:ring-[#22C55E] transition-colors" />
-                                        <div className="absolute left-0.5 top-0.5 bg-white w-5 h-5 rounded-full peer-checked:translate-x-5 transform transition-transform" />
-                                      </label>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
                       </div>
                     )}
 
