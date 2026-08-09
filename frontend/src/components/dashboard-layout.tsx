@@ -4027,7 +4027,93 @@ export default function DashboardLayout() {
   ];
 
   const SkillsLessonTabs = () => {
+    type SkillCapability = {
+      id: string;
+      name: string;
+      description: string;
+      enabled: boolean;
+      requires?: string[];
+    };
+
     const [activeSkillsStep, setActiveSkillsStep] = useState(0);
+    const [communicationCapabilities, setCommunicationCapabilities] = useState<SkillCapability[]>([
+      {
+        id: 'comm-1',
+        name: 'Answer customer questions',
+        description: 'Enable the AI to respond to customer inquiries using your configured identity, knowledge, and catalogue settings.',
+        enabled: true,
+      },
+      {
+        id: 'comm-2',
+        name: 'Explain products and services',
+        description: 'Allow the AI to describe available products and services using your existing catalogue information.',
+        enabled: true,
+      },
+      {
+        id: 'comm-3',
+        name: 'Provide business information',
+        description: 'Permit the AI to share business details from your configured identity profile without creating new business information fields.',
+        enabled: false,
+      },
+      {
+        id: 'comm-4',
+        name: 'Handle common customer requests',
+        description: 'Let the AI manage frequent requests based on policies, FAQs, and configured customer workflows.',
+        enabled: false,
+      },
+      {
+        id: 'comm-5',
+        name: 'Communicate in configured languages',
+        description: 'Allow the AI to speak with customers in languages already set up in your identity settings.',
+        enabled: true,
+      },
+    ]);
+
+    const [leadsSalesCapabilities, setLeadsSalesCapabilities] = useState<SkillCapability[]>([
+      {
+        id: 'sales-1',
+        name: 'Capture leads',
+        description: 'Enable the AI to collect lead contact information and interest through customer interactions.',
+        enabled: true,
+      },
+      {
+        id: 'sales-2',
+        name: 'Qualify leads',
+        description: 'Allow the AI to assess lead readiness using configured identity and customer context, without adding qualification flows.',
+        enabled: true,
+      },
+      {
+        id: 'sales-3',
+        name: 'Recommend products or services',
+        description: 'Permit the AI to suggest relevant products or services based on catalogue data and customer needs.',
+        enabled: false,
+      },
+      {
+        id: 'sales-4',
+        name: 'Upsell',
+        description: 'Allow the AI to offer higher-value items or upgrades using existing catalogue and business information.',
+        enabled: false,
+      },
+      {
+        id: 'sales-5',
+        name: 'Cross-sell',
+        description: 'Enable the AI to suggest complementary products and services from your catalogue.',
+        enabled: false,
+      },
+      {
+        id: 'sales-6',
+        name: 'Collect customer requirements',
+        description: 'Allow the AI to gather customer needs and preferences without adding new CRM fields.',
+        enabled: true,
+      },
+      {
+        id: 'sales-7',
+        name: 'Request human follow-up',
+        description: 'Allow the AI to flag conversations that should be continued by a person when needed.',
+        enabled: false,
+      },
+    ]);
+
     const skillsLessons = [
       'Communication',
       'Leads & Sales',
@@ -4038,6 +4124,240 @@ export default function DashboardLayout() {
       'Review',
     ];
 
+    const toggleCommunicationCapability = (id: string) => {
+      setCommunicationCapabilities((items) =>
+        items.map((item) =>
+          item.id === id ? { ...item, enabled: !item.enabled } : item,
+        ),
+      );
+    };
+
+    const toggleLeadsSalesCapability = (id: string) => {
+      setLeadsSalesCapabilities((items) =>
+        items.map((item) =>
+          item.id === id ? { ...item, enabled: !item.enabled } : item,
+        ),
+      );
+    };
+
+    const [bookingCapabilities, setBookingCapabilities] = useState<SkillCapability[]>([
+      {
+        id: 'book-1',
+        name: 'Book appointments',
+        description: 'Enable the AI to create appointments using your connected calendar integration.',
+        requires: ['google_calendar', 'outlook'],
+        enabled: false,
+      },
+      {
+        id: 'book-2',
+        name: 'Check availability',
+        description: 'Allow the AI to verify availability before booking without adding new scheduling fields.',
+        requires: ['google_calendar', 'outlook'],
+        enabled: false,
+      },
+      {
+        id: 'book-3',
+        name: 'Reschedule appointments',
+        description: 'Permit the AI to move appointments when a connected calendar integration is available.',
+        requires: ['google_calendar', 'outlook'],
+        enabled: false,
+      },
+      {
+        id: 'book-4',
+        name: 'Cancel appointments',
+        description: 'Allow the AI to cancel bookings when appointment integration is configured.',
+        requires: ['google_calendar', 'outlook'],
+        enabled: false,
+      },
+      {
+        id: 'book-5',
+        name: 'Send booking confirmations',
+        description: 'Let the AI send confirmations through your connected communication or calendar integrations.',
+        requires: ['google_calendar', 'outlook'],
+        enabled: false,
+      },
+    ]);
+
+    const integrationAvailable = (requires?: string[]) =>
+      !!requires && requires.some((id) => (integrationStates[id] || { status: 'Not Connected' }).status === 'Connected');
+
+    const getBookingStatus = (requires: string[] | undefined, enabled: boolean) => {
+      if (!requires || !integrationAvailable(requires)) return 'Requires integration';
+      return enabled ? 'Enabled' : 'Available';
+    };
+
+    const toggleBookingCapability = (id: string) => {
+      setBookingCapabilities((items) =>
+        items.map((item) =>
+          item.id === id ? { ...item, enabled: !item.enabled } : item,
+        ),
+      );
+    };
+
+    const [ordersPaymentsCapabilities, setOrdersPaymentsCapabilities] = useState<SkillCapability[]>([
+      {
+        id: 'order-1',
+        name: 'Create orders',
+        description: 'Enable the AI to initiate orders using your connected order or commerce integration.',
+        requires: ['shopify', 'woocommerce', 'custom_api'],
+        enabled: false,
+      },
+      {
+        id: 'order-2',
+        name: 'Check order status',
+        description: 'Allow the AI to look up order status using existing order integrations.',
+        requires: ['shopify', 'woocommerce', 'custom_api'],
+        enabled: false,
+      },
+      {
+        id: 'order-3',
+        name: 'Generate quotations',
+        description: 'Permit the AI to prepare order quotes using your current catalogue and commerce integrations.',
+        requires: ['whatsapp', 'shopify', 'custom_api', 'woocommerce'].filter(Boolean),
+        enabled: false,
+      },
+      {
+        id: 'order-4',
+        name: 'Send payment instructions',
+        description: 'Allow the AI to provide payment directions when payment integrations are available.',
+        requires: ['mpesa', 'stripe', 'paypal', 'flutterwave'].filter(Boolean),
+        enabled: false,
+      },
+      {
+        id: 'order-5',
+        name: 'Confirm payment',
+        description: 'Enable the AI to mark payments as confirmed when a connected payment integration exists.',
+        requires: ['mpesa', 'stripe', 'paypal', 'flutterwave'].filter(Boolean),
+        enabled: false,
+      },
+      {
+        id: 'order-6',
+        name: 'Update order information',
+        description: 'Allow the AI to update order details using your connected commerce integrations.',
+        requires: ['shopify', 'woocommerce', 'custom_api'],
+        enabled: false,
+      },
+      {
+        id: 'order-7',
+        name: 'Cancel orders',
+        description: 'Permit the AI to cancel orders when order management integrations are configured.',
+        requires: ['shopify', 'woocommerce', 'custom_api'],
+        enabled: false,
+      },
+    ]);
+
+    const [customerSupportCapabilities, setCustomerSupportCapabilities] = useState<SkillCapability[]>([
+      {
+        id: 'support-1',
+        name: 'Answer support questions',
+        description: 'Enable the AI to respond to support inquiries using existing Knowledge and Policies content.',
+        enabled: true,
+      },
+      {
+        id: 'support-2',
+        name: 'Troubleshoot common issues',
+        description: 'Allow the AI to offer troubleshooting steps for known problems based on configured knowledge.',
+        enabled: false,
+      },
+      {
+        id: 'support-3',
+        name: 'Explain documented solutions',
+        description: 'Permit the AI to explain support solutions that already exist in your Knowledge workspace.',
+        enabled: true,
+      },
+      {
+        id: 'support-4',
+        name: 'Create support requests',
+        description: 'Allow the AI to record customer issues and create support requests without adding a new support system.',
+        enabled: false,
+      },
+      {
+        id: 'support-5',
+        name: 'Collect information for support',
+        description: 'Enable the AI to gather customer details needed by support agents while relying on existing Policies and Knowledge.',
+        enabled: true,
+      },
+      {
+        id: 'support-6',
+        name: 'Escalate to a human',
+        description: 'Allow the AI to escalate issues to a human when a request exceeds its configured support capabilities.',
+        enabled: true,
+      },
+    ]);
+
+    const [followUpCapabilities, setFollowUpCapabilities] = useState<SkillCapability[]>([
+      {
+        id: 'follow-1',
+        name: 'Follow up with leads',
+        description: 'Enable the AI to follow up on leads through connected messaging channels.',
+        requires: ['whatsapp', 'facebook', 'instagram'],
+        enabled: false,
+      },
+      {
+        id: 'follow-2',
+        name: 'Send appointment reminders',
+        description: 'Allow the AI to send reminders using available messaging integrations.',
+        requires: ['whatsapp', 'facebook', 'instagram'],
+        enabled: false,
+      },
+      {
+        id: 'follow-3',
+        name: 'Send order updates',
+        description: 'Permit the AI to notify customers about order changes through connected channels.',
+        requires: ['whatsapp', 'facebook', 'instagram'],
+        enabled: false,
+      },
+      {
+        id: 'follow-4',
+        name: 'Re-engage inactive conversations',
+        description: 'Allow the AI to re-open inactive customer conversations when messaging integration is available.',
+        requires: ['whatsapp', 'facebook', 'instagram'],
+        enabled: false,
+      },
+      {
+        id: 'follow-5',
+        name: 'Request additional information',
+        description: 'Enable the AI to ask customers for more details after an interaction.',
+        requires: ['whatsapp', 'facebook', 'instagram'],
+        enabled: true,
+      },
+      {
+        id: 'follow-6',
+        name: 'Notify a human when follow-up is required',
+        description: 'Allow the AI to alert a human team member when it cannot complete follow-up on its own.',
+        enabled: true,
+      },
+    ]);
+
+    const getOrderPaymentStatus = (requires: string[] | undefined, enabled: boolean) => {
+      if (!requires || !integrationAvailable(requires)) return 'Requires integration';
+      return enabled ? 'Enabled' : 'Available';
+    };
+
+    const toggleOrderPaymentCapability = (id: string) => {
+      setOrdersPaymentsCapabilities((items) =>
+        items.map((item) =>
+          item.id === id ? { ...item, enabled: !item.enabled } : item,
+        ),
+      );
+    };
+
+    const toggleCustomerSupportCapability = (id: string) => {
+      setCustomerSupportCapabilities((items) =>
+        items.map((item) =>
+          item.id === id ? { ...item, enabled: !item.enabled } : item,
+        ),
+      );
+    };
+
+    const toggleFollowUpCapability = (id: string) => {
+      setFollowUpCapabilities((items) =>
+        items.map((item) =>
+          item.id === id ? { ...item, enabled: !item.enabled } : item,
+        ),
+      );
+    };
+
     return (
       <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-5">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -4046,6 +4366,7 @@ export default function DashboardLayout() {
             <p className="mt-1 text-sm text-[#6B7280]">Select the Skills lesson you want to focus on.</p>
           </div>
         </div>
+
         <div className="mt-4 flex flex-wrap items-center gap-3">
           {skillsLessons.map((lesson, index) => {
             const active = index === activeSkillsStep;
@@ -4062,6 +4383,273 @@ export default function DashboardLayout() {
             );
           })}
         </div>
+
+        {activeSkillsStep === 0 && (
+          <div className="mt-6 space-y-4">
+            <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-5">
+              <p className="text-sm font-semibold text-[#111827]">Communication</p>
+              <p className="mt-2 text-sm text-[#6B7280]">Choose the communication tasks your AI employee can handle for customers.</p>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {communicationCapabilities.map((capability) => (
+                <div key={capability.id} className="flex flex-col justify-between gap-4 rounded-[20px] border border-[#E5E7EB] bg-white p-5">
+                  <div>
+                    <p className="text-sm font-semibold text-[#111827]">{capability.name}</p>
+                    <p className="mt-2 text-sm text-[#64748B]">{capability.description}</p>
+                  </div>
+                  <div className="flex items-center justify-between gap-4">
+                    <p className={`text-sm font-medium ${capability.enabled ? 'text-[#16A34A]' : 'text-[#64748B]'}`}>{capability.enabled ? 'Enabled' : 'Disabled'}</p>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" checked={capability.enabled} onChange={() => toggleCommunicationCapability(capability.id)} className="sr-only peer" />
+                      <div className="w-11 h-6 rounded-full bg-[#E5E7EB] peer-checked:bg-[#22C55E] peer-focus:ring-2 peer-focus:ring-[#22C55E] transition-colors" />
+                      <div className="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-sm peer-checked:translate-x-5 transform transition-transform" />
+                    </label>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeSkillsStep === 1 && (
+          <div className="mt-6 space-y-4">
+            <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-5">
+              <p className="text-sm font-semibold text-[#111827]">Leads & Sales</p>
+              <p className="mt-2 text-sm text-[#6B7280]">Choose the sales and lead-management tasks your AI employee can perform.</p>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {leadsSalesCapabilities.map((capability) => (
+                <div key={capability.id} className="flex flex-col justify-between gap-4 rounded-[20px] border border-[#E5E7EB] bg-white p-5">
+                  <div>
+                    <p className="text-sm font-semibold text-[#111827]">{capability.name}</p>
+                    <p className="mt-2 text-sm text-[#64748B]">{capability.description}</p>
+                  </div>
+                  <div className="flex items-center justify-between gap-4">
+                    <p className={`text-sm font-medium ${capability.enabled ? 'text-[#16A34A]' : 'text-[#64748B]'}`}>{capability.enabled ? 'Enabled' : 'Disabled'}</p>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" checked={capability.enabled} onChange={() => toggleLeadsSalesCapability(capability.id)} className="sr-only peer" />
+                      <div className="w-11 h-6 rounded-full bg-[#E5E7EB] peer-checked:bg-[#22C55E] peer-focus:ring-2 peer-focus:ring-[#22C55E] transition-colors" />
+                      <div className="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-sm peer-checked:translate-x-5 transform transition-transform" />
+                    </label>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeSkillsStep === 2 && (
+          <div className="mt-6 space-y-4">
+            <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-5">
+              <p className="text-sm font-semibold text-[#111827]">Bookings</p>
+              <p className="mt-2 text-sm text-[#6B7280]">Choose the booking and scheduling tasks your AI employee can perform.</p>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {bookingCapabilities.map((capability) => {
+                const status = getBookingStatus(capability.requires, capability.enabled);
+                const available = integrationAvailable(capability.requires);
+                return (
+                  <div key={capability.id} className="flex flex-col justify-between gap-4 rounded-[20px] border border-[#E5E7EB] bg-white p-5">
+                    <div>
+                      <p className="text-sm font-semibold text-[#111827]">{capability.name}</p>
+                      <p className="mt-2 text-sm text-[#64748B]">{capability.description}</p>
+                    </div>
+                    <div className="flex items-center justify-between gap-4">
+                      <p className={`text-sm font-medium ${status === 'Enabled' ? 'text-[#16A34A]' : status === 'Available' ? 'text-[#0F766E]' : 'text-[#B91C1C]'}`}>{status}</p>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" checked={capability.enabled && available} onChange={() => toggleBookingCapability(capability.id)} className="sr-only peer" disabled={!available} />
+                        <div className={`w-11 h-6 rounded-full ${available ? 'bg-[#E5E7EB] peer-checked:bg-[#22C55E]' : 'bg-[#F1F5F9]'} peer-focus:ring-2 peer-focus:ring-[#22C55E] transition-colors`} />
+                        <div className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transform transition-transform ${available ? 'peer-checked:translate-x-5' : ''}`} />
+                      </label>
+                    </div>
+                    {!available && capability.requires && (
+                      <p className="text-xs text-[#B91C1C]">Requires: {capability.requires.map((id) => getIntegrationName(id)).join(', ')}</p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {activeSkillsStep === 3 && (
+          <div className="mt-6 space-y-4">
+            <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-5">
+              <p className="text-sm font-semibold text-[#111827]">Orders & Payments</p>
+              <p className="mt-2 text-sm text-[#6B7280]">Choose the order and payment-related tasks your AI employee can perform.</p>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {ordersPaymentsCapabilities.map((capability) => {
+                const status = getOrderPaymentStatus(capability.requires, capability.enabled);
+                const available = integrationAvailable(capability.requires);
+                return (
+                  <div key={capability.id} className="flex flex-col justify-between gap-4 rounded-[20px] border border-[#E5E7EB] bg-white p-5">
+                    <div>
+                      <p className="text-sm font-semibold text-[#111827]">{capability.name}</p>
+                      <p className="mt-2 text-sm text-[#64748B]">{capability.description}</p>
+                    </div>
+                    <div className="flex items-center justify-between gap-4">
+                      <p className={`text-sm font-medium ${status === 'Enabled' ? 'text-[#16A34A]' : status === 'Available' ? 'text-[#0F766E]' : 'text-[#B91C1C]'}`}>{status}</p>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" checked={capability.enabled && available} onChange={() => toggleOrderPaymentCapability(capability.id)} className="sr-only peer" disabled={!available} />
+                        <div className={`w-11 h-6 rounded-full ${available ? 'bg-[#E5E7EB] peer-checked:bg-[#22C55E]' : 'bg-[#F1F5F9]'} peer-focus:ring-2 peer-focus:ring-[#22C55E] transition-colors`} />
+                        <div className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transform transition-transform ${available ? 'peer-checked:translate-x-5' : ''}`} />
+                      </label>
+                    </div>
+                    {!available && capability.requires && (
+                      <p className="text-xs text-[#B91C1C]">Requires: {capability.requires.map((id) => getIntegrationName(id)).join(', ')}</p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {activeSkillsStep === 4 && (
+          <div className="mt-6 space-y-4">
+            <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-5">
+              <p className="text-sm font-semibold text-[#111827]">Customer Support</p>
+              <p className="mt-2 text-sm text-[#6B7280]">Choose the support tasks your AI employee can handle before involving a human.</p>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {customerSupportCapabilities.map((capability) => (
+                <div key={capability.id} className="flex flex-col justify-between gap-4 rounded-[20px] border border-[#E5E7EB] bg-white p-5">
+                  <div>
+                    <p className="text-sm font-semibold text-[#111827]">{capability.name}</p>
+                    <p className="mt-2 text-sm text-[#64748B]">{capability.description}</p>
+                  </div>
+                  <div className="flex items-center justify-between gap-4">
+                    <p className={`text-sm font-medium ${capability.enabled ? 'text-[#16A34A]' : 'text-[#64748B]'}`}>{capability.enabled ? 'Enabled' : 'Disabled'}</p>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" checked={capability.enabled} onChange={() => toggleCustomerSupportCapability(capability.id)} className="sr-only peer" />
+                      <div className="w-11 h-6 rounded-full bg-[#E5E7EB] peer-checked:bg-[#22C55E] peer-focus:ring-2 peer-focus:ring-[#22C55E] transition-colors" />
+                      <div className="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-sm peer-checked:translate-x-5 transform transition-transform" />
+                    </label>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeSkillsStep === 5 && (
+          <div className="mt-6 space-y-4">
+            <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-5">
+              <p className="text-sm font-semibold text-[#111827]">Follow-up</p>
+              <p className="mt-2 text-sm text-[#6B7280]">Choose the follow-up tasks your AI employee can perform after a customer interaction.</p>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {followUpCapabilities.map((capability) => {
+                const available = capability.requires ? integrationAvailable(capability.requires) : true;
+                const status = capability.requires ? (available ? (capability.enabled ? 'Enabled' : 'Available') : 'Requires integration') : (capability.enabled ? 'Enabled' : 'Available');
+                return (
+                  <div key={capability.id} className="flex flex-col justify-between gap-4 rounded-[20px] border border-[#E5E7EB] bg-white p-5">
+                    <div>
+                      <p className="text-sm font-semibold text-[#111827]">{capability.name}</p>
+                      <p className="mt-2 text-sm text-[#64748B]">{capability.description}</p>
+                    </div>
+                    <div className="flex items-center justify-between gap-4">
+                      <p className={`text-sm font-medium ${status === 'Enabled' ? 'text-[#16A34A]' : status === 'Available' ? 'text-[#0F766E]' : 'text-[#B91C1C]'}`}>{status}</p>
+                      <label className="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" checked={capability.enabled && available} onChange={() => toggleFollowUpCapability(capability.id)} className="sr-only peer" disabled={!available} />
+                        <div className={`w-11 h-6 rounded-full ${available ? 'bg-[#E5E7EB] peer-checked:bg-[#22C55E]' : 'bg-[#F1F5F9]'} peer-focus:ring-2 peer-focus:ring-[#22C55E] transition-colors`} />
+                        <div className={`absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transform transition-transform ${available ? 'peer-checked:translate-x-5' : ''}`} />
+                      </label>
+                    </div>
+                    {!available && capability.requires && (
+                      <p className="text-xs text-[#B91C1C]">Requires: {capability.requires.map((id) => getIntegrationName(id)).join(', ')}</p>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {activeSkillsStep === 6 && (
+          <div className="mt-6 space-y-4">
+            <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-5">
+              <p className="text-sm font-semibold text-[#111827]">Review</p>
+              <p className="mt-2 text-sm text-[#6B7280]">Review what your AI employee can do before continuing.</p>
+            </div>
+
+            {[
+              { title: 'Communication', items: communicationCapabilities },
+              { title: 'Leads & Sales', items: leadsSalesCapabilities },
+              { title: 'Bookings', items: bookingCapabilities },
+              { title: 'Orders & Payments', items: ordersPaymentsCapabilities },
+              { title: 'Customer Support', items: customerSupportCapabilities },
+              { title: 'Follow-up', items: followUpCapabilities },
+            ].map((section) => {
+              const enabled = section.items.filter((capability) => capability.enabled);
+              const requiresIntegration = section.items.filter((capability) => capability.requires && !integrationAvailable(capability.requires));
+              const notEnabled = section.items.filter((capability) => !capability.enabled && !(capability.requires && !integrationAvailable(capability.requires)));
+              const warnings = section.items.filter((capability) => capability.enabled && capability.requires && !integrationAvailable(capability.requires));
+
+              return (
+                <div key={section.title} className="rounded-[20px] border border-[#E5E7EB] bg-white p-5 shadow-sm">
+                  <div className="mb-4 flex items-center justify-between gap-4">
+                    <div>
+                      <p className="text-sm font-semibold text-[#111827]">{section.title}</p>
+                      <p className="mt-1 text-sm text-[#6B7280]">{section.title} capabilities grouped by current status.</p>
+                    </div>
+                    <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[#166534]">{section.items.length} total</span>
+                  </div>
+
+                  {warnings.length > 0 && (
+                    <div className="mb-4 rounded-[16px] border border-[#FCA5A5] bg-[#FEF2F2] p-4 text-sm text-[#B91C1C]">
+                      <p className="font-semibold">Warning</p>
+                      <p className="mt-1">{warnings.map((capability) => capability.name).join(', ')} requires a connected integration before it can be fully enabled.</p>
+                    </div>
+                  )}
+
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <div>
+                      <p className="text-sm font-semibold text-[#111827]">Enabled capabilities</p>
+                      <ul className="mt-2 space-y-2 text-sm text-[#475569]">
+                        {enabled.length > 0 ? enabled.map((capability) => (
+                          <li key={capability.id} className="rounded-[12px] border border-[#E5E7EB] bg-[#F8FAFB] px-3 py-2">{capability.name}</li>
+                        )) : <li className="text-[#94A3B8]">None yet</li>}
+                      </ul>
+                    </div>
+
+                    <div>
+                      <p className="text-sm font-semibold text-[#111827]">Capabilities requiring integration</p>
+                      <ul className="mt-2 space-y-2 text-sm text-[#475569]">
+                        {requiresIntegration.length > 0 ? requiresIntegration.map((capability) => (
+                          <li key={capability.id} className="rounded-[12px] border border-[#E5E7EB] bg-[#FFF7ED] px-3 py-2">
+                            <div className="font-medium text-[#92400E]">{capability.name}</div>
+                            <div className="text-xs text-[#7C2D12]">Requires: {capability.requires?.map((id) => getIntegrationName(id)).join(', ')}</div>
+                          </li>
+                        )) : <li className="text-[#94A3B8]">None</li>}
+                      </ul>
+                    </div>
+
+                    <div>
+                      <p className="text-sm font-semibold text-[#111827]">Capabilities not enabled</p>
+                      <ul className="mt-2 space-y-2 text-sm text-[#475569]">
+                        {notEnabled.length > 0 ? notEnabled.map((capability) => (
+                          <li key={capability.id} className="rounded-[12px] border border-[#E5E7EB] bg-[#F8FAFB] px-3 py-2">{capability.name}</li>
+                        )) : <li className="text-[#94A3B8]">None</li>}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+
+            <div className="mt-4 flex justify-end">
+              <button type="button" onClick={() => { handleSaveChanges(); setActiveWorkspaceSection('Policies'); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue</button>
+            </div>
+          </div>
+        )}
       </section>
     );
   };
