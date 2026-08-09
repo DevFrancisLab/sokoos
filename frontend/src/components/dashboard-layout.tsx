@@ -2425,22 +2425,7 @@ export default function DashboardLayout() {
     allowed?: boolean;
   };
 
-  const [playbooks, setPlaybooks] = useState<Playbook[]>([
-    {
-      id: 'p-1',
-      title: 'Pricing & Quote Flow',
-      steps: [
-        'Customer asks about pricing',
-        'Recommend suitable product',
-        'Suggest upgrade',
-        'Offer discount if available',
-        'Collect customer details',
-        'Generate quotation',
-        'Ask to proceed',
-      ],
-      allowed: true,
-    },
-  ]);
+  const [playbooks, setPlaybooks] = useState<Playbook[]>([]);
 
   const [editingPlaybookId, setEditingPlaybookId] = useState<string | null>(null);
 
@@ -7841,16 +7826,7 @@ export default function DashboardLayout() {
                                   </div>
                                 );
                               })()
-                            ) : (
-                              <div className="rounded-[12px] border border-[#EEF2F6] bg-white p-6">
-                                <p className="text-sm text-[#64748B]">Select a playbook to edit or create a new one.</p>
-                                <div className="mt-4">
-                                  <div className="flex gap-2">
-                                    <button onClick={() => { if (playbooks[0]) setEditingPlaybookId(playbooks[0].id); }} className="rounded-[8px] border border-[#E5E7EB] px-3 py-2 text-sm">Edit first</button>
-                                  </div>
-                                </div>
-                              </div>
-                            )}
+                            ) : null}
                           </div>
                         </div>
                       </div>
