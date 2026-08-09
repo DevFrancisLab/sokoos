@@ -4026,6 +4026,46 @@ export default function DashboardLayout() {
     'Review',
   ];
 
+  const SkillsLessonTabs = () => {
+    const [activeSkillsStep, setActiveSkillsStep] = useState(0);
+    const skillsLessons = [
+      'Communication',
+      'Leads & Sales',
+      'Bookings',
+      'Orders & Payments',
+      'Customer Support',
+      'Follow-up',
+      'Review',
+    ];
+
+    return (
+      <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-5">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="text-sm font-semibold text-[#111827]">Skills lessons</p>
+            <p className="mt-1 text-sm text-[#6B7280]">Select the Skills lesson you want to focus on.</p>
+          </div>
+        </div>
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          {skillsLessons.map((lesson, index) => {
+            const active = index === activeSkillsStep;
+            return (
+              <button
+                key={lesson}
+                type="button"
+                onClick={() => setActiveSkillsStep(index)}
+                aria-current={active ? 'step' : undefined}
+                className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition-colors duration-200 ${active ? 'border-[#22C55E] bg-[#ECFDF5] text-[#166534] shadow-sm' : 'border-[#E5E7EB] bg-white text-[#475569] hover:border-[#86EFAC] hover:text-[#111827]'}`}
+              >
+                <span>{lesson}</span>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+    );
+  };
+
   const SalesLessonTabs = () => {
     const [activeSalesStep, setActiveSalesStep] = useState(0);
 
@@ -4037,6 +4077,16 @@ export default function DashboardLayout() {
       'Answer pre-sales questions',
       'Increase order value (Upsell)',
       'Retain existing customers',
+    ];
+
+    const salesLessons = [
+      'Sales Objectives',
+      'Customer Qualification',
+      'Sales Strategy',
+      'Pricing & Negotiation',
+      'Human Handoff',
+      'Closing & Follow-up',
+      'Review',
     ];
 
     const [objectives, setObjectives] = useState(
@@ -7239,6 +7289,8 @@ export default function DashboardLayout() {
 
                     {activeWorkspaceSection === "Skills" && (
                       <div className="space-y-6">
+                        <SkillsLessonTabs />
+
                         <div className="flex flex-col gap-4 rounded-[24px] border border-[#E5E7EB] bg-white p-5 sm:flex-row sm:items-center sm:justify-between">
                           <div>
                             <p className="text-sm font-semibold text-[#111827]">Skills</p>
