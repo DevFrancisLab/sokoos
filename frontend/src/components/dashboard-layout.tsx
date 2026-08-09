@@ -535,7 +535,7 @@ const ANALYTICS_METRICS = [
 
 const INTEGRATION_SECTIONS = [
   {
-    section: "Communication",
+    section: "Channels",
     items: [
       {
         id: "whatsapp",
@@ -608,7 +608,7 @@ const INTEGRATION_SECTIONS = [
     ],
   },
   {
-    section: "E-commerce",
+    section: "Business Tools",
     items: [
       {
         id: "shopify",
@@ -631,11 +631,6 @@ const INTEGRATION_SECTIONS = [
         description: "Allow the AI to query your site's product and order APIs.",
         status: "Not Connected",
       },
-    ],
-  },
-  {
-    section: "Business",
-    items: [
       {
         id: "google_business",
         name: "Google Business Profile",
@@ -657,31 +652,10 @@ const INTEGRATION_SECTIONS = [
         description: "Allow the AI to schedule meetings and manage business email/calendar.",
         status: "Not Connected",
       },
-      {
-        id: "gdrive",
-        name: "Google Drive",
-        Icon: Paperclip,
-        description: "Allow the AI to access business documents and knowledge files.",
-        status: "Connected",
-      },
-      {
-        id: "dropbox",
-        name: "Dropbox",
-        Icon: Paperclip,
-        description: "Allow the AI to access business documents stored in Dropbox.",
-        status: "Not Connected",
-      },
-      {
-        id: "onedrive",
-        name: "OneDrive",
-        Icon: Paperclip,
-        description: "Allow the AI to access business documents stored in OneDrive.",
-        status: "Not Connected",
-      },
     ],
   },
   {
-    section: "Marketing",
+    section: "Communication",
     items: [
       {
         id: "meta_ads",
@@ -716,6 +690,32 @@ const INTEGRATION_SECTIONS = [
         name: "Brevo",
         Icon: Send,
         description: "Allow the AI to send campaigns and sync contact lists.",
+        status: "Not Connected",
+      },
+    ],
+  },
+  {
+    section: "Data & Sync",
+    items: [
+      {
+        id: "gdrive",
+        name: "Google Drive",
+        Icon: Paperclip,
+        description: "Allow the AI to access business documents and knowledge files.",
+        status: "Connected",
+      },
+      {
+        id: "dropbox",
+        name: "Dropbox",
+        Icon: Paperclip,
+        description: "Allow the AI to access business documents stored in Dropbox.",
+        status: "Not Connected",
+      },
+      {
+        id: "onedrive",
+        name: "OneDrive",
+        Icon: Paperclip,
+        description: "Allow the AI to access business documents stored in OneDrive.",
         status: "Not Connected",
       },
     ],
@@ -6408,6 +6408,8 @@ export default function DashboardLayout() {
                         ? "Policies"
                         : activeWorkspaceSection === "Sales Playbooks"
                         ? "Sales Playbook"
+                        : activeWorkspaceSection === "Integrations"
+                        ? "Integrations"
                         : "KNOWLEDGE TRAINING"}
                     </p>
                     <p className="mt-1 text-sm text-[#475569]">
@@ -6421,6 +6423,8 @@ export default function DashboardLayout() {
                         ? "Teach your AI employee the rules, boundaries, and customer policies it must follow."
                         : activeWorkspaceSection === "Sales Playbooks"
                         ? "Train your AI employee to qualify customers, recommend the right solutions, negotiate within your rules, know when to involve a human, and confidently close conversations."
+                        : activeWorkspaceSection === "Integrations"
+                        ? "Connect your AI employee to the channels and business tools it needs to serve customers and get work done."
                         : "Build and refine your knowledge base so your AI responds with relevant, trusted answers."}
                     </p>
                   </div>
@@ -8517,14 +8521,144 @@ export default function DashboardLayout() {
                         <div className="flex items-start gap-3">
                           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><Plug className="h-5 w-5" /></div>
                           <div>
-                            <p className="text-lg font-semibold text-[#111827]">Connect your AI’s tools</p>
-                            <p className="mt-1 text-sm leading-6 text-[#64748B]">Give your AI Employee access to the systems it needs to serve customers well.</p>
+                            <p className="text-lg font-semibold text-[#111827]">Integrations</p>
+                            <p className="mt-1 text-sm leading-6 text-[#64748B]">Connect your AI employee to the channels and business tools it needs to serve customers and get work done.</p>
                           </div>
                         </div>
-                        <div className="mt-5 flex flex-wrap items-center gap-3 rounded-xl border border-[#FEF3C7] bg-[#FFFBEB] p-4 text-sm text-[#92400E]">
-                          <CircleAlert className="h-4 w-4 shrink-0" />
-                          <span className="flex-1">Some tools still need to be connected.</span>
-                          <button type="button" onClick={() => setSelected("Integrations")} className="rounded-lg bg-white px-3 py-2 text-xs font-semibold text-[#92400E] shadow-sm transition hover:bg-[#FEF3C7]">Manage integrations</button>
+                        <div className="mt-6 grid gap-6 lg:grid-cols-[1.45fr_0.95fr]">
+                          <div className="space-y-5">
+                            <div className="rounded-[24px] border border-[#EEF2F6] bg-[#F8FAFC] p-5">
+                              <div className="flex items-start gap-3">
+                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]">
+                                  <MessageCircle className="h-5 w-5" />
+                                </div>
+                                <div>
+                                  <p className="text-sm font-semibold text-[#111827]">Channels</p>
+                                  <p className="mt-1 text-sm text-[#64748B]">
+                                    Teach your AI which customer channels are ready so it can respond where your business already communicates.
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                                {(() => {
+                                  const phoneReady = Boolean(businessInfo.phone?.trim());
+                                  const channels = [
+                                    {
+                                      id: "whatsapp",
+                                      label: "WhatsApp",
+                                      Icon: MessageCircle,
+                                      description: "Reply to customers with your connected WhatsApp Business account.",
+                                      status: integrationStates.whatsapp?.status ?? "Not Connected",
+                                    },
+                                    {
+                                      id: "website",
+                                      label: "Website chat",
+                                      Icon: Globe,
+                                      description: "Capture website chats and let your AI reply instantly.",
+                                      status: communicationChannels.websiteChat ? "Active" : "Disabled",
+                                    },
+                                    {
+                                      id: "facebook",
+                                      label: "Facebook Messenger",
+                                      Icon: MessageCircle,
+                                      description: "Answer Facebook messages with your AI voice.",
+                                      status: integrationStates.facebook?.status ?? "Not Connected",
+                                    },
+                                    {
+                                      id: "instagram",
+                                      label: "Instagram",
+                                      Icon: Image,
+                                      description: "Respond to Instagram DMs and customer comments.",
+                                      status: integrationStates.instagram?.status ?? "Not Connected",
+                                    },
+                                    {
+                                      id: "email",
+                                      label: "Email",
+                                      Icon: Send,
+                                      description: "Read and reply to customer emails from your connected inbox.",
+                                      status: integrationStates.email?.status ?? "Not Connected",
+                                    },
+                                    {
+                                      id: "sms",
+                                      label: "SMS",
+                                      Icon: Phone,
+                                      description: "Send confirmations and reminders over SMS when your business phone number is set.",
+                                      status: phoneReady ? "Ready" : "Setup required",
+                                    },
+                                  ];
+
+                                  const badgeClass = (status: string) =>
+                                    status === "Connected" || status === "Active" || status === "Ready"
+                                      ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#166534]"
+                                      : status === "Coming Soon"
+                                      ? "border-[#E9D5FF] bg-[#F5F3FF] text-[#6D28D9]"
+                                      : status === "Setup required"
+                                      ? "border-[#FDE68A] bg-[#FEF9C3] text-[#92400E]"
+                                      : "border-[#F3F4F6] bg-[#F3F4F6] text-[#6B7280]";
+
+                                  return channels.map((channel) => {
+                                    const isAvailable = ["Connected", "Active", "Ready"].includes(channel.status);
+                                    return (
+                                      <div key={channel.id} className="rounded-[24px] border border-[#E5E7EF] bg-white p-4">
+                                        <div className="flex items-start gap-3">
+                                          <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ${isAvailable ? "bg-[#ECFDF5] text-[#166534]" : "bg-[#F3F4F6] text-[#9CA3AF]"}`}>
+                                            <channel.Icon className="h-5 w-5" />
+                                          </div>
+                                          <div className="min-w-0">
+                                            <div className="flex items-center justify-between gap-3">
+                                              <p className="text-sm font-semibold text-[#111827]">{channel.label}</p>
+                                              <span className={`inline-flex h-7 items-center rounded-full px-3 text-[12px] font-medium ${badgeClass(channel.status)}`}>
+                                                {channel.status}
+                                              </span>
+                                            </div>
+                                            <p className="mt-2 text-sm text-[#64748B]">{channel.description}</p>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    );
+                                  });
+                                })()}
+                              </div>
+                            </div>
+
+                            <div className="rounded-[24px] border border-[#EEF2F6] bg-white p-5">
+                              <p className="text-sm font-semibold text-[#111827]">Channel readiness</p>
+                              <p className="mt-1 text-sm text-[#64748B]">Your AI uses connected channels to start conversations, follow up leads, and keep customers updated automatically.</p>
+                              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                                {[
+                                  {
+                                    label: "Connected channels",
+                                    value: Object.values({
+                                      whatsapp: integrationStates.whatsapp?.status === "Connected",
+                                      website: communicationChannels.websiteChat,
+                                      facebook: integrationStates.facebook?.status === "Connected",
+                                      instagram: integrationStates.instagram?.status === "Connected",
+                                      email: integrationStates.email?.status === "Connected",
+                                      sms: Boolean(businessInfo.phone?.trim()),
+                                    }).filter(Boolean).length,
+                                  },
+                                  {
+                                    label: "Total channels",
+                                    value: 6,
+                                  },
+                                ].map((metric) => (
+                                  <div key={metric.label} className="rounded-[20px] border border-[#F3F4F6] bg-[#F8FAFC] p-4">
+                                    <p className="text-xs uppercase tracking-[0.18em] text-[#64748B]">{metric.label}</p>
+                                    <p className="mt-2 text-2xl font-semibold text-[#111827]">{metric.value}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="rounded-[24px] border border-[#FEF3C7] bg-[#FFFBEB] p-4 text-sm text-[#92400E]">
+                            <div className="flex items-center gap-3">
+                              <CircleAlert className="h-4 w-4 shrink-0" />
+                              <span className="flex-1">Complete your channel setup to unlock the full AI experience.</span>
+                            </div>
+                            <button type="button" onClick={() => setSelected("Integrations")} className="mt-4 w-full rounded-lg bg-white px-3 py-2 text-xs font-semibold text-[#92400E] shadow-sm transition hover:bg-[#FEF3C7]">Manage integrations</button>
+                          </div>
                         </div>
                       </div>
                     )}
@@ -9050,7 +9184,7 @@ export default function DashboardLayout() {
                       Integrations
                     </h2>
                     <p className="mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl">
-                      Connect the systems your AI Employee can access across your business.
+                      Connect your AI employee to the channels and business tools it needs to serve customers and get work done.
                     </p>
                   </div>
                 </div>
@@ -9231,7 +9365,7 @@ export default function DashboardLayout() {
                 </div>
               ))}
               <div className="mt-8">
-                <h3 className="text-sm font-semibold text-[#6B7280] mb-3">What your AI Employee can do</h3>
+                <h3 className="text-sm font-semibold text-[#6B7280] mb-3">Review</h3>
                 <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                   {CAPABILITY_FEATURES.map((cap) => {
                     const missing = cap.requires.filter((r) => (integrationStates[r] || { status: "Not Connected" }).status !== "Connected");
