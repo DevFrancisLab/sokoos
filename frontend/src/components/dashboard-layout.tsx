@@ -7285,18 +7285,18 @@ export default function DashboardLayout() {
                           <p className="mt-3 text-sm text-[#6B7280]">Teach your AI employee the rules, boundaries, and customer policies it must follow.</p>
                         </div>
 
-                        <div className="space-y-2">
+                        <div className="space-y-4">
                           {policySections.map((sec) => (
-                            <div key={sec.id} className="rounded-[16px] border border-[#E5E7EB] bg-white">
-                              <button onClick={() => togglePolicy(sec.id)} className="flex w-full items-center justify-between px-5 py-4 text-left">
+                            <div key={sec.id} className="overflow-hidden rounded-[16px] border border-[#E5E7EB] bg-white">
+                              <button onClick={() => togglePolicy(sec.id)} className="group flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors duration-200 hover:bg-[#F8FAFC]">
                                 <div>
-                                  <p className="text-sm font-semibold">{sec.title}</p>
-                                  <p className="text-xs text-[#94A3B8]">Click to expand and edit</p>
+                                  <p className="text-base font-semibold text-[#111827]">{sec.title}</p>
+                                  <p className="mt-1 text-sm text-[#64748B]">Click to expand and edit</p>
                                 </div>
-                                <div className="text-xs text-[#64748B]">{sec.expanded ? 'Collapse' : 'Expand'}</div>
+                                <div className="text-sm font-medium text-[#475569]">{sec.expanded ? 'Collapse' : 'Expand'}</div>
                               </button>
                               {sec.expanded && (
-                                <div className="px-4 pb-4 space-y-4">
+                                <div className="px-4 pb-4 pt-2 space-y-4">
                                   {sec.id === 'pol-1' ? (
                                     <>
                                       <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
@@ -7306,7 +7306,7 @@ export default function DashboardLayout() {
                                             <p className="mt-2 text-sm text-[#475569]">Define the policies your AI should explain when customers ask about returns, refunds, cancellations, warranties, or other customer-facing rules.</p>
                                           </div>
                                           <div>
-                                            <button type="button" onClick={() => toggleNotApplicable('pol-1')} className={`rounded-full px-3 py-1.5 text-xs font-semibold ${isNotApplicable('pol-1') ? 'bg-[#F3F4F6] text-[#64748B]' : 'bg-white border border-[#E5E7EB]'}`}>{isNotApplicable('pol-1') ? 'Not applicable' : 'Mark not applicable'}</button>
+                                            <button type="button" onClick={() => toggleNotApplicable('pol-1')} className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors duration-200 ${isNotApplicable('pol-1') ? 'bg-[#F3F4F6] text-[#64748B]' : 'bg-white border border-[#E5E7EB] hover:bg-[#F8FAFC]'}`}>{isNotApplicable('pol-1') ? 'Not applicable' : 'Mark not applicable'}</button>
                                           </div>
                                         </div>
                                       </div>
@@ -7325,10 +7325,10 @@ export default function DashboardLayout() {
                                                 <p className="text-sm text-[#475569]">{policy.description}</p>
                                               </div>
                                               <div className="flex items-center gap-2">
-                                                <button type="button" onClick={() => toggleCustomerPolicyEnabled(policy.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                <button type="button" onClick={() => toggleCustomerPolicyEnabled(policy.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">
                                                   {policy.enabled ? 'Disable' : 'Mark not applicable'}
                                                 </button>
-                                                <button type="button" onClick={() => toggleCustomerPolicyEditing(policy.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                <button type="button" onClick={() => toggleCustomerPolicyEditing(policy.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">
                                                   {policy.editing ? 'Save' : 'Edit'}
                                                 </button>
                                               </div>
@@ -7369,12 +7369,12 @@ export default function DashboardLayout() {
                                             <p className="mt-2 text-sm text-[#475569]">Define the payment and pricing rules your AI should communicate accurately to customers.</p>
                                           </div>
                                           <div>
-                                            <button type="button" onClick={() => toggleNotApplicable('pol-2')} className={`rounded-full px-3 py-1.5 text-xs font-semibold ${isNotApplicable('pol-2') ? 'bg-[#F3F4F6] text-[#64748B]' : 'bg-white border border-[#E5E7EB]'}`}>{isNotApplicable('pol-2') ? 'Not applicable' : 'Mark not applicable'}</button>
+                                            <button type="button" onClick={() => toggleNotApplicable('pol-2')} className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors duration-200 ${isNotApplicable('pol-2') ? 'bg-[#F3F4F6] text-[#64748B]' : 'bg-white border border-[#E5E7EB] hover:bg-[#F8FAFC]'}`}>{isNotApplicable('pol-2') ? 'Not applicable' : 'Mark not applicable'}</button>
                                           </div>
                                         </div>
                                       </div>
 
-                                      <div className="space-y-5">
+                                      <div className="space-y-4">
                                         <div className="rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFC] p-4">
                                           <div className="flex items-center justify-between gap-4">
                                             <div>
@@ -7395,13 +7395,13 @@ export default function DashboardLayout() {
                                                     </div>
                                                   </div>
                                                   <div className="flex flex-wrap gap-2">
-                                                    <button type="button" onClick={() => togglePaymentMethodEnabled(method.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                    <button type="button" onClick={() => togglePaymentMethodEnabled(method.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">
                                                       {method.enabled ? 'Disable' : 'Mark not accepted'}
                                                     </button>
-                                                    <button type="button" onClick={() => togglePaymentMethodEditing(method.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                    <button type="button" onClick={() => togglePaymentMethodEditing(method.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">
                                                       {method.editing ? 'Save' : 'Edit'}
                                                     </button>
-                                                    <button type="button" onClick={() => deletePaymentMethod(method.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                    <button type="button" onClick={() => deletePaymentMethod(method.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">
                                                       Delete
                                                     </button>
                                                   </div>
@@ -7457,13 +7457,13 @@ export default function DashboardLayout() {
                                                     <p className="text-sm text-[#475569]">{rule.description}</p>
                                                   </div>
                                                   <div className="flex flex-wrap gap-2">
-                                                    <button type="button" onClick={() => togglePricingRuleEnabled(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                    <button type="button" onClick={() => togglePricingRuleEnabled(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">
                                                       {rule.enabled ? 'Disable' : 'Enable'}
                                                     </button>
-                                                    <button type="button" onClick={() => togglePricingRuleEditing(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                    <button type="button" onClick={() => togglePricingRuleEditing(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">
                                                       {rule.editing ? 'Save' : 'Edit'}
                                                     </button>
-                                                    <button type="button" onClick={() => deletePricingRule(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                    <button type="button" onClick={() => deletePricingRule(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">
                                                       Delete
                                                     </button>
                                                   </div>
@@ -7500,7 +7500,7 @@ export default function DashboardLayout() {
                                             <p className="mt-2 text-sm text-[#475569]">Teach your AI what customers should expect after placing an order, booking a service, or requesting fulfillment.</p>
                                           </div>
                                           <div>
-                                            <button type="button" onClick={() => toggleNotApplicable('pol-3')} className={`rounded-full px-3 py-1.5 text-xs font-semibold ${isNotApplicable('pol-3') ? 'bg-[#F3F4F6] text-[#64748B]' : 'bg-white border border-[#E5E7EB]'}`}>{isNotApplicable('pol-3') ? 'Not applicable' : 'Mark not applicable'}</button>
+                                            <button type="button" onClick={() => toggleNotApplicable('pol-3')} className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors duration-200 ${isNotApplicable('pol-3') ? 'bg-[#F3F4F6] text-[#64748B]' : 'bg-white border border-[#E5E7EB] hover:bg-[#F8FAFC]'}`}>{isNotApplicable('pol-3') ? 'Not applicable' : 'Mark not applicable'}</button>
                                           </div>
                                         </div>
                                       </div>
@@ -7527,13 +7527,13 @@ export default function DashboardLayout() {
                                                     <p className="text-sm text-[#475569]">{rule.description}</p>
                                                   </div>
                                                   <div className="flex flex-wrap gap-2">
-                                                    <button type="button" onClick={() => toggleFulfillmentEnabled(rule.id, 'order')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                    <button type="button" onClick={() => toggleFulfillmentEnabled(rule.id, 'order')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">
                                                       {rule.enabled ? 'Disable' : 'Enable'}
                                                     </button>
-                                                    <button type="button" onClick={() => toggleFulfillmentEditing(rule.id, 'order')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                    <button type="button" onClick={() => toggleFulfillmentEditing(rule.id, 'order')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">
                                                       {rule.editing ? 'Save' : 'Edit'}
                                                     </button>
-                                                    <button type="button" onClick={() => deleteFulfillmentRule(rule.id, 'order')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                    <button type="button" onClick={() => deleteFulfillmentRule(rule.id, 'order')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">
                                                       Delete
                                                     </button>
                                                   </div>
@@ -7571,13 +7571,13 @@ export default function DashboardLayout() {
                                                     <p className="text-sm text-[#475569]">{rule.description}</p>
                                                   </div>
                                                   <div className="flex flex-wrap gap-2">
-                                                    <button type="button" onClick={() => toggleFulfillmentEnabled(rule.id, 'delivery')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                    <button type="button" onClick={() => toggleFulfillmentEnabled(rule.id, 'delivery')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">
                                                       {rule.enabled ? 'Disable' : 'Enable'}
                                                     </button>
-                                                    <button type="button" onClick={() => toggleFulfillmentEditing(rule.id, 'delivery')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                    <button type="button" onClick={() => toggleFulfillmentEditing(rule.id, 'delivery')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">
                                                       {rule.editing ? 'Save' : 'Edit'}
                                                     </button>
-                                                    <button type="button" onClick={() => deleteFulfillmentRule(rule.id, 'delivery')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                    <button type="button" onClick={() => deleteFulfillmentRule(rule.id, 'delivery')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">
                                                       Delete
                                                     </button>
                                                   </div>
@@ -7615,13 +7615,13 @@ export default function DashboardLayout() {
                                                     <p className="text-sm text-[#475569]">{rule.description}</p>
                                                   </div>
                                                   <div className="flex flex-wrap gap-2">
-                                                    <button type="button" onClick={() => toggleFulfillmentEnabled(rule.id, 'changes')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                    <button type="button" onClick={() => toggleFulfillmentEnabled(rule.id, 'changes')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">
                                                       {rule.enabled ? 'Disable' : 'Enable'}
                                                     </button>
-                                                    <button type="button" onClick={() => toggleFulfillmentEditing(rule.id, 'changes')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                    <button type="button" onClick={() => toggleFulfillmentEditing(rule.id, 'changes')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">
                                                       {rule.editing ? 'Save' : 'Edit'}
                                                     </button>
-                                                    <button type="button" onClick={() => deleteFulfillmentRule(rule.id, 'changes')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                    <button type="button" onClick={() => deleteFulfillmentRule(rule.id, 'changes')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">
                                                       Delete
                                                     </button>
                                                   </div>
@@ -7659,13 +7659,13 @@ export default function DashboardLayout() {
                                                     <p className="text-sm text-[#475569]">{rule.description}</p>
                                                   </div>
                                                   <div className="flex flex-wrap gap-2">
-                                                    <button type="button" onClick={() => toggleFulfillmentEnabled(rule.id, 'unavailable')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                    <button type="button" onClick={() => toggleFulfillmentEnabled(rule.id, 'unavailable')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">
                                                       {rule.enabled ? 'Disable' : 'Enable'}
                                                     </button>
-                                                    <button type="button" onClick={() => toggleFulfillmentEditing(rule.id, 'unavailable')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                    <button type="button" onClick={() => toggleFulfillmentEditing(rule.id, 'unavailable')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">
                                                       {rule.editing ? 'Save' : 'Edit'}
                                                     </button>
-                                                    <button type="button" onClick={() => deleteFulfillmentRule(rule.id, 'unavailable')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">
+                                                    <button type="button" onClick={() => deleteFulfillmentRule(rule.id, 'unavailable')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">
                                                       Delete
                                                     </button>
                                                   </div>
@@ -7696,7 +7696,7 @@ export default function DashboardLayout() {
                                             <p className="mt-2 text-sm text-[#475569]">Define what customer information your AI may collect, use, and share during conversations.</p>
                                           </div>
                                           <div>
-                                            <button type="button" onClick={() => toggleNotApplicable('pol-4')} className={`rounded-full px-3 py-1.5 text-xs font-semibold ${isNotApplicable('pol-4') ? 'bg-[#F3F4F6] text-[#64748B]' : 'bg-white border border-[#E5E7EB]'}`}>{isNotApplicable('pol-4') ? 'Not applicable' : 'Mark not applicable'}</button>
+                                            <button type="button" onClick={() => toggleNotApplicable('pol-4')} className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors duration-200 ${isNotApplicable('pol-4') ? 'bg-[#F3F4F6] text-[#64748B]' : 'bg-white border border-[#E5E7EB] hover:bg-[#F8FAFC]'}`}>{isNotApplicable('pol-4') ? 'Not applicable' : 'Mark not applicable'}</button>
                                           </div>
                                         </div>
                                       </div>
@@ -7714,9 +7714,9 @@ export default function DashboardLayout() {
                                                     <p className="text-sm text-[#475569]">{rule.description}</p>
                                                   </div>
                                                   <div className="flex flex-wrap gap-2">
-                                                    <button type="button" onClick={() => togglePrivacyEnabled(rule.id, 'collect')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">{rule.enabled ? 'Disable' : 'Enable'}</button>
-                                                    <button type="button" onClick={() => togglePrivacyEditing(rule.id, 'collect')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">{rule.editing ? 'Save' : 'Edit'}</button>
-                                                    <button type="button" onClick={() => deletePrivacyRule(rule.id, 'collect')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">Delete</button>
+                                                    <button type="button" onClick={() => togglePrivacyEnabled(rule.id, 'collect')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">{rule.enabled ? 'Disable' : 'Enable'}</button>
+                                                    <button type="button" onClick={() => togglePrivacyEditing(rule.id, 'collect')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">{rule.editing ? 'Save' : 'Edit'}</button>
+                                                    <button type="button" onClick={() => deletePrivacyRule(rule.id, 'collect')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">Delete</button>
                                                   </div>
                                                 </div>
                                                 {rule.editing && (
@@ -7750,9 +7750,9 @@ export default function DashboardLayout() {
                                                     <p className="text-sm text-[#475569]">{rule.description}</p>
                                                   </div>
                                                   <div className="flex flex-wrap gap-2">
-                                                    <button type="button" onClick={() => togglePrivacyEnabled(rule.id, 'doNot')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">{rule.enabled ? 'Disable' : 'Enable'}</button>
-                                                    <button type="button" onClick={() => togglePrivacyEditing(rule.id, 'doNot')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">{rule.editing ? 'Save' : 'Edit'}</button>
-                                                    <button type="button" onClick={() => deletePrivacyRule(rule.id, 'doNot')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">Delete</button>
+                                                    <button type="button" onClick={() => togglePrivacyEnabled(rule.id, 'doNot')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">{rule.enabled ? 'Disable' : 'Enable'}</button>
+                                                    <button type="button" onClick={() => togglePrivacyEditing(rule.id, 'doNot')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">{rule.editing ? 'Save' : 'Edit'}</button>
+                                                    <button type="button" onClick={() => deletePrivacyRule(rule.id, 'doNot')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">Delete</button>
                                                   </div>
                                                 </div>
                                                 {rule.editing && (
@@ -7787,9 +7787,9 @@ export default function DashboardLayout() {
                                                     <p className="text-sm text-[#475569]">{rule.description}</p>
                                                   </div>
                                                   <div className="flex flex-wrap gap-2">
-                                                    <button type="button" onClick={() => togglePrivacyEnabled(rule.id, 'share')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">{rule.enabled ? 'Disable' : 'Enable'}</button>
-                                                    <button type="button" onClick={() => togglePrivacyEditing(rule.id, 'share')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">{rule.editing ? 'Save' : 'Edit'}</button>
-                                                    <button type="button" onClick={() => deletePrivacyRule(rule.id, 'share')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">Delete</button>
+                                                    <button type="button" onClick={() => togglePrivacyEnabled(rule.id, 'share')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">{rule.enabled ? 'Disable' : 'Enable'}</button>
+                                                    <button type="button" onClick={() => togglePrivacyEditing(rule.id, 'share')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">{rule.editing ? 'Save' : 'Edit'}</button>
+                                                    <button type="button" onClick={() => deletePrivacyRule(rule.id, 'share')} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">Delete</button>
                                                   </div>
                                                 </div>
                                                 {rule.editing && (
@@ -7816,7 +7816,7 @@ export default function DashboardLayout() {
                                             <p className="mt-2 text-sm text-[#475569]">Define what your AI employee must never do or claim during a customer conversation.</p>
                                           </div>
                                           <div>
-                                            <button type="button" onClick={() => toggleNotApplicable('pol-5')} className={`rounded-full px-3 py-1.5 text-xs font-semibold ${isNotApplicable('pol-5') ? 'bg-[#F3F4F6] text-[#64748B]' : 'bg-white border border-[#E5E7EB]'}`}>{isNotApplicable('pol-5') ? 'Not applicable' : 'Mark not applicable'}</button>
+                                            <button type="button" onClick={() => toggleNotApplicable('pol-5')} className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors duration-200 ${isNotApplicable('pol-5') ? 'bg-[#F3F4F6] text-[#64748B]' : 'bg-white border border-[#E5E7EB] hover:bg-[#F8FAFC]'}`}>{isNotApplicable('pol-5') ? 'Not applicable' : 'Mark not applicable'}</button>
                                           </div>
                                         </div>
                                       </div>
@@ -7834,9 +7834,9 @@ export default function DashboardLayout() {
                                                     <p className="text-sm text-[#475569]">{rule.description}</p>
                                                   </div>
                                                   <div className="flex flex-wrap gap-2">
-                                                    <button type="button" onClick={() => toggleBoundaryEnabled(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">{rule.enabled ? 'Disable' : 'Enable'}</button>
-                                                    <button type="button" onClick={() => toggleBoundaryEditing(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">{rule.editing ? 'Save' : 'Edit'}</button>
-                                                    <button type="button" onClick={() => deleteBoundaryRule(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">Delete</button>
+                                                    <button type="button" onClick={() => toggleBoundaryEnabled(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">{rule.enabled ? 'Disable' : 'Enable'}</button>
+                                                    <button type="button" onClick={() => toggleBoundaryEditing(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">{rule.editing ? 'Save' : 'Edit'}</button>
+                                                    <button type="button" onClick={() => deleteBoundaryRule(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">Delete</button>
                                                   </div>
                                                 </div>
                                                 {rule.editing && (
@@ -7881,9 +7881,9 @@ export default function DashboardLayout() {
                                                     <p className="text-sm text-[#475569]">{rule.description}</p>
                                                   </div>
                                                   <div className="flex flex-wrap gap-2">
-                                                    <button type="button" onClick={() => toggleEscalationEnabled(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">{rule.enabled ? 'Disable' : 'Enable'}</button>
-                                                    <button type="button" onClick={() => toggleEscalationEditing(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">{rule.editing ? 'Save' : 'Edit'}</button>
-                                                    <button type="button" onClick={() => deleteEscalationRule(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569]">Delete</button>
+                                                    <button type="button" onClick={() => toggleEscalationEnabled(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">{rule.enabled ? 'Disable' : 'Enable'}</button>
+                                                    <button type="button" onClick={() => toggleEscalationEditing(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">{rule.editing ? 'Save' : 'Edit'}</button>
+                                                    <button type="button" onClick={() => deleteEscalationRule(rule.id)} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition-colors duration-200 hover:bg-[#F8FAFC] hover:text-[#111827]">Delete</button>
                                                   </div>
                                                 </div>
                                                 {rule.editing && (
