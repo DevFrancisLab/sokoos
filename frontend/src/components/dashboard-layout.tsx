@@ -720,6 +720,10 @@ const INTEGRATION_SECTIONS = [
       },
     ],
   },
+  {
+    section: "Review",
+    items: [],
+  },
 ];
 
 const INTEGRATION_CAPABILITIES: Record<string, string[]> = {
@@ -8614,6 +8618,311 @@ export default function DashboardLayout() {
                                             </div>
                                             <p className="mt-2 text-sm text-[#64748B]">{channel.description}</p>
                                           </div>
+                                        </div>
+                                      </div>
+                                    );
+                                  });
+                                })()}
+                              </div>
+                            </div>
+
+                            <div className="rounded-[24px] border border-[#EEF2F6] bg-white p-5">
+                              <div className="flex items-start gap-3">
+                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]">
+                                  <Calendar className="h-5 w-5" />
+                                </div>
+                                <div>
+                                  <p className="text-sm font-semibold text-[#111827]">Business Tools</p>
+                                  <p className="mt-1 text-sm text-[#64748B]">
+                                    Connect the tools your AI employee can use to perform business tasks.
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                                {(() => {
+                                  const tools = [
+                                    {
+                                      id: "google_calendar",
+                                      label: "Google Calendar",
+                                      Icon: Calendar,
+                                      description: "Let the AI schedule appointments and manage your business calendar.",
+                                      status: integrationStates.google_calendar?.status ?? "Not Connected",
+                                    },
+                                    {
+                                      id: "outlook",
+                                      label: "Microsoft Outlook",
+                                      Icon: Calendar,
+                                      description: "Let the AI manage business meetings and email scheduling.",
+                                      status: integrationStates.outlook?.status ?? "Not Connected",
+                                    },
+                                    {
+                                      id: "shopify",
+                                      label: "Shopify",
+                                      Icon: Box,
+                                      description: "Allow the AI to access your store catalog and product data.",
+                                      status: integrationStates.shopify?.status ?? "Not Connected",
+                                    },
+                                    {
+                                      id: "woocommerce",
+                                      label: "WooCommerce",
+                                      Icon: Box,
+                                      description: "Allow the AI to read your store products, orders, and inventory.",
+                                      status: integrationStates.woocommerce?.status ?? "Not Connected",
+                                    },
+                                    {
+                                      id: "custom_api",
+                                      label: "Custom Website API",
+                                      Icon: Globe,
+                                      description: "Allow the AI to connect with your custom commerce and order APIs.",
+                                      status: integrationStates.custom_api?.status ?? "Not Connected",
+                                    },
+                                    {
+                                      id: "google_business",
+                                      label: "Google Business Profile",
+                                      Icon: Globe,
+                                      description: "Allow the AI to update your business profile and respond to reviews.",
+                                      status: integrationStates.google_business?.status ?? "Not Connected",
+                                    },
+                                  ];
+
+                                  return tools.map((tool) => {
+                                    const isConnected = tool.status === "Connected";
+                                    const badgeClass = isConnected
+                                      ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#166534]"
+                                      : "border-[#F3F4F6] bg-[#F3F4F6] text-[#6B7280]";
+                                    const iconWrapClass = isConnected
+                                      ? "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#ECFDF5] text-[#166534]"
+                                      : "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#F3F4F6] text-[#9CA3AF]";
+
+                                    return (
+                                      <div key={tool.id} className="rounded-[24px] border border-[#E5E7EF] bg-white p-4">
+                                        <div className="flex items-start gap-3">
+                                          <div className={iconWrapClass}>
+                                            <tool.Icon className="h-5 w-5" />
+                                          </div>
+                                          <div className="min-w-0">
+                                            <div className="flex items-center justify-between gap-3">
+                                              <p className="text-sm font-semibold text-[#111827]">{tool.label}</p>
+                                              <span className={`inline-flex h-7 items-center rounded-full px-3 text-[12px] font-medium ${badgeClass}`}>
+                                                {tool.status}
+                                              </span>
+                                            </div>
+                                            <p className="mt-2 text-sm text-[#64748B]">{tool.description}</p>
+                                          </div>
+                                        </div>
+                                        <div className="mt-4">
+                                          {isConnected ? (
+                                            <button onClick={() => openDrawer(tool.id)} className="w-full rounded-[24px] border border-[#EEF2F6] bg-white px-3 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F8FAFC]">Manage</button>
+                                          ) : (
+                                            <button
+                                              onClick={() => {
+                                                setConnectModalId(tool.id);
+                                                setConnectForm({ email: "", businessName: "", phone: "" });
+                                                setConnectModalOpen(true);
+                                              }}
+                                              className="w-full rounded-[24px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
+                                            >
+                                              Connect
+                                            </button>
+                                          )}
+                                        </div>
+                                      </div>
+                                    );
+                                  });
+                                })()}
+                              </div>
+                            </div>
+
+                            <div className="rounded-[24px] border border-[#EEF2F6] bg-white p-5">
+                              <div className="flex items-start gap-3">
+                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]">
+                                  <Megaphone className="h-5 w-5" />
+                                </div>
+                                <div>
+                                  <p className="text-sm font-semibold text-[#111827]">Communication</p>
+                                  <p className="mt-1 text-sm text-[#64748B]">
+                                    Connect the communication tools your AI employee can use to send notifications and keep your team informed.
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                                {(() => {
+                                  const communications = [
+                                    {
+                                      id: "mailchimp",
+                                      label: "Mailchimp",
+                                      Icon: Send,
+                                      description: "Allow the AI to send notification campaigns and sync contact lists.",
+                                      status: integrationStates.mailchimp?.status ?? "Not Connected",
+                                    },
+                                    {
+                                      id: "brevo",
+                                      label: "Brevo",
+                                      Icon: Send,
+                                      description: "Allow the AI to send email notifications and manage audiences.",
+                                      status: integrationStates.brevo?.status ?? "Not Connected",
+                                    },
+                                    {
+                                      id: "meta_ads",
+                                      label: "Meta Ads",
+                                      Icon: Megaphone,
+                                      description: "Allow the AI to sync campaign audiences and notify teams about ad performance.",
+                                      status: integrationStates.meta_ads?.status ?? "Not Connected",
+                                    },
+                                    {
+                                      id: "google_ads",
+                                      label: "Google Ads",
+                                      Icon: Globe,
+                                      description: "Allow the AI to pull ad performance and surface campaign notifications.",
+                                      status: integrationStates.google_ads?.status ?? "Not Connected",
+                                    },
+                                    {
+                                      id: "tiktok",
+                                      label: "TikTok",
+                                      Icon: Globe,
+                                      description: "Allow the AI to manage TikTok campaign notifications.",
+                                      status: integrationStates.tiktok?.status ?? "Coming Soon",
+                                    },
+                                  ];
+
+                                  return communications.map((tool) => {
+                                    const isConnected = tool.status === "Connected";
+                                    const isComing = tool.status === "Coming Soon" || tool.status === "ComingSoon";
+                                    const badgeClass = isConnected
+                                      ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#166534]"
+                                      : isComing
+                                      ? "border-[#E9D5FF] bg-[#F5F3FF] text-[#6D28D9]"
+                                      : "border-[#F3F4F6] bg-[#F3F4F6] text-[#6B7280]";
+                                    const isAvailable = isConnected || (!isComing && tool.status === "Not Connected");
+                                    const iconWrapClass = isConnected
+                                      ? "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#ECFDF5] text-[#166534]"
+                                      : "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#F3F4F6] text-[#9CA3AF]";
+
+                                    return (
+                                      <div key={tool.id} className="rounded-[24px] border border-[#E5E7EF] bg-white p-4">
+                                        <div className="flex items-start gap-3">
+                                          <div className={iconWrapClass}>
+                                            <tool.Icon className="h-5 w-5" />
+                                          </div>
+                                          <div className="min-w-0">
+                                            <div className="flex items-center justify-between gap-3">
+                                              <p className="text-sm font-semibold text-[#111827]">{tool.label}</p>
+                                              <span className={`inline-flex h-7 items-center rounded-full px-3 text-[12px] font-medium ${badgeClass}`}>
+                                                {tool.status}
+                                              </span>
+                                            </div>
+                                            <p className="mt-2 text-sm text-[#64748B]">{tool.description}</p>
+                                          </div>
+                                        </div>
+                                        <div className="mt-4">
+                                          {isConnected ? (
+                                            <button onClick={() => openDrawer(tool.id)} className="w-full rounded-[24px] border border-[#EEF2F6] bg-white px-3 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F8FAFC]">Manage</button>
+                                          ) : isComing ? (
+                                            <button className="w-full rounded-[24px] bg-[#F3F4F6] px-3 py-2 text-sm font-semibold text-[#94A3B8] pointer-events-none">Coming soon</button>
+                                          ) : (
+                                            <button
+                                              onClick={() => {
+                                                setConnectModalId(tool.id);
+                                                setConnectForm({ email: "", businessName: "", phone: "" });
+                                                setConnectModalOpen(true);
+                                              }}
+                                              className="w-full rounded-[24px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
+                                            >
+                                              Connect
+                                            </button>
+                                          )}
+                                        </div>
+                                      </div>
+                                    );
+                                  });
+                                })()}
+                              </div>
+                            </div>
+
+                            <div className="rounded-[24px] border border-[#EEF2F6] bg-white p-5">
+                              <div className="flex items-start gap-3">
+                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]">
+                                  <Tag className="h-5 w-5" />
+                                </div>
+                                <div>
+                                  <p className="text-sm font-semibold text-[#111827]">Payments</p>
+                                  <p className="mt-1 text-sm text-[#64748B]">
+                                    Connect the payment systems your business uses so your AI employee can work with payment-related tasks.
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                                {(() => {
+                                  const payments = [
+                                    {
+                                      id: "mpesa",
+                                      label: "M-Pesa",
+                                      Icon: Phone,
+                                      description: "Enable mobile money payments and reconciliation.",
+                                      status: integrationStates.mpesa?.status ?? "Not Connected",
+                                    },
+                                    {
+                                      id: "stripe",
+                                      label: "Stripe",
+                                      Icon: Tag,
+                                      description: "Allow the AI to generate payment links.",
+                                      status: integrationStates.stripe?.status ?? "Not Connected",
+                                    },
+                                    {
+                                      id: "paypal",
+                                      label: "PayPal",
+                                      Icon: Tag,
+                                      description: "Allow the AI to generate PayPal payment links.",
+                                      status: integrationStates.paypal?.status ?? "Not Connected",
+                                    },
+                                    {
+                                      id: "flutterwave",
+                                      label: "Flutterwave",
+                                      Icon: Globe,
+                                      description: "Allow the AI to process payments across Africa and generate payment links.",
+                                      status: integrationStates.flutterwave?.status ?? "Coming Soon",
+                                    },
+                                  ];
+
+                                  return payments.map((payment) => {
+                                    const statusLabel = payment.status === "Not Connected" ? "Available" : payment.status === "Connected" ? "Connected" : payment.status;
+                                    const badgeClass =
+                                      statusLabel === "Connected"
+                                        ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#166534]"
+                                        : statusLabel === "Coming Soon"
+                                        ? "border-[#E9D5FF] bg-[#F5F3FF] text-[#6D28D9]"
+                                        : statusLabel === "Available"
+                                        ? "border-[#F3F4F6] bg-[#F3F4F6] text-[#6B7280]"
+                                        : "border-[#F3F4F6] bg-[#F3F4F6] text-[#6B7280]";
+                                    const isAvailable = statusLabel === "Connected" || statusLabel === "Available";
+                                    const isComing = statusLabel === "Coming Soon";
+                                    return (
+                                      <div key={payment.id} className="rounded-[24px] border border-[#E5E7EF] bg-white p-4">
+                                        <div className="flex items-start gap-3">
+                                          <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ${isAvailable ? "bg-[#ECFDF5] text-[#166534]" : "bg-[#F3F4F6] text-[#9CA3AF]"}`}>
+                                            <payment.Icon className="h-5 w-5" />
+                                          </div>
+                                          <div className="min-w-0">
+                                            <div className="flex items-center justify-between gap-3">
+                                              <p className="text-sm font-semibold text-[#111827]">{payment.label}</p>
+                                              <span className={`inline-flex h-7 items-center rounded-full px-3 text-[12px] font-medium ${badgeClass}`}>
+                                                {statusLabel}
+                                              </span>
+                                            </div>
+                                            <p className="mt-2 text-sm text-[#64748B]">{payment.description}</p>
+                                          </div>
+                                        </div>
+                                        <div className="mt-4">
+                                          {payment.status === "Connected" ? (
+                                            <button onClick={() => openDrawer(payment.id)} className="w-full rounded-[24px] border border-[#EEF2F6] bg-white px-3 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F8FAFC]">Manage</button>
+                                          ) : payment.status === "Coming Soon" ? (
+                                            <button className="w-full rounded-[24px] bg-[#F3F4F6] px-3 py-2 text-sm font-semibold text-[#94A3B8] pointer-events-none">Coming soon</button>
+                                          ) : (
+                                            <button onClick={() => { setConnectModalId(payment.id); setConnectForm({ email: "", businessName: "", phone: "" }); setConnectModalOpen(true); }} className="w-full rounded-[24px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#16A34A]">Connect</button>
+                                          )}
                                         </div>
                                       </div>
                                     );
