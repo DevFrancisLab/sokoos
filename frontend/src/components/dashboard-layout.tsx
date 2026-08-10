@@ -3,29 +3,23 @@ import { useRouter } from "@tanstack/react-router";
 import {
   Home,
   Inbox,
-  Calendar,
-  Megaphone,
-  Box,
   Cpu,
+  Globe,
+  Megaphone,
   Activity,
+  Bot,
   Settings,
-  Menu,
-  X,
-  ChevronRight,
-  ChevronDown,
-  Search,
-  MessageCircle,
-  Clock,
-  Phone,
-  Tag,
   Smile,
   Paperclip,
   Image,
   Send,
-  Bot,
+  MessageCircle,
+  Calendar,
+  Box,
+  Phone,
+  Tag,
   Check,
   Plus,
-  Globe,
   User,
   BookOpen,
   Package,
@@ -39,6 +33,13 @@ import {
   MoreVertical,
   LayoutGrid,
   List,
+  X,
+  ChevronRight,
+  ChevronLeft,
+  Clock,
+  Menu,
+  Search,
+  ChevronDown,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -397,6 +398,11 @@ const BADGE =
 const BADGE_ICON = "h-2.5 w-2.5 rounded-full";
 const STATUS_CHIP =
   "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium flex-shrink-0 transition-all duration-150 ease-out transform hover:scale-[1.02]";
+
+// Small card variant used across integration lists
+const SMALL_CARD = "rounded-[24px] border border-[#E5E7EF] bg-white p-4";
+const ICON_WRAP_AVAILABLE = "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#ECFDF5] text-[#166534]";
+const ICON_WRAP_DEFAULT = "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#F3F4F6] text-[#9CA3AF]";
 
 const RECENT_ACTIVITY = [
   {
@@ -8603,16 +8609,17 @@ export default function DashboardLayout() {
 
                                   return channels.map((channel) => {
                                     const isAvailable = ["Connected", "Active", "Ready"].includes(channel.status);
+                                    const iconWrapClass = isAvailable ? ICON_WRAP_AVAILABLE : ICON_WRAP_DEFAULT;
                                     return (
-                                      <div key={channel.id} className="rounded-[24px] border border-[#E5E7EF] bg-white p-4">
+                                      <div key={channel.id} className={SMALL_CARD}>
                                         <div className="flex items-start gap-3">
-                                          <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ${isAvailable ? "bg-[#ECFDF5] text-[#166534]" : "bg-[#F3F4F6] text-[#9CA3AF]"}`}>
+                                          <div className={iconWrapClass}>
                                             <channel.Icon className="h-5 w-5" />
                                           </div>
                                           <div className="min-w-0">
                                             <div className="flex items-center justify-between gap-3">
                                               <p className="text-sm font-semibold text-[#111827]">{channel.label}</p>
-                                              <span className={`inline-flex h-7 items-center rounded-full px-3 text-[12px] font-medium ${badgeClass(channel.status)}`}>
+                                              <span className={`${BADGE} ${badgeClass(channel.status)}`}>
                                                 {channel.status}
                                               </span>
                                             </div>
@@ -8691,41 +8698,37 @@ export default function DashboardLayout() {
                                     const badgeClass = isConnected
                                       ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#166534]"
                                       : "border-[#F3F4F6] bg-[#F3F4F6] text-[#6B7280]";
-                                    const iconWrapClass = isConnected
-                                      ? "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#ECFDF5] text-[#166534]"
-                                      : "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#F3F4F6] text-[#9CA3AF]";
+                                    const iconWrapClass = isConnected ? ICON_WRAP_AVAILABLE : ICON_WRAP_DEFAULT;
 
                                     return (
-                                      <div key={tool.id} className="rounded-[24px] border border-[#E5E7EF] bg-white p-4">
+                                      <div key={tool.id} className={SMALL_CARD}>
                                         <div className="flex items-start gap-3">
                                           <div className={iconWrapClass}>
                                             <tool.Icon className="h-5 w-5" />
                                           </div>
                                           <div className="min-w-0">
-                                            <div className="flex items-center justify-between gap-3">
-                                              <p className="text-sm font-semibold text-[#111827]">{tool.label}</p>
-                                              <span className={`inline-flex h-7 items-center rounded-full px-3 text-[12px] font-medium ${badgeClass}`}>
-                                                {tool.status}
-                                              </span>
+                                            <p className="text-sm font-semibold text-[#111827]">{tool.label}</p>
+                                            <p className="mt-1 text-sm text-[#64748B]">{tool.description}</p>
+                                            <div className="mt-3 flex items-center justify-between gap-3">
+                                              <span className={`${BADGE} ${badgeClass}`}>{tool.status}</span>
+                                              <div className="ml-auto w-1/3">
+                                                {isConnected ? (
+                                                  <button onClick={() => openDrawer(tool.id)} className={BUTTON_SECONDARY}>Manage</button>
+                                                ) : (
+                                                  <button
+                                                    onClick={() => {
+                                                      setConnectModalId(tool.id);
+                                                      setConnectForm({ email: "", businessName: "", phone: "" });
+                                                      setConnectModalOpen(true);
+                                                    }}
+                                                    className={BUTTON_PRIMARY}
+                                                  >
+                                                    Connect
+                                                  </button>
+                                                )}
+                                              </div>
                                             </div>
-                                            <p className="mt-2 text-sm text-[#64748B]">{tool.description}</p>
                                           </div>
-                                        </div>
-                                        <div className="mt-4">
-                                          {isConnected ? (
-                                            <button onClick={() => openDrawer(tool.id)} className="w-full rounded-[24px] border border-[#EEF2F6] bg-white px-3 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F8FAFC]">Manage</button>
-                                          ) : (
-                                            <button
-                                              onClick={() => {
-                                                setConnectModalId(tool.id);
-                                                setConnectForm({ email: "", businessName: "", phone: "" });
-                                                setConnectModalOpen(true);
-                                              }}
-                                              className="w-full rounded-[24px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
-                                            >
-                                              Connect
-                                            </button>
-                                          )}
                                         </div>
                                       </div>
                                     );
@@ -8796,46 +8799,42 @@ export default function DashboardLayout() {
                                       ? "border-[#E9D5FF] bg-[#F5F3FF] text-[#6D28D9]"
                                       : "border-[#F3F4F6] bg-[#F3F4F6] text-[#6B7280]";
                                     const isAvailable = isConnected || (!isComing && tool.status === "Not Connected");
-                                    const iconWrapClass = isConnected
-                                      ? "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#ECFDF5] text-[#166534]"
-                                      : "flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#F3F4F6] text-[#9CA3AF]";
+                                    const iconWrapClass = isConnected ? ICON_WRAP_AVAILABLE : ICON_WRAP_DEFAULT;
 
-                                    return (
-                                      <div key={tool.id} className="rounded-[24px] border border-[#E5E7EF] bg-white p-4">
-                                        <div className="flex items-start gap-3">
-                                          <div className={iconWrapClass}>
-                                            <tool.Icon className="h-5 w-5" />
-                                          </div>
-                                          <div className="min-w-0">
-                                            <div className="flex items-center justify-between gap-3">
-                                              <p className="text-sm font-semibold text-[#111827]">{tool.label}</p>
-                                              <span className={`inline-flex h-7 items-center rounded-full px-3 text-[12px] font-medium ${badgeClass}`}>
-                                                {tool.status}
-                                              </span>
-                                            </div>
-                                            <p className="mt-2 text-sm text-[#64748B]">{tool.description}</p>
-                                          </div>
+                                  return (
+                                    <div key={tool.id} className={SMALL_CARD}>
+                                      <div className="flex items-start gap-3">
+                                        <div className={iconWrapClass}>
+                                          <tool.Icon className="h-5 w-5" />
                                         </div>
-                                        <div className="mt-4">
-                                          {isConnected ? (
-                                            <button onClick={() => openDrawer(tool.id)} className="w-full rounded-[24px] border border-[#EEF2F6] bg-white px-3 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F8FAFC]">Manage</button>
-                                          ) : isComing ? (
-                                            <button className="w-full rounded-[24px] bg-[#F3F4F6] px-3 py-2 text-sm font-semibold text-[#94A3B8] pointer-events-none">Coming soon</button>
-                                          ) : (
-                                            <button
-                                              onClick={() => {
-                                                setConnectModalId(tool.id);
-                                                setConnectForm({ email: "", businessName: "", phone: "" });
-                                                setConnectModalOpen(true);
-                                              }}
-                                              className="w-full rounded-[24px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
-                                            >
-                                              Connect
-                                            </button>
-                                          )}
+                                        <div className="min-w-0">
+                                          <p className="text-sm font-semibold text-[#111827]">{tool.label}</p>
+                                          <p className="mt-1 text-sm text-[#64748B]">{tool.description}</p>
+                                          <div className="mt-3 flex items-center justify-between gap-3">
+                                            <span className={`${BADGE} ${badgeClass}`}>{tool.status}</span>
+                                            <div className="ml-auto w-1/3">
+                                              {isConnected ? (
+                                                <button onClick={() => openDrawer(tool.id)} className={BUTTON_SECONDARY}>Manage</button>
+                                              ) : isComing ? (
+                                                <button className={`${BUTTON_TERTIARY} pointer-events-none`}>Coming soon</button>
+                                              ) : (
+                                                <button
+                                                  onClick={() => {
+                                                    setConnectModalId(tool.id);
+                                                    setConnectForm({ email: "", businessName: "", phone: "" });
+                                                    setConnectModalOpen(true);
+                                                  }}
+                                                  className={BUTTON_PRIMARY}
+                                                >
+                                                  Connect
+                                                </button>
+                                              )}
+                                            </div>
+                                          </div>
                                         </div>
                                       </div>
-                                    );
+                                    </div>
+                                  );
                                   });
                                 })()}
                               </div>
@@ -8891,43 +8890,156 @@ export default function DashboardLayout() {
                                         ? "border-[#E9D5FF] bg-[#F5F3FF] text-[#6D28D9]"
                                         : "border-[#F3F4F6] bg-[#F3F4F6] text-[#6B7280]";
                                     return (
-                                      <div key={source.id} className="rounded-[24px] border border-[#E5E7EF] bg-white p-4">
+                                      <div key={source.id} className={SMALL_CARD}>
                                         <div className="flex items-start gap-3">
-                                          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#F3F4F6] text-[#9CA3AF]">
+                                          <div className={ICON_WRAP_DEFAULT}>
                                             <source.Icon className="h-5 w-5" />
                                           </div>
                                           <div className="min-w-0">
-                                            <div className="flex items-center justify-between gap-3">
-                                              <p className="text-sm font-semibold text-[#111827]">{source.label}</p>
-                                              <span className={`inline-flex h-7 items-center rounded-full px-3 text-[12px] font-medium ${badgeClass}`}>
-                                                {statusLabel}
-                                              </span>
+                                            <p className="text-sm font-semibold text-[#111827]">{source.label}</p>
+                                            <p className="mt-1 text-sm text-[#64748B]">{source.description}</p>
+                                            <div className="mt-3 flex items-center justify-between gap-3">
+                                              <span className={`${BADGE} ${badgeClass}`}>{statusLabel}</span>
+                                              <div className="ml-auto w-1/3">
+                                                {isConnected ? (
+                                                  <button onClick={() => openDrawer(source.id)} className={BUTTON_SECONDARY}>Manage</button>
+                                                ) : isComing ? (
+                                                  <button className={`${BUTTON_TERTIARY} pointer-events-none`}>Coming soon</button>
+                                                ) : (
+                                                  <button
+                                                    onClick={() => {
+                                                      setConnectModalId(source.id);
+                                                      setConnectForm({ email: "", businessName: "", phone: "" });
+                                                      setConnectModalOpen(true);
+                                                    }}
+                                                    className={BUTTON_PRIMARY}
+                                                  >
+                                                    Connect
+                                                  </button>
+                                                )}
+                                              </div>
                                             </div>
-                                            <p className="mt-2 text-sm text-[#64748B]">{source.description}</p>
                                           </div>
-                                        </div>
-                                        <div className="mt-4">
-                                          {isConnected ? (
-                                            <button onClick={() => openDrawer(source.id)} className="w-full rounded-[24px] border border-[#EEF2F6] bg-white px-3 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F8FAFC]">Manage</button>
-                                          ) : isComing ? (
-                                            <button className="w-full rounded-[24px] bg-[#F3F4F6] px-3 py-2 text-sm font-semibold text-[#94A3B8] pointer-events-none">Coming soon</button>
-                                          ) : (
-                                            <button
-                                              onClick={() => {
-                                                setConnectModalId(source.id);
-                                                setConnectForm({ email: "", businessName: "", phone: "" });
-                                                setConnectModalOpen(true);
-                                              }}
-                                              className="w-full rounded-[24px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
-                                            >
-                                              Connect
-                                            </button>
-                                          )}
                                         </div>
                                       </div>
                                     );
                                   });
                                 })()}
+                              </div>
+                            </div>
+
+                            <div className="rounded-[24px] border border-[#EEF2F6] bg-white p-5">
+                              <div className="flex items-start gap-3">
+                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]">
+                                  <Check className="h-5 w-5" />
+                                </div>
+                                <div>
+                                  <p className="text-sm font-semibold text-[#111827]">Review</p>
+                                  <p className="mt-1 text-sm text-[#64748B]">
+                                    Review the systems connected to your AI employee.
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div className="mt-5 space-y-5">
+                                {(() => {
+                                  const normalizeReviewStatus = (status: string) => {
+                                    if (status === "Connected") return "Connected";
+                                    if (status === "Coming Soon" || status === "ComingSoon") return "Coming soon";
+                                    if (status === "Setup required" || status === "Ready" || status === "Active" || status === "Disabled") return "Setup required";
+                                    return "Available";
+                                  };
+
+                                  const reviewGroups = [
+                                    {
+                                      title: "Channels",
+                                      items: INTEGRATION_SECTIONS.find((section) => section.section === "Channels")?.items ?? [],
+                                    },
+                                    {
+                                      title: "Payments",
+                                      items: INTEGRATION_SECTIONS.find((section) => section.section === "Payments")?.items ?? [],
+                                    },
+                                    {
+                                      title: "Business Tools",
+                                      items: INTEGRATION_SECTIONS.find((section) => section.section === "Business Tools")?.items ?? [],
+                                    },
+                                    {
+                                      title: "Communication",
+                                      items: INTEGRATION_SECTIONS.find((section) => section.section === "Communication")?.items ?? [],
+                                    },
+                                    {
+                                      title: "Data & Sync",
+                                      items: INTEGRATION_SECTIONS.find((section) => section.section === "Data & Sync")?.items ?? [],
+                                    },
+                                  ];
+
+                                  const totalConnected = reviewGroups.reduce((sum, group) => {
+                                    return (
+                                      sum +
+                                      group.items.filter((item) => normalizeReviewStatus(integrationStates[item.id]?.status ?? item.status) === "Connected").length
+                                    );
+                                  }, 0);
+
+                                  return (
+                                    <>
+                                      {totalConnected === 0 && (
+                                        <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFC] p-4 text-sm text-[#64748B]">
+                                          No integrations connected yet.
+                                        </div>
+                                      )}
+
+                                      {reviewGroups.map((group) => {
+                                        const counts = group.items.reduce(
+                                          (acc, item) => {
+                                            const status = normalizeReviewStatus(integrationStates[item.id]?.status ?? item.status);
+                                            acc[status] = (acc[status] ?? 0) + 1;
+                                            return acc;
+                                          },
+                                          {
+                                            Connected: 0,
+                                            Available: 0,
+                                            "Setup required": 0,
+                                            "Coming soon": 0,
+                                          } as Record<string, number>,
+                                        );
+
+                                        return (
+                                          <div key={group.title} className="rounded-[20px] border border-[#E5E7EF] bg-[#F8FAFC] p-4">
+                                            <div className="flex items-center justify-between gap-3">
+                                              <p className="text-sm font-semibold text-[#111827]">{group.title}</p>
+                                              <span className="text-sm text-[#64748B]">{group.items.length} integrations</span>
+                                            </div>
+                                            <div className="mt-4 grid gap-3 sm:grid-cols-4">
+                                              {[
+                                                { label: "Connected", value: counts["Connected"] },
+                                                { label: "Available", value: counts["Available"] },
+                                                { label: "Setup required", value: counts["Setup required"] },
+                                                { label: "Coming soon", value: counts["Coming soon"] },
+                                              ].map((metric) => (
+                                                <div key={metric.label} className="rounded-[16px] border border-[#E5E7EF] bg-white p-3">
+                                                  <p className="text-[11px] uppercase tracking-[0.2em] text-[#64748B]">{metric.label}</p>
+                                                  <p className="mt-2 text-2xl font-semibold text-[#111827]">{metric.value}</p>
+                                                </div>
+                                              ))}
+                                            </div>
+                                          </div>
+                                        );
+                                      })}
+                                    </>
+                                  );
+                                })()}
+                              </div>
+
+                              <div className="mt-5 flex justify-end">
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    handleSaveChanges();
+                                  }}
+                                  className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]"
+                                >
+                                  Save & Continue <ChevronRight className="h-4 w-4" />
+                                </button>
                               </div>
                             </div>
 
@@ -8989,33 +9101,31 @@ export default function DashboardLayout() {
                                         : "border-[#F3F4F6] bg-[#F3F4F6] text-[#6B7280]";
                                     const isAvailable = statusLabel === "Connected" || statusLabel === "Available";
                                     const isComing = statusLabel === "Coming Soon";
-                                    return (
-                                      <div key={payment.id} className="rounded-[24px] border border-[#E5E7EF] bg-white p-4">
-                                        <div className="flex items-start gap-3">
-                                          <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ${isAvailable ? "bg-[#ECFDF5] text-[#166534]" : "bg-[#F3F4F6] text-[#9CA3AF]"}`}>
-                                            <payment.Icon className="h-5 w-5" />
-                                          </div>
-                                          <div className="min-w-0">
-                                            <div className="flex items-center justify-between gap-3">
-                                              <p className="text-sm font-semibold text-[#111827]">{payment.label}</p>
-                                              <span className={`inline-flex h-7 items-center rounded-full px-3 text-[12px] font-medium ${badgeClass}`}>
-                                                {statusLabel}
-                                              </span>
-                                            </div>
-                                            <p className="mt-2 text-sm text-[#64748B]">{payment.description}</p>
-                                          </div>
+                                  return (
+                                    <div key={payment.id} className={SMALL_CARD}>
+                                      <div className="flex items-start gap-3">
+                                        <div className={isAvailable ? ICON_WRAP_AVAILABLE : ICON_WRAP_DEFAULT}>
+                                          <payment.Icon className="h-5 w-5" />
                                         </div>
-                                        <div className="mt-4">
-                                          {payment.status === "Connected" ? (
-                                            <button onClick={() => openDrawer(payment.id)} className="w-full rounded-[24px] border border-[#EEF2F6] bg-white px-3 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F8FAFC]">Manage</button>
-                                          ) : payment.status === "Coming Soon" ? (
-                                            <button className="w-full rounded-[24px] bg-[#F3F4F6] px-3 py-2 text-sm font-semibold text-[#94A3B8] pointer-events-none">Coming soon</button>
-                                          ) : (
-                                            <button onClick={() => { setConnectModalId(payment.id); setConnectForm({ email: "", businessName: "", phone: "" }); setConnectModalOpen(true); }} className="w-full rounded-[24px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#16A34A]">Connect</button>
-                                          )}
+                                        <div className="min-w-0">
+                                          <p className="text-sm font-semibold text-[#111827]">{payment.label}</p>
+                                          <p className="mt-1 text-sm text-[#64748B]">{payment.description}</p>
+                                          <div className="mt-3 flex items-center justify-between gap-3">
+                                            <span className={`${BADGE} ${badgeClass}`}>{statusLabel}</span>
+                                            <div className="ml-auto w-1/3">
+                                              {payment.status === "Connected" ? (
+                                                <button onClick={() => openDrawer(payment.id)} className={BUTTON_SECONDARY}>Manage</button>
+                                              ) : payment.status === "Coming Soon" ? (
+                                                <button className={`${BUTTON_TERTIARY} pointer-events-none`}>Coming soon</button>
+                                              ) : (
+                                                <button onClick={() => { setConnectModalId(payment.id); setConnectForm({ email: "", businessName: "", phone: "" }); setConnectModalOpen(true); }} className={BUTTON_PRIMARY}>Connect</button>
+                                              )}
+                                            </div>
+                                          </div>
                                         </div>
                                       </div>
-                                    );
+                                    </div>
+                                  );
                                   });
                                 })()}
                               </div>
