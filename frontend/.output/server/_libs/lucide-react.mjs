@@ -1,5 +1,5 @@
 import { n as __toESM } from "../_runtime.mjs";
-import { r as require_react } from "./react+tanstack__react-query.mjs";
+import { u as require_react } from "./@floating-ui/react-dom+[...].mjs";
 //#region node_modules/lucide-react/dist/esm/shared/src/utils/mergeClasses.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 /**
@@ -385,28 +385,12 @@ var ChevronRight = createLucideIcon("chevron-right", [["path", {
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
-var CircleAlert = createLucideIcon("circle-alert", [
-	["circle", {
-		cx: "12",
-		cy: "12",
-		r: "10",
-		key: "1mglay"
-	}],
-	["line", {
-		x1: "12",
-		x2: "12",
-		y1: "8",
-		y2: "12",
-		key: "1pkeuh"
-	}],
-	["line", {
-		x1: "12",
-		x2: "12.01",
-		y1: "16",
-		y2: "16",
-		key: "4dfq90"
-	}]
-]);
+var Circle = createLucideIcon("circle", [["circle", {
+	cx: "12",
+	cy: "12",
+	r: "10",
+	key: "1mglay"
+}]]);
 /**
 * @license lucide-react v0.575.0 - ISC
 *
@@ -515,6 +499,32 @@ var Database = createLucideIcon("database", [
 	["path", {
 		d: "M3 12A9 3 0 0 0 21 12",
 		key: "mv7ke4"
+	}]
+]);
+/**
+* @license lucide-react v0.575.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var EllipsisVertical = createLucideIcon("ellipsis-vertical", [
+	["circle", {
+		cx: "12",
+		cy: "12",
+		r: "1",
+		key: "41hilf"
+	}],
+	["circle", {
+		cx: "12",
+		cy: "5",
+		r: "1",
+		key: "gxeob9"
+	}],
+	["circle", {
+		cx: "12",
+		cy: "19",
+		r: "1",
+		key: "lyex9k"
 	}]
 ]);
 /**
@@ -657,6 +667,46 @@ var Inbox = createLucideIcon("inbox", [["polyline", {
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var LayoutGrid = createLucideIcon("layout-grid", [
+	["rect", {
+		width: "7",
+		height: "7",
+		x: "3",
+		y: "3",
+		rx: "1",
+		key: "1g98yp"
+	}],
+	["rect", {
+		width: "7",
+		height: "7",
+		x: "14",
+		y: "3",
+		rx: "1",
+		key: "6d4xhi"
+	}],
+	["rect", {
+		width: "7",
+		height: "7",
+		x: "14",
+		y: "14",
+		rx: "1",
+		key: "nxv5o0"
+	}],
+	["rect", {
+		width: "7",
+		height: "7",
+		x: "3",
+		y: "14",
+		rx: "1",
+		key: "1bb6yr"
+	}]
+]);
+/**
+* @license lucide-react v0.575.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var Linkedin = createLucideIcon("linkedin", [
 	["path", {
 		d: "M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z",
@@ -674,6 +724,38 @@ var Linkedin = createLucideIcon("linkedin", [
 		cy: "4",
 		r: "2",
 		key: "bt5ra8"
+	}]
+]);
+/**
+* @license lucide-react v0.575.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var List = createLucideIcon("list", [
+	["path", {
+		d: "M3 5h.01",
+		key: "18ugdj"
+	}],
+	["path", {
+		d: "M3 12h.01",
+		key: "nlz23k"
+	}],
+	["path", {
+		d: "M3 19h.01",
+		key: "noohij"
+	}],
+	["path", {
+		d: "M8 5h13",
+		key: "1pao27"
+	}],
+	["path", {
+		d: "M8 12h13",
+		key: "1za7za"
+	}],
+	["path", {
+		d: "M8 19h13",
+		key: "m83p4d"
 	}]
 ]);
 /**
@@ -1132,4 +1214,4 @@ var X = createLucideIcon("x", [["path", {
 	key: "d8bk6v"
 }]]);
 //#endregion
-export { Heart as A, ChevronDown as B, Menu as C, Inbox as D, Linkedin as E, Database as F, Boxes as G, ChartColumn as H, Cpu as I, BookOpen as J, Box as K, Clock as L, Facebook as M, Eye as N, Image as O, EyeOff as P, CircleAlert as R, MessageCircle as S, MapPin as T, Calendar as U, Check as V, Brain as W, Activity as X, ArrowRight as Y, Plug as _, Tag as a, Package as b, Smile as c, Send as d, Search as f, Plus as g, RefreshCw as h, Target as i, Globe as j, House as k, Shield as l, Repeat as m, Users as n, Star as o, Rocket as p, Bot as q, User as r, Sparkles as s, X as t, Settings as u, Phone as v, Megaphone as w, MessageSquareOff as x, Paperclip as y, ChevronRight as z };
+export { Activity as $, Image as A, Clock as B, Menu as C, Linkedin as D, List as E, Eye as F, ChartColumn as G, ChevronRight as H, EyeOff as I, Boxes as J, Calendar as K, EllipsisVertical as L, Heart as M, Globe as N, LayoutGrid as O, Facebook as P, ArrowRight as Q, Database as R, MessageCircle as S, MapPin as T, ChevronDown as U, Circle as V, Check as W, Bot as X, Box as Y, BookOpen as Z, Plug as _, Tag as a, Package as b, Smile as c, Send as d, Search as f, Plus as g, RefreshCw as h, Target as i, House as j, Inbox as k, Shield as l, Repeat as m, Users as n, Star as o, Rocket as p, Brain as q, User as r, Sparkles as s, X as t, Settings as u, Phone as v, Megaphone as w, MessageSquareOff as x, Paperclip as y, Cpu as z };

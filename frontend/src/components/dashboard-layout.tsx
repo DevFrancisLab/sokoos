@@ -61,7 +61,7 @@ const NAV_ITEMS = [
 
   {
     label: "AI Employee",
-    Icon: Cpu,
+    Icon: Bot,
     children: [
       {
         label: "Training",
@@ -76,22 +76,22 @@ const NAV_ITEMS = [
     ],
   },
 
-  {
-    label: "Growth Pages",
-    href: "/dashboard/pages",
-    Icon: Globe,
-  },
+  // {
+  //   label: "Growth Pages",
+  //   href: "/dashboard/pages",
+  //   Icon: Globe,
+  // },
 
-  {
-    label: "Marketing",
-    href: "/dashboard/marketing",
-    Icon: Megaphone,
-  },
-  {
-    label: "Integrations",
-    href: "/dashboard/integrations",
-    Icon: Bot,
-  },
+  // {
+  //   label: "Marketing",
+  //   href: "/dashboard/marketing",
+  //   Icon: Megaphone,
+  // },
+  // {
+  //   label: "Integrations",
+  //   href: "/dashboard/integrations",
+  //   Icon: Cpu,
+  // },
 
   {
     label: "Settings",
@@ -4189,26 +4189,48 @@ export default function DashboardLayout() {
 
   const router = useRouter();
 
+  const getSelectionFromPath = (pathname: string) => {
+    if (pathname === "/dashboard/ai" || pathname === "/dashboard/ai/") return "Training";
+    if (pathname === "/dashboard/performance" || pathname === "/dashboard/performance/") return "Performance";
+    if (pathname === "/dashboard/inbox" || pathname === "/dashboard/inbox/") return "Inbox";
+    if (pathname === "/dashboard/integrations" || pathname === "/dashboard/integrations/") return "Integrations";
+    if (pathname === "/dashboard/settings" || pathname === "/dashboard/settings/") return "Settings";
+    if (pathname === "/dashboard/customers" || pathname === "/dashboard/customers/") return "Customers";
+    if (pathname === "/dashboard/catalog" || pathname === "/dashboard/catalog/") return "Catalog";
+    if (pathname === "/dashboard" || pathname === "/dashboard/" || pathname === "/") return "Home";
+    return "Home";
+  };
+
+  useEffect(() => {
+    const pathname = router.state.location.pathname;
+    const nextSelection = getSelectionFromPath(pathname);
+    setSelected(nextSelection);
+    if (nextSelection === "Training") {
+      setActiveWorkspaceSection("Identity");
+    }
+  }, [router.state.location.pathname]);
+
   const handleNavSelection = (label: string, href?: string) => {
     if (label === "Training") {
-      setSelected("AI Employee");
-      if (typeof window !== "undefined") {
-        window.history.pushState({}, "", "/dashboard/ai");
+      setSelected("Training");
+      setActiveWorkspaceSection("Identity");
+      if (href) {
+        void router.navigate({ to: href as never });
       }
       return;
     }
 
     if (label === "Performance") {
       setSelected("Performance");
-      if (typeof window !== "undefined") {
-        window.history.pushState({}, "", "/dashboard/performance");
+      if (href) {
+        void router.navigate({ to: href as never });
       }
       return;
     }
 
     setSelected(label);
-    if (href && typeof window !== "undefined") {
-      window.history.pushState({}, "", href);
+    if (href) {
+      void router.navigate({ to: href as never });
     }
   };
 
@@ -4276,7 +4298,10 @@ export default function DashboardLayout() {
                 {isExpanded && !isCompact && (
                   <ul className="mt-1 space-y-1 pl-6">
                     {item.children?.map((child) => {
-                      const childActive = selected === child.label;
+                      const childActive =
+                        selected === child.label ||
+                        (child.label === "Training" && selected === "Training") ||
+                        (child.label === "Performance" && selected === "Performance");
                       return (
                         <li key={child.label}>
                           <button
@@ -10007,17 +10032,17 @@ export default function DashboardLayout() {
                             title: "Knowledge",
                             items: [
                               {
-                                issue: "Customers are asking about pricing and product availability.",
-                                why: "These conversations need clear business answers and catalog context to avoid follow-up friction.",
+                                issue: "Customers are asking about pricing, product availability, or related product details.",
+                                why: "These conversations point to a likely knowledge gap in the AI's current answers.",
                                 source: "Knowledge",
-                                actionLabel: "Review Knowledge",
+                                actionLabel: "Open Knowledge",
                                 onAction: () => {
                                   setSelected("AI Employee");
                                   setActiveWorkspaceSection("Knowledge Hub");
                                 },
                                 enabled: INBOX_CONVERSATIONS.some((conversation) => {
                                   const message = conversation.message.toLowerCase();
-                                  return message.includes("pricing") || message.includes("price") || message.includes("availability") || message.includes("product");
+                                  return message.includes("pricing") || message.includes("price") || message.includes("availability") || message.includes("product") || message.includes("catalogue");
                                 }),
                               },
                             ],
@@ -10026,8 +10051,8 @@ export default function DashboardLayout() {
                             title: "Catalogue",
                             items: [
                               {
-                                issue: "The Business Package offer is currently paused.",
-                                why: "Customers may be directed to an offer that is not currently active in the catalogue.",
+                                issue: "At least one offer is currently inactive in the catalogue.",
+                                why: "The AI may be directing customers toward an offer that is not currently available.",
                                 source: "Catalogue",
                                 actionLabel: "Open Catalogue",
                                 onAction: () => {
@@ -10039,18 +10064,18 @@ export default function DashboardLayout() {
                             ],
                           },
                           {
-                            title: "Sales Playbook",
+                            title: "Sales Playbooks",
                             items: [
                               {
-                                issue: "No sales playbooks have been created yet.",
-                                why: "The AI has no structured guide for qualification, follow-up, or handoff steps.",
-                                source: "Sales Playbook",
-                                actionLabel: "Open Sales Playbook",
+                                issue: "There are customer conversations and leads, but no sales playbooks are available yet.",
+                                why: "This suggests the AI is missing a structured guide for qualification and follow-up.",
+                                source: "Sales",
+                                actionLabel: "Open Sales Playbooks",
                                 onAction: () => {
                                   setSelected("AI Employee");
                                   setActiveWorkspaceSection("Sales Playbooks");
                                 },
-                                enabled: playbooks.length === 0,
+                                enabled: playbooks.length === 0 && (INBOX_CONVERSATIONS.length > 0 || CUSTOMERS.length > 0),
                               },
                             ],
                           },
@@ -10058,15 +10083,50 @@ export default function DashboardLayout() {
                             title: "Policies",
                             items: [
                               {
-                                issue: "A conversation has been flagged for human review.",
-                                why: "This indicates a case that needs policy-aware escalation or review.",
+                                issue: "At least one conversation has been flagged for human review.",
+                                why: "This points to a policy-sensitive case that should be reviewed in the AI's policy workspace.",
                                 source: "Policies",
-                                actionLabel: "Review Policies",
+                                actionLabel: "Open Policies",
                                 onAction: () => {
                                   setSelected("AI Employee");
                                   setActiveWorkspaceSection("Policies");
                                 },
                                 enabled: INBOX_CONVERSATIONS.some((conversation) => conversation.source === "needs_attention" || conversation.needsAttention),
+                              },
+                            ],
+                          },
+                          {
+                            title: "Skills",
+                            items: [
+                              {
+                                issue: "Support and follow-up requests are appearing in customer conversations.",
+                                why: "These cases likely need stronger skill coverage in the AI's support and follow-up capabilities.",
+                                source: "Skills",
+                                actionLabel: "Open Skills",
+                                onAction: () => {
+                                  setSelected("AI Employee");
+                                  setActiveWorkspaceSection("Skills");
+                                },
+                                enabled: INBOX_CONVERSATIONS.some((conversation) => {
+                                  const message = conversation.message.toLowerCase();
+                                  return message.includes("support") || message.includes("issue") || message.includes("problem") || message.includes("cancel") || message.includes("refund") || message.includes("follow up");
+                                }),
+                              },
+                            ],
+                          },
+                          {
+                            title: "Integrations",
+                            items: [
+                              {
+                                issue: "Some integrations are still not fully connected or require setup.",
+                                why: "This suggests the AI may be missing the data or channels it needs to act effectively.",
+                                source: "Integrations",
+                                actionLabel: "Open Integrations",
+                                onAction: () => {
+                                  setSelected("AI Employee");
+                                  setActiveWorkspaceSection("Integrations");
+                                },
+                                enabled: getAllIntegrationItems().some((item) => getIntegrationStatus(item.id) === "setup_required" || getIntegrationStatus(item.id) === "available"),
                               },
                             ],
                           },

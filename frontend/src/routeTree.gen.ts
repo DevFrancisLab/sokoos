@@ -15,10 +15,12 @@ import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DashboardSettingsRouteImport } from './routes/dashboard/settings'
+import { Route as DashboardPerformanceRouteImport } from './routes/dashboard/performance'
 import { Route as DashboardIntegrationsRouteImport } from './routes/dashboard/integrations'
 import { Route as DashboardInboxRouteImport } from './routes/dashboard/inbox'
 import { Route as DashboardCustomersRouteImport } from './routes/dashboard/customers'
 import { Route as DashboardCatalogRouteImport } from './routes/dashboard/catalog'
+import { Route as DashboardAiRouteImport } from './routes/dashboard/ai'
 
 const SigninRoute = SigninRouteImport.update({
   id: '/signin',
@@ -50,6 +52,11 @@ const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardPerformanceRoute = DashboardPerformanceRouteImport.update({
+  id: '/performance',
+  path: '/performance',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardIntegrationsRoute = DashboardIntegrationsRouteImport.update({
   id: '/integrations',
   path: '/integrations',
@@ -70,6 +77,11 @@ const DashboardCatalogRoute = DashboardCatalogRouteImport.update({
   path: '/catalog',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardAiRoute = DashboardAiRouteImport.update({
+  id: '/ai',
+  path: '/ai',
+  getParentRoute: () => DashboardRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -77,10 +89,12 @@ export interface FileRoutesByFullPath {
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/signin': typeof SigninRoute
+  '/dashboard/ai': typeof DashboardAiRoute
   '/dashboard/catalog': typeof DashboardCatalogRoute
   '/dashboard/customers': typeof DashboardCustomersRoute
   '/dashboard/inbox': typeof DashboardInboxRoute
   '/dashboard/integrations': typeof DashboardIntegrationsRoute
+  '/dashboard/performance': typeof DashboardPerformanceRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
 }
 export interface FileRoutesByTo {
@@ -89,10 +103,12 @@ export interface FileRoutesByTo {
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/signin': typeof SigninRoute
+  '/dashboard/ai': typeof DashboardAiRoute
   '/dashboard/catalog': typeof DashboardCatalogRoute
   '/dashboard/customers': typeof DashboardCustomersRoute
   '/dashboard/inbox': typeof DashboardInboxRoute
   '/dashboard/integrations': typeof DashboardIntegrationsRoute
+  '/dashboard/performance': typeof DashboardPerformanceRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
 }
 export interface FileRoutesById {
@@ -102,10 +118,12 @@ export interface FileRoutesById {
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/signin': typeof SigninRoute
+  '/dashboard/ai': typeof DashboardAiRoute
   '/dashboard/catalog': typeof DashboardCatalogRoute
   '/dashboard/customers': typeof DashboardCustomersRoute
   '/dashboard/inbox': typeof DashboardInboxRoute
   '/dashboard/integrations': typeof DashboardIntegrationsRoute
+  '/dashboard/performance': typeof DashboardPerformanceRoute
   '/dashboard/settings': typeof DashboardSettingsRoute
 }
 export interface FileRouteTypes {
@@ -116,10 +134,12 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/signin'
+    | '/dashboard/ai'
     | '/dashboard/catalog'
     | '/dashboard/customers'
     | '/dashboard/inbox'
     | '/dashboard/integrations'
+    | '/dashboard/performance'
     | '/dashboard/settings'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -128,10 +148,12 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/signin'
+    | '/dashboard/ai'
     | '/dashboard/catalog'
     | '/dashboard/customers'
     | '/dashboard/inbox'
     | '/dashboard/integrations'
+    | '/dashboard/performance'
     | '/dashboard/settings'
   id:
     | '__root__'
@@ -140,10 +162,12 @@ export interface FileRouteTypes {
     | '/sign-in'
     | '/sign-up'
     | '/signin'
+    | '/dashboard/ai'
     | '/dashboard/catalog'
     | '/dashboard/customers'
     | '/dashboard/inbox'
     | '/dashboard/integrations'
+    | '/dashboard/performance'
     | '/dashboard/settings'
   fileRoutesById: FileRoutesById
 }
@@ -199,6 +223,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardSettingsRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/performance': {
+      id: '/dashboard/performance'
+      path: '/performance'
+      fullPath: '/dashboard/performance'
+      preLoaderRoute: typeof DashboardPerformanceRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/dashboard/integrations': {
       id: '/dashboard/integrations'
       path: '/integrations'
@@ -227,22 +258,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardCatalogRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/dashboard/ai': {
+      id: '/dashboard/ai'
+      path: '/ai'
+      fullPath: '/dashboard/ai'
+      preLoaderRoute: typeof DashboardAiRouteImport
+      parentRoute: typeof DashboardRoute
+    }
   }
 }
 
 interface DashboardRouteChildren {
+  DashboardAiRoute: typeof DashboardAiRoute
   DashboardCatalogRoute: typeof DashboardCatalogRoute
   DashboardCustomersRoute: typeof DashboardCustomersRoute
   DashboardInboxRoute: typeof DashboardInboxRoute
   DashboardIntegrationsRoute: typeof DashboardIntegrationsRoute
+  DashboardPerformanceRoute: typeof DashboardPerformanceRoute
   DashboardSettingsRoute: typeof DashboardSettingsRoute
 }
 
 const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardAiRoute: DashboardAiRoute,
   DashboardCatalogRoute: DashboardCatalogRoute,
   DashboardCustomersRoute: DashboardCustomersRoute,
   DashboardInboxRoute: DashboardInboxRoute,
   DashboardIntegrationsRoute: DashboardIntegrationsRoute,
+  DashboardPerformanceRoute: DashboardPerformanceRoute,
   DashboardSettingsRoute: DashboardSettingsRoute,
 }
 

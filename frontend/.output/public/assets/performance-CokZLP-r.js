@@ -1,0 +1,1 @@
+import{g as e,t}from"./index-DEBhcLxf.js";var n=e();function r(){return(0,n.jsx)(t,{})}export{r as component};

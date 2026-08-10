@@ -1,8 +1,9 @@
 import { n as __toESM } from "../_runtime.mjs";
 import { t as sokoos_logo_default } from "./sokoos_logo-B5_i8UVb.mjs";
-import { n as require_jsx_runtime, r as require_react } from "../_libs/react+tanstack__react-query.mjs";
+import { u as require_react } from "../_libs/@floating-ui/react-dom+[...].mjs";
 import { h as Link } from "../_libs/@tanstack/react-router+[...].mjs";
-import { A as Heart, D as Inbox, E as Linkedin, F as Database, G as Boxes, H as ChartColumn, L as Clock, M as Facebook, S as MessageCircle, U as Calendar, V as Check, W as Brain, Y as ArrowRight, _ as Plug, b as Package, h as RefreshCw, m as Repeat, n as Users, o as Star, p as Rocket, q as Bot, s as Sparkles, x as MessageSquareOff } from "../_libs/lucide-react.mjs";
+import { o as require_jsx_runtime } from "../_libs/@radix-ui/react-arrow+[...].mjs";
+import { B as Clock, D as Linkedin, G as ChartColumn, J as Boxes, K as Calendar, M as Heart, P as Facebook, Q as ArrowRight, R as Database, S as MessageCircle, W as Check, X as Bot, _ as Plug, b as Package, h as RefreshCw, k as Inbox, m as Repeat, n as Users, o as Star, p as Rocket, q as Brain, s as Sparkles, x as MessageSquareOff } from "../_libs/lucide-react.mjs";
 //#region node_modules/.nitro/vite/services/ssr/assets/routes-hgChB1Oi.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
