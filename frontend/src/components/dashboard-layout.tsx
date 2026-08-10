@@ -4205,11 +4205,71 @@ export default function DashboardLayout() {
     </section>
   );
 
+  const integrationLessonSlugs = ["channels", "payments", "business-tools", "communication", "data-sync", "review"] as const;
   const integrationLessonSequence = ["Channels", "Payments", "Business Tools", "Communication", "Data & Sync", "Review"] as const;
   const integrationLessonCompletionNames = integrationLessonSequence;
+  const integrationLessonSlugToStep = Object.fromEntries(
+    integrationLessonSlugs.map((slug, index) => [slug, index]),
+  ) as Record<string, number>;
 
-  const focusIntegrationLesson = (step: number) => {
+  const getIntegrationLessonStepFromPath = (pathname: string) => {
+    const prefix = "/dashboard/integrations";
+    if (!pathname.startsWith(prefix)) return 0;
+    const slug = pathname.slice(prefix.length).replace(/^\/|\/+$/g, "");
+    if (!slug) return 0;
+    return integrationLessonSlugToStep[slug] ?? 0;
+  };
+
+  const getIntegrationLessonUrl = (step: number) => {
+    const slug = integrationLessonSlugs[Math.min(Math.max(step, 0), integrationLessonSlugs.length - 1)] ?? "channels";
+    return `/dashboard/integrations/${slug}`;
+  };
+
+  const pushIntegrationLessonUrl = (step: number) => {
+    if (typeof window === "undefined") return;
+    const url = getIntegrationLessonUrl(step);
+    if (window.location.pathname !== url) {
+      window.history.pushState({}, "", url);
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const normalizeIntegrationPath = () => {
+      const pathname = window.location.pathname;
+      if (!pathname.startsWith("/dashboard/integrations")) return;
+
+      const nextStep = getIntegrationLessonStepFromPath(pathname);
+      const nextUrl = getIntegrationLessonUrl(nextStep);
+
+      setSelected("Integrations");
+      setActiveIntegrationStep(nextStep);
+
+      if (pathname !== nextUrl) {
+        window.history.replaceState({}, "", nextUrl);
+      }
+    };
+
+    normalizeIntegrationPath();
+
+    const handlePopState = () => {
+      const nextPath = window.location.pathname;
+      if (nextPath.startsWith("/dashboard/integrations")) {
+        setSelected("Integrations");
+        setActiveIntegrationStep(getIntegrationLessonStepFromPath(nextPath));
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  const focusIntegrationLesson = (step: number, pushUrl = true) => {
     setActiveIntegrationStep(step);
+    if (pushUrl) {
+      pushIntegrationLessonUrl(step);
+    }
     window.setTimeout(() => {
       const target = integrationLessonRef.current?.querySelector<HTMLElement>(`[data-lesson-index="${step}"]`);
       if (!target) return;
@@ -4329,221 +4389,25 @@ export default function DashboardLayout() {
   );
 
   const CurrentIntegrationLesson = () => {
-    const currentLesson = integrationLessonSequence[activeIntegrationStep] ?? integrationLessonSequence[0];
+    const lessonConfigs = [
+      { title: "Channels", description: "Connect the customer channels where the AI communicates.", Icon: MessageCircle, section: "Channels" },
+      { title: "Payments", description: "Connect payment systems the AI can use for payment-related tasks.", Icon: Tag, section: "Payments" },
+      { title: "Business Tools", description: "Connect the business systems the AI can use to perform work.", Icon: Box, section: "Business Tools" },
+      { title: "Communication", description: "Connect communication and marketing tools the AI can use to keep customers and the team informed.", Icon: Megaphone, section: "Communication & Marketing" },
+      { title: "Data & Sync", description: "Connect external data sources that keep the AI's business information up to date.", Icon: Paperclip, section: "Data & Knowledge" },
+      { title: "Review", description: "Review connected integrations and integration readiness before completing training.", Icon: Check, section: "Review" },
+    ] as const;
 
-    const lessons = [
-      {
-        title: "Channels",
-        description: "Connect the customer channels where the AI communicates.",
-        Icon: MessageCircle,
-        items: [
-          {
-            id: "whatsapp",
-            label: "WhatsApp",
-            Icon: MessageCircle,
-            description: "Reply to customers with your connected WhatsApp Business account.",
-            status: getIntegrationStatus("whatsapp"),
-          },
-          {
-            id: "website",
-            label: "Website chat",
-            Icon: Globe,
-            description: "Capture website chats and let your AI reply instantly.",
-            status: communicationChannels.websiteChat ? "Active" : "Disabled",
-          },
-          {
-            id: "facebook",
-            label: "Facebook Messenger",
-            Icon: MessageCircle,
-            description: "Answer Facebook messages with your AI voice.",
-            status: getIntegrationStatus("facebook"),
-          },
-          {
-            id: "instagram",
-            label: "Instagram",
-            Icon: Image,
-            description: "Respond to Instagram DMs and customer comments.",
-            status: getIntegrationStatus("instagram"),
-          },
-          {
-            id: "email",
-            label: "Email",
-            Icon: Send,
-            description: "Read and reply to customer emails from your connected inbox.",
-            status: getIntegrationStatus("email"),
-          },
-          {
-            id: "sms",
-            label: "SMS",
-            Icon: Phone,
-            description: "Send confirmations and reminders over SMS when your business phone number is set.",
-            status: Boolean(businessInfo.phone?.trim()) ? "Ready" : "Setup required",
-          },
-        ],
-      },
-      {
-        title: "Payments",
-        description: "Connect payment systems the AI can use for payment-related tasks.",
-        Icon: Tag,
-        items: [
-          {
-            id: "mpesa",
-            label: "M-Pesa",
-            Icon: Phone,
-            description: "Enable mobile money payments and reconciliation.",
-            status: getIntegrationStatus("mpesa"),
-          },
-          {
-            id: "stripe",
-            label: "Stripe",
-            Icon: Tag,
-            description: "Allow the AI to generate payment links.",
-            status: getIntegrationStatus("stripe"),
-          },
-          {
-            id: "paypal",
-            label: "PayPal",
-            Icon: Tag,
-            description: "Allow the AI to generate PayPal payment links.",
-            status: getIntegrationStatus("paypal"),
-          },
-          {
-            id: "flutterwave",
-            label: "Flutterwave",
-            Icon: Globe,
-            description: "Allow the AI to process payments across Africa and generate payment links.",
-            status: getIntegrationStatus("flutterwave"),
-          },
-        ],
-      },
-      {
-        title: "Business Tools",
-        description: "Connect the business systems the AI can use to perform work.",
-        Icon: Box,
-        items: [
-          {
-            id: "google_calendar",
-            label: "Google Calendar",
-            Icon: Calendar,
-            description: "Let the AI schedule appointments and manage your business calendar.",
-            status: getIntegrationStatus("google_calendar"),
-          },
-          {
-            id: "outlook",
-            label: "Microsoft Outlook",
-            Icon: Calendar,
-            description: "Let the AI manage business meetings and email scheduling.",
-            status: getIntegrationStatus("outlook"),
-          },
-          {
-            id: "shopify",
-            label: "Shopify",
-            Icon: Box,
-            description: "Allow the AI to access your store catalog and product data.",
-            status: getIntegrationStatus("shopify"),
-          },
-          {
-            id: "woocommerce",
-            label: "WooCommerce",
-            Icon: Box,
-            description: "Allow the AI to read your store products, orders, and inventory.",
-            status: getIntegrationStatus("woocommerce"),
-          },
-          {
-            id: "custom_api",
-            label: "Custom Website API",
-            Icon: Globe,
-            description: "Allow the AI to connect with your custom commerce and order APIs.",
-            status: getIntegrationStatus("custom_api"),
-          },
-          {
-            id: "google_business",
-            label: "Google Business Profile",
-            Icon: Globe,
-            description: "Allow the AI to update your business profile and respond to reviews.",
-            status: getIntegrationStatus("google_business"),
-          },
-        ],
-      },
-      {
-        title: "Communication",
-        description: "Connect communication and marketing tools the AI can use to keep customers and the team informed.",
-        Icon: Megaphone,
-        items: [
-          {
-            id: "mailchimp",
-            label: "Mailchimp",
-            Icon: Send,
-            description: "Allow the AI to send notification campaigns and sync contact lists.",
-            status: getIntegrationStatus("mailchimp"),
-          },
-          {
-            id: "brevo",
-            label: "Brevo",
-            Icon: Send,
-            description: "Allow the AI to send email notifications and manage audiences.",
-            status: getIntegrationStatus("brevo"),
-          },
-          {
-            id: "meta_ads",
-            label: "Meta Ads",
-            Icon: Megaphone,
-            description: "Allow the AI to sync campaign audiences and notify teams about ad performance.",
-            status: getIntegrationStatus("meta_ads"),
-          },
-          {
-            id: "google_ads",
-            label: "Google Ads",
-            Icon: Globe,
-            description: "Allow the AI to pull ad performance and surface campaign notifications.",
-            status: getIntegrationStatus("google_ads"),
-          },
-          {
-            id: "tiktok",
-            label: "TikTok",
-            Icon: Globe,
-            description: "Allow the AI to manage TikTok campaign notifications.",
-            status: getIntegrationStatus("tiktok"),
-          },
-        ],
-      },
-      {
-        title: "Data & Sync",
-        description: "Connect external data sources that keep the AI's business information up to date.",
-        Icon: Paperclip,
-        items: [
-          {
-            id: "gdrive",
-            label: "Google Drive",
-            Icon: Paperclip,
-            description: "Allow the AI to access business documents and knowledge files.",
-            status: getIntegrationStatus("gdrive"),
-          },
-          {
-            id: "dropbox",
-            label: "Dropbox",
-            Icon: Paperclip,
-            description: "Allow the AI to access business documents stored in Dropbox.",
-            status: getIntegrationStatus("dropbox"),
-          },
-          {
-            id: "onedrive",
-            label: "OneDrive",
-            Icon: Paperclip,
-            description: "Allow the AI to access business files stored in OneDrive.",
-            status: getIntegrationStatus("onedrive"),
-          },
-        ],
-      },
-      {
-        title: "Review",
-        description: "Review connected integrations and integration readiness before completing training.",
-        Icon: Check,
-        items: [],
-      },
-    ];
-
-    const activeLesson = lessons[activeIntegrationStep];
+    const activeLesson = lessonConfigs[activeIntegrationStep] ?? lessonConfigs[0];
+    const lessonItems = activeLesson.section === "Review"
+      ? []
+      : (getIntegrationSection(activeLesson.section)?.items ?? []).map((item) => ({
+          id: item.id,
+          label: item.name,
+          Icon: item.Icon,
+          description: item.description,
+          status: getIntegrationStatus(item.id),
+        }));
 
     return (
       <section ref={integrationLessonRef} data-lesson-index={String(activeIntegrationStep)} className={integrationLessonCardClass(activeIntegrationStep)}>
@@ -4556,9 +4420,9 @@ export default function DashboardLayout() {
             </div>
           </div>
 
-          {activeLesson.items.length > 0 ? (
+          {lessonItems.length > 0 ? (
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              {activeLesson.items.map((item) => renderIntegrationCard(item))}
+              {lessonItems.map((item) => renderIntegrationCard(item))}
             </div>
           ) : (
             <div className="rounded-[24px] border border-[#E5E7EB] bg-[#F8FAFC] p-5 text-sm text-[#475569]">
@@ -9678,600 +9542,115 @@ export default function DashboardLayout() {
               </div>
             </div>
           )}
-          {selected === "Integrations" && (
-            <div className="h-full overflow-y-auto overflow-x-hidden space-y-6 pr-2">
-              <div className={`${CARD}`}>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#6B7280]">
-                      Integrations
-                    </p>
-                    <h2 className="mt-2 text-2xl font-semibold text-[#111827]">
-                      Integrations
-                    </h2>
-                    <p className="mt-2 text-sm leading-6 text-[#6B7280] max-w-2xl">
-                      Connect your AI employee to the channels and business tools it needs to serve customers and get work done.
-                    </p>
-                  </div>
+          {connectModalOpen && connectModalId && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center">
+              <div className="absolute inset-0 bg-black/40" onClick={() => setConnectModalOpen(false)} />
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className={`${GLOBAL_RADIUS} bg-white p-6 z-10 w-full max-w-md transform transition-all duration-200 ease-out shadow-lg scale-100`}
+                role="dialog"
+                aria-modal="true"
+              >
+                <h3 className="text-lg font-semibold mb-1">Connect {getIntegrationName(connectModalId)}</h3>
+                <p className="text-sm text-[#6B7280] mb-4">Connect your {getIntegrationName(connectModalId)} account.</p>
+
+                <label className="text-sm font-medium">Account Email</label>
+                <input
+                  type="email"
+                  value={connectForm.email}
+                  onChange={(e) => setConnectForm((s) => ({ ...s, email: e.target.value }))}
+                  className={INPUT_FIELD_WHITE}
+                  placeholder="you@business.com"
+                />
+
+                <label className="mt-3 text-sm font-medium">Business Name</label>
+                <input
+                  type="text"
+                  value={connectForm.businessName}
+                  onChange={(e) => setConnectForm((s) => ({ ...s, businessName: e.target.value }))}
+                  className={INPUT_FIELD_WHITE}
+                  placeholder="Business Name"
+                />
+
+                <label className="mt-3 text-sm font-medium">Phone Number</label>
+                <input
+                  type="tel"
+                  value={connectForm.phone}
+                  onChange={(e) => setConnectForm((s) => ({ ...s, phone: e.target.value }))}
+                  className={INPUT_FIELD_WHITE}
+                  placeholder="+254 7xx xxx xxx"
+                />
+
+                <div className="mt-4 flex justify-end gap-3">
+                  <button onClick={() => setConnectModalOpen(false)} className={BUTTON_TERTIARY}>
+                    Cancel
+                  </button>
+                  <button onClick={handleModalConnect} className={BUTTON_PRIMARY}>
+                    Connect
+                  </button>
                 </div>
               </div>
-
-              {/* Readiness summary card */}
-              {(() => {
-                const totalIntegrations = allIntegrationSummary.total;
-                const connectedCount = allIntegrationSummary.connected;
-                const percent = totalIntegrations === 0 ? 0 : Math.round((connectedCount / totalIntegrations) * 100);
-                const radius = 36;
-                const circumference = 2 * Math.PI * radius;
-                const offset = Math.max(0, circumference * (1 - percent / 100));
-
-                return (
-                  <div className={`${CARD} flex items-center justify-between gap-6`}>
-                    <div className="flex items-center gap-6">
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-4">
-                          <svg width="88" height="88" viewBox="0 0 88 88">
-                            <defs />
-                            <g transform="translate(44,44)">
-                              <circle r={radius} stroke="#F3F4F6" strokeWidth="8" fill="none" />
-                              <circle
-                                r={radius}
-                                stroke="#22C55E"
-                                strokeWidth="8"
-                                strokeLinecap="round"
-                                fill="none"
-                                strokeDasharray={circumference}
-                                strokeDashoffset={offset}
-                                transform="rotate(-90)"
-                                style={{ transition: "stroke-dashoffset 300ms ease-out" }}
-                              />
-                              <text x="0" y="4" textAnchor="middle" className="text-[20px] font-semibold" fill="#0F172A">
-                                {percent}%
-                              </text>
-                            </g>
-                          </svg>
-                        </div>
-
-                        <div>
-                          <p className="text-sm font-semibold">AI Employee Readiness</p>
-                          <p className="mt-1 text-sm text-[#6B7280]">Connected integrations and capability readiness</p>
-                          <div className="mt-3 grid grid-cols-4 gap-3 text-sm">
-                            {(() => {
-                              const sectionsForMetrics: { label: string; reqs: string[] }[] = [
-                                { label: "Communication", reqs: ["whatsapp", "facebook", "instagram", "telegram", "email"] },
-                                { label: "Payments", reqs: ["mpesa", "stripe", "paypal", "flutterwave"] },
-                                { label: "Knowledge", reqs: ["gdrive", "dropbox", "onedrive"] },
-                                { label: "Scheduling", reqs: ["google_calendar", "outlook"] },
-                              ];
-
-                              return sectionsForMetrics.map((m) => {
-                                const connected = m.reqs.filter((r) => isIntegrationConnected(r)).length;
-                                const status = connected === 0 ? "Missing" : connected < m.reqs.length ? "Partial" : "Ready";
-                                const statusClass = status === "Ready" ? "text-[#16A34A]" : status === "Partial" ? "text-[#B45309]" : "text-[#B91C1C]";
-                                return (
-                                  <div key={m.label} className="flex flex-col items-start">
-                                    <span className="text-xs text-[#6B7280]">{m.label}</span>
-                                    <span className={`text-sm font-semibold ${statusClass}`}>{status}</span>
-                                  </div>
-                                );
-                              });
-                            })()}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="ml-auto text-right">
-                      <div className="text-sm text-[#6B7280]">Connected integrations</div>
-                      <div className="text-2xl font-semibold">{connectedCount} / {totalIntegrations}</div>
-                      <div className="mt-2 text-sm text-[#6B7280]">AI capabilities unlocked</div>
-                      <div className="text-2xl font-semibold">{CAPABILITY_FEATURES.filter((cap) => cap.requires.every((r) => isIntegrationConnected(r))).length}</div>
-                    </div>
-                  </div>
-                );
-              })()}
-
-              {INTEGRATION_SECTIONS.map((section) => (
-                <div key={section.section}>
-                  <h3 className="text-sm font-semibold text-[#6B7280] mb-3">{section.section}</h3>
-                  <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {section.items.map((it) => {
-                      const status = getIntegrationStatus(it.id);
-
-                      const isConnected = status === "connected";
-                      const isComing = status === "coming_soon";
-                      const isDisconnected = !isConnected && !isComing;
-                      const displayStatus = formatIntegrationStatusLabel(status);
-
-                      const badgeClass = isConnected
-                        ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#166534]"
-                        : isComing
-                        ? "border-[#E9D5FF] bg-[#F5F3FF] text-[#6D28D9]"
-                        : "border-[#F3F4F6] bg-[#F3F4F6] text-[#6B7280]";
-
-                      const iconWrapClass = isConnected
-                        ? "h-12 w-12 rounded-[12px] bg-[#ECFDF5] flex items-center justify-center text-[#166534]"
-                        : isComing
-                        ? "h-12 w-12 rounded-[12px] bg-[#F9FAFB] flex items-center justify-center text-[#94A3B8] opacity-80"
-                        : "h-12 w-12 rounded-[12px] bg-[#F3F4F6] flex items-center justify-center text-[#9CA3AF]";
-
-                      const cardStateClass = isComing ? "opacity-70 grayscale" : "opacity-100";
-
-                      const onConnect = () => {
-                        if (isComing) return;
-                        setConnectModalId(it.id);
-                        setConnectForm({ email: "", businessName: "", phone: "" });
-                        setConnectModalOpen(true);
-                      };
-
-                      const onManage = () => {
-                        openDrawer(it.id);
-                      };
-
-                      return (
-                        <div
-                          key={it.id}
-                          className={`${CARD} flex flex-col justify-between ${cardStateClass} transition-all duration-300 ease-out transform-gpu`}
-                        >
-                          <div>
-                            <div className="flex items-start justify-between gap-4">
-                              <div className="flex items-center gap-4">
-                                <div className={iconWrapClass}>
-                                  <it.Icon className={`h-6 w-6 ${isDisconnected ? "opacity-60" : ""}`} />
-                                </div>
-                                <div>
-                                  <p className={`text-sm font-semibold ${isComing ? "text-[#6B7280]" : "text-[#111827]"}`}> {it.name}</p>
-                                  <p className="mt-1 text-sm text-[#6B7280]">{it.description}</p>
-                                  {isConnected && (
-                                    <div className="mt-2 flex items-center gap-3 text-sm text-[#6B7280]">
-                                      <span className="inline-flex items-center gap-2 text-[13px] text-[#374151]">
-                                        <Check className="h-4 w-4 text-[#16A34A]" /> {integrationStates[it.id]?.accountName}
-                                      </span>
-                                      <span className="text-[12px] text-[#94A3B8]">Last synced {integrationStates[it.id]?.lastSynced}</span>
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
-
-                              <div>
-                                <span className={`${BADGE} ${badgeClass} ${isComing ? "text-[11px]" : ""}`}>
-                                  {isConnected ? (
-                                    <span className="inline-flex items-center gap-2"><Check className="h-3 w-3 text-[#16A34A]" /> {displayStatus}</span>
-                                  ) : isComing ? (
-                                    <span>{displayStatus}</span>
-                                  ) : (
-                                    <span>Disconnected</span>
-                                  )}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="mt-6">
-                            <div className="transition-all duration-250 ease-out transform">
-                              {isConnected && (
-                                <>
-                                  <button onClick={onManage} className={`${BUTTON_SECONDARY} w-full`}>Manage</button>
-                                </>
-                              )}
-
-                              {isDisconnected && (
-                                <button onClick={onConnect} className={`${BUTTON_PRIMARY} w-full`}>Connect</button>
-                              )}
-
-                              {isComing && (
-                                <button className={`${BUTTON_TERTIARY} w-full opacity-60 pointer-events-none`}>Coming Soon</button>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              ))}
-              <div className="mt-8">
-                {(() => {
-                  const connectedChannels = getIntegrationSummaryForSection("Channels").connected;
-                  const connectedBusinessTools = getIntegrationSummaryForSection("Business Tools").connected;
-                  const connectedPayments = getIntegrationSummaryForSection("Payments").connected;
-                  const connectedMarketing = getIntegrationSummaryForSection("Communication & Marketing").connected;
-                  const connectedDataSources = getIntegrationSummaryForSection("Data & Knowledge").connected;
-                  const setupRequiredIntegrations = getAllIntegrationItems().filter((item) => getIntegrationStatus(item.id) === "setup_required");
-                  const importantMissingConnections = (() => {
-                    const missingIds = new Set<string>();
-                    CAPABILITY_FEATURES.forEach((cap) => {
-                      const connected = cap.requires.filter((id) => isIntegrationConnected(id));
-                      const missing = cap.requires.filter((id) => !isIntegrationConnected(id));
-                      if (connected.length > 0 && missing.length > 0) {
-                        missing.forEach((id) => missingIds.add(id));
-                      }
-                    });
-                    return Array.from(missingIds);
-                  })();
-                  const categoriesConnected = [
-                    connectedChannels > 0,
-                    connectedBusinessTools > 0,
-                    connectedPayments > 0,
-                    connectedMarketing > 0,
-                    connectedDataSources > 0,
-                  ];
-                  const connectedCategoryCount = categoriesConnected.filter(Boolean).length;
-                  const readinessMessage = connectedCategoryCount === 5 && setupRequiredIntegrations.length === 0 && importantMissingConnections.length === 0
-                    ? "Your AI employee is connected to the tools it needs to operate."
-                    : connectedCategoryCount >= 3
-                      ? "Your AI employee can communicate with customers, but some business tools are still disconnected."
-                      : connectedCategoryCount > 0
-                        ? "Your AI employee has connected tools, but more integrations are needed for reliable operation."
-                        : "Your AI employee needs more connected integrations before it can operate effectively.";
-
-                  return (
-                    <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
-                      <div className="flex items-start justify-between gap-4">
-                        <div>
-                          <p className="text-base font-semibold text-[#111827]">Review</p>
-                          <p className="mt-2 text-sm leading-6 text-[#6B7280]">{readinessMessage}</p>
-                        </div>
-                      </div>
-
-                      <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                        {[
-                          { label: "Connected channels", value: connectedChannels },
-                          { label: "Connected business tools", value: connectedBusinessTools },
-                          { label: "Connected payment systems", value: connectedPayments },
-                          { label: "Connected communication/marketing tools", value: connectedMarketing },
-                          { label: "Connected data sources", value: connectedDataSources },
-                          { label: "Integrations requiring setup", value: setupRequiredIntegrations.length },
-                          { label: "Important missing connections", value: importantMissingConnections.length },
-                        ].map((metric) => (
-                          <div key={metric.label} className="rounded-[20px] border border-[#F3F4F6] bg-[#F8FAFC] p-4">
-                            <p className="text-xs uppercase tracking-[0.18em] text-[#64748B]">{metric.label}</p>
-                            <p className="mt-2 text-2xl font-semibold text-[#111827]">{metric.value}</p>
-                          </div>
-                        ))}
-                      </div>
-
-                      {setupRequiredIntegrations.length > 0 && (
-                        <div className="mt-6 rounded-[20px] border border-[#FEF3C7] bg-[#FFFBEB] p-4 text-sm text-[#92400E]">
-                          <p className="font-semibold">Setup required</p>
-                          <p className="mt-1">The following integrations need your attention before the AI can use them:</p>
-                          <ul className="mt-3 list-disc space-y-2 pl-5">
-                            {setupRequiredIntegrations.map((item) => (
-                              <li key={item.id}>{getIntegrationName(item.id)}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-
-                      {importantMissingConnections.length > 0 && (
-                        <div className="mt-6 rounded-[20px] border border-[#F3F4F6] bg-[#F8FAFC] p-4 text-sm text-[#111827]">
-                          <p className="font-semibold">Important missing connections</p>
-                          <p className="mt-1">These connections are required by partially enabled AI capabilities:</p>
-                          <ul className="mt-3 list-disc space-y-2 pl-5">
-                            {importantMissingConnections.map((id) => (
-                              <li key={id}>{getIntegrationName(id)}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })()}
-              </div>
-              {connectModalOpen && connectModalId && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center">
-                  <div className="absolute inset-0 bg-black/40" onClick={() => setConnectModalOpen(false)} />
-                  <div
-                    onClick={(e) => e.stopPropagation()}
-                    className={`${GLOBAL_RADIUS} bg-white p-6 z-10 w-full max-w-md transform transition-all duration-200 ease-out shadow-lg scale-100`}
-                    role="dialog"
-                    aria-modal="true"
-                  >
-                    <h3 className="text-lg font-semibold mb-1">Connect {getIntegrationName(connectModalId)}</h3>
-                    <p className="text-sm text-[#6B7280] mb-4">Connect your {getIntegrationName(connectModalId)} account.</p>
-
-                    <label className="text-sm font-medium">Account Email</label>
-                    <input
-                      type="email"
-                      value={connectForm.email}
-                      onChange={(e) => setConnectForm((s) => ({ ...s, email: e.target.value }))}
-                      className={INPUT_FIELD_WHITE}
-                      placeholder="you@business.com"
-                    />
-
-                    <label className="mt-3 text-sm font-medium">Business Name</label>
-                    <input
-                      type="text"
-                      value={connectForm.businessName}
-                      onChange={(e) => setConnectForm((s) => ({ ...s, businessName: e.target.value }))}
-                      className={INPUT_FIELD_WHITE}
-                      placeholder="Business Name"
-                    />
-
-                    <label className="mt-3 text-sm font-medium">Phone Number</label>
-                    <input
-                      type="tel"
-                      value={connectForm.phone}
-                      onChange={(e) => setConnectForm((s) => ({ ...s, phone: e.target.value }))}
-                      className={INPUT_FIELD_WHITE}
-                      placeholder="+254 7xx xxx xxx"
-                    />
-
-                    <div className="mt-4 flex justify-end gap-3">
-                      <button onClick={() => setConnectModalOpen(false)} className={BUTTON_TERTIARY}>
-                        Cancel
-                      </button>
-                      <button onClick={handleModalConnect} className={BUTTON_PRIMARY}>
-                        Connect
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-              {drawerOpen && drawerIntegrationId && (
-                <div className="fixed inset-0 z-40 pointer-events-none">
-                  <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={closeDrawer} />
-                  <aside className="pointer-events-auto fixed right-0 top-0 h-full w-[420px] z-50 bg-white shadow-lg transform transition-transform duration-200 ease-out">
-                    <div className="p-6 flex flex-col h-full">
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-center gap-4">
-                          <div className="h-12 w-12 rounded-[12px] bg-[#F3F4F6] flex items-center justify-center text-[#111827]">
-                            {/* icon */}
-                            {(() => {
-                              const id = drawerIntegrationId as string;
-                              for (const s of INTEGRATION_SECTIONS) {
-                                const found = s.items.find((i) => i.id === id);
-                                if (found) return <found.Icon className="h-6 w-6" />;
-                              }
-                              return null;
-                            })()}
-                          </div>
-                          <div>
-                            <p className="text-lg font-semibold">{getIntegrationName(drawerIntegrationId)}</p>
-                            <p className="text-sm text-[#6B7280]">{(integrationStates[drawerIntegrationId] || {}).accountName || "Connected account"}</p>
-                          </div>
-                        </div>
-                        <button onClick={closeDrawer} className="rounded-full p-2 text-[#6B7280] hover:bg-[#F3F4F6]">
-                          <X className="h-5 w-5" />
-                        </button>
-                      </div>
-
-                      <div className="mt-4 rounded-md border border-[#E5E7EB] p-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <span className="text-sm font-medium">Connection status</span>
-                            <span className="text-sm text-[#6B7280]">{(integrationStates[drawerIntegrationId] || {}).status}</span>
-                          </div>
-                          <div className="text-sm text-[#94A3B8]">Last sync: {(integrationStates[drawerIntegrationId] || {}).lastSynced || "—"}</div>
-                        </div>
-                        <div className="mt-3 flex gap-2">
-                          <button onClick={() => handleReconnect(drawerIntegrationId as string)} className={BUTTON_TERTIARY}>Reconnect</button>
-                          <button onClick={() => handleDisconnect(drawerIntegrationId as string)} className={BUTTON_SECONDARY}>Disconnect</button>
-                          <button onClick={() => handleSyncNow(drawerIntegrationId as string)} className={BUTTON_PRIMARY}>Sync Now</button>
-                        </div>
-                      </div>
-
-                      <div className="mt-6 flex-1 overflow-y-auto">
-                        <p className="text-sm font-semibold text-[#111827] mb-3">Permissions granted</p>
-                        <ul className="space-y-2">
-                          {(INTEGRATION_CAPABILITIES[drawerIntegrationId as string] || []).map((cap) => (
-                            <li key={cap} className="flex items-center gap-3 text-sm text-[#374151]">
-                              <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-[#ECFDF5] text-[#16A34A]">✓</span>
-                              <span>{cap}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </div>
-                  </aside>
-                </div>
-              )}
-              {productDrawerOpen && selectedProduct && (
-                  <div className="fixed inset-0 z-50">
-                  <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={closeProductDrawer} />
-                  <aside className="fixed right-0 top-0 h-full w-full md:w-[560px] md:max-w-[560px] bg-white shadow-2xl">
-                    <div className="flex h-full flex-col">
-                      <div className="flex items-center justify-between border-b border-[#E5E7EB] px-6 py-5">
-                        <div>
-                          <p className="text-sm uppercase tracking-[0.24em] text-[#6B7280]">Product details</p>
-                          <h2 className="mt-2 text-2xl font-semibold text-[#111827]">{selectedProduct.name}</h2>
-                          <p className="mt-2 text-sm text-[#64748B]">Manage this item without leaving your catalogue workspace.</p>
-                        </div>
-                        <button type="button" onClick={closeProductDrawer} className="rounded-full border border-[#E5E7EB] p-2 text-[#6B7280] hover:bg-[#F3F4F6]"><X className="h-5 w-5" /></button>
-                      </div>
-
-                      <div className="px-6 py-5">
-                        <Tabs value={productDrawerTab} onValueChange={(value) => setProductDrawerTab(value as any)}>
-                          <TabsList className="space-x-2">
-                            <TabsTrigger value="general">General</TabsTrigger>
-                            <TabsTrigger value="pricing">Pricing</TabsTrigger>
-                            <TabsTrigger value="media">Media</TabsTrigger>
-                            <TabsTrigger value="inventory">Inventory</TabsTrigger>
-                            <TabsTrigger value="ai">AI</TabsTrigger>
-                          </TabsList>
-                        </Tabs>
-                      </div>
-
-                      <div className="flex-1 overflow-y-auto px-6 pb-6">
-                        <TabsContent value="general" className="grid gap-4 md:grid-cols-2">
-                          <div>
-                            <label className="text-sm font-semibold text-[#111827]">Name</label>
-                            <input value={selectedProduct.name} onChange={(e) => updateCatalogProductField(selectedProduct.id, "name", e.target.value)} className="mt-2 w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm" />
-                          </div>
-                          <div>
-                            <label className="text-sm font-semibold text-[#111827]">Category</label>
-                            <input value={selectedProduct.category} onChange={(e) => updateCatalogProductField(selectedProduct.id, "category", e.target.value)} className="mt-2 w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm" />
-                          </div>
-                          <div className="md:col-span-2">
-                            <label className="text-sm font-semibold text-[#111827]">Short description</label>
-                            <Textarea value={selectedProduct.description} onChange={(e) => updateCatalogProductField(selectedProduct.id, "description", e.target.value)} className="mt-2 w-full min-h-[72px] rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm" />
-                          </div>
-                          <div>
-                            <label className="text-sm font-semibold text-[#111827]">Availability</label>
-                            <select value={selectedProduct.availability} onChange={(e) => updateCatalogProductField(selectedProduct.id, "availability", e.target.value)} className="mt-2 w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm">
-                              <option>Available</option>
-                              <option>In stock</option>
-                              <option>Out of stock</option>
-                              <option>By appointment</option>
-                            </select>
-                          </div>
-                        </TabsContent>
-
-                        <TabsContent value="pricing" className="grid gap-4 md:grid-cols-2">
-                          <div>
-                            <label className="text-sm font-semibold text-[#111827]">Price</label>
-                            <input type="text" value={selectedProduct.price} onChange={(e) => updateCatalogProductField(selectedProduct.id, "price", e.target.value)} className="mt-2 w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm" />
-                          </div>
-                          <div>
-                            <label className="text-sm font-semibold text-[#111827]">Product type</label>
-                            <select value={selectedProduct.type} onChange={(e) => updateCatalogProductField(selectedProduct.id, "type", e.target.value)} className="mt-2 w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm">
-                              <option>Product</option>
-                              <option>Service</option>
-                              <option>Subscription</option>
-                              <option>Digital Product</option>
-                            </select>
-                          </div>
-                          <div className="md:col-span-2">
-                            <label className="text-sm font-semibold text-[#111827]">Pricing note</label>
-                            <Textarea value={(selectedProduct as any).priceNote ?? ""} onChange={(e) => updateCatalogProductField(selectedProduct.id, "priceNote", e.target.value)} className="mt-2 w-full min-h-[64px] rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm" placeholder="Add a short pricing detail for your catalogue" />
-                          </div>
-                        </TabsContent>
-
-                        <TabsContent value="media" className="space-y-5">
-                          <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4">
-                            <div className="aspect-[5/3] overflow-hidden rounded-[16px] bg-white">
-                              <img src={selectedProduct.image} alt={selectedProduct.name} className="h-full w-full object-cover" />
-                            </div>
-                            <div className="mt-4 flex items-center justify-between gap-4">
-                              <div>
-                                <p className="text-sm font-semibold text-[#111827]">Cover image</p>
-                                <p className="text-sm text-[#64748B]">Upload a representative image for this product.</p>
-                              </div>
-                              <label className="inline-flex cursor-pointer items-center rounded-[16px] bg-[#111827] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#111827]/90">
-                                Upload
-                                <input type="file" accept="image/*" className="sr-only" onChange={(e) => handleProductImageUpload(e.target.files)} />
-                              </label>
-                            </div>
-                          </div>
-
-                          <div className="rounded-[20px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
-                            <div className="flex items-center justify-between gap-3">
-                              <div>
-                                <p className="text-sm font-semibold text-[#111827]">Product media library</p>
-                                <p className="text-sm text-[#64748B]">Upload, preview, and manage supporting files for this product.</p>
-                              </div>
-                              <button type="button" onClick={() => productMediaFileInputRef.current?.click()} className="rounded-[12px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Upload</button>
-                            </div>
-
-                            <input
-                              ref={productMediaFileInputRef}
-                              type="file"
-                              accept="image/*,video/*,.pdf"
-                              multiple
-                              className="hidden"
-                              onChange={(e) => {
-                                if (selectedProduct) handleProductMediaFiles(selectedProduct.id, e.target.files);
-                                e.currentTarget.value = "";
-                              }}
-                            />
-
-                            <div onDrop={(e) => selectedProduct && onDrop(e, selectedProduct.id)} onDragOver={onDragOver} className="mt-4 rounded-[16px] border-2 border-dashed border-[#E5E7EB] bg-[#F8FAFB] p-5 text-center">
-                              <p className="text-sm font-semibold text-[#111827]">Drag & drop media files</p>
-                              <p className="mt-2 text-sm text-[#64748B]">Images, videos, and other resources for your product showcase.</p>
-                            </div>
-
-                            <div className="mt-5 space-y-3">
-                              {(selectedProduct.mediaAssets ?? []).length === 0 ? (
-                                <p className="rounded-[12px] border border-[#E5E7EB] bg-[#F8FAFB] p-4 text-sm text-[#64748B]">No media uploaded yet.</p>
-                              ) : (
-                                (selectedProduct.mediaAssets ?? []).map((asset) => (
-                                  <div key={asset.id} className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
-                                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                                      <div className="h-20 w-20 flex-none overflow-hidden rounded-[12px] bg-[#F8FAFB]">
-                                        {asset.mime?.startsWith("image") ? (
-                                          <img src={asset.url} alt={asset.altText || asset.name} className="h-full w-full object-cover" />
-                                        ) : asset.mime?.startsWith("video") ? (
-                                          <video src={asset.url} className="h-full w-full object-cover" muted playsInline />
-                                        ) : (
-                                          <div className="flex h-full w-full items-center justify-center text-[10px] font-semibold uppercase text-[#64748B]">File</div>
-                                        )}
-                                      </div>
-
-                                      <div className="min-w-0 flex-1">
-                                        <p className="truncate text-sm font-semibold text-[#111827]">{asset.name}</p>
-                                        <p className="mt-1 text-xs text-[#64748B]">{asset.fileType} • {asset.size}</p>
-                                        <div className="mt-3 grid gap-3 sm:grid-cols-2">
-                                          <input
-                                            type="text"
-                                            value={asset.altText ?? ""}
-                                            onChange={(e) => updateProductMediaAssetField(selectedProduct.id, asset.id, "altText", e.target.value)}
-                                            placeholder="Alt text"
-                                            className="w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm"
-                                          />
-                                          <button
-                                            type="button"
-                                            onClick={() => selectProductThumbnail(selectedProduct.id, asset.id)}
-                                            className={`rounded-[12px] px-3 py-2 text-sm font-semibold ${asset.isThumbnail ? "bg-[#111827] text-white" : "bg-[#F8FAFB] text-[#111827] border border-[#E5E7EB]"}`}
-                                          >
-                                            {asset.isThumbnail ? "Thumbnail" : "Set thumbnail"}
-                                          </button>
-                                        </div>
-                                      </div>
-
-                                      <div className="flex flex-none flex-col items-stretch gap-2 sm:items-end">
-                                        <button type="button" onClick={() => viewAsset(asset.url)} className="rounded-[8px] border border-[#E5E7EB] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#111827]">Preview</button>
-                                        <button type="button" onClick={() => deleteProductMediaAsset(selectedProduct.id, asset.id)} className="rounded-[8px] border border-[#FECACA] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#B91C1C]">Delete</button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                ))
-                              )}
-                            </div>
-                          </div>
-                        </TabsContent>
-
-                        <TabsContent value="inventory" className="grid gap-4 md:grid-cols-2">
-                          <div>
-                            <label className="text-sm font-semibold text-[#111827]">Current stock</label>
-                            <input type="number" value={(selectedProduct as any).currentStock ?? 0} onChange={(e) => updateCatalogProductField(selectedProduct.id, "currentStock", Number(e.target.value))} className="mt-2 w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm" />
-                          </div>
-                          <div>
-                            <label className="text-sm font-semibold text-[#111827]">Stock status</label>
-                            <select value={(selectedProduct as any).stockStatus || "In stock"} onChange={(e) => updateCatalogProductField(selectedProduct.id, "stockStatus", e.target.value)} className="mt-2 w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm">
-                              <option>In stock</option>
-                              <option>Low stock</option>
-                              <option>Out of stock</option>
-                              <option>Backordered</option>
-                            </select>
-                          </div>
-                          <div>
-                            <label className="text-sm font-semibold text-[#111827]">Low stock threshold</label>
-                            <input type="number" value={(selectedProduct as any).lowStockThreshold ?? 10} onChange={(e) => updateCatalogProductField(selectedProduct.id, "lowStockThreshold", Number(e.target.value))} className="mt-2 w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm" />
-                          </div>
-                          <div>
-                            <label className="text-sm font-semibold text-[#111827]">Warehouse / branch</label>
-                            <input value={(selectedProduct as any).warehouseLocation || "Main warehouse"} onChange={(e) => updateCatalogProductField(selectedProduct.id, "warehouseLocation", e.target.value)} className="mt-2 w-full rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm" />
-                          </div>
-                        </TabsContent>
-
-                        <TabsContent value="ai" className="grid gap-4 md:grid-cols-2">
-                          <div className="md:col-span-2">
-                            <p className="text-sm font-semibold text-[#111827]">AI-ready summary</p>
-                            <Textarea value={selectedProduct.description} onChange={(e) => updateCatalogProductField(selectedProduct.id, "description", e.target.value)} className="mt-2 w-full min-h-[72px] rounded-[12px] border border-[#E5E7EB] px-3 py-2 text-sm" />
-                            <p className="mt-2 text-sm text-[#64748B]">This text helps your AI understand the product for customer conversations.</p>
-                          </div>
-                          <div className="rounded-[12px] border border-[#E5E7EB] bg-[#F8FAFB] p-3">
-                            <p className="text-sm font-semibold text-[#111827]">Knowledge insights</p>
-                            <p className="mt-2 text-sm text-[#64748B]">Customers ask about pricing, availability, and delivery. Keep descriptions clear and helpful.</p>
-                          </div>
-                        </TabsContent>
-                      </div>
-                    </div>
-                  </aside>
-                </div>
-              )}
             </div>
           )}
+
+          {drawerOpen && drawerIntegrationId && (
+            <div className="fixed inset-0 z-40 pointer-events-none">
+              <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={closeDrawer} />
+              <aside className="pointer-events-auto fixed right-0 top-0 h-full w-[420px] z-50 bg-white shadow-lg transform transition-transform duration-200 ease-out">
+                <div className="p-6 flex flex-col h-full">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="h-12 w-12 rounded-[12px] bg-[#F3F4F6] flex items-center justify-center text-[#111827]">
+                        {(() => {
+                          const id = drawerIntegrationId as string;
+                          for (const section of INTEGRATION_SECTIONS) {
+                            const found = section.items.find((item) => item.id === id);
+                            if (found) return <found.Icon className="h-6 w-6" />;
+                          }
+                          return null;
+                        })()}
+                      </div>
+                      <div>
+                        <p className="text-lg font-semibold">{getIntegrationName(drawerIntegrationId)}</p>
+                        <p className="text-sm text-[#6B7280]">{(integrationStates[drawerIntegrationId] || {}).accountName || "Connected account"}</p>
+                      </div>
+                    </div>
+                    <button onClick={closeDrawer} className="rounded-full p-2 text-[#6B7280] hover:bg-[#F3F4F6]">
+                      <X className="h-5 w-5" />
+                    </button>
+                  </div>
+
+                  <div className="mt-4 rounded-md border border-[#E5E7EB] p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3">
+                        <span className="text-sm font-medium">Connection status</span>
+                        <span className="text-sm text-[#6B7280]">{(integrationStates[drawerIntegrationId] || {}).status}</span>
+                      </div>
+                      <div className="text-sm text-[#94A3B8]">Last sync: {(integrationStates[drawerIntegrationId] || {}).lastSynced || "—"}</div>
+                    </div>
+                    <div className="mt-3 flex gap-2">
+                      <button onClick={() => handleReconnect(drawerIntegrationId as string)} className={BUTTON_TERTIARY}>Reconnect</button>
+                      <button onClick={() => handleDisconnect(drawerIntegrationId as string)} className={BUTTON_SECONDARY}>Disconnect</button>
+                      <button onClick={() => handleSyncNow(drawerIntegrationId as string)} className={BUTTON_PRIMARY}>Sync Now</button>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 flex-1 overflow-y-auto">
+                    <p className="text-sm font-semibold text-[#111827] mb-3">Permissions granted</p>
+                    <ul className="space-y-2">
+                      {(INTEGRATION_CAPABILITIES[drawerIntegrationId as string] || []).map((cap) => (
+                        <li key={cap} className="flex items-center gap-3 text-sm text-[#374151]">
+                          <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-[#ECFDF5] text-[#16A34A]">✓</span>
+                          <span>{cap}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </aside>
+            </div>
+          )}
+
           {selected === "Settings" && (
             <div className="space-y-6">
               <div className={`${CARD}`}>
