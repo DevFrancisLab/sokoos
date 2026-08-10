@@ -8844,6 +8844,96 @@ export default function DashboardLayout() {
                             <div className="rounded-[24px] border border-[#EEF2F6] bg-white p-5">
                               <div className="flex items-start gap-3">
                                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]">
+                                  <Paperclip className="h-5 w-5" />
+                                </div>
+                                <div>
+                                  <p className="text-sm font-semibold text-[#111827]">Data & Sync</p>
+                                  <p className="mt-1 text-sm text-[#64748B]">
+                                    Connect external data sources that can keep your AI's information up to date.
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                                {(() => {
+                                  const sources = [
+                                    {
+                                      id: "gdrive",
+                                      label: "Google Drive",
+                                      Icon: Paperclip,
+                                      description: "Allow the AI to access files and documents from Google Drive.",
+                                      status: integrationStates.gdrive?.status ?? "Not Connected",
+                                    },
+                                    {
+                                      id: "dropbox",
+                                      label: "Dropbox",
+                                      Icon: Paperclip,
+                                      description: "Allow the AI to access shared business documents stored in Dropbox.",
+                                      status: integrationStates.dropbox?.status ?? "Not Connected",
+                                    },
+                                    {
+                                      id: "onedrive",
+                                      label: "OneDrive",
+                                      Icon: Paperclip,
+                                      description: "Allow the AI to access business files stored in OneDrive.",
+                                      status: integrationStates.onedrive?.status ?? "Not Connected",
+                                    },
+                                  ];
+
+                                  return sources.map((source) => {
+                                    const statusLabel = source.status === "Not Connected" ? "Available" : source.status === "Connected" ? "Connected" : source.status;
+                                    const isConnected = source.status === "Connected";
+                                    const isComing = source.status === "Coming Soon" || source.status === "ComingSoon";
+                                    const badgeClass =
+                                      statusLabel === "Connected"
+                                        ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#166534]"
+                                        : isComing
+                                        ? "border-[#E9D5FF] bg-[#F5F3FF] text-[#6D28D9]"
+                                        : "border-[#F3F4F6] bg-[#F3F4F6] text-[#6B7280]";
+                                    return (
+                                      <div key={source.id} className="rounded-[24px] border border-[#E5E7EF] bg-white p-4">
+                                        <div className="flex items-start gap-3">
+                                          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#F3F4F6] text-[#9CA3AF]">
+                                            <source.Icon className="h-5 w-5" />
+                                          </div>
+                                          <div className="min-w-0">
+                                            <div className="flex items-center justify-between gap-3">
+                                              <p className="text-sm font-semibold text-[#111827]">{source.label}</p>
+                                              <span className={`inline-flex h-7 items-center rounded-full px-3 text-[12px] font-medium ${badgeClass}`}>
+                                                {statusLabel}
+                                              </span>
+                                            </div>
+                                            <p className="mt-2 text-sm text-[#64748B]">{source.description}</p>
+                                          </div>
+                                        </div>
+                                        <div className="mt-4">
+                                          {isConnected ? (
+                                            <button onClick={() => openDrawer(source.id)} className="w-full rounded-[24px] border border-[#EEF2F6] bg-white px-3 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F8FAFC]">Manage</button>
+                                          ) : isComing ? (
+                                            <button className="w-full rounded-[24px] bg-[#F3F4F6] px-3 py-2 text-sm font-semibold text-[#94A3B8] pointer-events-none">Coming soon</button>
+                                          ) : (
+                                            <button
+                                              onClick={() => {
+                                                setConnectModalId(source.id);
+                                                setConnectForm({ email: "", businessName: "", phone: "" });
+                                                setConnectModalOpen(true);
+                                              }}
+                                              className="w-full rounded-[24px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#16A34A]"
+                                            >
+                                              Connect
+                                            </button>
+                                          )}
+                                        </div>
+                                      </div>
+                                    );
+                                  });
+                                })()}
+                              </div>
+                            </div>
+
+                            <div className="rounded-[24px] border border-[#EEF2F6] bg-white p-5">
+                              <div className="flex items-start gap-3">
+                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]">
                                   <Tag className="h-5 w-5" />
                                 </div>
                                 <div>
