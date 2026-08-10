@@ -61,8 +61,19 @@ const NAV_ITEMS = [
 
   {
     label: "AI Employee",
-    href: "/dashboard/ai",
     Icon: Cpu,
+    children: [
+      {
+        label: "Training",
+        href: "/dashboard/ai",
+        Icon: Cpu,
+      },
+      {
+        label: "Performance",
+        href: "/dashboard/performance",
+        Icon: Activity,
+      },
+    ],
   },
 
   {
@@ -75,12 +86,6 @@ const NAV_ITEMS = [
     label: "Marketing",
     href: "/dashboard/marketing",
     Icon: Megaphone,
-  },
-
-  {
-    label: "Analytics",
-    href: "/dashboard/analytics",
-    Icon: Activity,
   },
   {
     label: "Integrations",
@@ -1290,6 +1295,7 @@ export default function DashboardLayout() {
   const currentUserRole = hasTeam ? "admin" : "owner"; // Will be from auth context in future
 
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [expandedNavItem, setExpandedNavItem] = useState<string | null>("AI Employee");
   const [selected, setSelected] = useState<string>("Home");
   const [integrationStates, setIntegrationStates] = useState<Record<string, { status: IntegrationStatus; accountName?: string; lastSynced?: string }>>(() => {
     try {
@@ -4182,6 +4188,105 @@ export default function DashboardLayout() {
 
   const router = useRouter();
 
+  const handleNavSelection = (label: string, href?: string) => {
+    setSelected(label);
+    if (href && typeof window !== "undefined") {
+      window.history.pushState({}, "", href);
+    }
+  };
+
+  const renderSidebarNavItems = (variant: "icon" | "expanded" | "mobile") => {
+    const isCompact = variant === "icon";
+    const isMobile = variant === "mobile";
+
+    return (
+      <ul className={isCompact ? "space-y-2" : isMobile ? "space-y-1" : "space-y-2"}>
+        {NAV_ITEMS.map((item) => {
+          const isParent = Boolean(item.children);
+          const isParentActive =
+            isParent &&
+            (selected === "AI Employee" || selected === "Training" || selected === "Performance");
+          const isExpanded = expandedNavItem === item.label;
+          const parentActive = isParent ? isParentActive : selected === item.label;
+          const iconClass = isCompact || isMobile ? "h-4 w-4" : "h-5 w-5";
+
+          if (!isParent) {
+            return (
+              <li key={item.label}>
+                <button
+                  onClick={() => handleNavSelection(item.label, item.href)}
+                  title={item.label}
+                  aria-label={item.label}
+                  className={isCompact
+                    ? `w-full flex items-center justify-center rounded-[20px] p-2 text-sm font-medium transition duration-200 ${parentActive ? "bg-[#ECFDF5] text-[#047857] shadow-sm" : "text-[#6B7280] hover:bg-[#EFF6FF]"}`
+                    : isMobile
+                      ? `w-full text-left flex items-center gap-2.5 rounded-[20px] px-3 py-2 text-sm font-medium transition duration-200 ${parentActive ? "bg-[#F0FDF4] text-[#065F46] shadow-sm ring-1 ring-[#D1FAE5]/40" : "text-[#475569] hover:bg-[#EFF6FF] hover:text-[#111827]"}`
+                      : `w-full text-left flex items-center gap-3 rounded-full px-3 py-2 text-sm font-medium transition duration-200 ${parentActive ? "bg-[#ECFDF5] text-[#047857]" : "text-[#475569] hover:bg-[#EFF6FF]"}`}
+                >
+                  <item.Icon className={`${iconClass} ${parentActive ? "text-[#059669] opacity-100" : "text-[#6B7280] opacity-90"}`} />
+                  {!isCompact && <span>{item.label}</span>}
+                </button>
+              </li>
+            );
+          }
+
+          return (
+            <li key={item.label}>
+              <div className="space-y-1">
+                <button
+                  onClick={() => {
+                    setSelected("AI Employee");
+                    if (expandedNavItem === item.label) {
+                      setExpandedNavItem(null);
+                    } else {
+                      setExpandedNavItem(item.label);
+                    }
+                  }}
+                  title={item.label}
+                  aria-label={item.label}
+                  className={isCompact
+                    ? `w-full flex items-center justify-center rounded-[20px] p-2 text-sm font-medium transition duration-200 ${parentActive ? "bg-[#ECFDF5] text-[#047857] shadow-sm" : "text-[#6B7280] hover:bg-[#EFF6FF]"}`
+                    : isMobile
+                      ? `w-full text-left flex items-center gap-2.5 rounded-[20px] px-3 py-2 text-sm font-medium transition duration-200 ${parentActive ? "bg-[#F0FDF4] text-[#065F46] shadow-sm ring-1 ring-[#D1FAE5]/40" : "text-[#475569] hover:bg-[#EFF6FF] hover:text-[#111827]"}`
+                      : `w-full text-left flex items-center gap-3 rounded-full px-3 py-2 text-sm font-medium transition duration-200 ${parentActive ? "bg-[#ECFDF5] text-[#047857]" : "text-[#475569] hover:bg-[#EFF6FF]"}`}
+                >
+                  <item.Icon className={`${iconClass} ${parentActive ? "text-[#059669]" : "text-[#6B7280]"}`} />
+                  {!isCompact && <span className="flex-1 text-left">{item.label}</span>}
+                  {!isCompact && (
+                    <ChevronDown className={`h-4 w-4 transition-transform ${isExpanded ? "rotate-180" : "rotate-0"}`} />
+                  )}
+                </button>
+                {isExpanded && !isCompact && (
+                  <ul className="mt-1 space-y-1 pl-6">
+                    {item.children?.map((child) => {
+                      const childActive = selected === child.label;
+                      return (
+                        <li key={child.label}>
+                          <button
+                            onClick={() => {
+                              setExpandedNavItem(item.label);
+                              handleNavSelection(child.label, child.href);
+                            }}
+                            className={isMobile
+                              ? `w-full text-left flex items-center gap-2.5 rounded-[20px] px-3 py-2 text-sm font-medium transition duration-200 ${childActive ? "bg-[#F0FDF4] text-[#065F46] shadow-sm ring-1 ring-[#D1FAE5]/40" : "text-[#475569] hover:bg-[#EFF6FF] hover:text-[#111827]"}`
+                              : `w-full text-left flex items-center gap-3 rounded-full px-3 py-2 text-sm font-medium transition duration-200 ${childActive ? "bg-[#ECFDF5] text-[#047857]" : "text-[#475569] hover:bg-[#EFF6FF]"}`}
+                          >
+                            <child.Icon className={isMobile ? "h-4 w-4" : "h-5 w-5"} />
+                            <span>{child.label}</span>
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+    );
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("sokoos-auth");
     void router.navigate({ to: "/signin", replace: true });
@@ -5702,35 +5807,7 @@ export default function DashboardLayout() {
           </div>
 
           <nav className="flex-1 px-1.5 overflow-hidden">
-            <ul className="space-y-2">
-                {NAV_ITEMS.map(({ label, href, Icon }) => {
-                  const active = selected === label;
-                  return (
-                    <li key={href}>
-                      <button
-                        onClick={() => {
-                          setSelected(label);
-                          if (typeof window !== "undefined") {
-                            window.history.pushState({}, "", href);
-                          }
-                        }}
-                        title={label}
-                        aria-label={label}
-                        className={`w-full flex items-center justify-center rounded-[20px] p-2 text-sm font-medium transition duration-200 ${
-                          active
-                            ? "bg-[#ECFDF5] text-[#047857] shadow-sm"
-                            : "text-[#6B7280] hover:bg-[#EFF6FF]"
-                        }`}
-                      >
-                        <Icon
-                          className={`h-4 w-4 ${active ? "text-[#059669] opacity-100" : "text-[#6B7280] opacity-90"}`}
-                        />
-                        <span className="sr-only">{label}</span>
-                      </button>
-                    </li>
-                  );
-                })}
-            </ul>
+            {renderSidebarNavItems("icon")}
           </nav>
           {sidebarHovered && (
             <div className="fixed inset-y-0 left-0 z-50 w-64 min-w-[248px] bg-[#FFFFFF] border-r border-[#E5E7EB]/10 shadow-[0_18px_48px_rgba(15,23,42,0.12)] transition-all duration-200 ease-out">
@@ -5744,35 +5821,7 @@ export default function DashboardLayout() {
                   </div>
                 </div>
                 <nav className="flex-1 overflow-y-auto px-4">
-                  <ul className="space-y-2">
-                    {NAV_ITEMS.map(({ label, href, Icon }) => {
-                      const active = selected === label;
-                      return (
-                        <li key={href}>
-                          <button
-                            onClick={() => {
-                              setSelected(label);
-                              if (typeof window !== "undefined") {
-                                window.history.pushState({}, "", href);
-                              }
-                            }}
-                            title={label}
-                            aria-label={label}
-                            className={`w-full text-left flex items-center gap-3 rounded-full px-3 py-2 text-sm font-medium transition duration-200 ${
-                              active
-                                ? "bg-[#ECFDF5] text-[#047857]"
-                                : "text-[#475569] hover:bg-[#EFF6FF]"
-                            }`}
-                          >
-                            <Icon
-                              className={`h-5 w-5 ${active ? "text-[#059669]" : "text-[#6B7280]"}`}
-                            />
-                            <span>{label}</span>
-                          </button>
-                        </li>
-                      );
-                    })}
-                  </ul>
+                  {renderSidebarNavItems("expanded")}
                 </nav>
               </div>
             </div>
@@ -5821,32 +5870,7 @@ export default function DashboardLayout() {
             </div>
 
             <nav>
-              <ul className="space-y-1">
-                {NAV_ITEMS.map(({ label, href, Icon }) => {
-                  const active = selected === label;
-                  return (
-                    <li key={href}>
-                      <button
-                        onClick={() => {
-                          setSelected(label);
-                          setMobileOpen(false);
-                          if (typeof window !== "undefined") {
-                            window.history.pushState({}, "", href);
-                          }
-                        }}
-                        className={`w-full text-left flex items-center gap-2.5 rounded-[20px] px-3 py-2 text-sm font-medium transition duration-200 ${
-                          active
-                            ? "bg-[#F0FDF4] text-[#065F46] shadow-sm ring-1 ring-[#D1FAE5]/40"
-                            : "text-[#475569] hover:bg-[#EFF6FF] hover:text-[#111827]"
-                        }`}
-                      >
-                        <Icon className="h-4 w-4" />
-                        <span>{label}</span>
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
+              {renderSidebarNavItems("mobile")}
             </nav>
           </div>
         </div>
@@ -6815,7 +6839,7 @@ export default function DashboardLayout() {
               )}
             </div>
           )}
-          {selected === "AI Employee" && (
+          {(selected === "AI Employee" || selected === "Training") && (
             <div className="mx-auto w-full max-w-[1280px] space-y-6 px-4 pb-10 lg:px-6">
               <div className="border-b border-[#E5E7EB] pb-5">
                 <div className="flex flex-col gap-5">
@@ -9410,7 +9434,7 @@ export default function DashboardLayout() {
               </div>
             </div>
           )}
-          {selected === "Analytics" && (
+          {(selected === "Performance" || selected === "Analytics") && (
             <div className={`space-y-6 ${CARD}`}>
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
