@@ -8,7 +8,7 @@ import { t as twMerge } from "../_libs/tailwind-merge.mjs";
 import { $ as Activity, A as Image, B as Clock, C as Menu, E as List, G as ChartColumn, H as ChevronRight, K as Calendar, L as EllipsisVertical, N as Globe, O as LayoutGrid, S as MessageCircle, T as MapPin, U as ChevronDown, V as Circle, W as Check, X as Bot, Y as Box, Z as BookOpen, _ as Plug, a as Tag, b as Package, c as Smile, d as Send, f as Search, g as Plus, i as Target, j as House, k as Inbox, l as Shield, r as User, s as Sparkles, t as X, u as Settings, v as Phone, w as Megaphone, y as Paperclip, z as Cpu } from "../_libs/lucide-react.mjs";
 import { a as Label2, c as Root2, d as SubTrigger2, f as Trigger, i as ItemIndicator2, l as Separator2, n as Content2, o as Portal2, r as Item2, s as RadioItem2, t as CheckboxItem2, u as SubContent2 } from "../_libs/@radix-ui/react-dropdown-menu+[...].mjs";
 import { i as Trigger$1, n as List$1, r as Root2$1, t as Content } from "../_libs/radix-ui__react-tabs.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/dashboard-layout-CKCVLYk9.js
+//#region node_modules/.nitro/vite/services/ssr/assets/dashboard-layout-B4vTxc_v.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 function cn(...inputs) {
@@ -113,8 +113,13 @@ var NAV_ITEMS = [
 		Icon: Inbox
 	},
 	{
+		label: "Customers",
+		href: "/dashboard/customers",
+		Icon: User
+	},
+	{
 		label: "AI Employee",
-		Icon: Cpu,
+		Icon: Bot,
 		children: [{
 			label: "Training",
 			href: "/dashboard/ai",
@@ -124,21 +129,6 @@ var NAV_ITEMS = [
 			href: "/dashboard/performance",
 			Icon: Activity
 		}]
-	},
-	{
-		label: "Growth Pages",
-		href: "/dashboard/pages",
-		Icon: Globe
-	},
-	{
-		label: "Marketing",
-		href: "/dashboard/marketing",
-		Icon: Megaphone
-	},
-	{
-		label: "Integrations",
-		href: "/dashboard/integrations",
-		Icon: Bot
 	},
 	{
 		label: "Settings",

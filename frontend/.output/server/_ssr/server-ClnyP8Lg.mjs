@@ -6,7 +6,7 @@ import { a as defaultSerovalPlugins, c as makeSerovalPlugin, d as su, i as getOr
 import { o as require_jsx_runtime } from "../_libs/@radix-ui/react-arrow+[...].mjs";
 import { t as createMiddleware } from "./createStart-Dt05N14y.mjs";
 import { n as toResponse, t as H3Event } from "../_libs/h3-v2+srvx.mjs";
-import processModule from "node:process";
+import process from "node:process";
 import { AsyncLocalStorage } from "node:async_hooks";
 require_react();
 var import_jsx_runtime = require_jsx_runtime();
@@ -83,7 +83,7 @@ var HEADERS = { TSS_SHELL: "X-TSS_SHELL" };
 * the dev styles URL for route-scoped CSS collection.
 */
 async function getStartManifest(matchedRoutes) {
-	const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-DlhVSBm7.mjs");
+	const { tsrStartManifest } = await import("../_tanstack-start-manifest_v-DdhAZfih.mjs");
 	const startManifest = tsrStartManifest();
 	let routes = startManifest.routes;
 	routes[rootRouteId];
@@ -1164,7 +1164,7 @@ var getBaseManifest = getProdBaseManifest;
 var createEarlyHintsForRequest = createEarlyHintsCollector;
 async function loadEntries() {
 	const [routerEntry, startEntry, pluginAdapters] = await Promise.all([
-		import("./router-dV44e7bp.mjs"),
+		import("./router-K0j_M-0F.mjs"),
 		import("./start-Ok9K6Nid.mjs"),
 		import("./empty-plugin-adapters-D9UWiqvJ.mjs")
 	]);
@@ -1180,8 +1180,8 @@ function getEntries() {
 }
 var ROUTER_BASEPATH = "/";
 var SERVER_FN_BASE = "/_serverFn/";
-var IS_PRERENDERING = processModule.env.TSS_PRERENDERING === "true";
-var IS_SHELL_ENV = processModule.env.TSS_SHELL === "true";
+var IS_PRERENDERING = process.env.TSS_PRERENDERING === "true";
+var IS_SHELL_ENV = process.env.TSS_SHELL === "true";
 var IS_DEV = false;
 var ERR_NO_RESPONSE = IS_DEV ? `It looks like you forgot to return a response from your server route handler. If you want to defer to the app router, make sure to have a component set in this route.` : "Internal Server Error";
 var ERR_NO_DEFER = IS_DEV ? `You cannot defer to the app router if there is no component defined on this route.` : "Internal Server Error";

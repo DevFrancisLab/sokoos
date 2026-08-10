@@ -60,6 +60,12 @@ const NAV_ITEMS = [
   },
 
   {
+    label: "Customers",
+    href: "/dashboard/customers",
+    Icon: User,
+  },
+
+  {
     label: "AI Employee",
     Icon: Bot,
     children: [
