@@ -1640,6 +1640,8 @@ export default function DashboardLayout() {
     }, 100);
   };
   const [completedIdentitySteps, setCompletedIdentitySteps] = useState<number[]>([]);
+  const [activeIntegrationStep, setActiveIntegrationStep] = useState(0);
+  const [completedIntegrationSteps, setCompletedIntegrationSteps] = useState<number[]>([]);
   const [activeKnowledgeStep, setActiveKnowledgeStep] = useState(0);
   const [completedKnowledgeSteps, setCompletedKnowledgeSteps] = useState<number[]>([]);
   const [selectedKnowledgeSources, setSelectedKnowledgeSources] = useState<string[]>([]);
@@ -1648,6 +1650,7 @@ export default function DashboardLayout() {
   const [onboardingRestored, setOnboardingRestored] = useState(false);
   const identityLessonRef = useRef<HTMLDivElement>(null);
   const knowledgeLessonRef = useRef<HTMLDivElement>(null);
+  const integrationLessonRef = useRef<HTMLDivElement>(null);
   const previewMessagesRef = useRef<HTMLDivElement>(null);
   const identityLessons = ["Business Identity", "Brand Voice", "Greetings", "Languages", "Business Hours", "Locations", "Complete Identity"];
   const identityLessonCompletionNames = ["Business Identity", "Brand Voice", "Greetings", "Languages", "Business Hours", "Locations", "Complete Identity"];
@@ -4196,6 +4199,39 @@ export default function DashboardLayout() {
     </section>
   );
 
+  const IntegrationWorkspace = ({ children }: { children: ReactNode }) => (
+    <section className="space-y-5" aria-label="Integrations training">
+      {children}
+    </section>
+  );
+
+  const integrationLessonSequence = ["Channels", "Payments", "Business Tools", "Communication", "Data & Sync", "Review"] as const;
+  const integrationLessonCompletionNames = integrationLessonSequence;
+
+  const focusIntegrationLesson = (step: number) => {
+    setActiveIntegrationStep(step);
+    window.setTimeout(() => {
+      const target = integrationLessonRef.current?.querySelector<HTMLElement>(`[data-lesson-index="${step}"]`);
+      if (!target) return;
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      const firstField = target.querySelector<HTMLElement>("input, select, textarea, button");
+      firstField?.focus({ preventScroll: true });
+    }, 0);
+  };
+
+  const completeIntegrationLesson = (step: number) => {
+    setCompletedIntegrationSteps((current) => (current.includes(step) ? current : [...current, step]));
+    setCompletionToast(`${integrationLessonCompletionNames[step]} complete — your integrations training path is moving forward.`);
+    window.setTimeout(() => setCompletionToast(null), 2200);
+    if (step < integrationLessonSequence.length - 1) {
+      window.setTimeout(() => focusIntegrationLesson(step + 1), 500);
+    }
+  };
+
+  const integrationLessonCardClass = (step: number) => `rounded-[28px] border bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-300 sm:p-6 ${completedIntegrationSteps.includes(step) ? "border-[#86EFAC] shadow-[0_14px_34px_rgba(34,197,94,0.14)]" : "border-[#E5E7EB]"}`;
+
+  const canContinueIntegrationLesson = (_step: number) => true;
+
   const canContinueKnowledgeLesson = (step: number) => {
     if (step === 0) {
       return selectedKnowledgeSources.length > 0;
@@ -4256,7 +4292,336 @@ export default function DashboardLayout() {
     </section>
   );
 
-  // Sales playbook lesson navigation (UI-only, local state)
+  const IntegrationLessonTabs = () => (
+    <section className="relative z-20 rounded-[24px] border border-[#E5E7EB] bg-white px-3 py-3 shadow-[0_6px_18px_rgba(15,23,42,0.04)]" aria-label="Integrations onboarding progress">
+      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#166534]">Integrations training curriculum</p>
+          <p className="mt-1 text-base font-semibold text-[#111827]">Guide your AI through the systems it can connect to and use.</p>
+          <p className="mt-3 text-sm text-[#475569]">Complete each lesson to confirm the right channels, payments, tools, and data sources are connected.</p>
+        </div>
+        <div className="rounded-full bg-[#ECFDF5] px-3 py-1 text-sm font-semibold text-[#166534]">
+          {completedIntegrationSteps.length}/{integrationLessonSequence.length} lessons complete
+        </div>
+      </div>
+      <div className="mt-3 flex flex-wrap gap-2">
+        {integrationLessonSequence.map((lesson, index) => {
+          const active = activeIntegrationStep === index;
+          const completed = completedIntegrationSteps.includes(index);
+          return (
+            <button
+              key={lesson}
+              type="button"
+              onClick={() => focusIntegrationLesson(index)}
+              aria-current={active ? "step" : undefined}
+              className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition ${active ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534] shadow-sm" : completed ? "border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#86EFAC] hover:text-[#111827]"}`}
+            >
+              <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${completed ? "bg-[#22C55E] text-white" : active ? "bg-[#111827] text-white" : "bg-[#F8FAFC] text-[#64748B]"}`}>
+                {completed ? <Check className="h-3.5 w-3.5" /> : <span className="text-[11px]">{index + 1}</span>}
+              </span>
+              <span>{lesson}</span>
+              {completed && <span className="text-[10px] uppercase tracking-[0.12em]">Done</span>}
+            </button>
+          );
+        })}
+      </div>
+    </section>
+  );
+
+  const CurrentIntegrationLesson = () => {
+    const currentLesson = integrationLessonSequence[activeIntegrationStep] ?? integrationLessonSequence[0];
+
+    const lessons = [
+      {
+        title: "Channels",
+        description: "Connect the customer channels where the AI communicates.",
+        Icon: MessageCircle,
+        items: [
+          {
+            id: "whatsapp",
+            label: "WhatsApp",
+            Icon: MessageCircle,
+            description: "Reply to customers with your connected WhatsApp Business account.",
+            status: getIntegrationStatus("whatsapp"),
+          },
+          {
+            id: "website",
+            label: "Website chat",
+            Icon: Globe,
+            description: "Capture website chats and let your AI reply instantly.",
+            status: communicationChannels.websiteChat ? "Active" : "Disabled",
+          },
+          {
+            id: "facebook",
+            label: "Facebook Messenger",
+            Icon: MessageCircle,
+            description: "Answer Facebook messages with your AI voice.",
+            status: getIntegrationStatus("facebook"),
+          },
+          {
+            id: "instagram",
+            label: "Instagram",
+            Icon: Image,
+            description: "Respond to Instagram DMs and customer comments.",
+            status: getIntegrationStatus("instagram"),
+          },
+          {
+            id: "email",
+            label: "Email",
+            Icon: Send,
+            description: "Read and reply to customer emails from your connected inbox.",
+            status: getIntegrationStatus("email"),
+          },
+          {
+            id: "sms",
+            label: "SMS",
+            Icon: Phone,
+            description: "Send confirmations and reminders over SMS when your business phone number is set.",
+            status: Boolean(businessInfo.phone?.trim()) ? "Ready" : "Setup required",
+          },
+        ],
+      },
+      {
+        title: "Payments",
+        description: "Connect payment systems the AI can use for payment-related tasks.",
+        Icon: Tag,
+        items: [
+          {
+            id: "mpesa",
+            label: "M-Pesa",
+            Icon: Phone,
+            description: "Enable mobile money payments and reconciliation.",
+            status: getIntegrationStatus("mpesa"),
+          },
+          {
+            id: "stripe",
+            label: "Stripe",
+            Icon: Tag,
+            description: "Allow the AI to generate payment links.",
+            status: getIntegrationStatus("stripe"),
+          },
+          {
+            id: "paypal",
+            label: "PayPal",
+            Icon: Tag,
+            description: "Allow the AI to generate PayPal payment links.",
+            status: getIntegrationStatus("paypal"),
+          },
+          {
+            id: "flutterwave",
+            label: "Flutterwave",
+            Icon: Globe,
+            description: "Allow the AI to process payments across Africa and generate payment links.",
+            status: getIntegrationStatus("flutterwave"),
+          },
+        ],
+      },
+      {
+        title: "Business Tools",
+        description: "Connect the business systems the AI can use to perform work.",
+        Icon: Box,
+        items: [
+          {
+            id: "google_calendar",
+            label: "Google Calendar",
+            Icon: Calendar,
+            description: "Let the AI schedule appointments and manage your business calendar.",
+            status: getIntegrationStatus("google_calendar"),
+          },
+          {
+            id: "outlook",
+            label: "Microsoft Outlook",
+            Icon: Calendar,
+            description: "Let the AI manage business meetings and email scheduling.",
+            status: getIntegrationStatus("outlook"),
+          },
+          {
+            id: "shopify",
+            label: "Shopify",
+            Icon: Box,
+            description: "Allow the AI to access your store catalog and product data.",
+            status: getIntegrationStatus("shopify"),
+          },
+          {
+            id: "woocommerce",
+            label: "WooCommerce",
+            Icon: Box,
+            description: "Allow the AI to read your store products, orders, and inventory.",
+            status: getIntegrationStatus("woocommerce"),
+          },
+          {
+            id: "custom_api",
+            label: "Custom Website API",
+            Icon: Globe,
+            description: "Allow the AI to connect with your custom commerce and order APIs.",
+            status: getIntegrationStatus("custom_api"),
+          },
+          {
+            id: "google_business",
+            label: "Google Business Profile",
+            Icon: Globe,
+            description: "Allow the AI to update your business profile and respond to reviews.",
+            status: getIntegrationStatus("google_business"),
+          },
+        ],
+      },
+      {
+        title: "Communication",
+        description: "Connect communication and marketing tools the AI can use to keep customers and the team informed.",
+        Icon: Megaphone,
+        items: [
+          {
+            id: "mailchimp",
+            label: "Mailchimp",
+            Icon: Send,
+            description: "Allow the AI to send notification campaigns and sync contact lists.",
+            status: getIntegrationStatus("mailchimp"),
+          },
+          {
+            id: "brevo",
+            label: "Brevo",
+            Icon: Send,
+            description: "Allow the AI to send email notifications and manage audiences.",
+            status: getIntegrationStatus("brevo"),
+          },
+          {
+            id: "meta_ads",
+            label: "Meta Ads",
+            Icon: Megaphone,
+            description: "Allow the AI to sync campaign audiences and notify teams about ad performance.",
+            status: getIntegrationStatus("meta_ads"),
+          },
+          {
+            id: "google_ads",
+            label: "Google Ads",
+            Icon: Globe,
+            description: "Allow the AI to pull ad performance and surface campaign notifications.",
+            status: getIntegrationStatus("google_ads"),
+          },
+          {
+            id: "tiktok",
+            label: "TikTok",
+            Icon: Globe,
+            description: "Allow the AI to manage TikTok campaign notifications.",
+            status: getIntegrationStatus("tiktok"),
+          },
+        ],
+      },
+      {
+        title: "Data & Sync",
+        description: "Connect external data sources that keep the AI's business information up to date.",
+        Icon: Paperclip,
+        items: [
+          {
+            id: "gdrive",
+            label: "Google Drive",
+            Icon: Paperclip,
+            description: "Allow the AI to access business documents and knowledge files.",
+            status: getIntegrationStatus("gdrive"),
+          },
+          {
+            id: "dropbox",
+            label: "Dropbox",
+            Icon: Paperclip,
+            description: "Allow the AI to access business documents stored in Dropbox.",
+            status: getIntegrationStatus("dropbox"),
+          },
+          {
+            id: "onedrive",
+            label: "OneDrive",
+            Icon: Paperclip,
+            description: "Allow the AI to access business files stored in OneDrive.",
+            status: getIntegrationStatus("onedrive"),
+          },
+        ],
+      },
+      {
+        title: "Review",
+        description: "Review connected integrations and integration readiness before completing training.",
+        Icon: Check,
+        items: [],
+      },
+    ];
+
+    const activeLesson = lessons[activeIntegrationStep];
+
+    return (
+      <section ref={integrationLessonRef} data-lesson-index={String(activeIntegrationStep)} className={integrationLessonCardClass(activeIntegrationStep)}>
+        <div className="space-y-5">
+          <div className="flex gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EFF6FF] text-[#2563EB]"><activeLesson.Icon className="h-5 w-5" /></div>
+            <div>
+              <p className="text-[20px] font-semibold text-[#111827]">{activeLesson.title}</p>
+              <p className="mt-2 text-sm leading-6 text-[#6B7280]">{activeLesson.description}</p>
+            </div>
+          </div>
+
+          {activeLesson.items.length > 0 ? (
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              {activeLesson.items.map((item) => renderIntegrationCard(item))}
+            </div>
+          ) : (
+            <div className="rounded-[24px] border border-[#E5E7EB] bg-[#F8FAFC] p-5 text-sm text-[#475569]">
+              Review your connected integrations and confirm your AI has the systems it needs.
+            </div>
+          )}
+
+          {activeLesson.title === "Review" && (
+            <div className="space-y-5 rounded-[24px] border border-[#EEF2F6] bg-white p-5">
+              {[
+                { title: "Channels", summary: getIntegrationSummaryForSection("Channels") },
+                { title: "Payments", summary: getIntegrationSummaryForSection("Payments") },
+                { title: "Business Tools", summary: getIntegrationSummaryForSection("Business Tools") },
+                { title: "Communication", summary: getIntegrationSummaryForSection("Communication & Marketing") },
+                { title: "Data & Sync", summary: getIntegrationSummaryForSection("Data & Knowledge") },
+              ].map((group) => (
+                <div key={group.title} className="rounded-[20px] border border-[#E5E7EF] bg-[#F8FAFC] p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-sm font-semibold text-[#111827]">{group.title}</p>
+                    <span className="text-sm text-[#64748B]">{group.summary.total} integrations</span>
+                  </div>
+                  <div className="mt-4 grid gap-3 sm:grid-cols-4">
+                    {[
+                      { label: "Connected", value: group.summary.connected },
+                      { label: "Available", value: group.summary.available },
+                      { label: "Setup required", value: group.summary.setup_required },
+                      { label: "Coming soon", value: group.summary.coming_soon },
+                    ].map((metric) => (
+                      <div key={metric.label} className="rounded-[16px] border border-[#E5E7EF] bg-white p-3">
+                        <p className="text-[11px] uppercase tracking-[0.2em] text-[#64748B]">{metric.label}</p>
+                        <p className="mt-2 text-2xl font-semibold text-[#111827]">{metric.value}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
+            <button
+              type="button"
+              onClick={() => focusIntegrationLesson(activeIntegrationStep - 1)}
+              disabled={activeIntegrationStep === 0}
+              className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827] disabled:cursor-not-allowed disabled:opacity-45"
+            >
+              Back
+            </button>
+            <button
+              type="button"
+              onClick={() => completeIntegrationLesson(activeIntegrationStep)}
+              disabled={!canContinueIntegrationLesson(activeIntegrationStep)}
+              className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45"
+            >
+              {activeIntegrationStep === integrationLessonSequence.length - 1 ? "Finish training" : "Save & Continue"}
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      </section>
+    );
+  };
+
   const salesLessons = [
     'Sales Objectives',
     'Customer Qualification',
@@ -8798,422 +9163,9 @@ export default function DashboardLayout() {
                     )}
 
                     {activeWorkspaceSection === "Integrations" && (
-                      <div ref={integrationsPageRef} tabIndex={-1} className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
-                        <div className="flex items-start gap-3">
-                          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><Plug className="h-5 w-5" /></div>
-                          <div>
-                            <p className="text-lg font-semibold text-[#111827]">Integrations</p>
-                            <p className="mt-1 text-sm leading-6 text-[#64748B]">Connect the tools your AI employee needs to communicate with customers, access business information, and get work done.</p>
-                            <p className="mt-2 text-sm leading-6 text-[#64748B]">Connecting an integration gives your AI employee specific capabilities based on the permissions granted by each service.</p>
-                          </div>
-                        </div>
-                        <div className="mt-6 grid gap-6 lg:grid-cols-[1.45fr_0.95fr]">
-                          <div className="space-y-5">
-                            <div className="rounded-[24px] border border-[#EEF2F6] bg-[#F8FAFC] p-5">
-                              <div className="flex items-start gap-3">
-                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]">
-                                  <MessageCircle className="h-5 w-5" />
-                                </div>
-                                <div>
-                                  <p className="text-sm font-semibold text-[#111827]">Channels</p>
-                                  <p className="mt-1 text-sm text-[#64748B]">
-                                    Teach your AI which customer channels are ready so it can respond where your business already communicates.
-                                  </p>
-                                </div>
-                              </div>
-
-                              <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                                {(() => {
-                                  const phoneReady = Boolean(businessInfo.phone?.trim());
-                                  const channels = [
-                                    {
-                                      id: "whatsapp",
-                                      label: "WhatsApp",
-                                      Icon: MessageCircle,
-                                      description: "Reply to customers with your connected WhatsApp Business account.",
-                                      status: getIntegrationStatus("whatsapp"),
-                                    },
-                                    {
-                                      id: "website",
-                                      label: "Website chat",
-                                      Icon: Globe,
-                                      description: "Capture website chats and let your AI reply instantly.",
-                                      status: communicationChannels.websiteChat ? "Active" : "Disabled",
-                                    },
-                                    {
-                                      id: "facebook",
-                                      label: "Facebook Messenger",
-                                      Icon: MessageCircle,
-                                      description: "Answer Facebook messages with your AI voice.",
-                                      status: getIntegrationStatus("facebook"),
-                                    },
-                                    {
-                                      id: "instagram",
-                                      label: "Instagram",
-                                      Icon: Image,
-                                      description: "Respond to Instagram DMs and customer comments.",
-                                      status: getIntegrationStatus("instagram"),
-                                    },
-                                    {
-                                      id: "email",
-                                      label: "Email",
-                                      Icon: Send,
-                                      description: "Read and reply to customer emails from your connected inbox.",
-                                      status: getIntegrationStatus("email"),
-                                    },
-                                    {
-                                      id: "sms",
-                                      label: "SMS",
-                                      Icon: Phone,
-                                      description: "Send confirmations and reminders over SMS when your business phone number is set.",
-                                      status: phoneReady ? "Ready" : "Setup required",
-                                    },
-                                  ];
-
-                                  const badgeClass = (displayStatus: string) =>
-                                    ["Connected", "Active", "Ready", "Available"].includes(displayStatus)
-                                      ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#166534]"
-                                      : displayStatus === "Coming soon"
-                                      ? "border-[#E9D5FF] bg-[#F5F3FF] text-[#6D28D9]"
-                                      : displayStatus === "Setup required"
-                                      ? "border-[#FDE68A] bg-[#FEF9C3] text-[#92400E]"
-                                      : "border-[#F3F4F6] bg-[#F3F4F6] text-[#6B7280]";
-
-                                  return channels.map((channel) => renderIntegrationCard(channel));
-                                })()}
-                              </div>
-                            </div>
-
-                            <div className="rounded-[24px] border border-[#EEF2F6] bg-white p-5">
-                              <div className="flex items-start gap-3">
-                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]">
-                                  <Calendar className="h-5 w-5" />
-                                </div>
-                                <div>
-                                  <p className="text-sm font-semibold text-[#111827]">Business Tools</p>
-                                  <p className="mt-1 text-sm text-[#64748B]">
-                                    Connect the tools your AI employee can use to perform business tasks.
-                                  </p>
-                                </div>
-                              </div>
-
-                              <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                                {(() => {
-                                  const tools = [
-                                    {
-                                      id: "google_calendar",
-                                      label: "Google Calendar",
-                                      Icon: Calendar,
-                                      description: "Let the AI schedule appointments and manage your business calendar.",
-                                      status: getIntegrationStatus("google_calendar"),
-                                    },
-                                    {
-                                      id: "outlook",
-                                      label: "Microsoft Outlook",
-                                      Icon: Calendar,
-                                      description: "Let the AI manage business meetings and email scheduling.",
-                                      status: getIntegrationStatus("outlook"),
-                                    },
-                                    {
-                                      id: "shopify",
-                                      label: "Shopify",
-                                      Icon: Box,
-                                      description: "Allow the AI to access your store catalog and product data.",
-                                      status: getIntegrationStatus("shopify"),
-                                    },
-                                    {
-                                      id: "woocommerce",
-                                      label: "WooCommerce",
-                                      Icon: Box,
-                                      description: "Allow the AI to read your store products, orders, and inventory.",
-                                      status: getIntegrationStatus("woocommerce"),
-                                    },
-                                    {
-                                      id: "custom_api",
-                                      label: "Custom Website API",
-                                      Icon: Globe,
-                                      description: "Allow the AI to connect with your custom commerce and order APIs.",
-                                      status: getIntegrationStatus("custom_api"),
-                                    },
-                                    {
-                                      id: "google_business",
-                                      label: "Google Business Profile",
-                                      Icon: Globe,
-                                      description: "Allow the AI to update your business profile and respond to reviews.",
-                                      status: getIntegrationStatus("google_business"),
-                                    },
-                                  ];
-
-                                  return tools.map((tool) => renderIntegrationCard(tool));
-                                })()}
-                              </div>
-                            </div>
-
-                            <div className="rounded-[24px] border border-[#EEF2F6] bg-white p-5">
-                              <div className="flex items-start gap-3">
-                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]">
-                                  <Megaphone className="h-5 w-5" />
-                                </div>
-                                <div>
-                                  <p className="text-sm font-semibold text-[#111827]">Communication & Marketing</p>
-                                  <p className="mt-1 text-sm text-[#64748B]">
-                                    Connect the communication tools your AI employee can use to send notifications and support marketing workflows.
-                                  </p>
-                                </div>
-                              </div>
-
-                              <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                                {(() => {
-                                  const communications = [
-                                    {
-                                      id: "mailchimp",
-                                      label: "Mailchimp",
-                                      Icon: Send,
-                                      description: "Allow the AI to send notification campaigns and sync contact lists.",
-                                      status: getIntegrationStatus("mailchimp"),
-                                    },
-                                    {
-                                      id: "brevo",
-                                      label: "Brevo",
-                                      Icon: Send,
-                                      description: "Allow the AI to send email notifications and manage audiences.",
-                                      status: getIntegrationStatus("brevo"),
-                                    },
-                                    {
-                                      id: "meta_ads",
-                                      label: "Meta Ads",
-                                      Icon: Megaphone,
-                                      description: "Allow the AI to sync campaign audiences and notify teams about ad performance.",
-                                      status: getIntegrationStatus("meta_ads"),
-                                    },
-                                    {
-                                      id: "google_ads",
-                                      label: "Google Ads",
-                                      Icon: Globe,
-                                      description: "Allow the AI to pull ad performance and surface campaign notifications.",
-                                      status: getIntegrationStatus("google_ads"),
-                                    },
-                                    {
-                                      id: "tiktok",
-                                      label: "TikTok",
-                                      Icon: Globe,
-                                      description: "Allow the AI to manage TikTok campaign notifications.",
-                                      status: getIntegrationStatus("tiktok"),
-                                    },
-                                  ];
-
-                                  return communications.map((tool) => renderIntegrationCard(tool));
-                                })()}
-                              </div>
-                            </div>
-
-                            <div className="rounded-[24px] border border-[#EEF2F6] bg-white p-5">
-                              <div className="flex items-start gap-3">
-                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]">
-                                  <Paperclip className="h-5 w-5" />
-                                </div>
-                                <div>
-                                  <p className="text-sm font-semibold text-[#111827]">Data & Knowledge</p>
-                                  <p className="mt-1 text-sm text-[#64748B]">
-                                    Connect external data sources that can keep your AI's information and documents up to date.
-                                  </p>
-                                </div>
-                              </div>
-
-                              <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                                {(() => {
-                                  const sources = [
-                                    {
-                                      id: "gdrive",
-                                      label: "Google Drive",
-                                      Icon: Paperclip,
-                                      description: "Allow the AI to access files and documents from Google Drive.",
-                                      status: getIntegrationStatus("gdrive"),
-                                    },
-                                    {
-                                      id: "dropbox",
-                                      label: "Dropbox",
-                                      Icon: Paperclip,
-                                      description: "Allow the AI to access shared business documents stored in Dropbox.",
-                                      status: getIntegrationStatus("dropbox"),
-                                    },
-                                    {
-                                      id: "onedrive",
-                                      label: "OneDrive",
-                                      Icon: Paperclip,
-                                      description: "Allow the AI to access business files stored in OneDrive.",
-                                      status: getIntegrationStatus("onedrive"),
-                                    },
-                                  ];
-
-                                  return sources.map((source) => renderIntegrationCard(source));
-                                })()}
-                              </div>
-                            </div>
-
-                            <div className="rounded-[24px] border border-[#EEF2F6] bg-white p-5">
-                              <div className="flex items-start gap-3">
-                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]">
-                                  <Check className="h-5 w-5" />
-                                </div>
-                                <div>
-                                  <p className="text-sm font-semibold text-[#111827]">Review</p>
-                                  <p className="mt-1 text-sm text-[#64748B]">
-                                    Review the systems connected to your AI employee.
-                                  </p>
-                                </div>
-                              </div>
-
-                              <div className="mt-5 space-y-5">
-                                {(() => {
-                                  const reviewGroups = [
-                                    "Channels",
-                                    "Payments",
-                                    "Business Tools",
-                                    "Communication & Marketing",
-                                    "Data & Knowledge",
-                                  ].map((title) => ({
-                                    title,
-                                    summary: getIntegrationSummaryForSection(title),
-                                  }));
-
-                                  const totalConnected = reviewGroups.reduce((sum, group) => {
-                                    return sum + group.summary.connected;
-                                  }, 0);
-
-                                  return (
-                                    <>
-                                      {totalConnected === 0 && (
-                                        <div className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFC] p-4 text-sm text-[#64748B]">
-                                          No integrations connected yet.
-                                        </div>
-                                      )}
-
-                                      {reviewGroups.map((group) => (
-                                          <div key={group.title} className="rounded-[20px] border border-[#E5E7EF] bg-[#F8FAFC] p-4">
-                                            <div className="flex items-center justify-between gap-3">
-                                              <p className="text-sm font-semibold text-[#111827]">{group.title}</p>
-                                              <span className="text-sm text-[#64748B]">{group.summary.total} integrations</span>
-                                            </div>
-                                            <div className="mt-4 grid gap-3 sm:grid-cols-4">
-                                              {[
-                                                { label: "Connected", value: group.summary.connected },
-                                                { label: "Available", value: group.summary.available },
-                                                { label: "Setup required", value: group.summary.setup_required },
-                                                { label: "Coming soon", value: group.summary.coming_soon },
-                                              ].map((metric) => (
-                                                <div key={metric.label} className="rounded-[16px] border border-[#E5E7EF] bg-white p-3">
-                                                  <p className="text-[11px] uppercase tracking-[0.2em] text-[#64748B]">{metric.label}</p>
-                                                  <p className="mt-2 text-2xl font-semibold text-[#111827]">{metric.value}</p>
-                                                </div>
-                                              ))}
-                                            </div>
-                                          </div>
-                                      ))}
-                                    </>
-                                  );
-                                })()}
-                              </div>
-
-                              <div className="mt-5 flex justify-end">
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    handleSaveChanges();
-                                  }}
-                                  className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]"
-                                >
-                                  Save & Continue <ChevronRight className="h-4 w-4" />
-                                </button>
-                              </div>
-                            </div>
-
-                            <div className="rounded-[24px] border border-[#EEF2F6] bg-white p-5">
-                              <div className="flex items-start gap-3">
-                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]">
-                                  <Tag className="h-5 w-5" />
-                                </div>
-                                <div>
-                                  <p className="text-sm font-semibold text-[#111827]">Payments</p>
-                                  <p className="mt-1 text-sm text-[#64748B]">
-                                    Connect the payment systems your business uses so your AI employee can work with payment-related tasks.
-                                  </p>
-                                </div>
-                              </div>
-
-                              <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                                {(() => {
-                                  const payments = [
-                                    {
-                                      id: "mpesa",
-                                      label: "M-Pesa",
-                                      Icon: Phone,
-                                      description: "Enable mobile money payments and reconciliation.",
-                                      status: getIntegrationStatus("mpesa"),
-                                    },
-                                    {
-                                      id: "stripe",
-                                      label: "Stripe",
-                                      Icon: Tag,
-                                      description: "Allow the AI to generate payment links.",
-                                      status: getIntegrationStatus("stripe"),
-                                    },
-                                    {
-                                      id: "paypal",
-                                      label: "PayPal",
-                                      Icon: Tag,
-                                      description: "Allow the AI to generate PayPal payment links.",
-                                      status: getIntegrationStatus("paypal"),
-                                    },
-                                    {
-                                      id: "flutterwave",
-                                      label: "Flutterwave",
-                                      Icon: Globe,
-                                      description: "Allow the AI to process payments across Africa and generate payment links.",
-                                      status: getIntegrationStatus("flutterwave"),
-                                    },
-                                  ];
-
-                                  return payments.map((payment) => renderIntegrationCard(payment));
-                                })()}
-                              </div>
-                            </div>
-
-                            <div className="rounded-[24px] border border-[#EEF2F6] bg-white p-5">
-                              <p className="text-sm font-semibold text-[#111827]">Channel readiness</p>
-                              <p className="mt-1 text-sm text-[#64748B]">Your AI uses connected channels to start conversations, follow up leads, and keep customers updated automatically.</p>
-                              <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                                {(() => {
-                                  const channelSummary = getIntegrationSummaryForSection("Channels");
-
-                                  return [
-                                    {
-                                      label: "Connected channels",
-                                      value: channelSummary.connected,
-                                    },
-                                    {
-                                      label: "Total channels",
-                                      value: channelSummary.total,
-                                    },
-                                  ];
-                                })().map((metric) => (
-                                  <div key={metric.label} className="rounded-[20px] border border-[#F3F4F6] bg-[#F8FAFC] p-4">
-                                    <p className="text-xs uppercase tracking-[0.18em] text-[#64748B]">{metric.label}</p>
-                                    <p className="mt-2 text-2xl font-semibold text-[#111827]">{metric.value}</p>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="rounded-[24px] border border-[#FEF3C7] bg-[#FFFBEB] p-4 text-sm text-[#92400E]">
-                            <div className="flex items-center gap-3">
-                              <CircleAlert className="h-4 w-4 shrink-0" />
-                              <span className="flex-1">Complete your channel setup to unlock the full AI experience.</span>
-                            </div>
-                            <button type="button" onClick={goToIntegrationsSection} className="mt-4 w-full rounded-lg bg-white px-3 py-2 text-xs font-semibold text-[#92400E] shadow-sm transition hover:bg-[#FEF3C7]">Manage integrations</button>
-                          </div>
-                        </div>
+                      <div ref={integrationsPageRef} tabIndex={-1} className="space-y-5">
+                        <IntegrationLessonTabs />
+                        <CurrentIntegrationLesson />
                       </div>
                     )}
 
