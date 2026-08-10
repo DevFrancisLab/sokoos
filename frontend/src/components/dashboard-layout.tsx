@@ -548,35 +548,35 @@ const INTEGRATION_SECTIONS = [
         name: "WhatsApp Business",
         Icon: MessageCircle,
         description: "Allow Sokoos AI to reply to customers directly inside WhatsApp.",
-        status: "Connected",
+        status: "connected",
       },
       {
         id: "facebook",
         name: "Facebook Messenger",
         Icon: MessageCircle,
         description: "Allow Sokoos AI to reply to customers on Facebook Messenger.",
-        status: "Not Connected",
+        status: "available",
       },
       {
         id: "instagram",
         name: "Instagram",
         Icon: Image,
         description: "Allow Sokoos AI to respond to Instagram messages and DMs.",
-        status: "Not Connected",
+        status: "available",
       },
       {
         id: "telegram",
         name: "Telegram",
         Icon: Send,
         description: "Allow Sokoos AI to manage Telegram conversations.",
-        status: "Not Connected",
+        status: "available",
       },
       {
         id: "email",
         name: "Email",
         Icon: Send,
         description: "Allow Sokoos AI to read and send business emails.",
-        status: "Connected",
+        status: "connected",
       },
     ],
   },
@@ -588,28 +588,28 @@ const INTEGRATION_SECTIONS = [
         name: "M-Pesa",
         Icon: Phone,
         description: "Enable mobile money payments and reconciliation.",
-        status: "Not Connected",
+        status: "available",
       },
       {
         id: "stripe",
         name: "Stripe",
         Icon: Tag,
         description: "Allow the AI to generate payment links.",
-        status: "Not Connected",
+        status: "available",
       },
       {
         id: "paypal",
         name: "PayPal",
         Icon: Tag,
         description: "Allow the AI to generate PayPal payment links.",
-        status: "Not Connected",
+        status: "available",
       },
       {
         id: "flutterwave",
         name: "Flutterwave",
         Icon: Globe,
         description: "Allow the AI to process payments across Africa and generate payment links.",
-        status: "Coming Soon",
+        status: "coming_soon",
       },
     ],
   },
@@ -621,108 +621,108 @@ const INTEGRATION_SECTIONS = [
         name: "Shopify",
         Icon: Box,
         description: "Allow the AI to answer product questions using your store catalog.",
-        status: "Connected",
+        status: "connected",
       },
       {
         id: "woocommerce",
         name: "WooCommerce",
         Icon: Box,
         description: "Allow the AI to access your WooCommerce product catalog and orders.",
-        status: "Not Connected",
+        status: "available",
       },
       {
         id: "custom_api",
         name: "Custom Website API",
         Icon: Globe,
         description: "Allow the AI to query your site's product and order APIs.",
-        status: "Not Connected",
+        status: "available",
       },
       {
         id: "google_business",
         name: "Google Business Profile",
         Icon: Globe,
         description: "Allow the AI to update and read your business profile and respond to reviews.",
-        status: "Not Connected",
+        status: "available",
       },
       {
         id: "google_calendar",
         name: "Google Calendar",
         Icon: Calendar,
         description: "Allow the AI to schedule appointments.",
-        status: "Connected",
+        status: "connected",
       },
       {
         id: "outlook",
         name: "Microsoft Outlook",
         Icon: Calendar,
         description: "Allow the AI to schedule meetings and manage business email/calendar.",
-        status: "Not Connected",
+        status: "available",
       },
     ],
   },
   {
-    section: "Communication",
+    section: "Communication & Marketing",
     items: [
       {
         id: "meta_ads",
         name: "Meta Ads",
         Icon: Megaphone,
         description: "Allow the AI to sync campaign data and create audiences.",
-        status: "Not Connected",
+        status: "available",
       },
       {
         id: "google_ads",
         name: "Google Ads",
         Icon: Globe,
         description: "Allow the AI to pull campaign performance and recommend optimizations.",
-        status: "Not Connected",
+        status: "available",
       },
       {
         id: "tiktok",
         name: "TikTok",
         Icon: Globe,
         description: "Allow the AI to manage TikTok ad campaigns and creatives.",
-        status: "Coming Soon",
+        status: "coming_soon",
       },
       {
         id: "mailchimp",
         name: "Mailchimp",
         Icon: Send,
         description: "Allow the AI to sync contact lists and send marketing campaigns.",
-        status: "Connected",
+        status: "connected",
       },
       {
         id: "brevo",
         name: "Brevo",
         Icon: Send,
         description: "Allow the AI to send campaigns and sync contact lists.",
-        status: "Not Connected",
+        status: "available",
       },
     ],
   },
   {
-    section: "Data & Sync",
+    section: "Data & Knowledge",
     items: [
       {
         id: "gdrive",
         name: "Google Drive",
         Icon: Paperclip,
         description: "Allow the AI to access business documents and knowledge files.",
-        status: "Connected",
+        status: "connected",
       },
       {
         id: "dropbox",
         name: "Dropbox",
         Icon: Paperclip,
         description: "Allow the AI to access business documents stored in Dropbox.",
-        status: "Not Connected",
+        status: "available",
       },
       {
         id: "onedrive",
         name: "OneDrive",
         Icon: Paperclip,
         description: "Allow the AI to access business documents stored in OneDrive.",
-        status: "Not Connected",
+        status: "available",
       },
     ],
   },
@@ -779,7 +779,37 @@ const CAPABILITY_FEATURES: { id: string; title: string; requires: string[] }[] =
   { id: "reply_instagram", title: "Reply on Instagram", requires: ["instagram"] },
 ];
 
-const ANALYTICS_CHART = [
+type IntegrationStatus = "connected" | "available" | "setup_required" | "coming_soon";
+
+const normalizeIntegrationStatus = (status?: string): IntegrationStatus => {
+  if (!status) return "available";
+  const normalized = status.trim().toLowerCase().replace(/\s+/g, "_");
+  switch (normalized) {
+    case "connected":
+      return "connected";
+    case "coming_soon":
+    case "comingsoon":
+      return "coming_soon";
+    case "setup_required":
+      return "setup_required";
+    case "not_connected":
+    case "disconnected":
+    case "available":
+    default:
+      return "available";
+  }
+};
+
+const formatIntegrationStatusLabel = (status?: string) => {
+  const normalized = normalizeIntegrationStatus(status);
+  if (normalized === "connected") return "Connected";
+  if (normalized === "available") return "Available";
+  if (normalized === "setup_required") return "Setup required";
+  if (normalized === "coming_soon") return "Coming soon";
+  return "Available";
+};
+
+const ANALYTICS_CHART: { label: string; value: number }[] = [
   { label: "Mon", value: 48 },
   { label: "Tue", value: 62 },
   { label: "Wed", value: 55 },
@@ -1261,20 +1291,28 @@ export default function DashboardLayout() {
 
   const [mobileOpen, setMobileOpen] = useState(false);
   const [selected, setSelected] = useState<string>("Home");
-  const [integrationStates, setIntegrationStates] = useState<Record<string, { status: string; accountName?: string; lastSynced?: string }>>(() => {
+  const [integrationStates, setIntegrationStates] = useState<Record<string, { status: IntegrationStatus; accountName?: string; lastSynced?: string }>>(() => {
     try {
       const raw = typeof window !== "undefined" ? window.localStorage.getItem("sokoos.integrationStates") : null;
       if (raw) {
-        return JSON.parse(raw);
+        const parsed = JSON.parse(raw) as Record<string, { status: string; accountName?: string; lastSynced?: string }>;
+        const normalizedStates: Record<string, { status: IntegrationStatus; accountName?: string; lastSynced?: string }> = {};
+        for (const [id, value] of Object.entries(parsed)) {
+          normalizedStates[id] = {
+            ...value,
+            status: normalizeIntegrationStatus(value.status),
+          };
+        }
+        return normalizedStates;
       }
     } catch (e) {
       // ignore
     }
 
-    const map: Record<string, { status: string; accountName?: string; lastSynced?: string }> = {};
+    const map: Record<string, { status: IntegrationStatus; accountName?: string; lastSynced?: string }> = {};
     INTEGRATION_SECTIONS.forEach((section) => {
       section.items.forEach((it) => {
-        map[it.id] = { status: it.status };
+        map[it.id] = { status: normalizeIntegrationStatus(it.status) };
       });
     });
 
@@ -1299,7 +1337,7 @@ export default function DashboardLayout() {
   const handleDisconnect = (id: string) => {
     setIntegrationStates((s) => ({
       ...s,
-      [id]: { status: "Not Connected" },
+      [id]: { status: "available" },
     }));
     closeDrawer();
   };
@@ -1309,7 +1347,7 @@ export default function DashboardLayout() {
       ...s,
       [id]: {
         ...(s[id] || {}),
-        status: "Connected",
+        status: "connected",
         lastSynced: "Just now",
       },
     }));
@@ -1340,13 +1378,237 @@ export default function DashboardLayout() {
     return id;
   };
 
+  const getIntegrationDefaultStatus = (id: string): IntegrationStatus => {
+    const item = INTEGRATION_SECTIONS.flatMap((section) => section.items).find((integration) => integration.id === id);
+    return normalizeIntegrationStatus(item?.status);
+  };
+
+  const getIntegrationStatus = (id: string): IntegrationStatus => {
+    return integrationStates[id]?.status ?? getIntegrationDefaultStatus(id);
+  };
+
+  const getIntegrationDisplayStatus = (id: string): string => {
+    return formatStatusLabel(getIntegrationStatus(id));
+  };
+
+  const getAllIntegrationItems = () => INTEGRATION_SECTIONS.flatMap((section) => section.items);
+
+  const getIntegrationSection = (sectionName: string) =>
+    INTEGRATION_SECTIONS.find((section) => section.section === sectionName);
+
+  const getIntegrationSectionItems = (sectionName: string) =>
+    getIntegrationSection(sectionName)?.items ?? [];
+
+  const getTotalIntegrations = () => getAllIntegrationItems().length;
+
+  const getIntegrationStatusCounts = (items: Array<{ id: string }>) => {
+    const counts: Record<IntegrationStatus, number> = {
+      connected: 0,
+      available: 0,
+      setup_required: 0,
+      coming_soon: 0,
+    };
+
+    items.forEach((item) => {
+      counts[getIntegrationStatus(item.id)] += 1;
+    });
+
+    return counts;
+  };
+
+  const integrationSectionSummaries = useMemo(() => {
+    return INTEGRATION_SECTIONS.reduce((acc, section) => {
+      const counts = getIntegrationStatusCounts(section.items);
+      acc[section.section] = {
+        section: section.section,
+        total: section.items.length,
+        ...counts,
+      };
+      return acc;
+    }, {} as Record<string, { section: string; total: number; connected: number; available: number; setup_required: number; coming_soon: number }>);
+  }, [integrationStates]);
+
+  const isDevMode = typeof import.meta !== "undefined" && Boolean((import.meta as any).env?.DEV);
+
+  const allIntegrationSummary = useMemo(() => {
+    const items = getAllIntegrationItems();
+    return {
+      total: items.length,
+      ...getIntegrationStatusCounts(items),
+    };
+  }, [integrationStates]);
+
+  useEffect(() => {
+    if (!isDevMode) return;
+    Object.values(integrationSectionSummaries).forEach((summary) => {
+      const totalCount = summary.connected + summary.available + summary.setup_required + summary.coming_soon;
+      if (totalCount !== summary.total) {
+        console.warn(
+          `Integration summary mismatch for ${summary.section}: expected total=${summary.total} but got ${totalCount} from counts`,
+          summary,
+        );
+      }
+    });
+    const totalCount = allIntegrationSummary.connected + allIntegrationSummary.available + allIntegrationSummary.setup_required + allIntegrationSummary.coming_soon;
+    if (totalCount !== allIntegrationSummary.total) {
+      console.warn(
+        `Integration summary mismatch for all integrations: expected total=${allIntegrationSummary.total} but got ${totalCount} from counts`,
+        allIntegrationSummary,
+      );
+    }
+  }, [integrationSectionSummaries, allIntegrationSummary, isDevMode]);
+
+  const getIntegrationSummaryForSection = (sectionName: string) =>
+    integrationSectionSummaries[sectionName] ?? {
+      section: sectionName,
+      total: 0,
+      connected: 0,
+      available: 0,
+      setup_required: 0,
+      coming_soon: 0,
+    };
+
+  const getIntegrationCardCapabilities = (id: string) => {
+    return (INTEGRATION_CAPABILITIES[id] ?? []).slice(0, 3);
+  };
+
+  const getIntegrationStatusBadgeClass = (displayStatus: string) => {
+    if (displayStatus === "Connected") return "border-[#A7F3D0] bg-[#ECFDF5] text-[#166534]";
+    if (displayStatus === "Coming soon") return "border-[#E9D5FF] bg-[#F5F3FF] text-[#6D28D9]";
+    if (displayStatus === "Setup required" || displayStatus === "Disabled") return "border-[#FDE68A] bg-[#FEF9C3] text-[#92400E]";
+    return "border-[#F3F4F6] bg-[#F3F4F6] text-[#6B7280]";
+  };
+
+  const getIntegrationCardAction = (displayStatus: string, id: string) => {
+    const trimmedStatus = displayStatus.trim();
+    const isConnected = trimmedStatus === "Connected";
+    const isComingSoon = trimmedStatus === "Coming soon";
+    const isSetupRequired = trimmedStatus === "Setup required" || trimmedStatus === "Disabled";
+    const isAvailable = ["Available", "Active", "Ready"].includes(trimmedStatus);
+    const isSpecialChannel = id === "website" || id === "sms";
+
+    if (isConnected) {
+      return {
+        label: "Manage",
+        className: BUTTON_SECONDARY,
+        onClick: () => openDrawer(id),
+        disabled: false,
+      };
+    }
+
+    if (isComingSoon) {
+      return {
+        label: "Coming soon",
+        className: `${BUTTON_TERTIARY} opacity-60 pointer-events-none`,
+        disabled: true,
+      };
+    }
+
+    if (isSetupRequired) {
+      return {
+        label: "Configure",
+        className: isSpecialChannel ? `${BUTTON_PRIMARY} opacity-60 pointer-events-none` : BUTTON_PRIMARY,
+        onClick: isSpecialChannel
+          ? undefined
+          : () => {
+              setConnectModalId(id);
+              setConnectForm({ email: "", businessName: "", phone: "" });
+              setConnectModalOpen(true);
+            },
+        disabled: isSpecialChannel,
+      };
+    }
+
+    if (isAvailable) {
+      return {
+        label: "Connect",
+        className: isSpecialChannel ? `${BUTTON_PRIMARY} opacity-60 pointer-events-none` : BUTTON_PRIMARY,
+        onClick: isSpecialChannel
+          ? undefined
+          : () => {
+              setConnectModalId(id);
+              setConnectForm({ email: "", businessName: "", phone: "" });
+              setConnectModalOpen(true);
+            },
+        disabled: isSpecialChannel,
+      };
+    }
+
+    return {
+      label: "Configure",
+      className: `${BUTTON_PRIMARY} opacity-60 pointer-events-none`,
+      disabled: true,
+    };
+  };
+
+  const renderIntegrationCard = (item: {
+    id: string;
+    label: string;
+    Icon: any;
+    description: string;
+    status: string;
+  }) => {
+    const displayStatus = formatStatusLabel(item.status);
+    const capabilities = getIntegrationCardCapabilities(item.id);
+    const action = getIntegrationCardAction(displayStatus, item.id);
+    const statusBadgeClass = getIntegrationStatusBadgeClass(displayStatus);
+
+    return (
+      <div key={item.id} className={SMALL_CARD}>
+        <div className="flex items-start gap-3">
+          <div className={displayStatus === "Connected" ? ICON_WRAP_AVAILABLE : ICON_WRAP_DEFAULT}>
+            <item.Icon className="h-5 w-5" />
+          </div>
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-[#111827]">{item.label}</p>
+            <p className="mt-2 text-sm text-[#64748B]">{item.description}</p>
+            {capabilities.length > 0 && (
+              <div className="mt-4 text-sm text-[#475569]">
+                <p className="text-[11px] uppercase tracking-[0.18em] text-[#64748B]">AI can</p>
+                <ul className="mt-2 space-y-1 list-disc pl-4">
+                  {capabilities.map((capability) => (
+                    <li key={capability}>{capability}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="mt-4 flex items-center justify-between gap-3">
+          <span className={`${BADGE} ${statusBadgeClass}`}>{displayStatus}</span>
+          <button
+            type="button"
+            onClick={() => {
+              if (!action.disabled && action.onClick) action.onClick();
+            }}
+            className={action.className}
+            disabled={action.disabled}
+          >
+            {action.label}
+          </button>
+        </div>
+      </div>
+    );
+  };
+
+  const isIntegrationConnected = (id: string): boolean => getIntegrationStatus(id) === "connected";
+  const isIntegrationComingSoon = (id: string): boolean => getIntegrationStatus(id) === "coming_soon";
+  const isIntegrationSetupRequired = (id: string): boolean => getIntegrationStatus(id) === "setup_required";
+
+  const formatStatusLabel = (status: string): string => {
+    const trimmed = status.trim();
+    if (["Active", "Ready", "Disabled", "Setup required"].includes(trimmed)) return trimmed;
+    return formatIntegrationStatusLabel(status);
+  };
+
   const handleModalConnect = () => {
     if (!connectModalId) return;
     const name = getIntegrationName(connectModalId);
     setIntegrationStates((s) => ({
       ...s,
       [connectModalId]: {
-        status: "Connected",
+        status: "connected",
         accountName: connectForm.businessName || connectForm.email || `${name} Account`,
         lastSynced: "Just now",
       },
@@ -1367,6 +1629,16 @@ export default function DashboardLayout() {
       | "Performance"
     >("Identity");
   const [activeIdentityStep, setActiveIdentityStep] = useState(0);
+  const integrationsPageRef = useRef<HTMLDivElement | null>(null);
+
+  const goToIntegrationsSection = () => {
+    setSelected("Integrations");
+    window.setTimeout(() => {
+      if (!integrationsPageRef.current) return;
+      integrationsPageRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      integrationsPageRef.current.focus({ preventScroll: true });
+    }, 100);
+  };
   const [completedIdentitySteps, setCompletedIdentitySteps] = useState<number[]>([]);
   const [activeKnowledgeStep, setActiveKnowledgeStep] = useState(0);
   const [completedKnowledgeSteps, setCompletedKnowledgeSteps] = useState<number[]>([]);
@@ -1392,7 +1664,6 @@ export default function DashboardLayout() {
     "Review",
   ];
   const knowledgeLessonCompletionNames = knowledgeLessonSequence;
-  const isDevMode = typeof import.meta !== "undefined" && Boolean((import.meta as any).env?.DEV);
   const sanitizeStepIndices = (steps: unknown[], maxLength: number) =>
     Array.isArray(steps)
       ? steps
@@ -4149,7 +4420,7 @@ export default function DashboardLayout() {
     ]);
 
     const integrationAvailable = (requires?: string[]) =>
-      !!requires && requires.some((id) => (integrationStates[id] || { status: 'Not Connected' }).status === 'Connected');
+      !!requires && requires.some((id) => isIntegrationConnected(id));
 
     const getBookingStatus = (requires: string[] | undefined, enabled: boolean) => {
       if (!requires || !integrationAvailable(requires)) return 'Requires integration';
@@ -5354,7 +5625,7 @@ export default function DashboardLayout() {
 
       {/* Main content area. On desktop, add left padding to allow for fixed sidebar. On mobile, add top padding to account for the header. */}
       <main className="h-full overflow-x-hidden pt-14 md:pt-0 md:pl-[72px]">
-        <div className="max-w-7xl mx-auto h-full p-4 overflow-x-hidden">
+        <div className={`${selected === "Integrations" ? "max-w-[1600px]" : "max-w-7xl"} mx-auto h-full p-4 overflow-x-hidden`}>
           {/* Render placeholder pages based on selected state */}
           {selected === "Home" && (
             <div className="h-full overflow-y-auto space-y-6 pr-2">
@@ -8527,12 +8798,13 @@ export default function DashboardLayout() {
                     )}
 
                     {activeWorkspaceSection === "Integrations" && (
-                      <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
+                      <div ref={integrationsPageRef} tabIndex={-1} className="rounded-[24px] border border-[#E5E7EB] bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
                         <div className="flex items-start gap-3">
                           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><Plug className="h-5 w-5" /></div>
                           <div>
                             <p className="text-lg font-semibold text-[#111827]">Integrations</p>
-                            <p className="mt-1 text-sm leading-6 text-[#64748B]">Connect your AI employee to the channels and business tools it needs to serve customers and get work done.</p>
+                            <p className="mt-1 text-sm leading-6 text-[#64748B]">Connect the tools your AI employee needs to communicate with customers, access business information, and get work done.</p>
+                            <p className="mt-2 text-sm leading-6 text-[#64748B]">Connecting an integration gives your AI employee specific capabilities based on the permissions granted by each service.</p>
                           </div>
                         </div>
                         <div className="mt-6 grid gap-6 lg:grid-cols-[1.45fr_0.95fr]">
@@ -8559,7 +8831,7 @@ export default function DashboardLayout() {
                                       label: "WhatsApp",
                                       Icon: MessageCircle,
                                       description: "Reply to customers with your connected WhatsApp Business account.",
-                                      status: integrationStates.whatsapp?.status ?? "Not Connected",
+                                      status: getIntegrationStatus("whatsapp"),
                                     },
                                     {
                                       id: "website",
@@ -8573,21 +8845,21 @@ export default function DashboardLayout() {
                                       label: "Facebook Messenger",
                                       Icon: MessageCircle,
                                       description: "Answer Facebook messages with your AI voice.",
-                                      status: integrationStates.facebook?.status ?? "Not Connected",
+                                      status: getIntegrationStatus("facebook"),
                                     },
                                     {
                                       id: "instagram",
                                       label: "Instagram",
                                       Icon: Image,
                                       description: "Respond to Instagram DMs and customer comments.",
-                                      status: integrationStates.instagram?.status ?? "Not Connected",
+                                      status: getIntegrationStatus("instagram"),
                                     },
                                     {
                                       id: "email",
                                       label: "Email",
                                       Icon: Send,
                                       description: "Read and reply to customer emails from your connected inbox.",
-                                      status: integrationStates.email?.status ?? "Not Connected",
+                                      status: getIntegrationStatus("email"),
                                     },
                                     {
                                       id: "sms",
@@ -8598,37 +8870,16 @@ export default function DashboardLayout() {
                                     },
                                   ];
 
-                                  const badgeClass = (status: string) =>
-                                    status === "Connected" || status === "Active" || status === "Ready"
+                                  const badgeClass = (displayStatus: string) =>
+                                    ["Connected", "Active", "Ready", "Available"].includes(displayStatus)
                                       ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#166534]"
-                                      : status === "Coming Soon"
+                                      : displayStatus === "Coming soon"
                                       ? "border-[#E9D5FF] bg-[#F5F3FF] text-[#6D28D9]"
-                                      : status === "Setup required"
+                                      : displayStatus === "Setup required"
                                       ? "border-[#FDE68A] bg-[#FEF9C3] text-[#92400E]"
                                       : "border-[#F3F4F6] bg-[#F3F4F6] text-[#6B7280]";
 
-                                  return channels.map((channel) => {
-                                    const isAvailable = ["Connected", "Active", "Ready"].includes(channel.status);
-                                    const iconWrapClass = isAvailable ? ICON_WRAP_AVAILABLE : ICON_WRAP_DEFAULT;
-                                    return (
-                                      <div key={channel.id} className={SMALL_CARD}>
-                                        <div className="flex items-start gap-3">
-                                          <div className={iconWrapClass}>
-                                            <channel.Icon className="h-5 w-5" />
-                                          </div>
-                                          <div className="min-w-0">
-                                            <div className="flex items-center justify-between gap-3">
-                                              <p className="text-sm font-semibold text-[#111827]">{channel.label}</p>
-                                              <span className={`${BADGE} ${badgeClass(channel.status)}`}>
-                                                {channel.status}
-                                              </span>
-                                            </div>
-                                            <p className="mt-2 text-sm text-[#64748B]">{channel.description}</p>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    );
-                                  });
+                                  return channels.map((channel) => renderIntegrationCard(channel));
                                 })()}
                               </div>
                             </div>
@@ -8654,85 +8905,46 @@ export default function DashboardLayout() {
                                       label: "Google Calendar",
                                       Icon: Calendar,
                                       description: "Let the AI schedule appointments and manage your business calendar.",
-                                      status: integrationStates.google_calendar?.status ?? "Not Connected",
+                                      status: getIntegrationStatus("google_calendar"),
                                     },
                                     {
                                       id: "outlook",
                                       label: "Microsoft Outlook",
                                       Icon: Calendar,
                                       description: "Let the AI manage business meetings and email scheduling.",
-                                      status: integrationStates.outlook?.status ?? "Not Connected",
+                                      status: getIntegrationStatus("outlook"),
                                     },
                                     {
                                       id: "shopify",
                                       label: "Shopify",
                                       Icon: Box,
                                       description: "Allow the AI to access your store catalog and product data.",
-                                      status: integrationStates.shopify?.status ?? "Not Connected",
+                                      status: getIntegrationStatus("shopify"),
                                     },
                                     {
                                       id: "woocommerce",
                                       label: "WooCommerce",
                                       Icon: Box,
                                       description: "Allow the AI to read your store products, orders, and inventory.",
-                                      status: integrationStates.woocommerce?.status ?? "Not Connected",
+                                      status: getIntegrationStatus("woocommerce"),
                                     },
                                     {
                                       id: "custom_api",
                                       label: "Custom Website API",
                                       Icon: Globe,
                                       description: "Allow the AI to connect with your custom commerce and order APIs.",
-                                      status: integrationStates.custom_api?.status ?? "Not Connected",
+                                      status: getIntegrationStatus("custom_api"),
                                     },
                                     {
                                       id: "google_business",
                                       label: "Google Business Profile",
                                       Icon: Globe,
                                       description: "Allow the AI to update your business profile and respond to reviews.",
-                                      status: integrationStates.google_business?.status ?? "Not Connected",
+                                      status: getIntegrationStatus("google_business"),
                                     },
                                   ];
 
-                                  return tools.map((tool) => {
-                                    const isConnected = tool.status === "Connected";
-                                    const badgeClass = isConnected
-                                      ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#166534]"
-                                      : "border-[#F3F4F6] bg-[#F3F4F6] text-[#6B7280]";
-                                    const iconWrapClass = isConnected ? ICON_WRAP_AVAILABLE : ICON_WRAP_DEFAULT;
-
-                                    return (
-                                      <div key={tool.id} className={SMALL_CARD}>
-                                        <div className="flex items-start gap-3">
-                                          <div className={iconWrapClass}>
-                                            <tool.Icon className="h-5 w-5" />
-                                          </div>
-                                          <div className="min-w-0">
-                                            <p className="text-sm font-semibold text-[#111827]">{tool.label}</p>
-                                            <p className="mt-1 text-sm text-[#64748B]">{tool.description}</p>
-                                            <div className="mt-3 flex items-center justify-between gap-3">
-                                              <span className={`${BADGE} ${badgeClass}`}>{tool.status}</span>
-                                              <div className="ml-auto w-1/3">
-                                                {isConnected ? (
-                                                  <button onClick={() => openDrawer(tool.id)} className={BUTTON_SECONDARY}>Manage</button>
-                                                ) : (
-                                                  <button
-                                                    onClick={() => {
-                                                      setConnectModalId(tool.id);
-                                                      setConnectForm({ email: "", businessName: "", phone: "" });
-                                                      setConnectModalOpen(true);
-                                                    }}
-                                                    className={BUTTON_PRIMARY}
-                                                  >
-                                                    Connect
-                                                  </button>
-                                                )}
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    );
-                                  });
+                                  return tools.map((tool) => renderIntegrationCard(tool));
                                 })()}
                               </div>
                             </div>
@@ -8743,9 +8955,9 @@ export default function DashboardLayout() {
                                   <Megaphone className="h-5 w-5" />
                                 </div>
                                 <div>
-                                  <p className="text-sm font-semibold text-[#111827]">Communication</p>
+                                  <p className="text-sm font-semibold text-[#111827]">Communication & Marketing</p>
                                   <p className="mt-1 text-sm text-[#64748B]">
-                                    Connect the communication tools your AI employee can use to send notifications and keep your team informed.
+                                    Connect the communication tools your AI employee can use to send notifications and support marketing workflows.
                                   </p>
                                 </div>
                               </div>
@@ -8758,84 +8970,39 @@ export default function DashboardLayout() {
                                       label: "Mailchimp",
                                       Icon: Send,
                                       description: "Allow the AI to send notification campaigns and sync contact lists.",
-                                      status: integrationStates.mailchimp?.status ?? "Not Connected",
+                                      status: getIntegrationStatus("mailchimp"),
                                     },
                                     {
                                       id: "brevo",
                                       label: "Brevo",
                                       Icon: Send,
                                       description: "Allow the AI to send email notifications and manage audiences.",
-                                      status: integrationStates.brevo?.status ?? "Not Connected",
+                                      status: getIntegrationStatus("brevo"),
                                     },
                                     {
                                       id: "meta_ads",
                                       label: "Meta Ads",
                                       Icon: Megaphone,
                                       description: "Allow the AI to sync campaign audiences and notify teams about ad performance.",
-                                      status: integrationStates.meta_ads?.status ?? "Not Connected",
+                                      status: getIntegrationStatus("meta_ads"),
                                     },
                                     {
                                       id: "google_ads",
                                       label: "Google Ads",
                                       Icon: Globe,
                                       description: "Allow the AI to pull ad performance and surface campaign notifications.",
-                                      status: integrationStates.google_ads?.status ?? "Not Connected",
+                                      status: getIntegrationStatus("google_ads"),
                                     },
                                     {
                                       id: "tiktok",
                                       label: "TikTok",
                                       Icon: Globe,
                                       description: "Allow the AI to manage TikTok campaign notifications.",
-                                      status: integrationStates.tiktok?.status ?? "Coming Soon",
+                                      status: getIntegrationStatus("tiktok"),
                                     },
                                   ];
 
-                                  return communications.map((tool) => {
-                                    const isConnected = tool.status === "Connected";
-                                    const isComing = tool.status === "Coming Soon" || tool.status === "ComingSoon";
-                                    const badgeClass = isConnected
-                                      ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#166534]"
-                                      : isComing
-                                      ? "border-[#E9D5FF] bg-[#F5F3FF] text-[#6D28D9]"
-                                      : "border-[#F3F4F6] bg-[#F3F4F6] text-[#6B7280]";
-                                    const isAvailable = isConnected || (!isComing && tool.status === "Not Connected");
-                                    const iconWrapClass = isConnected ? ICON_WRAP_AVAILABLE : ICON_WRAP_DEFAULT;
-
-                                  return (
-                                    <div key={tool.id} className={SMALL_CARD}>
-                                      <div className="flex items-start gap-3">
-                                        <div className={iconWrapClass}>
-                                          <tool.Icon className="h-5 w-5" />
-                                        </div>
-                                        <div className="min-w-0">
-                                          <p className="text-sm font-semibold text-[#111827]">{tool.label}</p>
-                                          <p className="mt-1 text-sm text-[#64748B]">{tool.description}</p>
-                                          <div className="mt-3 flex items-center justify-between gap-3">
-                                            <span className={`${BADGE} ${badgeClass}`}>{tool.status}</span>
-                                            <div className="ml-auto w-1/3">
-                                              {isConnected ? (
-                                                <button onClick={() => openDrawer(tool.id)} className={BUTTON_SECONDARY}>Manage</button>
-                                              ) : isComing ? (
-                                                <button className={`${BUTTON_TERTIARY} pointer-events-none`}>Coming soon</button>
-                                              ) : (
-                                                <button
-                                                  onClick={() => {
-                                                    setConnectModalId(tool.id);
-                                                    setConnectForm({ email: "", businessName: "", phone: "" });
-                                                    setConnectModalOpen(true);
-                                                  }}
-                                                  className={BUTTON_PRIMARY}
-                                                >
-                                                  Connect
-                                                </button>
-                                              )}
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  );
-                                  });
+                                  return communications.map((tool) => renderIntegrationCard(tool));
                                 })()}
                               </div>
                             </div>
@@ -8846,9 +9013,9 @@ export default function DashboardLayout() {
                                   <Paperclip className="h-5 w-5" />
                                 </div>
                                 <div>
-                                  <p className="text-sm font-semibold text-[#111827]">Data & Sync</p>
+                                  <p className="text-sm font-semibold text-[#111827]">Data & Knowledge</p>
                                   <p className="mt-1 text-sm text-[#64748B]">
-                                    Connect external data sources that can keep your AI's information up to date.
+                                    Connect external data sources that can keep your AI's information and documents up to date.
                                   </p>
                                 </div>
                               </div>
@@ -8861,69 +9028,25 @@ export default function DashboardLayout() {
                                       label: "Google Drive",
                                       Icon: Paperclip,
                                       description: "Allow the AI to access files and documents from Google Drive.",
-                                      status: integrationStates.gdrive?.status ?? "Not Connected",
+                                      status: getIntegrationStatus("gdrive"),
                                     },
                                     {
                                       id: "dropbox",
                                       label: "Dropbox",
                                       Icon: Paperclip,
                                       description: "Allow the AI to access shared business documents stored in Dropbox.",
-                                      status: integrationStates.dropbox?.status ?? "Not Connected",
+                                      status: getIntegrationStatus("dropbox"),
                                     },
                                     {
                                       id: "onedrive",
                                       label: "OneDrive",
                                       Icon: Paperclip,
                                       description: "Allow the AI to access business files stored in OneDrive.",
-                                      status: integrationStates.onedrive?.status ?? "Not Connected",
+                                      status: getIntegrationStatus("onedrive"),
                                     },
                                   ];
 
-                                  return sources.map((source) => {
-                                    const statusLabel = source.status === "Not Connected" ? "Available" : source.status === "Connected" ? "Connected" : source.status;
-                                    const isConnected = source.status === "Connected";
-                                    const isComing = source.status === "Coming Soon" || source.status === "ComingSoon";
-                                    const badgeClass =
-                                      statusLabel === "Connected"
-                                        ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#166534]"
-                                        : isComing
-                                        ? "border-[#E9D5FF] bg-[#F5F3FF] text-[#6D28D9]"
-                                        : "border-[#F3F4F6] bg-[#F3F4F6] text-[#6B7280]";
-                                    return (
-                                      <div key={source.id} className={SMALL_CARD}>
-                                        <div className="flex items-start gap-3">
-                                          <div className={ICON_WRAP_DEFAULT}>
-                                            <source.Icon className="h-5 w-5" />
-                                          </div>
-                                          <div className="min-w-0">
-                                            <p className="text-sm font-semibold text-[#111827]">{source.label}</p>
-                                            <p className="mt-1 text-sm text-[#64748B]">{source.description}</p>
-                                            <div className="mt-3 flex items-center justify-between gap-3">
-                                              <span className={`${BADGE} ${badgeClass}`}>{statusLabel}</span>
-                                              <div className="ml-auto w-1/3">
-                                                {isConnected ? (
-                                                  <button onClick={() => openDrawer(source.id)} className={BUTTON_SECONDARY}>Manage</button>
-                                                ) : isComing ? (
-                                                  <button className={`${BUTTON_TERTIARY} pointer-events-none`}>Coming soon</button>
-                                                ) : (
-                                                  <button
-                                                    onClick={() => {
-                                                      setConnectModalId(source.id);
-                                                      setConnectForm({ email: "", businessName: "", phone: "" });
-                                                      setConnectModalOpen(true);
-                                                    }}
-                                                    className={BUTTON_PRIMARY}
-                                                  >
-                                                    Connect
-                                                  </button>
-                                                )}
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    );
-                                  });
+                                  return sources.map((source) => renderIntegrationCard(source));
                                 })()}
                               </div>
                             </div>
@@ -8943,41 +9066,19 @@ export default function DashboardLayout() {
 
                               <div className="mt-5 space-y-5">
                                 {(() => {
-                                  const normalizeReviewStatus = (status: string) => {
-                                    if (status === "Connected") return "Connected";
-                                    if (status === "Coming Soon" || status === "ComingSoon") return "Coming soon";
-                                    if (status === "Setup required" || status === "Ready" || status === "Active" || status === "Disabled") return "Setup required";
-                                    return "Available";
-                                  };
-
                                   const reviewGroups = [
-                                    {
-                                      title: "Channels",
-                                      items: INTEGRATION_SECTIONS.find((section) => section.section === "Channels")?.items ?? [],
-                                    },
-                                    {
-                                      title: "Payments",
-                                      items: INTEGRATION_SECTIONS.find((section) => section.section === "Payments")?.items ?? [],
-                                    },
-                                    {
-                                      title: "Business Tools",
-                                      items: INTEGRATION_SECTIONS.find((section) => section.section === "Business Tools")?.items ?? [],
-                                    },
-                                    {
-                                      title: "Communication",
-                                      items: INTEGRATION_SECTIONS.find((section) => section.section === "Communication")?.items ?? [],
-                                    },
-                                    {
-                                      title: "Data & Sync",
-                                      items: INTEGRATION_SECTIONS.find((section) => section.section === "Data & Sync")?.items ?? [],
-                                    },
-                                  ];
+                                    "Channels",
+                                    "Payments",
+                                    "Business Tools",
+                                    "Communication & Marketing",
+                                    "Data & Knowledge",
+                                  ].map((title) => ({
+                                    title,
+                                    summary: getIntegrationSummaryForSection(title),
+                                  }));
 
                                   const totalConnected = reviewGroups.reduce((sum, group) => {
-                                    return (
-                                      sum +
-                                      group.items.filter((item) => normalizeReviewStatus(integrationStates[item.id]?.status ?? item.status) === "Connected").length
-                                    );
+                                    return sum + group.summary.connected;
                                   }, 0);
 
                                   return (
@@ -8988,33 +9089,18 @@ export default function DashboardLayout() {
                                         </div>
                                       )}
 
-                                      {reviewGroups.map((group) => {
-                                        const counts = group.items.reduce(
-                                          (acc, item) => {
-                                            const status = normalizeReviewStatus(integrationStates[item.id]?.status ?? item.status);
-                                            acc[status] = (acc[status] ?? 0) + 1;
-                                            return acc;
-                                          },
-                                          {
-                                            Connected: 0,
-                                            Available: 0,
-                                            "Setup required": 0,
-                                            "Coming soon": 0,
-                                          } as Record<string, number>,
-                                        );
-
-                                        return (
+                                      {reviewGroups.map((group) => (
                                           <div key={group.title} className="rounded-[20px] border border-[#E5E7EF] bg-[#F8FAFC] p-4">
                                             <div className="flex items-center justify-between gap-3">
                                               <p className="text-sm font-semibold text-[#111827]">{group.title}</p>
-                                              <span className="text-sm text-[#64748B]">{group.items.length} integrations</span>
+                                              <span className="text-sm text-[#64748B]">{group.summary.total} integrations</span>
                                             </div>
                                             <div className="mt-4 grid gap-3 sm:grid-cols-4">
                                               {[
-                                                { label: "Connected", value: counts["Connected"] },
-                                                { label: "Available", value: counts["Available"] },
-                                                { label: "Setup required", value: counts["Setup required"] },
-                                                { label: "Coming soon", value: counts["Coming soon"] },
+                                                { label: "Connected", value: group.summary.connected },
+                                                { label: "Available", value: group.summary.available },
+                                                { label: "Setup required", value: group.summary.setup_required },
+                                                { label: "Coming soon", value: group.summary.coming_soon },
                                               ].map((metric) => (
                                                 <div key={metric.label} className="rounded-[16px] border border-[#E5E7EF] bg-white p-3">
                                                   <p className="text-[11px] uppercase tracking-[0.2em] text-[#64748B]">{metric.label}</p>
@@ -9023,8 +9109,7 @@ export default function DashboardLayout() {
                                               ))}
                                             </div>
                                           </div>
-                                        );
-                                      })}
+                                      ))}
                                     </>
                                   );
                                 })()}
@@ -9064,69 +9149,32 @@ export default function DashboardLayout() {
                                       label: "M-Pesa",
                                       Icon: Phone,
                                       description: "Enable mobile money payments and reconciliation.",
-                                      status: integrationStates.mpesa?.status ?? "Not Connected",
+                                      status: getIntegrationStatus("mpesa"),
                                     },
                                     {
                                       id: "stripe",
                                       label: "Stripe",
                                       Icon: Tag,
                                       description: "Allow the AI to generate payment links.",
-                                      status: integrationStates.stripe?.status ?? "Not Connected",
+                                      status: getIntegrationStatus("stripe"),
                                     },
                                     {
                                       id: "paypal",
                                       label: "PayPal",
                                       Icon: Tag,
                                       description: "Allow the AI to generate PayPal payment links.",
-                                      status: integrationStates.paypal?.status ?? "Not Connected",
+                                      status: getIntegrationStatus("paypal"),
                                     },
                                     {
                                       id: "flutterwave",
                                       label: "Flutterwave",
                                       Icon: Globe,
                                       description: "Allow the AI to process payments across Africa and generate payment links.",
-                                      status: integrationStates.flutterwave?.status ?? "Coming Soon",
+                                      status: getIntegrationStatus("flutterwave"),
                                     },
                                   ];
 
-                                  return payments.map((payment) => {
-                                    const statusLabel = payment.status === "Not Connected" ? "Available" : payment.status === "Connected" ? "Connected" : payment.status;
-                                    const badgeClass =
-                                      statusLabel === "Connected"
-                                        ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#166534]"
-                                        : statusLabel === "Coming Soon"
-                                        ? "border-[#E9D5FF] bg-[#F5F3FF] text-[#6D28D9]"
-                                        : statusLabel === "Available"
-                                        ? "border-[#F3F4F6] bg-[#F3F4F6] text-[#6B7280]"
-                                        : "border-[#F3F4F6] bg-[#F3F4F6] text-[#6B7280]";
-                                    const isAvailable = statusLabel === "Connected" || statusLabel === "Available";
-                                    const isComing = statusLabel === "Coming Soon";
-                                  return (
-                                    <div key={payment.id} className={SMALL_CARD}>
-                                      <div className="flex items-start gap-3">
-                                        <div className={isAvailable ? ICON_WRAP_AVAILABLE : ICON_WRAP_DEFAULT}>
-                                          <payment.Icon className="h-5 w-5" />
-                                        </div>
-                                        <div className="min-w-0">
-                                          <p className="text-sm font-semibold text-[#111827]">{payment.label}</p>
-                                          <p className="mt-1 text-sm text-[#64748B]">{payment.description}</p>
-                                          <div className="mt-3 flex items-center justify-between gap-3">
-                                            <span className={`${BADGE} ${badgeClass}`}>{statusLabel}</span>
-                                            <div className="ml-auto w-1/3">
-                                              {payment.status === "Connected" ? (
-                                                <button onClick={() => openDrawer(payment.id)} className={BUTTON_SECONDARY}>Manage</button>
-                                              ) : payment.status === "Coming Soon" ? (
-                                                <button className={`${BUTTON_TERTIARY} pointer-events-none`}>Coming soon</button>
-                                              ) : (
-                                                <button onClick={() => { setConnectModalId(payment.id); setConnectForm({ email: "", businessName: "", phone: "" }); setConnectModalOpen(true); }} className={BUTTON_PRIMARY}>Connect</button>
-                                              )}
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  );
-                                  });
+                                  return payments.map((payment) => renderIntegrationCard(payment));
                                 })()}
                               </div>
                             </div>
@@ -9135,23 +9183,20 @@ export default function DashboardLayout() {
                               <p className="text-sm font-semibold text-[#111827]">Channel readiness</p>
                               <p className="mt-1 text-sm text-[#64748B]">Your AI uses connected channels to start conversations, follow up leads, and keep customers updated automatically.</p>
                               <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                                {[
-                                  {
-                                    label: "Connected channels",
-                                    value: Object.values({
-                                      whatsapp: integrationStates.whatsapp?.status === "Connected",
-                                      website: communicationChannels.websiteChat,
-                                      facebook: integrationStates.facebook?.status === "Connected",
-                                      instagram: integrationStates.instagram?.status === "Connected",
-                                      email: integrationStates.email?.status === "Connected",
-                                      sms: Boolean(businessInfo.phone?.trim()),
-                                    }).filter(Boolean).length,
-                                  },
-                                  {
-                                    label: "Total channels",
-                                    value: 6,
-                                  },
-                                ].map((metric) => (
+                                {(() => {
+                                  const channelSummary = getIntegrationSummaryForSection("Channels");
+
+                                  return [
+                                    {
+                                      label: "Connected channels",
+                                      value: channelSummary.connected,
+                                    },
+                                    {
+                                      label: "Total channels",
+                                      value: channelSummary.total,
+                                    },
+                                  ];
+                                })().map((metric) => (
                                   <div key={metric.label} className="rounded-[20px] border border-[#F3F4F6] bg-[#F8FAFC] p-4">
                                     <p className="text-xs uppercase tracking-[0.18em] text-[#64748B]">{metric.label}</p>
                                     <p className="mt-2 text-2xl font-semibold text-[#111827]">{metric.value}</p>
@@ -9166,7 +9211,7 @@ export default function DashboardLayout() {
                               <CircleAlert className="h-4 w-4 shrink-0" />
                               <span className="flex-1">Complete your channel setup to unlock the full AI experience.</span>
                             </div>
-                            <button type="button" onClick={() => setSelected("Integrations")} className="mt-4 w-full rounded-lg bg-white px-3 py-2 text-xs font-semibold text-[#92400E] shadow-sm transition hover:bg-[#FEF3C7]">Manage integrations</button>
+                            <button type="button" onClick={goToIntegrationsSection} className="mt-4 w-full rounded-lg bg-white px-3 py-2 text-xs font-semibold text-[#92400E] shadow-sm transition hover:bg-[#FEF3C7]">Manage integrations</button>
                           </div>
                         </div>
                       </div>
@@ -9700,19 +9745,18 @@ export default function DashboardLayout() {
               </div>
 
               {/* Readiness summary card */}
-              <div className={`${CARD} flex items-center justify-between gap-6`}> 
-                <div className="flex items-center gap-6">
-                  <div className="flex items-center gap-4">
-                    {/* Circular progress */}
-                    {(() => {
-                      const totalIntegrations = INTEGRATION_SECTIONS.reduce((a, s) => a + s.items.length, 0);
-                      const connectedCount = Object.values(integrationStates).filter((v) => v.status === "Connected").length;
-                      const percent = totalIntegrations === 0 ? 0 : Math.round((connectedCount / totalIntegrations) * 100);
-                      const radius = 36;
-                      const circumference = 2 * Math.PI * radius;
-                      const offset = Math.max(0, circumference * (1 - percent / 100));
+              {(() => {
+                const totalIntegrations = allIntegrationSummary.total;
+                const connectedCount = allIntegrationSummary.connected;
+                const percent = totalIntegrations === 0 ? 0 : Math.round((connectedCount / totalIntegrations) * 100);
+                const radius = 36;
+                const circumference = 2 * Math.PI * radius;
+                const offset = Math.max(0, circumference * (1 - percent / 100));
 
-                      return (
+                return (
+                  <div className={`${CARD} flex items-center justify-between gap-6`}>
+                    <div className="flex items-center gap-6">
+                      <div className="flex items-center gap-4">
                         <div className="flex items-center gap-4">
                           <svg width="88" height="88" viewBox="0 0 88 88">
                             <defs />
@@ -9735,56 +9779,57 @@ export default function DashboardLayout() {
                             </g>
                           </svg>
                         </div>
-                      );
-                    })()}
 
-                    <div>
-                      <p className="text-sm font-semibold">AI Employee Readiness</p>
-                      <p className="mt-1 text-sm text-[#6B7280]">Connected integrations and capability readiness</p>
-                      <div className="mt-3 grid grid-cols-4 gap-3 text-sm">
-                        {(() => {
-                          const sectionsForMetrics: { label: string; reqs: string[] }[] = [
-                            { label: "Communication", reqs: ["whatsapp", "facebook", "instagram", "telegram", "email"] },
-                            { label: "Payments", reqs: ["mpesa", "stripe", "paypal", "flutterwave"] },
-                            { label: "Knowledge", reqs: ["gdrive", "dropbox", "onedrive"] },
-                            { label: "Scheduling", reqs: ["google_calendar", "outlook"] },
-                          ];
+                        <div>
+                          <p className="text-sm font-semibold">AI Employee Readiness</p>
+                          <p className="mt-1 text-sm text-[#6B7280]">Connected integrations and capability readiness</p>
+                          <div className="mt-3 grid grid-cols-4 gap-3 text-sm">
+                            {(() => {
+                              const sectionsForMetrics: { label: string; reqs: string[] }[] = [
+                                { label: "Communication", reqs: ["whatsapp", "facebook", "instagram", "telegram", "email"] },
+                                { label: "Payments", reqs: ["mpesa", "stripe", "paypal", "flutterwave"] },
+                                { label: "Knowledge", reqs: ["gdrive", "dropbox", "onedrive"] },
+                                { label: "Scheduling", reqs: ["google_calendar", "outlook"] },
+                              ];
 
-                          return sectionsForMetrics.map((m) => {
-                            const connected = m.reqs.filter((r) => (integrationStates[r] || { status: "Not Connected" }).status === "Connected").length;
-                            const status = connected === 0 ? "Missing" : connected < m.reqs.length ? "Partial" : "Ready";
-                            const statusClass = status === "Ready" ? "text-[#16A34A]" : status === "Partial" ? "text-[#B45309]" : "text-[#B91C1C]";
-                            return (
-                              <div key={m.label} className="flex flex-col items-start">
-                                <span className="text-xs text-[#6B7280]">{m.label}</span>
-                                <span className={`text-sm font-semibold ${statusClass}`}>{status}</span>
-                              </div>
-                            );
-                          });
-                        })()}
+                              return sectionsForMetrics.map((m) => {
+                                const connected = m.reqs.filter((r) => isIntegrationConnected(r)).length;
+                                const status = connected === 0 ? "Missing" : connected < m.reqs.length ? "Partial" : "Ready";
+                                const statusClass = status === "Ready" ? "text-[#16A34A]" : status === "Partial" ? "text-[#B45309]" : "text-[#B91C1C]";
+                                return (
+                                  <div key={m.label} className="flex flex-col items-start">
+                                    <span className="text-xs text-[#6B7280]">{m.label}</span>
+                                    <span className={`text-sm font-semibold ${statusClass}`}>{status}</span>
+                                  </div>
+                                );
+                              });
+                            })()}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
 
-                <div className="ml-auto text-right">
-                  <div className="text-sm text-[#6B7280]">Connected integrations</div>
-                  <div className="text-2xl font-semibold">{Object.values(integrationStates).filter((v) => v.status === "Connected").length} / {INTEGRATION_SECTIONS.reduce((a, s) => a + s.items.length, 0)}</div>
-                  <div className="mt-2 text-sm text-[#6B7280]">AI capabilities unlocked</div>
-                  <div className="text-2xl font-semibold">{CAPABILITY_FEATURES.filter((cap) => cap.requires.every((r) => (integrationStates[r] || { status: "Not Connected" }).status === "Connected")).length}</div>
-                </div>
-              </div>
+                    <div className="ml-auto text-right">
+                      <div className="text-sm text-[#6B7280]">Connected integrations</div>
+                      <div className="text-2xl font-semibold">{connectedCount} / {totalIntegrations}</div>
+                      <div className="mt-2 text-sm text-[#6B7280]">AI capabilities unlocked</div>
+                      <div className="text-2xl font-semibold">{CAPABILITY_FEATURES.filter((cap) => cap.requires.every((r) => isIntegrationConnected(r))).length}</div>
+                    </div>
+                  </div>
+                );
+              })()}
 
               {INTEGRATION_SECTIONS.map((section) => (
                 <div key={section.section}>
                   <h3 className="text-sm font-semibold text-[#6B7280] mb-3">{section.section}</h3>
                   <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {section.items.map((it) => {
-                      const state = integrationStates[it.id] || { status: it.status };
+                      const status = getIntegrationStatus(it.id);
 
-                      const isConnected = state.status === "Connected";
-                      const isComing = state.status === "Coming Soon" || state.status === "ComingSoon";
+                      const isConnected = status === "connected";
+                      const isComing = status === "coming_soon";
                       const isDisconnected = !isConnected && !isComing;
+                      const displayStatus = formatIntegrationStatusLabel(status);
 
                       const badgeClass = isConnected
                         ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#166534]"
@@ -9828,9 +9873,9 @@ export default function DashboardLayout() {
                                   {isConnected && (
                                     <div className="mt-2 flex items-center gap-3 text-sm text-[#6B7280]">
                                       <span className="inline-flex items-center gap-2 text-[13px] text-[#374151]">
-                                        <Check className="h-4 w-4 text-[#16A34A]" /> {state.accountName}
+                                        <Check className="h-4 w-4 text-[#16A34A]" /> {integrationStates[it.id]?.accountName}
                                       </span>
-                                      <span className="text-[12px] text-[#94A3B8]">Last synced {state.lastSynced}</span>
+                                      <span className="text-[12px] text-[#94A3B8]">Last synced {integrationStates[it.id]?.lastSynced}</span>
                                     </div>
                                   )}
                                 </div>
@@ -9839,9 +9884,9 @@ export default function DashboardLayout() {
                               <div>
                                 <span className={`${BADGE} ${badgeClass} ${isComing ? "text-[11px]" : ""}`}>
                                   {isConnected ? (
-                                    <span className="inline-flex items-center gap-2"><Check className="h-3 w-3 text-[#16A34A]" /> Connected</span>
+                                    <span className="inline-flex items-center gap-2"><Check className="h-3 w-3 text-[#16A34A]" /> {displayStatus}</span>
                                   ) : isComing ? (
-                                    <span>Coming Soon</span>
+                                    <span>{displayStatus}</span>
                                   ) : (
                                     <span>Disconnected</span>
                                   )}
@@ -9874,42 +9919,92 @@ export default function DashboardLayout() {
                 </div>
               ))}
               <div className="mt-8">
-                <h3 className="text-sm font-semibold text-[#6B7280] mb-3">Review</h3>
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                  {CAPABILITY_FEATURES.map((cap) => {
-                    const missing = cap.requires.filter((r) => (integrationStates[r] || { status: "Not Connected" }).status !== "Connected");
-                    const enabled = missing.length === 0;
-                    const badgeClass = enabled ? "border-[#A7F3D0] bg-[#ECFDF5] text-[#166534]" : "border-[#F3F4F6] bg-[#F3F4F6] text-[#6B7280]";
+                {(() => {
+                  const connectedChannels = getIntegrationSummaryForSection("Channels").connected;
+                  const connectedBusinessTools = getIntegrationSummaryForSection("Business Tools").connected;
+                  const connectedPayments = getIntegrationSummaryForSection("Payments").connected;
+                  const connectedMarketing = getIntegrationSummaryForSection("Communication & Marketing").connected;
+                  const connectedDataSources = getIntegrationSummaryForSection("Data & Knowledge").connected;
+                  const setupRequiredIntegrations = getAllIntegrationItems().filter((item) => getIntegrationStatus(item.id) === "setup_required");
+                  const importantMissingConnections = (() => {
+                    const missingIds = new Set<string>();
+                    CAPABILITY_FEATURES.forEach((cap) => {
+                      const connected = cap.requires.filter((id) => isIntegrationConnected(id));
+                      const missing = cap.requires.filter((id) => !isIntegrationConnected(id));
+                      if (connected.length > 0 && missing.length > 0) {
+                        missing.forEach((id) => missingIds.add(id));
+                      }
+                    });
+                    return Array.from(missingIds);
+                  })();
+                  const categoriesConnected = [
+                    connectedChannels > 0,
+                    connectedBusinessTools > 0,
+                    connectedPayments > 0,
+                    connectedMarketing > 0,
+                    connectedDataSources > 0,
+                  ];
+                  const connectedCategoryCount = categoriesConnected.filter(Boolean).length;
+                  const readinessMessage = connectedCategoryCount === 5 && setupRequiredIntegrations.length === 0 && importantMissingConnections.length === 0
+                    ? "Your AI employee is connected to the tools it needs to operate."
+                    : connectedCategoryCount >= 3
+                      ? "Your AI employee can communicate with customers, but some business tools are still disconnected."
+                      : connectedCategoryCount > 0
+                        ? "Your AI employee has connected tools, but more integrations are needed for reliable operation."
+                        : "Your AI employee needs more connected integrations before it can operate effectively.";
 
-                    return (
-                      <div key={cap.id} className={`${AI_WORKSPACE_SUBTLE}`}> 
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="text-sm font-semibold text-[#111827]">{cap.title}</p>
-                            <p className="mt-1 text-sm text-[#6B7280]">Requires: {cap.requires.map((r) => getIntegrationName(r)).join(", ")}</p>
-                          </div>
-                          <div>
-                            <span className={`${BADGE} ${badgeClass}`}>{enabled ? "Enabled" : "Disabled"}</span>
-                          </div>
+                  return (
+                    <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-6">
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <p className="text-base font-semibold text-[#111827]">Review</p>
+                          <p className="mt-2 text-sm leading-6 text-[#6B7280]">{readinessMessage}</p>
                         </div>
-
-                        {!enabled && (
-                          <div className="mt-4 text-sm text-[#374151]">
-                            <p className="font-medium mb-2">Missing integrations</p>
-                            <ul className="list-none space-y-2">
-                              {missing.map((mid) => (
-                                <li key={mid} className="flex items-center gap-3">
-                                  <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-[#FEE2E2] text-[#B91C1C]">×</span>
-                                  <span>{getIntegrationName(mid)}</span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
                       </div>
-                    );
-                  })}
-                </div>
+
+                      <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                        {[
+                          { label: "Connected channels", value: connectedChannels },
+                          { label: "Connected business tools", value: connectedBusinessTools },
+                          { label: "Connected payment systems", value: connectedPayments },
+                          { label: "Connected communication/marketing tools", value: connectedMarketing },
+                          { label: "Connected data sources", value: connectedDataSources },
+                          { label: "Integrations requiring setup", value: setupRequiredIntegrations.length },
+                          { label: "Important missing connections", value: importantMissingConnections.length },
+                        ].map((metric) => (
+                          <div key={metric.label} className="rounded-[20px] border border-[#F3F4F6] bg-[#F8FAFC] p-4">
+                            <p className="text-xs uppercase tracking-[0.18em] text-[#64748B]">{metric.label}</p>
+                            <p className="mt-2 text-2xl font-semibold text-[#111827]">{metric.value}</p>
+                          </div>
+                        ))}
+                      </div>
+
+                      {setupRequiredIntegrations.length > 0 && (
+                        <div className="mt-6 rounded-[20px] border border-[#FEF3C7] bg-[#FFFBEB] p-4 text-sm text-[#92400E]">
+                          <p className="font-semibold">Setup required</p>
+                          <p className="mt-1">The following integrations need your attention before the AI can use them:</p>
+                          <ul className="mt-3 list-disc space-y-2 pl-5">
+                            {setupRequiredIntegrations.map((item) => (
+                              <li key={item.id}>{getIntegrationName(item.id)}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+
+                      {importantMissingConnections.length > 0 && (
+                        <div className="mt-6 rounded-[20px] border border-[#F3F4F6] bg-[#F8FAFC] p-4 text-sm text-[#111827]">
+                          <p className="font-semibold">Important missing connections</p>
+                          <p className="mt-1">These connections are required by partially enabled AI capabilities:</p>
+                          <ul className="mt-3 list-disc space-y-2 pl-5">
+                            {importantMissingConnections.map((id) => (
+                              <li key={id}>{getIntegrationName(id)}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
               {connectModalOpen && connectModalId && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center">
