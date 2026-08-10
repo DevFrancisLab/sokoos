@@ -5,10 +5,10 @@ import { g as useRouter } from "../_libs/@tanstack/react-router+[...].mjs";
 import { o as require_jsx_runtime } from "../_libs/@radix-ui/react-arrow+[...].mjs";
 import { t as clsx } from "../_libs/clsx.mjs";
 import { t as twMerge } from "../_libs/tailwind-merge.mjs";
-import { $ as Activity, A as Image, B as Clock, C as Menu, E as List, G as ChartColumn, H as ChevronRight, K as Calendar, L as EllipsisVertical, N as Globe, O as LayoutGrid, S as MessageCircle, T as MapPin, U as ChevronDown, V as Circle, W as Check, X as Bot, Y as Box, Z as BookOpen, _ as Plug, a as Tag, b as Package, c as Smile, d as Send, f as Search, g as Plus, i as Target, j as House, k as Inbox, l as Shield, r as User, s as Sparkles, t as X, u as Settings, v as Phone, w as Megaphone, y as Paperclip, z as Cpu } from "../_libs/lucide-react.mjs";
+import { A as Inbox, B as Cpu, C as MessageCircle, D as List, E as MapPin, G as Check, H as Circle, K as ChartColumn, M as House, P as Globe, Q as BookOpen, R as EllipsisVertical, T as Megaphone, U as ChevronRight, V as Clock, W as ChevronDown, X as Box, Z as Bot, _ as Plus, a as Target, b as Paperclip, c as Sparkles, d as Settings, et as Activity, f as Send, i as Upload, j as Image, k as LayoutGrid, l as Smile, o as Tag, p as Search, q as Calendar, r as User, t as X, u as Shield, v as Plug, w as Menu, x as Package, y as Phone } from "../_libs/lucide-react.mjs";
 import { a as Label2, c as Root2, d as SubTrigger2, f as Trigger, i as ItemIndicator2, l as Separator2, n as Content2, o as Portal2, r as Item2, s as RadioItem2, t as CheckboxItem2, u as SubContent2 } from "../_libs/@radix-ui/react-dropdown-menu+[...].mjs";
 import { i as Trigger$1, n as List$1, r as Root2$1, t as Content } from "../_libs/radix-ui__react-tabs.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/dashboard-layout-B4vTxc_v.js
+//#region node_modules/.nitro/vite/services/ssr/assets/dashboard-layout-jVDjLvI0.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 function cn(...inputs) {
@@ -6925,6 +6925,111 @@ function DashboardLayout() {
 											]
 										})
 									})]
+								})
+							]
+						}),
+						selected === "Customers" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "mx-auto w-full max-w-[1280px] space-y-6 px-4 pb-10 lg:px-6",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "border-b border-[#E5E7EB] pb-5",
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex flex-col gap-5",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "max-w-3xl",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "text-[12px] font-semibold uppercase tracking-[0.24em] text-[#6B7280]",
+													children: "Customers"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+													className: "mt-2 text-[24px] font-semibold tracking-[-0.02em] text-[#111827] lg:text-[26px]",
+													children: "Customers"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "mt-2 text-sm leading-6 text-[#6B7280]",
+													children: "Manage the people connected to your business and understand their relationship with your business."
+												})
+											]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex flex-col gap-3 sm:flex-row sm:items-center",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													className: "inline-flex items-center justify-center gap-2 rounded-[20px] bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-4 w-4" }), "Add Customer"]
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+													type: "button",
+													className: "inline-flex items-center justify-center gap-2 rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm font-semibold text-[#111827] transition hover:bg-[#F9FAFB]",
+													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Upload, { className: "h-4 w-4" }), "Import"]
+												})]
+											})
+										})]
+									})
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "rounded-[24px] border border-[#E5E7EB] bg-white p-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)]",
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+										className: "flex items-center gap-3 rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#64748B] focus-within:border-[#22C55E] focus-within:ring-2 focus-within:ring-[#ECFDF5]",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, { className: "h-4 w-4 shrink-0" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+											type: "search",
+											placeholder: "Search customers, leads, phone numbers, email addresses, or tags",
+											className: "w-full bg-transparent text-sm text-[#111827] placeholder:text-[#94A3B8] outline-none"
+										})]
+									})
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("nav", {
+									"aria-label": "Customers workspace sections",
+									className: "rounded-[24px] border border-[#E5E7EB] bg-white p-2 shadow-[0_8px_24px_rgba(15,23,42,0.05)]",
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "flex flex-wrap gap-2",
+										children: [
+											"All",
+											"Leads",
+											"Customers",
+											"Segments",
+											"Sources & Imports",
+											"Review"
+										].map((section) => {
+											const active = section === "All";
+											return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+												type: "button",
+												"aria-current": active ? "page" : void 0,
+												className: `rounded-full border px-3 py-2 text-sm font-medium transition ${active ? "border-[#86EFAC] bg-[#ECFDF5] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#D1FAE5] hover:bg-[#F9FCFA]"}`,
+												children: section
+											}, section);
+										})
+									})
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+									className: "rounded-[24px] border border-dashed border-[#E5E7EB] bg-[#F9FAFB] p-8 text-center shadow-[0_8px_24px_rgba(15,23,42,0.03)]",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-white text-[#22C55E] shadow-sm",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(User, { className: "h-6 w-6" })
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+											className: "mt-4 text-xl font-semibold text-[#111827]",
+											children: "No customers yet"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "mx-auto mt-2 max-w-xl text-sm leading-6 text-[#6B7280]",
+											children: "There are no customer records in this workspace yet. Start by adding a customer, importing a list, or connecting a source once you are ready."
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "mt-5 flex flex-col items-center justify-center gap-3 sm:flex-row",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+												type: "button",
+												className: "inline-flex items-center justify-center gap-2 rounded-[20px] bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-4 w-4" }), "Add Customer"]
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+												type: "button",
+												className: "inline-flex items-center justify-center gap-2 rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm font-semibold text-[#111827] transition hover:bg-[#F9FAFB]",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Upload, { className: "h-4 w-4" }), "Import"]
+											})]
+										})
+									]
 								})
 							]
 						}),

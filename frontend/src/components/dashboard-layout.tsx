@@ -40,6 +40,7 @@ import {
   Menu,
   Search,
   ChevronDown,
+  Upload,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -6887,6 +6888,111 @@ export default function DashboardLayout() {
               )}
             </div>
           )}
+          {selected === "Customers" && (
+            <div className="mx-auto w-full max-w-[1280px] space-y-6 px-4 pb-10 lg:px-6">
+              <div className="border-b border-[#E5E7EB] pb-5">
+                <div className="flex flex-col gap-5">
+                  <div className="max-w-3xl">
+                    <p className="text-[12px] font-semibold uppercase tracking-[0.24em] text-[#6B7280]">
+                      Customers
+                    </p>
+                    <h2 className="mt-2 text-[24px] font-semibold tracking-[-0.02em] text-[#111827] lg:text-[26px]">
+                      Customers
+                    </h2>
+                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">
+                      Manage the people connected to your business and understand their relationship with your business.
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                      <button
+                        type="button"
+                        className="inline-flex items-center justify-center gap-2 rounded-[20px] bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"
+                      >
+                        <Plus className="h-4 w-4" />
+                        Add Customer
+                      </button>
+                      <button
+                        type="button"
+                        className="inline-flex items-center justify-center gap-2 rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm font-semibold text-[#111827] transition hover:bg-[#F9FAFB]"
+                      >
+                        <Upload className="h-4 w-4" />
+                        Import
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)]">
+                <label className="flex items-center gap-3 rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#64748B] focus-within:border-[#22C55E] focus-within:ring-2 focus-within:ring-[#ECFDF5]">
+                  <Search className="h-4 w-4 shrink-0" />
+                  <input
+                    type="search"
+                    placeholder="Search customers, leads, phone numbers, email addresses, or tags"
+                    className="w-full bg-transparent text-sm text-[#111827] placeholder:text-[#94A3B8] outline-none"
+                  />
+                </label>
+              </div>
+
+              <nav aria-label="Customers workspace sections" className="rounded-[24px] border border-[#E5E7EB] bg-white p-2 shadow-[0_8px_24px_rgba(15,23,42,0.05)]">
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    "All",
+                    "Leads",
+                    "Customers",
+                    "Segments",
+                    "Sources & Imports",
+                    "Review",
+                  ].map((section) => {
+                    const active = section === "All";
+                    return (
+                      <button
+                        key={section}
+                        type="button"
+                        aria-current={active ? "page" : undefined}
+                        className={`rounded-full border px-3 py-2 text-sm font-medium transition ${
+                          active
+                            ? "border-[#86EFAC] bg-[#ECFDF5] text-[#166534]"
+                            : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#D1FAE5] hover:bg-[#F9FCFA]"
+                        }`}
+                      >
+                        {section}
+                      </button>
+                    );
+                  })}
+                </div>
+              </nav>
+
+              <section className="rounded-[24px] border border-dashed border-[#E5E7EB] bg-[#F9FAFB] p-8 text-center shadow-[0_8px_24px_rgba(15,23,42,0.03)]">
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-white text-[#22C55E] shadow-sm">
+                  <User className="h-6 w-6" />
+                </div>
+                <h3 className="mt-4 text-xl font-semibold text-[#111827]">No customers yet</h3>
+                <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-[#6B7280]">
+                  There are no customer records in this workspace yet. Start by adding a customer, importing a list, or connecting a source once you are ready.
+                </p>
+                <div className="mt-5 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                  <button
+                    type="button"
+                    className="inline-flex items-center justify-center gap-2 rounded-[20px] bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"
+                  >
+                    <Plus className="h-4 w-4" />
+                    Add Customer
+                  </button>
+                  <button
+                    type="button"
+                    className="inline-flex items-center justify-center gap-2 rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm font-semibold text-[#111827] transition hover:bg-[#F9FAFB]"
+                  >
+                    <Upload className="h-4 w-4" />
+                    Import
+                  </button>
+                </div>
+              </section>
+            </div>
+          )}
+
           {(selected === "AI Employee" || selected === "Training") && (
             <div className="mx-auto w-full max-w-[1280px] space-y-6 px-4 pb-10 lg:px-6">
               <div className="border-b border-[#E5E7EB] pb-5">

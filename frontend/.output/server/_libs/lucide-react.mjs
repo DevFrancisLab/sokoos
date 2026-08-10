@@ -1165,6 +1165,26 @@ var Target = createLucideIcon("target", [
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var Upload = createLucideIcon("upload", [
+	["path", {
+		d: "M12 3v12",
+		key: "1x0j5s"
+	}],
+	["path", {
+		d: "m17 8-5-5-5 5",
+		key: "7q97r8"
+	}],
+	["path", {
+		d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4",
+		key: "ih7n3h"
+	}]
+]);
+/**
+* @license lucide-react v0.575.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var User = createLucideIcon("user", [["path", {
 	d: "M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2",
 	key: "975kel"
@@ -1214,4 +1234,4 @@ var X = createLucideIcon("x", [["path", {
 	key: "d8bk6v"
 }]]);
 //#endregion
-export { Activity as $, Image as A, Clock as B, Menu as C, Linkedin as D, List as E, Eye as F, ChartColumn as G, ChevronRight as H, EyeOff as I, Boxes as J, Calendar as K, EllipsisVertical as L, Heart as M, Globe as N, LayoutGrid as O, Facebook as P, ArrowRight as Q, Database as R, MessageCircle as S, MapPin as T, ChevronDown as U, Circle as V, Check as W, Bot as X, Box as Y, BookOpen as Z, Plug as _, Tag as a, Package as b, Smile as c, Send as d, Search as f, Plus as g, RefreshCw as h, Target as i, House as j, Inbox as k, Shield as l, Repeat as m, Users as n, Star as o, Rocket as p, Brain as q, User as r, Sparkles as s, X as t, Settings as u, Phone as v, Megaphone as w, MessageSquareOff as x, Paperclip as y, Cpu as z };
+export { ArrowRight as $, Inbox as A, Cpu as B, MessageCircle as C, List as D, MapPin as E, Facebook as F, Check as G, Circle as H, Eye as I, Brain as J, ChartColumn as K, EyeOff as L, House as M, Heart as N, Linkedin as O, Globe as P, BookOpen as Q, EllipsisVertical as R, MessageSquareOff as S, Megaphone as T, ChevronRight as U, Clock as V, ChevronDown as W, Box as X, Boxes as Y, Bot as Z, Plus as _, Target as a, Paperclip as b, Sparkles as c, Settings as d, Activity as et, Send as f, RefreshCw as g, Repeat as h, Upload as i, Image as j, LayoutGrid as k, Smile as l, Rocket as m, Users as n, Tag as o, Search as p, Calendar as q, User as r, Star as s, X as t, Shield as u, Plug as v, Menu as w, Package as x, Phone as y, Database as z };
