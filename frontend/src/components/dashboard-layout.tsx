@@ -5806,12 +5806,14 @@ export default function DashboardLayout() {
               SECTION_HEADING={SECTION_HEADING}
             />
           )}
-          <CustomersWorkspace
-            customers={CUSTOMERS}
-            inboxConversations={INBOX_CONVERSATIONS}
-            setSelected={setSelected}
-            setActiveConversation={setActiveConversation}
-          />
+          {selected === "Customers" && (
+            <CustomersWorkspace
+              customers={CUSTOMERS}
+              inboxConversations={INBOX_CONVERSATIONS}
+              setSelected={setSelected}
+              setActiveConversation={setActiveConversation}
+            />
+          )}
 
           {(selected === "AI Employee" || selected === "Training") && (
             <div className="mx-auto w-full max-w-[1280px] space-y-6 px-4 pb-10 lg:px-6">
