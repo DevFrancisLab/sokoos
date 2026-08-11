@@ -46,11 +46,13 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Textarea } from "@/components/ui/textarea";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { KnowledgeWorkspace } from "@/components/knowledge-workspace";
 import { HomeWorkspace } from "@/components/dashboard/home/home-workspace";
 import { InboxWorkspace } from "@/components/dashboard/inbox/inbox-workspace";
 import { CustomersWorkspace } from "@/components/dashboard/customers/customers-workspace";
 import { PerformanceWorkspace } from "@/components/dashboard/ai-employee/performance/performance-workspace";
+import { getMockUser } from "@/lib/auth";
 import sokoosLogo from "@/assets/sokoos_logo.png";
 
 const NAV_ITEMS = [
@@ -118,6 +120,39 @@ const STAT_CARDS = [
   { label: "Team Takeovers", value: "72", delta: "-4%" },
   { label: "New Leads", value: "38", delta: "+11%" },
 ];
+
+type SidebarUser = { id: string; name: string; email?: string; avatarUrl?: string };
+
+function SidebarProfile({ user }: { user: SidebarUser | null }) {
+  if (!user?.name) return null;
+
+  const initials = user.name
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((segment) => segment[0])
+    .join("")
+    .toUpperCase();
+
+  return (
+    <div className="mt-4 flex items-center gap-3 rounded-[24px] border border-[#E5E7EB] bg-white p-3 shadow-[0_4px_10px_rgba(15,23,42,0.04)]">
+      <Avatar className="h-11 w-11 rounded-full bg-[#F8FAFC] text-[#111827]">
+        {user.avatarUrl ? (
+          <AvatarImage src={user.avatarUrl} alt={user.name} />
+        ) : (
+          <AvatarFallback>{initials}</AvatarFallback>
+        )}
+      </Avatar>
+      <div className="min-w-0">
+        <p className="truncate text-sm font-semibold text-[#111827]">{user.name}</p>
+        {user.email ? (
+          <p className="truncate text-xs text-[#64748B]">{user.email}</p>
+        ) : null}
+      </div>
+    </div>
+  );
+}
 
 const PERFORMANCE_METRICS = [
   { label: "Messages Handled", value: "1,842", trend: [26, 38, 32, 46, 51, 58, 63], delta: "+26%", progress: 82 },
@@ -4200,6 +4235,17 @@ export default function DashboardLayout() {
     void router.navigate({ to: "/signin", replace: true });
   };
 
+  const user = useMemo<SidebarUser | null>(() => {
+    const raw = getMockUser();
+    if (!raw || typeof raw !== "object") return null;
+    return {
+      id: String(raw.id ?? ""),
+      name: String(raw.name ?? ""),
+      email: typeof raw.email === "string" ? raw.email : undefined,
+      avatarUrl: typeof raw.avatarUrl === "string" ? raw.avatarUrl : undefined,
+    };
+  }, []);
+
   // Future team state (initialized but not used when hasTeam = false)
   const teamMembers = hasTeam ? MOCK_TEAM_MEMBERS : [];
   const currentMember = hasTeam
@@ -5711,6 +5757,15 @@ export default function DashboardLayout() {
           <nav className="flex-1 px-1.5 overflow-hidden">
             {renderSidebarNavItems("icon")}
           </nav>
+          <div className="px-3 pb-5">
+            {user ? (
+              <button type="button" title={user.name} className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-[#F3F4F6] transition hover:bg-[#E5E7EB]">
+                <Avatar className="h-9 w-9 rounded-full bg-[#FFFFFF] text-[#111827] shadow-sm">
+                  {user.avatarUrl ? <AvatarImage src={user.avatarUrl} alt={user.name} /> : <AvatarFallback>{user.name.slice(0, 2).toUpperCase()}</AvatarFallback>}
+                </Avatar>
+              </button>
+            ) : null}
+          </div>
           {sidebarHovered && (
             <div className="fixed inset-y-0 left-0 z-50 w-64 min-w-[248px] bg-[#FFFFFF] border-r border-[#E5E7EB]/10 shadow-[0_18px_48px_rgba(15,23,42,0.12)] transition-all duration-200 ease-out">
               <div className="h-full flex flex-col pt-4">
@@ -5725,6 +5780,9 @@ export default function DashboardLayout() {
                 <nav className="flex-1 overflow-y-auto px-4">
                   {renderSidebarNavItems("expanded")}
                 </nav>
+                <div className="border-t border-[#E5E7EB]/50 px-4 py-4">
+                  <SidebarProfile user={user} />
+                </div>
               </div>
             </div>
           )}
@@ -5774,6 +5832,9 @@ export default function DashboardLayout() {
             <nav>
               {renderSidebarNavItems("mobile")}
             </nav>
+            <div className="mt-4 border-t border-[#E5E7EB]/50 pt-4">
+              <SidebarProfile user={user} />
+            </div>
           </div>
         </div>
       )}
