@@ -8,7 +8,7 @@ import { t as twMerge } from "../_libs/tailwind-merge.mjs";
 import { $ as BookOpen, A as LayoutGrid, D as MapPin, E as Megaphone, F as Globe, G as ChevronDown, H as Clock, J as Calendar, K as Check, M as Image, N as House, O as List, Q as Bot, S as MessageSquareText, T as Menu, U as Circle, V as Cpu, W as ChevronRight, Z as Box, _ as Plus, a as Target, b as Paperclip, c as Sparkles, d as Settings, f as Send, i as Upload, j as Inbox, l as Smile, o as Tag, p as Search, q as ChartColumn, r as User, t as X, tt as Activity, u as Shield, v as Plug, w as MessageCircle, x as Package, y as Phone, z as EllipsisVertical } from "../_libs/lucide-react.mjs";
 import { a as Label2, c as Root2, d as SubTrigger2, f as Trigger, i as ItemIndicator2, l as Separator2, n as Content2, o as Portal2, r as Item2, s as RadioItem2, t as CheckboxItem2, u as SubContent2 } from "../_libs/@radix-ui/react-dropdown-menu+[...].mjs";
 import { i as Trigger$1, n as List$1, r as Root2$1, t as Content } from "../_libs/radix-ui__react-tabs.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/dashboard-layout-sRqW9ez0.js
+//#region node_modules/.nitro/vite/services/ssr/assets/dashboard-layout-s90nD60h.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
 function cn(...inputs) {
@@ -106,6 +106,2161 @@ function KnowledgeWorkspace({ children }) {
 		className: "space-y-5",
 		"aria-label": "Knowledge training",
 		children
+	});
+}
+function HomeWorkspace({ handleLogout, CARD, SECTION_HEADING, CARD_TITLE }) {
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		className: "h-full overflow-y-auto space-y-6 pr-2",
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "relative overflow-hidden rounded-[32px] border border-[#DCFCE7] bg-gradient-to-br from-[#F0FDF4] via-white to-[#ECFDF5] p-8 shadow-sm",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "absolute right-[-60px] top-[-60px] h-56 w-56 rounded-full bg-[#22C55E]/10 blur-3xl" }),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "absolute bottom-[-80px] left-[-80px] h-72 w-72 rounded-full bg-[#16A34A]/10 blur-3xl" }),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex-1",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "text-sm font-semibold uppercase tracking-[0.2em] text-[#16A34A]",
+									children: "AI Growth Dashboard"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
+									className: "mt-3 text-4xl font-bold text-[#111827]",
+									children: "Good morning, Francis 👋 Your AI Employee is already at work."
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "mt-3 max-w-3xl text-lg text-[#64748B] leading-8",
+									children: "Your AI is responding to customers, qualifying leads, booking appointments and following up automatically. Here's how your business is growing today."
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "mt-8 flex flex-wrap gap-3",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											className: "rounded-xl bg-[#16A34A] px-5 py-3 font-semibold text-white hover:bg-[#15803D] transition",
+											children: "Open Inbox"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											className: "rounded-xl border border-[#E5E7EB] bg-white px-5 py-3 font-semibold text-[#111827] hover:bg-[#F9FAFB] transition",
+											children: "Chat with AI Employee"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											className: "rounded-xl border border-[#E5E7EB] bg-white px-5 py-3 font-semibold text-[#111827] hover:bg-[#F9FAFB] transition",
+											children: "Create Campaign"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "button",
+											onClick: handleLogout,
+											className: "rounded-xl border border-[#E5E7EB] bg-white px-5 py-3 font-semibold text-[#111827] hover:bg-[#F9FAFB] transition",
+											children: "Logout"
+										})
+									]
+								})
+							]
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "grid w-full max-w-md grid-cols-2 gap-4",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-sm text-[#64748B]",
+											children: "AI Conversations"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "mt-2 text-3xl font-bold text-[#111827]",
+											children: "124"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "mt-1 text-sm text-[#16A34A]",
+											children: "↑ 18 today"
+										})
+									]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-sm text-[#64748B]",
+											children: "Qualified Leads"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "mt-2 text-3xl font-bold text-[#111827]",
+											children: "27"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "mt-1 text-sm text-[#16A34A]",
+											children: "AI identified today"
+										})
+									]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-sm text-[#64748B]",
+											children: "Appointments"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "mt-2 text-3xl font-bold text-[#111827]",
+											children: "8"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "mt-1 text-sm text-[#16A34A]",
+											children: "Booked automatically"
+										})
+									]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-sm text-[#64748B]",
+											children: "Customer Rating"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "mt-2 text-3xl font-bold text-[#111827]",
+											children: "★ 4.9"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "mt-1 text-sm text-[#16A34A]",
+											children: "Based on AI conversations"
+										})
+									]
+								})
+							]
+						})]
+					})
+				]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: CARD,
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-center justify-between",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: SECTION_HEADING,
+						children: "Ask Sokoos"
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+						className: CARD_TITLE,
+						children: "Your AI Employee is ready"
+					})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "text-[#22C55E] text-3xl",
+						children: "🤖"
+					})]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "mt-6",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] px-5 py-4",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+							type: "text",
+							placeholder: "Ask your AI Employee anything...",
+							className: "w-full bg-transparent text-[15px] outline-none placeholder:text-[#94A3B8]"
+						})
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "mt-5 flex flex-wrap gap-3",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								className: "rounded-full border border-[#E5E7EB] px-4 py-2 text-sm hover:bg-[#F9FAFB]",
+								children: "Create Campaign"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								className: "rounded-full border border-[#E5E7EB] px-4 py-2 text-sm hover:bg-[#F9FAFB]",
+								children: "Generate Quote"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								className: "rounded-full border border-[#E5E7EB] px-4 py-2 text-sm hover:bg-[#F9FAFB]",
+								children: "Build Landing Page"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								className: "rounded-full border border-[#E5E7EB] px-4 py-2 text-sm hover:bg-[#F9FAFB]",
+								children: "Show Today's Leads"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								className: "rounded-full border border-[#E5E7EB] px-4 py-2 text-sm hover:bg-[#F9FAFB]",
+								children: "Train on PDF"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								className: "rounded-full border border-[#E5E7EB] px-4 py-2 text-sm hover:bg-[#F9FAFB]",
+								children: "Summarize Conversations"
+							})
+						]
+					})]
+				})]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+						className: CARD,
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center justify-between",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: SECTION_HEADING,
+									children: "AI Command Center"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+									className: CARD_TITLE,
+									children: "AI Employee Status"
+								})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "text-[#22C55E] text-3xl",
+									children: "🤖"
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "mt-6 space-y-5",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex justify-between",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "AI Confidence" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "96%" })]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex justify-between",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Currently Replying" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "17 customers" })]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex justify-between",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Human Takeovers" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "4" })]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex justify-between",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Average Response" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "6 sec" })]
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								className: "mt-8 w-full rounded-xl bg-[#16A34A] py-3 font-semibold text-white hover:bg-[#15803D]",
+								children: "Train AI Employee"
+							})
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+						className: CARD,
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center justify-between",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: SECTION_HEADING,
+									children: "Business Knowledge"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+									className: CARD_TITLE,
+									children: "Manage Knowledge"
+								})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "text-3xl",
+									children: "📚"
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "mt-6 space-y-5",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex justify-between",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Products" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "12" })]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex justify-between",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "FAQs" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "18" })]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex justify-between",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Policies" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "7" })]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex justify-between",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Training Score" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
+											className: "text-[#16A34A]",
+											children: "92%"
+										})]
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								className: "mt-8 w-full rounded-xl border border-[#E5E7EB] py-3 font-semibold hover:bg-[#F9FAFB]",
+								children: "Improve Knowledge"
+							})
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+						className: CARD,
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center justify-between",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: SECTION_HEADING,
+									children: "Customer Growth"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+									className: CARD_TITLE,
+									children: "Growth Today"
+								})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "text-3xl",
+									children: "💰"
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "mt-6 space-y-5",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex justify-between",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Qualified Leads" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "24" })]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex justify-between",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Quotes Sent" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "11" })]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex justify-between",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Follow-ups Sent" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "8" })]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex justify-between",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Conversions" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
+											className: "text-[#16A34A]",
+											children: "8 customers"
+										})]
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								className: "mt-8 w-full rounded-xl border border-[#E5E7EB] py-3 font-semibold hover:bg-[#F9FAFB]",
+								children: "View Customers"
+							})
+						]
+					})
+				]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+				className: "grid gap-6 lg:grid-cols-[1.8fr_1fr]",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+					className: CARD,
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex items-center justify-between",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: SECTION_HEADING,
+							children: "Recent AI Activity"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+							className: CARD_TITLE,
+							children: "What your AI Employee has been doing"
+						})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+							className: "rounded-full bg-[#ECFDF5] px-3 py-1 text-sm font-semibold text-[#15803D]",
+							children: "Live"
+						})]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "mt-8 space-y-5",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-start gap-4",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "flex h-10 w-10 items-center justify-center rounded-full bg-[#ECFDF5]",
+										children: "🤖"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex-1",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "font-semibold",
+											children: "AI answered a pricing enquiry"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-sm text-[#64748B]",
+											children: "James asked about installation pricing and received an instant reply."
+										})]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-sm text-[#94A3B8]",
+										children: "2 min ago"
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-start gap-4",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "flex h-10 w-10 items-center justify-center rounded-full bg-[#EFF6FF]",
+										children: "📅"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex-1",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "font-semibold",
+											children: "Appointment booked"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-sm text-[#64748B]",
+											children: "Site installation scheduled automatically for tomorrow."
+										})]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-sm text-[#94A3B8]",
+										children: "12 min ago"
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-start gap-4",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "flex h-10 w-10 items-center justify-center rounded-full bg-[#FEF3C7]",
+										children: "💬"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex-1",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "font-semibold",
+											children: "Follow-up sent"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-sm text-[#64748B]",
+											children: "AI followed up with a customer who requested a quotation yesterday."
+										})]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-sm text-[#94A3B8]",
+										children: "21 min ago"
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-start gap-4",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "flex h-10 w-10 items-center justify-center rounded-full bg-[#FEF2F2]",
+										children: "👤"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex-1",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "font-semibold",
+											children: "Human takeover requested"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-sm text-[#64748B]",
+											children: "AI detected a negotiation and asked you to continue the conversation."
+										})]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-sm text-[#94A3B8]",
+										children: "37 min ago"
+									})
+								]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-start gap-4",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "flex h-10 w-10 items-center justify-center rounded-full bg-[#FDF4FF]",
+										children: "⭐"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex-1",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "font-semibold",
+											children: "Customer left a 5-star rating"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-sm text-[#64748B]",
+											children: "\"Fast replies and excellent service.\""
+										})]
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-sm text-[#94A3B8]",
+										children: "1 hour ago"
+									})
+								]
+							})
+						]
+					})]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+					className: CARD,
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: SECTION_HEADING,
+							children: "WhatsApp Overview"
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+							className: CARD_TITLE,
+							children: "Current Inbox Status"
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "mt-8 space-y-5",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex justify-between",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-[#64748B]",
+										children: "Unread Conversations"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "3" })]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex justify-between",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-[#64748B]",
+										children: "AI Handling"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
+										className: "text-[#16A34A]",
+										children: "17"
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex justify-between",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-[#64748B]",
+										children: "Waiting For You"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
+										className: "text-[#DC2626]",
+										children: "2"
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex justify-between",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-[#64748B]",
+										children: "Resolved Today"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "36" })]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex justify-between",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-[#64748B]",
+										children: "Average Response"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
+										className: "text-[#16A34A]",
+										children: "6 sec"
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									className: "mt-6 w-full rounded-xl bg-[#16A34A] py-3 font-semibold text-white transition hover:bg-[#15803D]",
+									children: "Open Inbox"
+								})
+							]
+						})
+					]
+				})]
+			})
+		]
+	});
+}
+var formatConversationTime = (time) => time || "Unknown";
+function InboxWorkspace({ conversations, messages, customerProfiles, ownerNames, personalContacts, CARD, PANEL_TITLE, SECONDARY, TIME_LABEL, STATUS_CHIP, CUSTOMER_NAME, SECTION_HEADING }) {
+	const INBOX_TAB_ITEMS = [
+		"All",
+		"AI Active",
+		"Human",
+		"Needs Reply"
+	];
+	const [activeTab, setActiveTab] = (0, import_react.useState)("All");
+	const [searchQuery, setSearchQuery] = (0, import_react.useState)("");
+	const [activeConversation, setActiveConversation] = (0, import_react.useState)(conversations[0]?.id ?? "");
+	const [sourceOverrides, setSourceOverrides] = (0, import_react.useState)({});
+	const [customerCollapsed, setCustomerCollapsed] = (0, import_react.useState)(false);
+	const [messageInput, setMessageInput] = (0, import_react.useState)("");
+	const [customerPanelFading, setCustomerPanelFading] = (0, import_react.useState)(false);
+	const [summaryGenerated, setSummaryGenerated] = (0, import_react.useState)(false);
+	const [summaryVisible, setSummaryVisible] = (0, import_react.useState)(false);
+	const [aiSummary, setAiSummary] = (0, import_react.useState)(null);
+	const textareaRef = (0, import_react.useRef)(null);
+	const activeConversationData = conversations.find((item) => item.id === activeConversation);
+	const activeCustomerProfile = customerProfiles[activeConversation] ?? customerProfiles.c1;
+	const activeMessages = messages[activeConversation] ?? [];
+	const inboxCounts = (0, import_react.useMemo)(() => ({
+		All: conversations.length,
+		"AI Active": conversations.filter((item) => item.source === "ai_handling").length,
+		Human: conversations.filter((item) => item.source === "owner").length,
+		"Needs Reply": conversations.filter((item) => item.source === "needs_attention").length
+	}), [conversations]);
+	const getEffectiveSource = (id, original) => sourceOverrides[id] ?? original ?? "owner";
+	const isPersonalByPhone = (phone) => !!phone && personalContacts.some((pc) => pc.phone === phone);
+	const isPersonalActive = isPersonalByPhone(activeConversationData?.phone ?? null);
+	const effectiveActiveSource = isPersonalActive ? "personal" : getEffectiveSource(activeConversation, activeConversationData?.source);
+	const activeAgentName = isPersonalActive ? "Personal" : String(effectiveActiveSource).startsWith("ai") ? "Sokoos AI" : ownerNames[activeConversation] ?? "You";
+	const getConversationStatusBadge = (source, isPersonal) => {
+		if (isPersonal) return {
+			label: "Personal",
+			emoji: "👤",
+			bg: "bg-[#E0F2FE]",
+			text: "text-[#075985]"
+		};
+		const normalizedSource = source ?? "owner";
+		if (normalizedSource === "ai_handling" || normalizedSource === "ai_handled") return {
+			label: "AI Active",
+			emoji: "✨",
+			bg: "bg-[#ECFDF5]",
+			text: "text-[#166534]"
+		};
+		if (normalizedSource === "needs_attention") return {
+			label: "Needs Reply",
+			emoji: "⚠️",
+			bg: "bg-[#FFF7ED]",
+			text: "text-[#9A5B00]"
+		};
+		return {
+			label: "Human",
+			emoji: "👤",
+			bg: "bg-[#F1F5F9]",
+			text: "text-[#475569]"
+		};
+	};
+	const toggleAiForActive = () => {
+		if (isPersonalActive) return;
+		const nextSource = getEffectiveSource(activeConversation, activeConversationData?.source) === "ai_handling" ? "owner" : "ai_handling";
+		setSourceOverrides((s) => ({
+			...s,
+			[activeConversation]: nextSource
+		}));
+	};
+	(0, import_react.useEffect)(() => {
+		const textarea = textareaRef.current;
+		if (!textarea) return;
+		textarea.style.height = "auto";
+		const height = Math.min(textarea.scrollHeight, 120);
+		textarea.style.height = `${height}px`;
+		textarea.style.overflowY = textarea.scrollHeight > 120 ? "auto" : "hidden";
+	}, [messageInput]);
+	(0, import_react.useEffect)(() => {
+		setCustomerPanelFading(true);
+		const timer = window.setTimeout(() => setCustomerPanelFading(false), 10);
+		return () => window.clearTimeout(timer);
+	}, [activeConversation]);
+	(0, import_react.useEffect)(() => {
+		setAiSummary({
+			customerIntent: "Looking for pricing and comparing internet plans before making a purchase.",
+			buyingProbability: 92,
+			sentiment: {
+				label: "Positive",
+				icon: "😊",
+				badgeClassName: "border-[#A7F3D0] bg-[#ECFDF5] text-[#166534]"
+			},
+			buyingSignals: [
+				"Asked for pricing",
+				"Asked about the free trial",
+				"Replied quickly",
+				"Comparing plans"
+			],
+			recommendedNextAction: "Recommend the Business Package and mention the free trial to encourage conversion.",
+			suggestedReply: [
+				"Hi Aisha 👋",
+				"Thanks for your interest.",
+				"Our Business Package includes priority support, flexible upgrades, and a free trial so you can explore the plan with confidence."
+			],
+			knowledgeSources: [
+				"Pricing Catalog",
+				"FAQ",
+				"Business Policies",
+				"Product Database"
+			]
+		});
+		setSummaryGenerated(true);
+		const timer = window.setTimeout(() => setSummaryVisible(true), 150);
+		return () => window.clearTimeout(timer);
+	}, [activeConversation]);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		className: `grid gap-6 px-6 py-6 transition-all duration-300 ease-out items-stretch h-full grid-cols-1 ${customerCollapsed ? "md:grid-cols-[320px_1fr]" : "md:grid-cols-[320px_1fr_minmax(330px,360px)]"}`,
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: `${CARD} w-full h-full min-h-0 flex flex-col min-w-0`,
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "border-b border-[#ECECEC] px-5 py-2",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "flex items-center justify-between gap-3",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+								className: PANEL_TITLE,
+								children: "Conversations"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: `${SECONDARY} mt-0`,
+								children: "Recent messages and active chats"
+							})] })
+						})
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "flex items-center gap-3 overflow-x-auto px-5 py-2 flex-nowrap custom-scrollbar",
+						children: INBOX_TAB_ITEMS.map((tab) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+							type: "button",
+							onClick: () => setActiveTab(tab),
+							className: `whitespace-nowrap rounded-full px-4 py-1 text-xs transform flex-shrink-0 transition-all duration-200 ease-out ${activeTab === tab ? "bg-[#22C55E] text-white font-medium shadow-sm" : "bg-[#F3F4F6] text-[#475569] font-medium"} hover:shadow-sm active:scale-[0.98]`,
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+								className: "inline-flex items-center gap-2",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: tab }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-white px-2 text-[11px] font-semibold text-[#475569] shadow-sm",
+									children: inboxCounts[tab]
+								})]
+							})
+						}, tab))
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex min-h-0 flex-1 flex-col px-5 py-2 gap-2",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "rounded-[20px] bg-[#F9FAFB] px-4 py-2.5 shadow-none ring-1 ring-[#ECECEC] transition duration-150 ease-out focus-within:ring-2 focus-within:ring-[#22C55E] focus-within:border-[#22C55E] border border-[#E5E7EB]",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex h-[44px] items-center gap-3 w-full text-[#94A3B8]",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, { className: "h-4 w-4 flex-shrink-0" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "search",
+									placeholder: "Search conversations",
+									value: searchQuery,
+									onChange: (event) => setSearchQuery(event.target.value),
+									className: "w-full h-full bg-transparent text-sm text-[#111827] placeholder:text-[#94A3B8] placeholder:font-regular outline-none transition-all duration-150 ease-out"
+								})]
+							})
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "flex-1 min-h-0 space-y-1.5 overflow-y-auto pr-2 scroll-smooth custom-scrollbar",
+							children: conversations.filter((conversation) => {
+								const src = sourceOverrides[conversation.id] ?? conversation.source;
+								if (activeTab === "Needs Reply") return src === "needs_attention";
+								if (activeTab === "AI Active") return src === "ai_handling";
+								if (activeTab === "Human") return src === "owner";
+								return true;
+							}).filter((conversation) => (conversation.name ?? "").toLowerCase().includes(searchQuery.toLowerCase()) || (conversation.phone ?? "").toLowerCase().includes(searchQuery.toLowerCase()) || conversation.message.toLowerCase().includes(searchQuery.toLowerCase())).map((conversation) => {
+								const active = conversation.id === activeConversation;
+								const effectiveSourceRaw = sourceOverrides[conversation.id] ?? conversation.source;
+								const isPersonal = personalContacts.some((pc) => pc.phone === conversation.phone);
+								const effectiveSource = isPersonal ? "personal" : effectiveSourceRaw;
+								return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: () => setActiveConversation(conversation.id),
+									className: `w-full overflow-hidden rounded-[20px] px-5 py-3 min-h-[92px] text-left transition-all duration-200 ease-out transform-gpu active:scale-[0.98] flex flex-col gap-4 ${active ? "bg-[#F3FDF7] border border-[#22C55E]/20 ring-1 ring-[#22C55E]/20 shadow-[0_12px_36px_rgba(15,23,42,0.08)]" : "bg-white border border-transparent hover:bg-[#FBFFF8] hover:shadow-[0_10px_30px_rgba(15,23,42,0.06)] hover:-translate-y-0.5"}`,
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "flex items-center justify-between gap-3",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex items-center gap-3 min-w-0 flex-1",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#E5E7EB] to-[#D1D5DB] text-sm font-semibold text-[#64748B]",
+													children: conversation.avatar
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: "min-w-0 flex-1 space-y-1",
+													children: conversation.isSaved && conversation.name ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: "text-[16px] font-semibold truncate",
+														title: conversation.name,
+														children: conversation.name
+													}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+														className: "text-[16px] font-semibold truncate",
+														title: conversation.phone ?? "Unknown Customer",
+														children: conversation.phone ?? "Unknown Customer"
+													})
+												})]
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex items-start gap-2 flex-shrink-0",
+												children: [conversation.badge > 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "inline-flex min-w-[18px] h-4 items-center justify-center rounded-full bg-[#22C55E] text-white text-[10px] font-semibold transform-gpu transition duration-200 ease-out px-2",
+													children: conversation.badge
+												}) : null, /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: `${TIME_LABEL} whitespace-nowrap text-[11px] text-[#94A3B8]`,
+													children: formatConversationTime(conversation.time)
+												})]
+											})]
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "min-w-0",
+											children: (() => {
+												const badge = getConversationStatusBadge(effectiveSource, isPersonal);
+												return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+													className: `${STATUS_CHIP} ${badge.bg} ${badge.text} text-xs px-2 py-1`,
+													children: [
+														badge.emoji,
+														" ",
+														badge.label
+													]
+												});
+											})()
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: `${SECONDARY} text-[14px] leading-5 min-w-0 truncate`,
+											title: conversation.message,
+											children: conversation.message
+										})
+									]
+								}, conversation.id);
+							})
+						})]
+					})
+				]
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: `${CARD} w-full h-full min-h-0 flex flex-col min-w-0`,
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "border-b border-[#ECECEC] px-6 py-4 mb-2 flex-shrink-0",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "flex flex-col gap-3",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-start justify-between gap-3",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "min-w-0 flex-1",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+											className: `${CUSTOMER_NAME} truncate`,
+											children: conversations.find((item) => item.id === activeConversation)?.name
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "mt-1 flex flex-wrap items-center gap-2 text-sm text-[#64748B]",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "truncate",
+													children: activeConversationData?.phone ?? "Unknown phone"
+												}),
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "text-[#94A3B8]",
+													children: "•"
+												}),
+												(() => {
+													const badge = getConversationStatusBadge(effectiveActiveSource, isPersonalActive);
+													return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+														className: `${badge.bg} ${badge.text} rounded-full px-2 py-0.5 text-[11px] font-semibold inline-flex items-center gap-1`,
+														children: [
+															badge.emoji,
+															" ",
+															badge.label
+														]
+													});
+												})()
+											]
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "mt-2 flex flex-col gap-2 text-sm text-[#475569]",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex items-center justify-between gap-3",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "font-medium text-[#111827]",
+													children: "AI Confidence"
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "text-[#16A34A] font-semibold",
+													children: "94%"
+												})]
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "h-2 w-full overflow-hidden rounded-full bg-[#DCFCE7]",
+												children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "h-full w-[94%] rounded-full bg-[#22C55E]" })
+											})]
+										})
+									]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-center gap-2 flex-shrink-0",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+										type: "button",
+										onClick: toggleAiForActive,
+										disabled: isPersonalActive,
+										"aria-label": "AI Assist",
+										className: `inline-flex h-9 rounded-full border px-3.5 text-[10px] font-semibold items-center justify-center transition-all duration-150 ease-out active:scale-[0.98] ${isPersonalActive ? "border-[#E5E7EB] bg-white text-[#9CA3AF] cursor-not-allowed" : "border-[#22C55E] bg-white text-[#166534] hover:bg-[#ECFDF5]"}`,
+										title: isPersonalActive ? "Cannot toggle mode for personal contacts" : "AI Assist",
+										children: "✨ AI Assist"
+									}), customerCollapsed && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+										type: "button",
+										onClick: () => setCustomerCollapsed(false),
+										className: "inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#ECECEC] bg-white text-[#64748B] transition-all duration-200 ease-out hover:bg-[#F9FAFB] hover:text-[#111827] flex-shrink-0",
+										"aria-label": "Expand customer panel",
+										title: "Expand customer panel",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronRight, { className: "h-3 w-3" })
+									})]
+								})]
+							})
+						})
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "flex-1 min-h-0 overflow-y-auto custom-scrollbar px-6 pt-3 pb-6 flex flex-col justify-end bg-[#F8FCF7]",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "space-y-5 flex flex-col",
+							children: activeMessages.map((message, index) => {
+								const originalWasAi = String(activeConversationData?.source).startsWith("ai");
+								if (message.from === "agent" && originalWasAi && !String(effectiveActiveSource).startsWith("ai")) return null;
+								const isAgent = message.from === "agent";
+								const isAi = isAgent && String(effectiveActiveSource).startsWith("ai");
+								const senderLabel = isAi ? "Sokoos AI" : activeAgentName;
+								return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "transition-all duration-150 ease-out transition-opacity",
+									children: [isAgent ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "flex items-center gap-1 text-[10px] font-semibold text-[#94A3B8] mb-0.5",
+										children: isAi ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "inline-flex h-3 w-3 items-center justify-center rounded-full bg-[#ECFDF5] text-[#0C7A4D]",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Bot, { className: "h-1.5 w-1.5" })
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: senderLabel })] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: senderLabel })
+									}) : null, /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: `flex ${isAgent ? "justify-start" : "justify-end"}`,
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: `rounded-[28px] px-3 py-2 text-sm break-words max-w-[70%] ${isAgent ? "bg-[#F0FDF4] text-[#166534] border border-[#DCFCE7]" : "bg-white text-[#111827] border border-[#E5E7EB]"} transition-all duration-150 ease-out transition-shadow transform-gpu`,
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "flex flex-col gap-2",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "leading-relaxed text-sm",
+													children: message.text
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+													className: `self-end text-[9px] ${isAgent ? "text-[#16A34A]/30" : "text-[#64748B]/30"} font-normal`,
+													children: message.time
+												})]
+											})
+										})
+									})]
+								}, `${message.time}-${index}`);
+							})
+						})
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "shrink-0 border-t border-[#E5E7EB] bg-white px-6 py-3",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "rounded-[20px] bg-[#F9FAFB] border border-[#E5E7EB] flex items-center gap-3 min-h-[52px] px-4 transition-all duration-200 ease-out",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
+								ref: textareaRef,
+								value: messageInput,
+								onChange: (event) => setMessageInput(event.target.value),
+								placeholder: "Type a message...",
+								className: "min-w-0 flex-1 resize-none overflow-y-auto overflow-x-hidden custom-scrollbar bg-transparent text-sm leading-5 text-[#111827] outline-none placeholder:text-[#CBD5E1] placeholder:font-regular transition-all duration-150 ease-out",
+								rows: 1,
+								style: {
+									minHeight: 40,
+									maxHeight: 80
+								}
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								type: "button",
+								className: "inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white transition duration-150 ease-out transform hover:bg-[#16A34A] active:scale-95",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Send, { className: "h-4 w-4" })
+							})]
+						})
+					})
+				]
+			}),
+			!customerCollapsed && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: `${CARD} w-full h-full min-h-0 flex flex-col transition-all duration-300 ease-out ${customerPanelFading ? "opacity-80 translate-y-1" : "opacity-100 translate-y-0"} min-w-[330px] max-w-[360px]`,
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-start justify-between gap-3 shrink-0 px-5 py-4 border-b border-[#ECECEC]",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+							className: `${CUSTOMER_NAME} mt-1`,
+							children: activeCustomerProfile.name
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: `${SECONDARY} mt-2`,
+							children: activeCustomerProfile.company
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "mt-3 inline-flex items-center gap-2",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "inline-flex h-3.5 w-3.5 shrink-0 rounded-full bg-[#22C55E]" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: `${STATUS_CHIP} bg-[#ECFDF5] text-[#166534] border border-[#D1FAE5]`,
+								children: activeCustomerProfile.leadStatus
+							})]
+						})
+					] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+						type: "button",
+						onClick: () => setCustomerCollapsed(true),
+						className: "inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#ECECEC] bg-white text-[#64748B] transition-all duration-150 ease-out hover:bg-[#F9FAFB] hover:text-[#111827] active:scale-95 shrink-0",
+						"aria-label": "Collapse customer panel",
+						title: "Collapse customer panel",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronRight, { className: "h-3 w-3 rotate-180" })
+					})]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "flex-1 min-h-0 overflow-hidden px-5 py-4",
+					children: summaryGenerated ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: `h-full overflow-y-auto pr-2 transition-all duration-300 ease-out ${summaryVisible ? "opacity-100" : "opacity-0"} [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-[#F3F4F6] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#CBD5E1] [&::-webkit-scrollbar-thumb:hover]:bg-[#22C55E]`,
+						style: {
+							scrollbarWidth: "thin",
+							scrollbarColor: "#CBD5E1 transparent"
+						},
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "space-y-4 pb-2",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "flex items-start justify-between gap-3",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: SECTION_HEADING,
+											children: "✨ AI Summary"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+											className: "mt-2 text-[18px] font-semibold text-[#111827]",
+											children: "AI Employee snapshot"
+										})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "rounded-full bg-[#ECFDF5] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#16A34A]",
+											children: "Mock data"
+										})]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-4 h-px bg-[#E5E7EB]/80" })]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: SECTION_HEADING,
+										children: "Customer Intent"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "mt-2 text-[15px] leading-6 text-[#475569]",
+										children: aiSummary?.customerIntent
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: SECTION_HEADING,
+										children: "Buying Probability"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "mt-3 flex items-center gap-3",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
+											className: "text-[24px] font-semibold text-[#111827]",
+											children: [aiSummary?.buyingProbability, "%"]
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "h-2.5 flex-1 overflow-hidden rounded-full bg-[#E5E7EB]",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+												className: "h-full rounded-full bg-[#22C55E]",
+												style: { width: `${aiSummary?.buyingProbability ?? 0}%` }
+											})
+										})]
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: SECTION_HEADING,
+										children: "Customer Sentiment"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "mt-3",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+											className: `inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[13px] font-semibold ${aiSummary?.sentiment.badgeClassName}`,
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: aiSummary?.sentiment.icon }), aiSummary?.sentiment.label]
+										})
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: SECTION_HEADING,
+										children: "Buying Signals"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
+										className: "mt-3 space-y-2 text-[14px] leading-6 text-[#475569]",
+										children: aiSummary?.buyingSignals.map((signal) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", {
+											className: "flex items-start gap-2",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "mt-1 h-2 w-2 rounded-full bg-[#22C55E]" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: signal })]
+										}, signal))
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: SECTION_HEADING,
+										children: "Recommended Next Action"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "mt-3 text-[15px] leading-6 text-[#475569]",
+										children: aiSummary?.recommendedNextAction
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: SECTION_HEADING,
+										children: "Suggested Reply"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "mt-3 space-y-2 text-[14px] leading-6 text-[#475569]",
+										children: aiSummary?.suggestedReply.map((line) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", { children: line }, line))
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: SECTION_HEADING,
+										children: "Knowledge Sources"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "mt-3 flex flex-wrap gap-2",
+										children: aiSummary?.knowledgeSources.map((source) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "rounded-full bg-[#F3F4F6] px-2.5 py-1 text-[11px] font-semibold text-[#475569]",
+											children: source
+										}, source))
+									})]
+								})
+							]
+						})
+					}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "flex h-full items-center justify-center text-sm text-[#64748B]",
+						children: "Preparing AI summary…"
+					})
+				})]
+			})
+		]
+	});
+}
+function CustomersWorkspace({ customers, inboxConversations, setSelected, setActiveConversation }) {
+	const [customerDirectoryQuery, setCustomerDirectoryQuery] = (0, import_react.useState)("");
+	const [customerDirectoryFilter, setCustomerDirectoryFilter] = (0, import_react.useState)("All");
+	const [customerDirectorySort, setCustomerDirectorySort] = (0, import_react.useState)("lastInteraction");
+	const [selectedCustomerId, setSelectedCustomerId] = (0, import_react.useState)(null);
+	const [customerWorkspaceSection, setCustomerWorkspaceSection] = (0, import_react.useState)("All");
+	const [segments, setSegments] = (0, import_react.useState)([]);
+	const [segmentDraft, setSegmentDraft] = (0, import_react.useState)({
+		name: "",
+		description: "",
+		criteria: ""
+	});
+	const [segmentEditingId, setSegmentEditingId] = (0, import_react.useState)(null);
+	const [importSource, setImportSource] = (0, import_react.useState)("Manual");
+	const [showImportForm, setShowImportForm] = (0, import_react.useState)(false);
+	const [reviewQueue, setReviewQueue] = (0, import_react.useState)([
+		{
+			id: "review-duplicate-1",
+			category: "Possible duplicates",
+			name: "Mary Wanjiku",
+			summary: "A new contact may match an existing profile and needs review before any action.",
+			existingProfile: "+254 711 xxx xxx",
+			newContact: "+254 722 xxx xxx",
+			relationship: "Customer / Contact"
+		},
+		{
+			id: "review-incomplete-1",
+			category: "Incomplete profiles",
+			name: "Samuel Otieno",
+			summary: "Missing email and notes for a recently contacted person.",
+			existingProfile: "Phone on file, no email",
+			newContact: "No additional contact method",
+			relationship: "Lead"
+		},
+		{
+			id: "review-unclassified-1",
+			category: "Unclassified contacts",
+			name: "Amina Muthoni",
+			summary: "Imported contact has not yet been classified as Contact, Lead, or Customer.",
+			existingProfile: "Imported from spreadsheet",
+			newContact: "Not classified",
+			relationship: "Contact"
+		}
+	]);
+	const [pendingReviewMergeId, setPendingReviewMergeId] = (0, import_react.useState)(null);
+	const customerDirectoryItems = (0, import_react.useMemo)(() => customers.map((customer) => ({
+		id: customer.id,
+		name: customer.name,
+		notes: `Primary interest: ${customer.interestedProduct}. Last interaction: ${customer.lastInteraction}.`,
+		phoneNumbers: [customer.phone],
+		emailAddresses: [],
+		otherContactMethods: [],
+		relationship: customer.leadStatus.toLowerCase().includes("customer") ? "Customer" : customer.leadStatus.toLowerCase().includes("lead") ? "Lead" : "Contact",
+		source: "Manual import",
+		recentInteractions: [customer.lastInteraction],
+		tags: [customer.interestedProduct, customer.leadStatus],
+		status: customer.leadStatus,
+		lastInteraction: customer.lastInteraction
+	})), [customers]);
+	const selectedCustomer = customerDirectoryItems.find((customer) => customer.id === selectedCustomerId) ?? null;
+	const handleOpenInboxForCustomer = () => {
+		setSelected("Inbox");
+		if (!selectedCustomer) return;
+		const exactCustomerPhone = selectedCustomer.phoneNumbers.find((phone) => phone.trim().length > 0);
+		const exactCustomerName = selectedCustomer.name.trim();
+		const matchedConversation = inboxConversations.find((conversation) => {
+			if (!conversation.phone && !conversation.name) return false;
+			const conversationPhone = conversation.phone?.replace(/\D/g, "") ?? "";
+			const customerPhone = exactCustomerPhone?.replace(/\D/g, "") ?? "";
+			const samePhone = Boolean(customerPhone && conversationPhone && customerPhone === conversationPhone);
+			const sameName = Boolean(exactCustomerName && conversation.name && exactCustomerName.toLowerCase() === conversation.name.trim().toLowerCase());
+			return samePhone || sameName;
+		});
+		if (matchedConversation) setActiveConversation(matchedConversation.id);
+	};
+	[].filter((lead) => {
+		const searchableText = [
+			lead.name,
+			lead.source,
+			lead.interestedProduct,
+			lead.lastInteraction,
+			lead.followUpStatus,
+			lead.notes,
+			lead.contactMethods.join(" ")
+		].join(" ").toLowerCase();
+		return !customerDirectoryQuery || searchableText.includes(customerDirectoryQuery.toLowerCase());
+	});
+	const handleSaveSegment = () => {
+		const name = segmentDraft.name.trim();
+		const description = segmentDraft.description.trim();
+		const criteria = segmentDraft.criteria.trim();
+		if (!name) return;
+		if (segmentEditingId) setSegments((current) => current.map((segment) => segment.id === segmentEditingId ? {
+			...segment,
+			name,
+			description,
+			criteria
+		} : segment));
+		else setSegments((current) => [{
+			id: `segment-${Date.now()}`,
+			name,
+			description,
+			criteria,
+			matchCount: 0
+		}, ...current]);
+		setSegmentDraft({
+			name: "",
+			description: "",
+			criteria: ""
+		});
+		setSegmentEditingId(null);
+	};
+	const handleDeleteSegment = (id) => {
+		setSegments((current) => current.filter((segment) => segment.id !== id));
+		if (segmentEditingId === id) {
+			setSegmentEditingId(null);
+			setSegmentDraft({
+				name: "",
+				description: "",
+				criteria: ""
+			});
+		}
+	};
+	const filteredCustomerDirectoryItems = (0, import_react.useMemo)(() => customerDirectoryItems.filter((item) => {
+		const searchableText = [
+			item.name,
+			item.relationship,
+			item.source,
+			item.lastInteraction,
+			item.status,
+			[
+				...item.phoneNumbers,
+				...item.emailAddresses,
+				...item.otherContactMethods
+			].join(" "),
+			item.tags.join(" ")
+		].join(" ").toLowerCase();
+		const matchesQuery = !customerDirectoryQuery || searchableText.includes(customerDirectoryQuery.toLowerCase());
+		const matchesFilter = customerDirectoryFilter === "All" || item.relationship === customerDirectoryFilter;
+		return matchesQuery && matchesFilter;
+	}).sort((a, b) => {
+		if (customerDirectorySort === "name") return a.name.localeCompare(b.name);
+		if (customerDirectorySort === "relationship") {
+			const order = {
+				Contact: 0,
+				Lead: 1,
+				Customer: 2
+			};
+			return order[a.relationship] - order[b.relationship];
+		}
+		return a.lastInteraction.localeCompare(b.lastInteraction);
+	}), [
+		customerDirectoryItems,
+		customerDirectoryQuery,
+		customerDirectoryFilter,
+		customerDirectorySort
+	]);
+	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+		className: "mx-auto w-full max-w-[1280px] space-y-6 px-4 pb-10 lg:px-6",
+		children: [
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				className: "border-b border-[#E5E7EB] pb-5",
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex flex-col gap-5",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "max-w-3xl",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "text-[12px] font-semibold uppercase tracking-[0.24em] text-[#6B7280]",
+								children: "Customers"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
+								className: "mt-2 text-[24px] font-semibold tracking-[-0.02em] text-[#111827] lg:text-[26px]",
+								children: "Customers"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "mt-2 text-sm leading-6 text-[#6B7280]",
+								children: "Manage the people connected to your business and understand their relationship with your business."
+							})
+						]
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex flex-col gap-3 sm:flex-row sm:items-center",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								type: "button",
+								className: "inline-flex items-center justify-center gap-2 rounded-[20px] bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-4 w-4" }), "Add Customer"]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								type: "button",
+								className: "inline-flex items-center justify-center gap-2 rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm font-semibold text-[#111827] transition hover:bg-[#F9FAFB]",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Upload, { className: "h-4 w-4" }), "Import"]
+							})]
+						})
+					})]
+				})
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				className: "rounded-[24px] border border-[#E5E7EB] bg-white p-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)]",
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "grid gap-3 lg:grid-cols-[minmax(0,1fr)_180px_180px]",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+							className: "flex items-center gap-3 rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#64748B] focus-within:border-[#22C55E] focus-within:ring-2 focus-within:ring-[#ECFDF5]",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, { className: "h-4 w-4 shrink-0" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+								type: "search",
+								value: customerDirectoryQuery,
+								onChange: (event) => setCustomerDirectoryQuery(event.target.value),
+								placeholder: "Search customers, leads, phone numbers, email addresses, or tags",
+								className: "w-full bg-transparent text-sm text-[#111827] placeholder:text-[#94A3B8] outline-none"
+							})]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+							className: "flex items-center gap-2 rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-3 text-sm text-[#475569]",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: "font-medium",
+								children: "Filter"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", {
+								value: customerDirectoryFilter,
+								onChange: (event) => setCustomerDirectoryFilter(event.target.value),
+								className: "w-full bg-transparent text-sm font-medium text-[#111827] outline-none",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+										value: "All",
+										children: "All"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+										value: "Contact",
+										children: "Contact"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+										value: "Lead",
+										children: "Lead"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+										value: "Customer",
+										children: "Customer"
+									})
+								]
+							})]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+							className: "flex items-center gap-2 rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-3 text-sm text-[#475569]",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: "font-medium",
+								children: "Sort"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", {
+								value: customerDirectorySort,
+								onChange: (event) => setCustomerDirectorySort(event.target.value),
+								className: "w-full bg-transparent text-sm font-medium text-[#111827] outline-none",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+										value: "lastInteraction",
+										children: "Last interaction"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+										value: "name",
+										children: "Name"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+										value: "relationship",
+										children: "Relationship"
+									})
+								]
+							})]
+						})
+					]
+				})
+			}),
+			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("nav", {
+				"aria-label": "Customers workspace sections",
+				className: "rounded-[24px] border border-[#E5E7EB] bg-white p-2 shadow-[0_8px_24px_rgba(15,23,42,0.05)]",
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "flex flex-wrap gap-2",
+					children: [
+						"All",
+						"Leads",
+						"Customers",
+						"Segments",
+						"Sources & Imports",
+						"Review"
+					].map((section) => {
+						const active = customerWorkspaceSection === section;
+						return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+							type: "button",
+							onClick: () => setCustomerWorkspaceSection(section),
+							"aria-current": active ? "page" : void 0,
+							className: `rounded-full border px-3 py-2 text-sm font-medium transition ${active ? "border-[#86EFAC] bg-[#ECFDF5] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#D1FAE5] hover:bg-[#F9FCFA]"}`,
+							children: section
+						}, section);
+					})
+				})
+			}),
+			customerWorkspaceSection === "Leads" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: "rounded-[24px] border border-dashed border-[#E5E7EB] bg-[#F9FAFB] p-8 text-center shadow-[0_8px_24px_rgba(15,23,42,0.03)]",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-white text-[#22C55E] shadow-sm",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Target, { className: "h-6 w-6" })
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+						className: "mt-4 text-xl font-semibold text-[#111827]",
+						children: "No leads yet"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "mx-auto mt-2 max-w-xl text-sm leading-6 text-[#6B7280]",
+						children: "There are no lead records in this workspace yet. When someone expresses interest but is not yet confirmed as a customer, the details will appear here as a separate lead record."
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "mt-5 rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#475569]",
+						children: "Leads are kept separate from contact information and are only created when a person is clearly marked as a lead."
+					})
+				]
+			}) : customerWorkspaceSection === "Segments" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: "space-y-6",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "rounded-[24px] border border-[#E5E7EB] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.05)]",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6B7280]",
+								children: "Segments"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+								className: "mt-1 text-2xl font-semibold text-[#111827]",
+								children: "Customer groups"
+							})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								type: "button",
+								onClick: () => {
+									setSegmentEditingId(null);
+									setSegmentDraft({
+										name: "",
+										description: "",
+										criteria: ""
+									});
+								},
+								className: "inline-flex items-center justify-center gap-2 rounded-[20px] bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-4 w-4" }), "Create Segment"]
+							})]
+						})
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "rounded-[24px] border border-[#E5E7EB] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.05)]",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "grid gap-4 md:grid-cols-3",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+									className: "space-y-2 text-sm font-medium text-[#111827]",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Segment name" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+										type: "text",
+										value: segmentDraft.name,
+										onChange: (event) => setSegmentDraft((current) => ({
+											...current,
+											name: event.target.value
+										})),
+										className: "w-full rounded-[18px] border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2.5 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]",
+										placeholder: "e.g. Repeat buyers"
+									})]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+									className: "space-y-2 text-sm font-medium text-[#111827] md:col-span-2",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Description" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+										type: "text",
+										value: segmentDraft.description,
+										onChange: (event) => setSegmentDraft((current) => ({
+											...current,
+											description: event.target.value
+										})),
+										className: "w-full rounded-[18px] border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2.5 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]",
+										placeholder: "Describe the purpose of this group"
+									})]
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "mt-4",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+									className: "space-y-2 text-sm font-medium text-[#111827]",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Optional conditions / criteria" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
+										value: segmentDraft.criteria,
+										onChange: (event) => setSegmentDraft((current) => ({
+											...current,
+											criteria: event.target.value
+										})),
+										rows: 3,
+										className: "w-full rounded-[18px] border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2.5 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]",
+										placeholder: "Example: customers with a recent purchase and at least one tag related to repeat orders"
+									})]
+								})
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "mt-4 flex justify-end",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "button",
+									onClick: handleSaveSegment,
+									disabled: !segmentDraft.name.trim(),
+									className: "inline-flex items-center justify-center rounded-[20px] bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A] disabled:cursor-not-allowed disabled:bg-[#A7F3D0]",
+									children: segmentEditingId ? "Save Segment" : "Create Segment"
+								})
+							})
+						]
+					}),
+					segments.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+						className: "rounded-[24px] border border-dashed border-[#E5E7EB] bg-[#F9FAFB] p-8 text-center shadow-[0_8px_24px_rgba(15,23,42,0.03)]",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-white text-[#22C55E] shadow-sm",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tag, { className: "h-6 w-6" })
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+								className: "mt-4 text-xl font-semibold text-[#111827]",
+								children: "No segments yet"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "mx-auto mt-2 max-w-xl text-sm leading-6 text-[#6B7280]",
+								children: "Create a segment to group people by business-defined criteria. Examples can be used as placeholders only; no default segments are created automatically."
+							})
+						]
+					}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "grid gap-4 lg:grid-cols-2",
+						children: segments.map((segment) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", {
+							className: "rounded-[24px] border border-[#E5E7EB] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.05)]",
+							children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-start justify-between gap-3",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6B7280]",
+										children: "Segment"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h4", {
+										className: "mt-1 text-xl font-semibold text-[#111827]",
+										children: segment.name
+									})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+										className: "rounded-full border border-[#D1FAE5] bg-[#ECFDF5] px-2.5 py-1 text-xs font-semibold text-[#166534]",
+										children: [segment.matchCount, " people"]
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "mt-3 text-sm leading-6 text-[#475569]",
+									children: segment.description || "No description provided."
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "mt-4 rounded-[18px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 text-sm text-[#475569]",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "font-medium text-[#111827]",
+										children: "Criteria"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "mt-2 leading-6",
+										children: segment.criteria || "No conditions added yet."
+									})]
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "mt-4 flex justify-end gap-2",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+										type: "button",
+										onClick: () => {
+											setSegmentEditingId(segment.id);
+											setSegmentDraft({
+												name: segment.name,
+												description: segment.description,
+												criteria: segment.criteria
+											});
+										},
+										className: "inline-flex items-center justify-center rounded-[20px] border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F9FAFB]",
+										children: "Edit Segment"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+										type: "button",
+										onClick: () => handleDeleteSegment(segment.id),
+										className: "inline-flex items-center justify-center rounded-[20px] border border-[#FECACA] bg-[#FEF2F2] px-3 py-2 text-sm font-semibold text-[#B91C1C] transition hover:bg-[#FEE2E2]",
+										children: "Delete Segment"
+									})]
+								})
+							]
+						}, segment.id))
+					})
+				]
+			}) : customerWorkspaceSection === "Sources & Imports" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: "space-y-6",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "rounded-[24px] border border-[#E5E7EB] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.05)]",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6B7280]",
+								children: "Sources & Imports"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+								className: "mt-1 text-2xl font-semibold text-[#111827]",
+								children: "Where contacts come from"
+							})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-wrap gap-2",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: () => setShowImportForm((current) => !current),
+									className: "inline-flex items-center justify-center gap-2 rounded-[20px] bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Upload, { className: "h-4 w-4" }), "Import Contacts"]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: () => setShowImportForm(false),
+									className: "inline-flex items-center justify-center gap-2 rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm font-semibold text-[#111827] transition hover:bg-[#F9FAFB]",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(List, { className: "h-4 w-4" }), "View Sources"]
+								})]
+							})]
+						})
+					}),
+					showImportForm && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "rounded-[24px] border border-[#E5E7EB] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.05)]",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "grid gap-4 md:grid-cols-2",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+									className: "space-y-2 text-sm font-medium text-[#111827]",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Import source" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", {
+										value: importSource,
+										onChange: (event) => setImportSource(event.target.value),
+										className: "w-full rounded-[18px] border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2.5 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]",
+										children: [
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+												value: "WhatsApp",
+												children: "WhatsApp"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+												value: "Website",
+												children: "Website"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+												value: "Email",
+												children: "Email"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+												value: "SMS",
+												children: "SMS"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+												value: "Manual",
+												children: "Manual"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+												value: "Import",
+												children: "Import"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+												value: "Google Contacts",
+												children: "Google Contacts"
+											}),
+											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
+												value: "Other",
+												children: "Other"
+											})
+										]
+									})]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
+									className: "space-y-2 text-sm font-medium text-[#111827]",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Initial relationship" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+										type: "text",
+										value: "Contact",
+										readOnly: true,
+										className: "w-full rounded-[18px] border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2.5 text-sm text-[#111827] outline-none"
+									})]
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "mt-4 rounded-[18px] border border-dashed border-[#E5E7EB] bg-[#F9FAFB] p-4 text-sm text-[#475569]",
+								children: "Upload a CSV or paste a contact list. This is a controlled import flow only; no automatic matching or merging is performed."
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "mt-4 flex justify-end",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "button",
+									onClick: () => setShowImportForm(false),
+									className: "inline-flex items-center justify-center rounded-[20px] bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]",
+									children: "Start Import"
+								})
+							})
+						]
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "grid gap-4 lg:grid-cols-2",
+						children: [
+							{
+								name: "WhatsApp",
+								description: "Messages and customer conversations received from WhatsApp channels.",
+								status: "Available when connected"
+							},
+							{
+								name: "Website",
+								description: "Visitors and inquiries captured through your website forms and chat flows.",
+								status: "Available when connected"
+							},
+							{
+								name: "Email",
+								description: "Email-based contact and inquiry records from your business inbox.",
+								status: "Available when connected"
+							},
+							{
+								name: "SMS",
+								description: "Text-message conversations and follow-ups sent from your business number.",
+								status: "Available when connected"
+							},
+							{
+								name: "Manual",
+								description: "Contacts added directly by a team member in the dashboard.",
+								status: "Ready"
+							},
+							{
+								name: "Import",
+								description: "Bulk contact list imports from spreadsheet or CSV files.",
+								status: "Ready"
+							},
+							{
+								name: "Google Contacts",
+								description: "Available integration option; not connected unless configured separately.",
+								status: "Not connected"
+							},
+							{
+								name: "Other connected integrations",
+								description: "Additional channels connected to the business workspace.",
+								status: "Depends on setup"
+							}
+						].map((source) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", {
+							className: "rounded-[24px] border border-[#E5E7EB] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.05)]",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-start justify-between gap-3",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6B7280]",
+									children: "Source"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h4", {
+									className: "mt-1 text-xl font-semibold text-[#111827]",
+									children: source.name
+								})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "rounded-full border border-[#D1FAE5] bg-[#ECFDF5] px-2.5 py-1 text-[11px] font-semibold text-[#166534]",
+									children: source.status
+								})]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "mt-3 text-sm leading-6 text-[#475569]",
+								children: source.description
+							})]
+						}, source.name))
+					})
+				]
+			}) : customerWorkspaceSection === "Review" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: "space-y-6",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "rounded-[24px] border border-[#E5E7EB] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.05)]",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6B7280]",
+							children: "Review"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+							className: "mt-1 text-2xl font-semibold text-[#111827]",
+							children: "Customer data review queue"
+						})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+							className: "rounded-full border border-[#D1FAE5] bg-[#ECFDF5] px-3 py-1.5 text-xs font-semibold text-[#166534]",
+							children: [reviewQueue.length, " items"]
+						})]
+					})
+				}), reviewQueue.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+					className: "rounded-[24px] border border-dashed border-[#E5E7EB] bg-[#F9FAFB] p-8 text-center shadow-[0_8px_24px_rgba(15,23,42,0.03)]",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-white text-[#22C55E] shadow-sm",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, { className: "h-6 w-6" })
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+							className: "mt-4 text-xl font-semibold text-[#111827]",
+							children: "No review items"
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+							className: "mx-auto mt-2 max-w-xl text-sm leading-6 text-[#6B7280]",
+							children: "There are no pending data review items in this workspace right now. New issues will appear here when a business owner needs to validate a record."
+						})
+					]
+				}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "space-y-4",
+					children: reviewQueue.map((item) => {
+						const isPendingMerge = pendingReviewMergeId === item.id;
+						return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", {
+							className: "rounded-[24px] border border-[#E5E7EB] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.05)]",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "max-w-2xl",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "flex items-center gap-2",
+											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "rounded-full border border-[#D1FAE5] bg-[#ECFDF5] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#166534]",
+												children: item.category
+											})
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h4", {
+											className: "mt-3 text-xl font-semibold text-[#111827]",
+											children: item.name
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "mt-2 text-sm leading-6 text-[#475569]",
+											children: item.summary
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "mt-4 grid gap-3 md:grid-cols-2",
+											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "rounded-[18px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 text-sm text-[#475569]",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "font-medium text-[#111827]",
+													children: "Existing profile"
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "mt-2",
+													children: item.existingProfile
+												})]
+											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+												className: "rounded-[18px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 text-sm text-[#475569]",
+												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "font-medium text-[#111827]",
+													children: "New contact"
+												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+													className: "mt-2",
+													children: item.newContact
+												})]
+											})]
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+											className: "mt-3 text-sm text-[#475569]",
+											children: [
+												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+													className: "font-medium text-[#111827]",
+													children: "Relationship:"
+												}),
+												" ",
+												item.relationship
+											]
+										})
+									]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex flex-col gap-2 lg:min-w-[180px]",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "button",
+											className: "inline-flex items-center justify-center rounded-[18px] border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F9FAFB]",
+											children: "Review"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "button",
+											onClick: () => setPendingReviewMergeId(item.id),
+											className: "inline-flex items-center justify-center rounded-[18px] border border-[#D1FAE5] bg-[#ECFDF5] px-3 py-2 text-sm font-semibold text-[#166534] transition hover:bg-[#D1FAE5]",
+											children: "Merge"
+										}),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "button",
+											onClick: () => {
+												setReviewQueue((current) => current.filter((reviewItem) => reviewItem.id !== item.id));
+												setPendingReviewMergeId((current) => current === item.id ? null : current);
+											},
+											className: "inline-flex items-center justify-center rounded-[18px] border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-semibold text-[#475569] transition hover:bg-[#F9FAFB]",
+											children: "Keep Separate"
+										})
+									]
+								})]
+							}), isPendingMerge && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "mt-4 rounded-[18px] border border-[#FDE68A] bg-[#FEFCE8] p-4",
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "text-sm font-semibold text-[#92400E]",
+										children: "Confirm merge"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "mt-2 text-sm leading-6 text-[#78350F]",
+										children: "Automatic merging is not enabled. This action requires explicit business-owner confirmation before the records are combined."
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "mt-4 flex flex-wrap gap-2",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "button",
+											onClick: () => {
+												setReviewQueue((current) => current.filter((reviewItem) => reviewItem.id !== item.id));
+												setPendingReviewMergeId(null);
+											},
+											className: "inline-flex items-center justify-center rounded-[18px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#16A34A]",
+											children: "Confirm Merge"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+											type: "button",
+											onClick: () => setPendingReviewMergeId(null),
+											className: "inline-flex items-center justify-center rounded-[18px] border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F9FAFB]",
+											children: "Cancel"
+										})]
+									})
+								]
+							})]
+						}, item.id);
+					})
+				})]
+			}) : filteredCustomerDirectoryItems.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
+				className: "rounded-[24px] border border-dashed border-[#E5E7EB] bg-[#F9FAFB] p-8 text-center shadow-[0_8px_24px_rgba(15,23,42,0.03)]",
+				children: [
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-white text-[#22C55E] shadow-sm",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(User, { className: "h-6 w-6" })
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+						className: "mt-4 text-xl font-semibold text-[#111827]",
+						children: customerDirectoryQuery || customerDirectoryFilter !== "All" ? "No matching records" : "No customer records yet"
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+						className: "mx-auto mt-2 max-w-xl text-sm leading-6 text-[#6B7280]",
+						children: customerDirectoryQuery || customerDirectoryFilter !== "All" ? "Try a different search term or reset the filter to see the full customer directory." : "There are no customer or contact records available in this workspace yet. Once your business connects a source or imports contacts, they will appear here in a searchable directory."
+					}),
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "mt-5 flex flex-col items-center justify-center gap-3 sm:flex-row",
+						children: [
+							(customerDirectoryQuery || customerDirectoryFilter !== "All") && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								type: "button",
+								onClick: () => {
+									setCustomerDirectoryQuery("");
+									setCustomerDirectoryFilter("All");
+								},
+								className: "inline-flex items-center justify-center gap-2 rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm font-semibold text-[#111827] transition hover:bg-[#F9FAFB]",
+								children: "Reset search"
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								type: "button",
+								className: "inline-flex items-center justify-center gap-2 rounded-[20px] bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-4 w-4" }), "Add Customer"]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								type: "button",
+								className: "inline-flex items-center justify-center gap-2 rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm font-semibold text-[#111827] transition hover:bg-[#F9FAFB]",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Upload, { className: "h-4 w-4" }), "Import"]
+							})
+						]
+					})
+				]
+			}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("section", {
+				className: "overflow-hidden rounded-[24px] border border-[#E5E7EB] bg-white shadow-[0_8px_24px_rgba(15,23,42,0.04)]",
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					className: "overflow-x-auto",
+					children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
+						className: "min-w-full text-left text-sm",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", {
+							className: "bg-[#F8FAFC] text-[#475569]",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { children: [
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "px-4 py-3 font-semibold",
+									children: "Name"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "px-4 py-3 font-semibold",
+									children: "Relationship"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "px-4 py-3 font-semibold",
+									children: "Contact method"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "px-4 py-3 font-semibold",
+									children: "Source"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "px-4 py-3 font-semibold",
+									children: "Last interaction"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "px-4 py-3 font-semibold",
+									children: "Tags"
+								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
+									className: "px-4 py-3 font-semibold",
+									children: "Status"
+								})
+							] })
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", { children: filteredCustomerDirectoryItems.map((customer) => {
+							return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
+								tabIndex: 0,
+								onClick: () => setSelectedCustomerId(customer.id),
+								onKeyDown: (event) => {
+									if (event.key === "Enter" || event.key === " ") {
+										event.preventDefault();
+										setSelectedCustomerId(customer.id);
+									}
+								},
+								className: `cursor-pointer border-t border-[#E5E7EB] align-top transition hover:bg-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-[#22C55E] focus:ring-offset-2 ${selectedCustomerId === customer.id ? "bg-[#F3FDF7]" : ""}`,
+								children: [
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										className: "px-4 py-3 font-medium text-[#111827]",
+										children: customer.name
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										className: "px-4 py-3",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "rounded-full bg-[#ECFDF5] px-2.5 py-1 text-xs font-semibold text-[#166534]",
+											children: customer.relationship
+										})
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										className: "px-4 py-3 text-[#475569]",
+										children: customer.phoneNumbers.length > 0 || customer.emailAddresses.length > 0 || customer.otherContactMethods.length > 0 ? [
+											...customer.phoneNumbers,
+											...customer.emailAddresses,
+											...customer.otherContactMethods
+										].join(", ") : "No contact method added"
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										className: "px-4 py-3 text-[#475569]",
+										children: customer.source
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										className: "px-4 py-3 text-[#475569]",
+										children: customer.lastInteraction
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										className: "px-4 py-3",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+											className: "flex flex-wrap gap-2",
+											children: customer.tags.length > 0 ? customer.tags.map((tag) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "rounded-full border border-[#E5E7EB] bg-[#F9FAFC] px-2 py-1 text-[11px] font-medium text-[#475569]",
+												children: tag
+											}, `${customer.id}-${tag}`)) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+												className: "text-[#94A3B8]",
+												children: "—"
+											})
+										})
+									}),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
+										className: "px-4 py-3",
+										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+											className: "rounded-full border border-[#E5E7EB] bg-white px-2.5 py-1 text-xs font-semibold text-[#475569]",
+											children: customer.status
+										})
+									})
+								]
+							}, customer.id);
+						}) })]
+					})
+				})
+			}),
+			selectedCustomer && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+				className: "fixed inset-0 z-40 flex justify-end bg-black/20 backdrop-blur-[2px]",
+				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("aside", {
+					className: "h-full w-full max-w-[440px] overflow-y-auto border-l border-[#E5E7EB] bg-white shadow-[0_20px_60px_rgba(15,23,42,0.12)]",
+					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+						className: "border-b border-[#E5E7EB] p-5",
+						children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-start justify-between gap-4",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center gap-3",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "flex h-11 w-11 items-center justify-center rounded-full bg-[#ECFDF5] font-semibold text-[#166534]",
+									children: selectedCustomer.name.split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase() || "P"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]",
+									children: "Customer profile"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+									className: "mt-1 text-xl font-semibold text-[#111827]",
+									children: selectedCustomer.name
+								})] })]
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								type: "button",
+								onClick: () => setSelectedCustomerId(null),
+								className: "inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#475569] transition hover:bg-[#F9FAFB]",
+								"aria-label": "Close customer profile",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X, { className: "h-4 w-4" })
+							})]
+						})
+					}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+						className: "space-y-5 p-5",
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFC] p-4",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]",
+									children: "Identity"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "mt-3 space-y-3",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "text-xs uppercase tracking-[0.12em] text-[#94A3B8]",
+										children: "Name"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "mt-1 text-sm font-medium text-[#111827]",
+										children: selectedCustomer.name
+									})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "text-xs uppercase tracking-[0.12em] text-[#94A3B8]",
+										children: "Notes"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+										className: "mt-1 text-sm leading-6 text-[#475569]",
+										children: selectedCustomer.notes || "No notes recorded for this person yet."
+									})] })]
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "rounded-[20px] border border-[#E5E7EB] bg-white p-4",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]",
+									children: "Contact methods"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "mt-3 space-y-4 text-sm text-[#475569]",
+									children: [
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-xs uppercase tracking-[0.12em] text-[#94A3B8]",
+											children: "Phone numbers"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
+											className: "mt-2 space-y-1",
+											children: selectedCustomer.phoneNumbers.length > 0 ? selectedCustomer.phoneNumbers.map((phone) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { children: phone }, `${selectedCustomer.id}-phone-${phone}`)) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", {
+												className: "text-[#94A3B8]",
+												children: "No phone numbers recorded"
+											})
+										})] }),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-xs uppercase tracking-[0.12em] text-[#94A3B8]",
+											children: "Email addresses"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
+											className: "mt-2 space-y-1",
+											children: selectedCustomer.emailAddresses.length > 0 ? selectedCustomer.emailAddresses.map((email) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { children: email }, `${selectedCustomer.id}-email-${email}`)) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", {
+												className: "text-[#94A3B8]",
+												children: "No email addresses recorded"
+											})
+										})] }),
+										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-xs uppercase tracking-[0.12em] text-[#94A3B8]",
+											children: "Other methods"
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
+											className: "mt-2 space-y-1",
+											children: selectedCustomer.otherContactMethods.length > 0 ? selectedCustomer.otherContactMethods.map((method) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { children: method }, `${selectedCustomer.id}-method-${method}`)) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", {
+												className: "text-[#94A3B8]",
+												children: "No additional methods recorded"
+											})
+										})] })
+									]
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "rounded-[20px] border border-[#E5E7EB] bg-white p-4",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]",
+									children: "Relationship"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "mt-3 flex items-center gap-2",
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "rounded-full bg-[#ECFDF5] px-2.5 py-1 text-xs font-semibold text-[#166534]",
+										children: selectedCustomer.relationship
+									})
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "rounded-[20px] border border-[#E5E7EB] bg-white p-4",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]",
+									children: "Source"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "mt-3 text-sm text-[#475569]",
+									children: selectedCustomer.source || "Source not recorded"
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "rounded-[20px] border border-[#E5E7EB] bg-white p-4",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]",
+									children: "Actions"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: handleOpenInboxForCustomer,
+									className: "mt-3 inline-flex w-full items-center justify-center gap-2 rounded-[18px] bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#16A34A]",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MessageSquareText, { className: "h-4 w-4" }), "View Conversations"]
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "rounded-[20px] border border-[#E5E7EB] bg-white p-4",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]",
+									children: "Activity"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
+									className: "mt-3 space-y-2 text-sm text-[#475569]",
+									children: selectedCustomer.recentInteractions.length > 0 ? selectedCustomer.recentInteractions.map((interaction) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", {
+										className: "rounded-lg border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-2",
+										children: interaction
+									}, `${selectedCustomer.id}-interaction-${interaction}`)) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", {
+										className: "text-[#94A3B8]",
+										children: "No recent activity recorded yet."
+									})
+								})]
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "rounded-[20px] border border-[#E5E7EB] bg-white p-4",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]",
+									children: "Tags"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "mt-3 flex flex-wrap gap-2",
+									children: selectedCustomer.tags.length > 0 ? selectedCustomer.tags.map((tag) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "rounded-full border border-[#E5E7EB] bg-[#F9FAFC] px-2 py-1 text-[11px] font-medium text-[#475569]",
+										children: tag
+									}, `${selectedCustomer.id}-tag-${tag}`)) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-[#94A3B8]",
+										children: "No tags recorded"
+									})
+								})]
+							})
+						]
+					})]
+				})
+			})
+		]
 	});
 }
 var NAV_ITEMS = [
@@ -385,38 +2540,9 @@ var RECENT_AI_ACTIVITY = [
 		time: "1h ago"
 	}
 ];
-var TRANSITION = "transition-all duration-200 ease-out";
-var TRANSITION_FAST = "transition-all duration-150 ease-out";
 var GLOBAL_RADIUS = "rounded-[24px]";
 var SUBTLE_BORDER = "border-[#EEF2F6]";
 var CARD = `${GLOBAL_RADIUS} border ${SUBTLE_BORDER} bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transform transition-all duration-200 ease-out hover:-translate-y-1`;
-var buildMockAiSummary = () => ({
-	customerIntent: "Looking for pricing and comparing internet plans before making a purchase.",
-	buyingProbability: 92,
-	sentiment: {
-		label: "Positive",
-		icon: "😊",
-		badgeClassName: "border-[#A7F3D0] bg-[#ECFDF5] text-[#166534]"
-	},
-	buyingSignals: [
-		"Asked for pricing",
-		"Asked about the free trial",
-		"Replied quickly",
-		"Comparing plans"
-	],
-	recommendedNextAction: "Recommend the Business Package and mention the free trial to encourage conversion.",
-	suggestedReply: [
-		"Hi Aisha 👋",
-		"Thanks for your interest.",
-		"Our Business Package includes priority support, flexible upgrades, and a free trial so you can explore the plan with confidence."
-	],
-	knowledgeSources: [
-		"Pricing Catalog",
-		"FAQ",
-		"Business Policies",
-		"Product Database"
-	]
-});
 var BUTTON_PRIMARY = "inline-flex items-center justify-center rounded-[24px] bg-[#22C55E] px-4 py-3 text-[15px] font-semibold text-white shadow-none transition-all duration-150 ease-out transform-gpu hover:-translate-y-0.5 active:scale-[0.98] hover:bg-[#16A34A]";
 var BUTTON_SECONDARY = `inline-flex items-center justify-center rounded-[24px] border ${SUBTLE_BORDER} bg-white px-4 py-3 text-[15px] font-semibold text-[#111827] transition-all duration-150 ease-out transform-gpu hover:-translate-y-0.5 active:scale-[0.98] hover:bg-[#F3F4F6]`;
 var BUTTON_TERTIARY = "inline-flex items-center justify-center rounded-[24px] bg-[#F3F4F6] px-4 py-3 text-[15px] font-semibold text-[#374151] transition-all duration-150 ease-out transform-gpu hover:-translate-y-0.5 active:scale-[0.98] hover:bg-[#E5E7EB]";
@@ -980,13 +3106,6 @@ var INBOX_CONVERSATIONS = [
 		isSaved: true,
 		avatar: "PO"
 	}
-];
-var formatConversationTime = (time) => time || "Unknown";
-var INBOX_TAB_ITEMS = [
-	"All",
-	"AI Active",
-	"Human",
-	"Needs Reply"
 ];
 var INBOX_MESSAGES = {
 	c1: [
@@ -2782,87 +4901,7 @@ function DashboardLayout() {
 	const [assistantTab, setAssistantTab] = (0, import_react.useState)("Business Knowledge");
 	const [activeConversation, setActiveConversation] = (0, import_react.useState)("c1");
 	const [searchQuery, setSearchQuery] = (0, import_react.useState)("");
-	const [customerSearch, setCustomerSearch] = (0, import_react.useState)("");
-	const [customerDirectoryQuery, setCustomerDirectoryQuery] = (0, import_react.useState)("");
-	const [customerDirectoryFilter, setCustomerDirectoryFilter] = (0, import_react.useState)("All");
-	const [customerDirectorySort, setCustomerDirectorySort] = (0, import_react.useState)("lastInteraction");
-	const [selectedCustomerId, setSelectedCustomerId] = (0, import_react.useState)(null);
-	const [customerWorkspaceSection, setCustomerWorkspaceSection] = (0, import_react.useState)("All");
-	const [segments, setSegments] = (0, import_react.useState)([]);
-	const [segmentDraft, setSegmentDraft] = (0, import_react.useState)({
-		name: "",
-		description: "",
-		criteria: ""
-	});
-	const [segmentEditingId, setSegmentEditingId] = (0, import_react.useState)(null);
-	const [importSource, setImportSource] = (0, import_react.useState)("Manual");
-	const [showImportForm, setShowImportForm] = (0, import_react.useState)(false);
-	const [reviewQueue, setReviewQueue] = (0, import_react.useState)([
-		{
-			id: "review-duplicate-1",
-			category: "Possible duplicates",
-			name: "Mary Wanjiku",
-			summary: "A new contact may match an existing profile and needs review before any action.",
-			existingProfile: "+254 711 xxx xxx",
-			newContact: "+254 722 xxx xxx",
-			relationship: "Customer / Contact"
-		},
-		{
-			id: "review-incomplete-1",
-			category: "Incomplete profiles",
-			name: "Samuel Otieno",
-			summary: "Missing email and notes for a recently contacted person.",
-			existingProfile: "Phone on file, no email",
-			newContact: "No additional contact method",
-			relationship: "Lead"
-		},
-		{
-			id: "review-unclassified-1",
-			category: "Unclassified contacts",
-			name: "Amina Muthoni",
-			summary: "Imported contact has not yet been classified as Contact, Lead, or Customer.",
-			existingProfile: "Imported from spreadsheet",
-			newContact: "Not classified",
-			relationship: "Contact"
-		}
-	]);
-	const [pendingReviewMergeId, setPendingReviewMergeId] = (0, import_react.useState)(null);
-	const [activeTab, setActiveTab] = (0, import_react.useState)("All");
-	const [summaryGenerated, setSummaryGenerated] = (0, import_react.useState)(false);
-	const [summaryVisible, setSummaryVisible] = (0, import_react.useState)(false);
-	const [aiSummary, setAiSummary] = (0, import_react.useState)(null);
-	const activeConversationData = INBOX_CONVERSATIONS.find((item) => item.id === activeConversation);
-	const activeCustomerProfile = CUSTOMER_PROFILES[activeConversation] ?? CUSTOMER_PROFILES.c1;
-	const activeMessages = INBOX_MESSAGES[activeConversation] ?? [];
-	const inboxCounts = {
-		All: INBOX_CONVERSATIONS.length,
-		"AI Active": INBOX_CONVERSATIONS.filter((item) => item.source === "ai_handling").length,
-		Human: INBOX_CONVERSATIONS.filter((item) => item.source === "owner").length,
-		"Needs Reply": INBOX_CONVERSATIONS.filter((item) => item.source === "needs_attention").length
-	};
-	const [sourceOverrides, setSourceOverrides] = (0, import_react.useState)({});
-	const getEffectiveSource = (id, original) => sourceOverrides[id] ?? original ?? "owner";
-	const [messageInput, setMessageInput] = (0, import_react.useState)("");
-	const textareaRef = (0, import_react.useRef)(null);
 	const [sidebarHovered, setSidebarHovered] = (0, import_react.useState)(false);
-	const [customerPanelFading, setCustomerPanelFading] = (0, import_react.useState)(false);
-	(0, import_react.useEffect)(() => {
-		const textarea = textareaRef.current;
-		if (!textarea) return;
-		textarea.style.height = "auto";
-		const height = Math.min(textarea.scrollHeight, 120);
-		textarea.style.height = `${height}px`;
-		textarea.style.overflowY = textarea.scrollHeight > 120 ? "auto" : "hidden";
-	}, [messageInput]);
-	(0, import_react.useEffect)(() => {
-		setCustomerPanelFading(true);
-		const timer = window.setTimeout(() => setCustomerPanelFading(false), 10);
-		return () => window.clearTimeout(timer);
-	}, [activeConversation]);
-	CUSTOMERS.filter((customer) => {
-		const query = customerSearch.toLowerCase();
-		return customer.name.toLowerCase().includes(query) || customer.phone.toLowerCase().includes(query) || customer.interestedProduct.toLowerCase().includes(query) || customer.leadStatus.toLowerCase().includes(query);
-	});
 	const [scheduledPosts, setScheduledPosts] = (0, import_react.useState)(SCHEDULED_POSTS);
 	const [newPost, setNewPost] = (0, import_react.useState)({
 		image: "",
@@ -3206,63 +5245,6 @@ function DashboardLayout() {
 			relationship: "",
 			phone: ""
 		});
-	};
-	const isPersonalByPhone = (phone) => !!phone && personalContacts.some((pc) => pc.phone === phone);
-	const isPersonalActive = isPersonalByPhone(activeConversationData?.phone ?? null);
-	const activePersonalEntry = personalContacts.find((pc) => pc.phone === activeConversationData?.phone);
-	activePersonalEntry && [
-		"wife",
-		"husband",
-		"spouse",
-		"family"
-	].some((k) => activePersonalEntry.relationship.toLowerCase().includes(k));
-	const effectiveActiveSource = isPersonalActive ? "personal" : getEffectiveSource(activeConversation, activeConversationData?.source);
-	const activeAgentName = isPersonalActive ? "Personal" : String(effectiveActiveSource).startsWith("ai") ? "Sokoos AI" : OWNER_NAMES[activeConversation] ?? "You";
-	const getConversationStatusBadge = (source, isPersonal) => {
-		if (isPersonal) return {
-			emoji: "🏠",
-			label: "Personal",
-			bg: "bg-[#F1F5F9]",
-			text: "text-[#334155]"
-		};
-		switch (source) {
-			case "ai_handling": return {
-				emoji: "🤖",
-				label: "AI Active",
-				bg: "bg-[#ECFDF5]",
-				text: "text-[#059669]"
-			};
-			case "ai_handled": return {
-				emoji: "✅",
-				label: "AI Resolved",
-				bg: "bg-[#F0FDF4]",
-				text: "text-[#166534]"
-			};
-			case "needs_attention": return {
-				emoji: "🔴",
-				label: "Needs Reply",
-				bg: "bg-[#FEF2F2]",
-				text: "text-[#B91C1C]"
-			};
-			default: return {
-				emoji: "👤",
-				label: "Human",
-				bg: "bg-[#EFF6FF]",
-				text: "text-[#1E3A8A]"
-			};
-		}
-	};
-	const toggleAiForActive = () => {
-		if (isPersonalActive) return;
-		const current = sourceOverrides[activeConversation] ?? activeConversationData?.source ?? "";
-		if (String(current).startsWith("ai")) setSourceOverrides((s) => ({
-			...s,
-			[activeConversation]: "owner"
-		}));
-		else setSourceOverrides((s) => ({
-			...s,
-			[activeConversation]: "ai_handling"
-		}));
 	};
 	const [faqItems, setFaqItems] = (0, import_react.useState)([{
 		id: "faq1",
@@ -3714,7 +5696,6 @@ function DashboardLayout() {
 		}
 	});
 	const [imageLabel, setImageLabel] = (0, import_react.useState)("No file selected");
-	const [customerCollapsed, setCustomerCollapsed] = (0, import_react.useState)(false);
 	const router = useRouter();
 	const getSelectionFromPath = (pathname) => {
 		if (pathname === "/dashboard/ai" || pathname === "/dashboard/ai/") return "Training";
@@ -5977,2053 +7958,32 @@ function DashboardLayout() {
 				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 					className: `${selected === "Integrations" ? "max-w-[1600px]" : "max-w-7xl"} mx-auto h-full p-4 overflow-x-hidden`,
 					children: [
-						selected === "Home" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "h-full overflow-y-auto space-y-6 pr-2",
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "relative overflow-hidden rounded-[32px] border border-[#DCFCE7] bg-gradient-to-br from-[#F0FDF4] via-white to-[#ECFDF5] p-8 shadow-sm",
-									children: [
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "absolute right-[-60px] top-[-60px] h-56 w-56 rounded-full bg-[#22C55E]/10 blur-3xl" }),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "absolute bottom-[-80px] left-[-80px] h-72 w-72 rounded-full bg-[#16A34A]/10 blur-3xl" }),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "flex-1",
-												children: [
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-														className: "text-sm font-semibold uppercase tracking-[0.2em] text-[#16A34A]",
-														children: "AI Growth Dashboard"
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
-														className: "mt-3 text-4xl font-bold text-[#111827]",
-														children: "Good morning, Francis 👋 Your AI Employee is already at work."
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-														className: "mt-3 max-w-3xl text-lg text-[#64748B] leading-8",
-														children: "Your AI is responding to customers, qualifying leads, booking appointments and following up automatically. Here's how your business is growing today."
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "mt-8 flex flex-wrap gap-3",
-														children: [
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-																className: "rounded-xl bg-[#16A34A] px-5 py-3 font-semibold text-white hover:bg-[#15803D] transition",
-																children: "Open Inbox"
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-																className: "rounded-xl border border-[#E5E7EB] bg-white px-5 py-3 font-semibold text-[#111827] hover:bg-[#F9FAFB] transition",
-																children: "Chat with AI Employee"
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-																className: "rounded-xl border border-[#E5E7EB] bg-white px-5 py-3 font-semibold text-[#111827] hover:bg-[#F9FAFB] transition",
-																children: "Create Campaign"
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-																type: "button",
-																onClick: handleLogout,
-																className: "rounded-xl border border-[#E5E7EB] bg-white px-5 py-3 font-semibold text-[#111827] hover:bg-[#F9FAFB] transition",
-																children: "Logout"
-															})
-														]
-													})
-												]
-											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "grid w-full max-w-md grid-cols-2 gap-4",
-												children: [
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm",
-														children: [
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "text-sm text-[#64748B]",
-																children: "AI Conversations"
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "mt-2 text-3xl font-bold text-[#111827]",
-																children: "124"
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "mt-1 text-sm text-[#16A34A]",
-																children: "↑ 18 today"
-															})
-														]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm",
-														children: [
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "text-sm text-[#64748B]",
-																children: "Qualified Leads"
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "mt-2 text-3xl font-bold text-[#111827]",
-																children: "27"
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "mt-1 text-sm text-[#16A34A]",
-																children: "AI identified today"
-															})
-														]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm",
-														children: [
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "text-sm text-[#64748B]",
-																children: "Appointments"
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "mt-2 text-3xl font-bold text-[#111827]",
-																children: "8"
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "mt-1 text-sm text-[#16A34A]",
-																children: "Booked automatically"
-															})
-														]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm",
-														children: [
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "text-sm text-[#64748B]",
-																children: "Customer Rating"
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "mt-2 text-3xl font-bold text-[#111827]",
-																children: "★ 4.9"
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "mt-1 text-sm text-[#16A34A]",
-																children: "Based on AI conversations"
-															})
-														]
-													})
-												]
-											})]
-										})
-									]
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-									className: CARD,
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "flex items-center justify-between",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-											className: SECTION_HEADING,
-											children: "Ask Sokoos"
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-											className: CARD_TITLE,
-											children: "Your AI Employee is ready"
-										})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Bot, { className: "h-7 w-7 text-[#22C55E]" })]
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "mt-6",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: "rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] px-5 py-4",
-											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-												type: "text",
-												placeholder: "Ask your AI Employee anything...",
-												className: "w-full bg-transparent text-[15px] outline-none placeholder:text-[#94A3B8]"
-											})
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "mt-5 flex flex-wrap gap-3",
-											children: [
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-													className: "rounded-full border border-[#E5E7EB] px-4 py-2 text-sm hover:bg-[#F9FAFB]",
-													children: "Create Campaign"
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-													className: "rounded-full border border-[#E5E7EB] px-4 py-2 text-sm hover:bg-[#F9FAFB]",
-													children: "Generate Quote"
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-													className: "rounded-full border border-[#E5E7EB] px-4 py-2 text-sm hover:bg-[#F9FAFB]",
-													children: "Build Landing Page"
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-													className: "rounded-full border border-[#E5E7EB] px-4 py-2 text-sm hover:bg-[#F9FAFB]",
-													children: "Show Today's Leads"
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-													className: "rounded-full border border-[#E5E7EB] px-4 py-2 text-sm hover:bg-[#F9FAFB]",
-													children: "Train on PDF"
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-													className: "rounded-full border border-[#E5E7EB] px-4 py-2 text-sm hover:bg-[#F9FAFB]",
-													children: "Summarize Conversations"
-												})
-											]
-										})]
-									})]
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3",
-									children: [
-										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-											className: CARD,
-											children: [
-												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "flex items-center justify-between",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-														className: SECTION_HEADING,
-														children: "AI Command Center"
-													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-														className: CARD_TITLE,
-														children: "AI Employee Status"
-													})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Bot, { className: "h-8 w-8 text-[#22C55E]" })]
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "mt-6 space-y-5",
-													children: [
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "flex justify-between",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "AI Confidence" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "96%" })]
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "flex justify-between",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Currently Replying" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "17 customers" })]
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "flex justify-between",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Human Takeovers" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "4" })]
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "flex justify-between",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Average Response" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "6 sec" })]
-														})
-													]
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-													className: "mt-8 w-full rounded-xl bg-[#16A34A] py-3 font-semibold text-white hover:bg-[#15803D]",
-													children: "Train AI Employee"
-												})
-											]
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-											className: CARD,
-											children: [
-												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "flex items-center justify-between",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-														className: SECTION_HEADING,
-														children: "Business Knowledge"
-													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-														className: CARD_TITLE,
-														children: "Manage Knowledge"
-													})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-														className: "text-3xl",
-														children: "📚"
-													})]
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "mt-6 space-y-5",
-													children: [
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "flex justify-between",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Products" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "12" })]
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "flex justify-between",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "FAQs" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "18" })]
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "flex justify-between",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Policies" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "7" })]
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "flex justify-between",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Training Score" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
-																className: "text-[#16A34A]",
-																children: "92%"
-															})]
-														})
-													]
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-													className: "mt-8 w-full rounded-xl border border-[#E5E7EB] py-3 font-semibold hover:bg-[#F9FAFB]",
-													children: "Improve Knowledge"
-												})
-											]
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-											className: CARD,
-											children: [
-												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "flex items-center justify-between",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-														className: SECTION_HEADING,
-														children: "Customer Growth"
-													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-														className: CARD_TITLE,
-														children: "Growth Today"
-													})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-														className: "text-3xl",
-														children: "💰"
-													})]
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "mt-6 space-y-5",
-													children: [
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "flex justify-between",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Qualified Leads" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "24" })]
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "flex justify-between",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Quotes Sent" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "11" })]
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "flex justify-between",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Follow-ups Sent" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "8" })]
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "flex justify-between",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Conversions" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
-																className: "text-[#16A34A]",
-																children: "8 customers"
-															})]
-														})
-													]
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-													className: "mt-8 w-full rounded-xl border border-[#E5E7EB] py-3 font-semibold hover:bg-[#F9FAFB]",
-													children: "View Customers"
-												})
-											]
-										})
-									]
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "grid gap-6 lg:grid-cols-[1.8fr_1fr]",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-										className: CARD,
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "flex items-center justify-between",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-												className: SECTION_HEADING,
-												children: "Recent AI Activity"
-											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-												className: CARD_TITLE,
-												children: "What your AI Employee has been doing"
-											})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-												className: "rounded-full bg-[#ECFDF5] px-3 py-1 text-sm font-semibold text-[#15803D]",
-												children: "Live"
-											})]
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "mt-8 space-y-5",
-											children: [
-												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "flex items-start gap-4",
-													children: [
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-															className: "flex h-10 w-10 items-center justify-center rounded-full bg-[#ECFDF5]",
-															children: "🤖"
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "flex-1",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "font-semibold",
-																children: "AI answered a pricing enquiry"
-															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "text-sm text-[#64748B]",
-																children: "James asked about installation pricing and received an instant reply."
-															})]
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "text-sm text-[#94A3B8]",
-															children: "2 min ago"
-														})
-													]
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "flex items-start gap-4",
-													children: [
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-															className: "flex h-10 w-10 items-center justify-center rounded-full bg-[#EFF6FF]",
-															children: "📅"
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "flex-1",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "font-semibold",
-																children: "Appointment booked"
-															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "text-sm text-[#64748B]",
-																children: "Site installation scheduled automatically for tomorrow."
-															})]
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "text-sm text-[#94A3B8]",
-															children: "12 min ago"
-														})
-													]
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "flex items-start gap-4",
-													children: [
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-															className: "flex h-10 w-10 items-center justify-center rounded-full bg-[#FEF3C7]",
-															children: "💬"
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "flex-1",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "font-semibold",
-																children: "Follow-up sent"
-															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "text-sm text-[#64748B]",
-																children: "AI followed up with a customer who requested a quotation yesterday."
-															})]
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "text-sm text-[#94A3B8]",
-															children: "21 min ago"
-														})
-													]
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "flex items-start gap-4",
-													children: [
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-															className: "flex h-10 w-10 items-center justify-center rounded-full bg-[#FEF2F2]",
-															children: "👤"
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "flex-1",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "font-semibold",
-																children: "Human takeover requested"
-															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "text-sm text-[#64748B]",
-																children: "AI detected a negotiation and asked you to continue the conversation."
-															})]
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "text-sm text-[#94A3B8]",
-															children: "37 min ago"
-														})
-													]
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "flex items-start gap-4",
-													children: [
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-															className: "flex h-10 w-10 items-center justify-center rounded-full bg-[#FDF4FF]",
-															children: "⭐"
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "flex-1",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "font-semibold",
-																children: "Customer left a 5-star rating"
-															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "text-sm text-[#64748B]",
-																children: "\"Fast replies and excellent service.\""
-															})]
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "text-sm text-[#94A3B8]",
-															children: "1 hour ago"
-														})
-													]
-												})
-											]
-										})]
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-										className: CARD,
-										children: [
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-												className: SECTION_HEADING,
-												children: "WhatsApp Overview"
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-												className: CARD_TITLE,
-												children: "Current Inbox Status"
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "mt-8 space-y-5",
-												children: [
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "flex justify-between",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "text-[#64748B]",
-															children: "Unread Conversations"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "3" })]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "flex justify-between",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "text-[#64748B]",
-															children: "AI Handling"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
-															className: "text-[#16A34A]",
-															children: "17"
-														})]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "flex justify-between",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "text-[#64748B]",
-															children: "Waiting For You"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
-															className: "text-[#DC2626]",
-															children: "2"
-														})]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "flex justify-between",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "text-[#64748B]",
-															children: "Resolved Today"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", { children: "36" })]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "flex justify-between",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "text-[#64748B]",
-															children: "Average Response"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("strong", {
-															className: "text-[#16A34A]",
-															children: "6 sec"
-														})]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-														className: "mt-6 w-full rounded-xl bg-[#16A34A] py-3 font-semibold text-white transition hover:bg-[#15803D]",
-														children: "Open Inbox"
-													})
-												]
-											})
-										]
-									})]
-								})
-							]
+						selected === "Home" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(HomeWorkspace, {
+							handleLogout,
+							CARD,
+							SECTION_HEADING,
+							CARD_TITLE
 						}),
-						selected === "Inbox" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: `grid gap-6 px-6 py-6 transition-all duration-300 ease-out items-stretch h-full grid-cols-1 ${customerCollapsed ? "md:grid-cols-[320px_1fr]" : "md:grid-cols-[320px_1fr_minmax(330px,360px)]"}`,
-							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-									className: `${CARD} w-full h-full min-h-0 flex flex-col min-w-0`,
-									children: [
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: "border-b border-[#ECECEC] px-5 py-2",
-											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-												className: "flex items-center justify-between gap-3",
-												children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-													className: PANEL_TITLE,
-													children: "Conversations"
-												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-													className: `${SECONDARY} mt-0`,
-													children: "Recent messages and active chats"
-												})] })
-											})
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: "flex items-center gap-3 overflow-x-auto px-5 py-2 flex-nowrap custom-scrollbar",
-											children: INBOX_TAB_ITEMS.map((tab) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-												onClick: () => setActiveTab(tab),
-												className: `whitespace-nowrap rounded-full px-4 py-1 text-xs transform flex-shrink-0 ${TRANSITION} ${activeTab === tab ? "bg-[#22C55E] text-white font-medium shadow-sm" : "bg-[#F3F4F6] text-[#475569] font-medium"} hover:shadow-sm active:scale-[0.98]`,
-												children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-													className: "inline-flex items-center gap-2",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: tab }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-														className: "inline-flex h-5 min-w-[20px] items-center justify-center rounded-full bg-white px-2 text-[11px] font-semibold text-[#475569] shadow-sm",
-														children: inboxCounts[tab]
-													})]
-												})
-											}, tab))
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "flex min-h-0 flex-1 flex-col px-5 py-2 gap-2",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-												className: "rounded-[20px] bg-[#F9FAFB] px-4 py-2.5 shadow-none ring-1 ring-[#ECECEC] transition duration-150 ease-out focus-within:ring-2 focus-within:ring-[#22C55E] focus-within:border-[#22C55E] border border-[#E5E7EB]",
-												children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "flex h-[44px] items-center gap-3 w-full text-[#94A3B8]",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, { className: "h-4 w-4 flex-shrink-0" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-														type: "search",
-														placeholder: "Search conversations",
-														value: searchQuery,
-														onChange: (event) => setSearchQuery(event.target.value),
-														className: `w-full h-full bg-transparent text-sm text-[#111827] placeholder:text-[#94A3B8] placeholder:font-regular outline-none ${TRANSITION_FAST}`
-													})]
-												})
-											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-												className: "flex-1 min-h-0 space-y-1.5 overflow-y-auto pr-2 scroll-smooth custom-scrollbar",
-												children: INBOX_CONVERSATIONS.filter((conversation) => {
-													const src = sourceOverrides[conversation.id] ?? conversation.source;
-													if (activeTab === "Needs Reply") return src === "needs_attention";
-													if (activeTab === "AI Active") return src === "ai_handling";
-													if (activeTab === "Human") return src === "owner";
-													return true;
-												}).filter((conversation) => (conversation.name ?? "").toLowerCase().includes(searchQuery.toLowerCase()) || (conversation.phone ?? "").toLowerCase().includes(searchQuery.toLowerCase()) || conversation.message.toLowerCase().includes(searchQuery.toLowerCase())).map((conversation) => {
-													const active = conversation.id === activeConversation;
-													const effectiveSourceRaw = sourceOverrides[conversation.id] ?? conversation.source;
-													const isPersonal = personalContacts.some((pc) => pc.phone === conversation.phone);
-													const effectiveSource = isPersonal ? "personal" : effectiveSourceRaw;
-													return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-														onClick: () => setActiveConversation(conversation.id),
-														className: `w-full overflow-hidden rounded-[20px] px-5 py-3 min-h-[92px] text-left ${TRANSITION} transform-gpu active:scale-[0.98] flex flex-col gap-4 ${active ? "bg-[#F3FDF7] border border-[#22C55E]/20 ring-1 ring-[#22C55E]/20 shadow-[0_12px_36px_rgba(15,23,42,0.08)]" : "bg-white border border-transparent hover:bg-[#FBFFF8] hover:shadow-[0_10px_30px_rgba(15,23,42,0.06)] hover:-translate-y-0.5"}`,
-														children: [
-															/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-																className: "flex items-center justify-between gap-3",
-																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-																	className: "flex items-center gap-3 min-w-0 flex-1",
-																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-																		className: "flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#E5E7EB] to-[#D1D5DB] text-sm font-semibold text-[#64748B]",
-																		children: conversation.avatar
-																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-																		className: "min-w-0 flex-1 space-y-1",
-																		children: conversation.isSaved && conversation.name ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																			className: "text-[16px] font-semibold truncate",
-																			title: conversation.name,
-																			children: conversation.name
-																		}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																			className: "text-[16px] font-semibold truncate",
-																			title: conversation.phone ?? "Unknown Customer",
-																			children: conversation.phone ?? "Unknown Customer"
-																		})
-																	})]
-																}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-																	className: "flex items-start gap-2 flex-shrink-0",
-																	children: [conversation.badge > 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-																		className: `inline-flex min-w-[18px] h-4 items-center justify-center rounded-full bg-[#22C55E] text-white text-[10px] font-semibold transform-gpu transition duration-200 ease-out px-2`,
-																		children: conversation.badge
-																	}) : null, /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-																		className: `${TIME_LABEL} whitespace-nowrap text-[11px] text-[#94A3B8]`,
-																		children: formatConversationTime(conversation.time)
-																	})]
-																})]
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-																className: "min-w-0",
-																children: (() => {
-																	const badge = getConversationStatusBadge(effectiveSource, isPersonal);
-																	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-																		className: `${STATUS_CHIP} ${badge.bg} ${badge.text} text-xs px-2 py-1`,
-																		children: [
-																			badge.emoji,
-																			" ",
-																			badge.label
-																		]
-																	});
-																})()
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: `${SECONDARY} text-[14px] leading-5 min-w-0 truncate`,
-																title: conversation.message,
-																children: conversation.message
-															})
-														]
-													}, conversation.id);
-												})
-											})]
-										})
-									]
-								}),
-								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-									className: `${CARD} w-full h-full min-h-0 flex flex-col min-w-0`,
-									children: [
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: "border-b border-[#ECECEC] px-6 py-4 mb-2 flex-shrink-0",
-											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-												className: "flex flex-col gap-3",
-												children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "flex items-start justify-between gap-3",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "min-w-0 flex-1",
-														children: [
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-																className: `${CUSTOMER_NAME} truncate`,
-																children: INBOX_CONVERSATIONS.find((item) => item.id === activeConversation)?.name
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-																className: "mt-1 flex flex-wrap items-center gap-2 text-sm text-[#64748B]",
-																children: [
-																	/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-																		className: "truncate",
-																		children: activeConversationData?.phone ?? "Unknown phone"
-																	}),
-																	/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-																		className: "text-[#94A3B8]",
-																		children: "•"
-																	}),
-																	(() => {
-																		const badge = getConversationStatusBadge(effectiveActiveSource, isPersonalActive);
-																		return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-																			className: `${badge.bg} ${badge.text} rounded-full px-2 py-0.5 text-[11px] font-semibold inline-flex items-center gap-1`,
-																			children: [
-																				badge.emoji,
-																				" ",
-																				badge.label
-																			]
-																		});
-																	})()
-																]
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-																className: "mt-2 flex flex-col gap-2 text-sm text-[#475569]",
-																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-																	className: "flex items-center justify-between gap-3",
-																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-																		className: "font-medium text-[#111827]",
-																		children: "AI Confidence"
-																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-																		className: "text-[#16A34A] font-semibold",
-																		children: "94%"
-																	})]
-																}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-																	className: "h-2 w-full overflow-hidden rounded-full bg-[#DCFCE7]",
-																	children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "h-full w-[94%] rounded-full bg-[#22C55E]" })
-																})]
-															})
-														]
-													}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "flex items-center gap-2 flex-shrink-0",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-															type: "button",
-															onClick: toggleAiForActive,
-															disabled: isPersonalActive,
-															"aria-label": "AI Assist",
-															className: `inline-flex h-9 rounded-full border px-3.5 text-[10px] font-semibold items-center justify-center ${TRANSITION_FAST} active:scale-[0.98] ${isPersonalActive ? "border-[#E5E7EB] bg-white text-[#9CA3AF] cursor-not-allowed" : "border-[#22C55E] bg-white text-[#166534] hover:bg-[#ECFDF5]"}`,
-															title: isPersonalActive ? "Cannot toggle mode for personal contacts" : "AI Assist",
-															children: "✨ AI Assist"
-														}), customerCollapsed && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-															type: "button",
-															onClick: () => setCustomerCollapsed(false),
-															className: `inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#ECECEC] bg-white text-[#64748B] ${TRANSITION} hover:bg-[#F9FAFB] hover:text-[#111827] flex-shrink-0`,
-															"aria-label": "Expand customer panel",
-															title: "Expand customer panel",
-															children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronRight, { className: "h-3 w-3" })
-														})]
-													})]
-												})
-											})
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: "flex-1 min-h-0 overflow-y-auto custom-scrollbar px-6 pt-3 pb-6 flex flex-col justify-end bg-[#F8FCF7]",
-											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-												className: "space-y-5 flex flex-col",
-												children: activeMessages.map((message, index) => {
-													const originalWasAi = String(activeConversationData?.source).startsWith("ai");
-													if (message.from === "agent" && originalWasAi && !String(effectiveActiveSource).startsWith("ai")) return null;
-													const isAgent = message.from === "agent";
-													const isAi = isAgent && String(effectiveActiveSource).startsWith("ai");
-													const senderLabel = isAi ? "Sokoos AI" : activeAgentName;
-													return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: `${TRANSITION_FAST} transition-opacity`,
-														children: [isAgent ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-															className: "flex items-center gap-1 text-[10px] font-semibold text-[#94A3B8] mb-0.5",
-															children: isAi ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-																className: "inline-flex h-3 w-3 items-center justify-center rounded-full bg-[#ECFDF5] text-[#0C7A4D]",
-																children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Bot, { className: "h-1.5 w-1.5" })
-															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: senderLabel })] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: senderLabel })
-														}) : null, /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-															className: `flex ${isAgent ? "justify-start" : "justify-end"}`,
-															children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-																className: `rounded-[28px] px-3 py-2 text-sm break-words max-w-[70%] ${isAgent ? "bg-[#F0FDF4] text-[#166534] border border-[#DCFCE7]" : "bg-white text-[#111827] border border-[#E5E7EB]"} ${TRANSITION_FAST} transition-shadow transform-gpu`,
-																children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-																	className: "flex flex-col gap-2",
-																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																		className: "leading-relaxed text-sm",
-																		children: message.text
-																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-																		className: `self-end text-[9px] ${isAgent ? "text-[#16A34A]/30" : "text-[#64748B]/30"} font-normal`,
-																		children: message.time
-																	})]
-																})
-															})
-														})]
-													}, `${message.time}-${index}`);
-												})
-											})
-										}),
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: "shrink-0 border-t border-[#E5E7EB] bg-white px-6 py-3",
-											children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: `rounded-[20px] bg-[#F9FAFB] border border-[#E5E7EB] flex items-center gap-3 min-h-[52px] px-4 ${TRANSITION}`,
-												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
-													ref: textareaRef,
-													value: messageInput,
-													onChange: (event) => setMessageInput(event.target.value),
-													placeholder: "Type a message...",
-													className: `min-w-0 flex-1 resize-none overflow-y-auto overflow-x-hidden custom-scrollbar bg-transparent text-sm leading-5 text-[#111827] outline-none placeholder:text-[#CBD5E1] placeholder:font-regular ${TRANSITION_FAST}`,
-													rows: 1,
-													style: {
-														minHeight: 40,
-														maxHeight: 80
-													}
-												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-													type: "button",
-													className: "inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white transition duration-150 ease-out transform hover:bg-[#16A34A] active:scale-95",
-													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Send, { className: "h-4 w-4" })
-												})]
-											})
-										})
-									]
-								}),
-								!customerCollapsed && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-									className: `${CARD} w-full h-full min-h-0 flex flex-col transition-all duration-300 ease-out ${customerPanelFading ? "opacity-80 translate-y-1" : "opacity-100 translate-y-0"} min-w-[330px] max-w-[360px]`,
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "flex items-start justify-between gap-3 shrink-0 px-5 py-4 border-b border-[#ECECEC]",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-												className: `${CUSTOMER_NAME} mt-1`,
-												children: activeCustomerProfile.name
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-												className: `${SECONDARY} mt-2`,
-												children: activeCustomerProfile.company
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "mt-3 inline-flex items-center gap-2",
-												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "inline-flex h-3.5 w-3.5 shrink-0 rounded-full bg-[#22C55E]" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-													className: `${STATUS_CHIP} bg-[#ECFDF5] text-[#166534] border border-[#D1FAE5]`,
-													children: activeCustomerProfile.leadStatus
-												})]
-											})
-										] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-											type: "button",
-											onClick: () => setCustomerCollapsed(true),
-											className: `inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#ECECEC] bg-white text-[#64748B] ${TRANSITION_FAST} hover:bg-[#F9FAFB] hover:text-[#111827] active:scale-95 shrink-0`,
-											"aria-label": "Collapse customer panel",
-											title: "Collapse customer panel",
-											children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronRight, { className: "h-3 w-3 rotate-180" })
-										})]
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-										className: "flex-1 min-h-0 overflow-hidden px-5 py-4",
-										children: summaryGenerated ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: `h-full overflow-y-auto pr-2 transition-all duration-300 ease-out ${summaryVisible ? "opacity-100" : "opacity-0"} [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-[#F3F4F6] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#CBD5E1] [&::-webkit-scrollbar-thumb:hover]:bg-[#22C55E]`,
-											style: {
-												scrollbarWidth: "thin",
-												scrollbarColor: "#CBD5E1 transparent"
-											},
-											children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "space-y-4 pb-2",
-												children: [
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "flex items-start justify-between gap-3",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: SECTION_HEADING,
-																children: "✨ AI Summary"
-															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-																className: "mt-2 text-[18px] font-semibold text-[#111827]",
-																children: "AI Employee snapshot"
-															})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-																className: "rounded-full bg-[#ECFDF5] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#16A34A]",
-																children: "Mock data"
-															})]
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "mt-4 h-px bg-[#E5E7EB]/80" })]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-															className: SECTION_HEADING,
-															children: "Customer Intent"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-															className: "mt-2 text-[15px] leading-6 text-[#475569]",
-															children: aiSummary?.customerIntent
-														})]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-															className: SECTION_HEADING,
-															children: "Buying Probability"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "mt-3 flex items-center gap-3",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-																className: "text-[24px] font-semibold text-[#111827]",
-																children: [aiSummary?.buyingProbability, "%"]
-															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-																className: "h-2.5 flex-1 overflow-hidden rounded-full bg-[#E5E7EB]",
-																children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-																	className: "h-full rounded-full bg-[#22C55E]",
-																	style: { width: `${aiSummary?.buyingProbability ?? 0}%` }
-																})
-															})]
-														})]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-															className: SECTION_HEADING,
-															children: "Customer Sentiment"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-															className: "mt-3",
-															children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-																className: `inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[13px] font-semibold ${aiSummary?.sentiment.badgeClassName}`,
-																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: aiSummary?.sentiment.icon }), aiSummary?.sentiment.label]
-															})
-														})]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-															className: SECTION_HEADING,
-															children: "Buying Signals"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
-															className: "mt-3 space-y-2 text-[15px] text-[#475569]",
-															children: aiSummary?.buyingSignals.map((signal) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", {
-																className: "flex items-start gap-2",
-																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { className: "mt-1.5 h-2.5 w-2.5 shrink-0 rounded-full bg-[#22C55E]" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: signal })]
-															}, signal))
-														})]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "rounded-[24px] border border-[#D1FAE5] bg-[#F0FDF4] p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-															className: SECTION_HEADING,
-															children: "Recommended Next Action"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-															className: "mt-2 text-[15px] leading-6 font-semibold text-[#166534]",
-															children: aiSummary?.recommendedNextAction
-														})]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]",
-														children: [
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: SECTION_HEADING,
-																children: "Suggested Reply"
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-																className: "mt-3 rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFB] p-4",
-																children: aiSummary?.suggestedReply.map((line, index) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																	className: `text-[14px] leading-6 text-[#334155] ${index === 0 ? "font-semibold text-[#111827]" : ""}`,
-																	children: line
-																}, `${line}-${index}`))
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-																type: "button",
-																className: "mt-4 inline-flex items-center justify-center rounded-[24px] bg-[#22C55E] px-4 py-2.5 text-[14px] font-semibold text-white transition-all duration-200 ease-out hover:bg-[#16A34A]",
-																children: "Insert Reply"
-															})
-														]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-															className: SECTION_HEADING,
-															children: "Knowledge Used"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-															className: "mt-3 flex flex-wrap gap-2",
-															children: aiSummary?.knowledgeSources.map((source) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-																className: "inline-flex items-center gap-2 rounded-full border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-1.5 text-[12px] font-semibold text-[#166534]",
-																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-																	className: "text-[11px]",
-																	children: "✓"
-																}), source]
-															}, source))
-														})]
-													})
-												]
-											})
-										}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "flex h-full min-h-[220px] flex-col items-start justify-center gap-4 px-1",
-											children: [
-												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "w-full max-w-[280px] space-y-2 text-left",
-													children: [
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-															className: SECTION_HEADING,
-															children: "✨ AI Insights"
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-															className: "text-[17px] font-semibold leading-6 text-[#111827]",
-															children: "Understand this conversation instantly."
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-															className: "text-[13px] leading-5 text-[#475569]",
-															children: "Generate a summary to reveal:"
-														})
-													]
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-													className: "flex w-full max-w-[280px] flex-col gap-2 text-left text-[13px] text-[#475569]",
-													children: [
-														"Conversation Summary",
-														"Customer Intent",
-														"Buying Signals",
-														"Suggested Reply",
-														"Recommended Next Action"
-													].map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "flex items-start gap-2.5",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "mt-0.5 inline-flex h-4 w-4 items-center justify-center rounded-full bg-[#DCFCE7] text-[9px] font-semibold text-[#166534]",
-															children: "✓"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "font-semibold text-[#111827]",
-															children: item
-														})]
-													}, item))
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-													className: "mt-2 w-full max-w-[280px]",
-													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-														type: "button",
-														onClick: () => {
-															setSummaryGenerated(true);
-															setSummaryVisible(false);
-															setAiSummary(buildMockAiSummary());
-															window.setTimeout(() => setSummaryVisible(true), 20);
-														},
-														className: "w-full rounded-[24px] bg-[#22C55E] px-4 py-2.5 text-[13px] font-semibold text-white shadow-sm transition-all duration-200 ease-out hover:bg-[#16A34A] hover:shadow-sm active:scale-[0.98]",
-														children: "Generate AI Summary"
-													})
-												})
-											]
-										})
-									})]
-								})
-							]
+						selected === "Inbox" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(InboxWorkspace, {
+							conversations: INBOX_CONVERSATIONS,
+							messages: INBOX_MESSAGES,
+							customerProfiles: CUSTOMER_PROFILES,
+							ownerNames: OWNER_NAMES,
+							personalContacts,
+							CARD,
+							PANEL_TITLE,
+							SECONDARY,
+							TIME_LABEL,
+							STATUS_CHIP,
+							CUSTOMER_NAME,
+							SECTION_HEADING
 						}),
-						selected === "Customers" && (() => {
-							const customerDirectoryItems = CUSTOMERS.map((customer) => ({
-								id: customer.id,
-								name: customer.name,
-								notes: `Primary interest: ${customer.interestedProduct}. Last interaction: ${customer.lastInteraction}.`,
-								phoneNumbers: [customer.phone],
-								emailAddresses: [],
-								otherContactMethods: [],
-								relationship: customer.leadStatus.toLowerCase().includes("customer") ? "Customer" : customer.leadStatus.toLowerCase().includes("lead") ? "Lead" : "Contact",
-								source: "Manual import",
-								recentInteractions: [customer.lastInteraction],
-								tags: [customer.interestedProduct, customer.leadStatus],
-								status: customer.leadStatus,
-								lastInteraction: customer.lastInteraction
-							}));
-							const selectedCustomer = customerDirectoryItems.find((customer) => customer.id === selectedCustomerId) ?? null;
-							const handleOpenInboxForCustomer = () => {
-								setSelected("Inbox");
-								if (!selectedCustomer) return;
-								const exactCustomerPhone = selectedCustomer.phoneNumbers.find((phone) => phone.trim().length > 0);
-								const exactCustomerName = selectedCustomer.name.trim();
-								const matchedConversation = INBOX_CONVERSATIONS.find((conversation) => {
-									if (!conversation.phone && !conversation.name) return false;
-									const conversationPhone = conversation.phone?.replace(/\D/g, "") ?? "";
-									const customerPhone = exactCustomerPhone?.replace(/\D/g, "") ?? "";
-									const samePhone = Boolean(customerPhone && conversationPhone && customerPhone === conversationPhone);
-									const sameName = Boolean(exactCustomerName && conversation.name && exactCustomerName.toLowerCase() === conversation.name.trim().toLowerCase());
-									return samePhone || sameName;
-								});
-								if (matchedConversation) setActiveConversation(matchedConversation.id);
-							};
-							[].filter((lead) => {
-								const searchableText = [
-									lead.name,
-									lead.source,
-									lead.interestedProduct,
-									lead.lastInteraction,
-									lead.followUpStatus,
-									lead.notes,
-									lead.contactMethods.join(" ")
-								].join(" ").toLowerCase();
-								return !customerDirectoryQuery || searchableText.includes(customerDirectoryQuery.toLowerCase());
-							});
-							const handleSaveSegment = () => {
-								const name = segmentDraft.name.trim();
-								const description = segmentDraft.description.trim();
-								const criteria = segmentDraft.criteria.trim();
-								if (!name) return;
-								if (segmentEditingId) setSegments((current) => current.map((segment) => segment.id === segmentEditingId ? {
-									...segment,
-									name,
-									description,
-									criteria
-								} : segment));
-								else setSegments((current) => [{
-									id: `segment-${Date.now()}`,
-									name,
-									description,
-									criteria,
-									matchCount: 0
-								}, ...current]);
-								setSegmentDraft({
-									name: "",
-									description: "",
-									criteria: ""
-								});
-								setSegmentEditingId(null);
-							};
-							const handleDeleteSegment = (id) => {
-								setSegments((current) => current.filter((segment) => segment.id !== id));
-								if (segmentEditingId === id) {
-									setSegmentEditingId(null);
-									setSegmentDraft({
-										name: "",
-										description: "",
-										criteria: ""
-									});
-								}
-							};
-							const filteredCustomerDirectoryItems = customerDirectoryItems.filter((item) => {
-								const searchableText = [
-									item.name,
-									item.relationship,
-									item.source,
-									item.lastInteraction,
-									item.status,
-									[
-										...item.phoneNumbers,
-										...item.emailAddresses,
-										...item.otherContactMethods
-									].join(" "),
-									item.tags.join(" ")
-								].join(" ").toLowerCase();
-								const matchesQuery = !customerDirectoryQuery || searchableText.includes(customerDirectoryQuery.toLowerCase());
-								const matchesFilter = customerDirectoryFilter === "All" || item.relationship === customerDirectoryFilter;
-								return matchesQuery && matchesFilter;
-							}).sort((a, b) => {
-								if (customerDirectorySort === "name") return a.name.localeCompare(b.name);
-								if (customerDirectorySort === "relationship") {
-									const order = {
-										Contact: 0,
-										Lead: 1,
-										Customer: 2
-									};
-									return order[a.relationship] - order[b.relationship];
-								}
-								return a.lastInteraction.localeCompare(b.lastInteraction);
-							});
-							return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "mx-auto w-full max-w-[1280px] space-y-6 px-4 pb-10 lg:px-6",
-								children: [
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-										className: "border-b border-[#E5E7EB] pb-5",
-										children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "flex flex-col gap-5",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "max-w-3xl",
-												children: [
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-														className: "text-[12px] font-semibold uppercase tracking-[0.24em] text-[#6B7280]",
-														children: "Customers"
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
-														className: "mt-2 text-[24px] font-semibold tracking-[-0.02em] text-[#111827] lg:text-[26px]",
-														children: "Customers"
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-														className: "mt-2 text-sm leading-6 text-[#6B7280]",
-														children: "Manage the people connected to your business and understand their relationship with your business."
-													})
-												]
-											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-												className: "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between",
-												children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "flex flex-col gap-3 sm:flex-row sm:items-center",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-														type: "button",
-														className: "inline-flex items-center justify-center gap-2 rounded-[20px] bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-4 w-4" }), "Add Customer"]
-													}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-														type: "button",
-														className: "inline-flex items-center justify-center gap-2 rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm font-semibold text-[#111827] transition hover:bg-[#F9FAFB]",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Upload, { className: "h-4 w-4" }), "Import"]
-													})]
-												})
-											})]
-										})
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-										className: "rounded-[24px] border border-[#E5E7EB] bg-white p-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)]",
-										children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "grid gap-3 lg:grid-cols-[minmax(0,1fr)_180px_180px]",
-											children: [
-												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
-													className: "flex items-center gap-3 rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-3 text-sm text-[#64748B] focus-within:border-[#22C55E] focus-within:ring-2 focus-within:ring-[#ECFDF5]",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Search, { className: "h-4 w-4 shrink-0" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-														type: "search",
-														value: customerDirectoryQuery,
-														onChange: (event) => setCustomerDirectoryQuery(event.target.value),
-														placeholder: "Search customers, leads, phone numbers, email addresses, or tags",
-														className: "w-full bg-transparent text-sm text-[#111827] placeholder:text-[#94A3B8] outline-none"
-													})]
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
-													className: "flex items-center gap-2 rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-3 text-sm text-[#475569]",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-														className: "font-medium",
-														children: "Filter"
-													}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", {
-														value: customerDirectoryFilter,
-														onChange: (event) => setCustomerDirectoryFilter(event.target.value),
-														className: "w-full bg-transparent text-sm font-medium text-[#111827] outline-none",
-														children: [
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
-																value: "All",
-																children: "All"
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
-																value: "Contact",
-																children: "Contact"
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
-																value: "Lead",
-																children: "Lead"
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
-																value: "Customer",
-																children: "Customer"
-															})
-														]
-													})]
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
-													className: "flex items-center gap-2 rounded-[20px] border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-3 text-sm text-[#475569]",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-														className: "font-medium",
-														children: "Sort"
-													}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", {
-														value: customerDirectorySort,
-														onChange: (event) => setCustomerDirectorySort(event.target.value),
-														className: "w-full bg-transparent text-sm font-medium text-[#111827] outline-none",
-														children: [
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
-																value: "lastInteraction",
-																children: "Last interaction"
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
-																value: "name",
-																children: "Name"
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
-																value: "relationship",
-																children: "Relationship"
-															})
-														]
-													})]
-												})
-											]
-										})
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("nav", {
-										"aria-label": "Customers workspace sections",
-										className: "rounded-[24px] border border-[#E5E7EB] bg-white p-2 shadow-[0_8px_24px_rgba(15,23,42,0.05)]",
-										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: "flex flex-wrap gap-2",
-											children: [
-												"All",
-												"Leads",
-												"Customers",
-												"Segments",
-												"Sources & Imports",
-												"Review"
-											].map((section) => {
-												const active = customerWorkspaceSection === section;
-												return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-													type: "button",
-													onClick: () => setCustomerWorkspaceSection(section),
-													"aria-current": active ? "page" : void 0,
-													className: `rounded-full border px-3 py-2 text-sm font-medium transition ${active ? "border-[#86EFAC] bg-[#ECFDF5] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#D1FAE5] hover:bg-[#F9FCFA]"}`,
-													children: section
-												}, section);
-											})
-										})
-									}),
-									customerWorkspaceSection === "Leads" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-										className: "rounded-[24px] border border-dashed border-[#E5E7EB] bg-[#F9FAFB] p-8 text-center shadow-[0_8px_24px_rgba(15,23,42,0.03)]",
-										children: [
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-												className: "mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-white text-[#22C55E] shadow-sm",
-												children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Target, { className: "h-6 w-6" })
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-												className: "mt-4 text-xl font-semibold text-[#111827]",
-												children: "No leads yet"
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-												className: "mx-auto mt-2 max-w-xl text-sm leading-6 text-[#6B7280]",
-												children: "There are no lead records in this workspace yet. When someone expresses interest but is not yet confirmed as a customer, the details will appear here as a separate lead record."
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-												className: "mt-5 rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-3 text-sm text-[#475569]",
-												children: "Leads are kept separate from contact information and are only created when a person is clearly marked as a lead."
-											})
-										]
-									}) : customerWorkspaceSection === "Segments" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-										className: "space-y-6",
-										children: [
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-												className: "rounded-[24px] border border-[#E5E7EB] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.05)]",
-												children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-														className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6B7280]",
-														children: "Segments"
-													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-														className: "mt-1 text-2xl font-semibold text-[#111827]",
-														children: "Customer groups"
-													})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-														type: "button",
-														onClick: () => {
-															setSegmentEditingId(null);
-															setSegmentDraft({
-																name: "",
-																description: "",
-																criteria: ""
-															});
-														},
-														className: "inline-flex items-center justify-center gap-2 rounded-[20px] bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-4 w-4" }), "Create Segment"]
-													})]
-												})
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "rounded-[24px] border border-[#E5E7EB] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.05)]",
-												children: [
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "grid gap-4 md:grid-cols-3",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
-															className: "space-y-2 text-sm font-medium text-[#111827]",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Segment name" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-																type: "text",
-																value: segmentDraft.name,
-																onChange: (event) => setSegmentDraft((current) => ({
-																	...current,
-																	name: event.target.value
-																})),
-																className: "w-full rounded-[18px] border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2.5 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]",
-																placeholder: "e.g. Repeat buyers"
-															})]
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
-															className: "space-y-2 text-sm font-medium text-[#111827] md:col-span-2",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Description" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-																type: "text",
-																value: segmentDraft.description,
-																onChange: (event) => setSegmentDraft((current) => ({
-																	...current,
-																	description: event.target.value
-																})),
-																className: "w-full rounded-[18px] border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2.5 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]",
-																placeholder: "Describe the purpose of this group"
-															})]
-														})]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-														className: "mt-4",
-														children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
-															className: "space-y-2 text-sm font-medium text-[#111827]",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Optional conditions / criteria" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("textarea", {
-																value: segmentDraft.criteria,
-																onChange: (event) => setSegmentDraft((current) => ({
-																	...current,
-																	criteria: event.target.value
-																})),
-																rows: 3,
-																className: "w-full rounded-[18px] border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2.5 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]",
-																placeholder: "Example: customers with a recent purchase and at least one tag related to repeat orders"
-															})]
-														})
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-														className: "mt-4 flex justify-end",
-														children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-															type: "button",
-															onClick: handleSaveSegment,
-															disabled: !segmentDraft.name.trim(),
-															className: "inline-flex items-center justify-center rounded-[20px] bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A] disabled:cursor-not-allowed disabled:bg-[#A7F3D0]",
-															children: segmentEditingId ? "Save Segment" : "Create Segment"
-														})
-													})
-												]
-											}),
-											segments.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-												className: "rounded-[24px] border border-dashed border-[#E5E7EB] bg-[#F9FAFB] p-8 text-center shadow-[0_8px_24px_rgba(15,23,42,0.03)]",
-												children: [
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-														className: "mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-white text-[#22C55E] shadow-sm",
-														children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Tag, { className: "h-6 w-6" })
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-														className: "mt-4 text-xl font-semibold text-[#111827]",
-														children: "No segments yet"
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-														className: "mx-auto mt-2 max-w-xl text-sm leading-6 text-[#6B7280]",
-														children: "Create a segment to group people by business-defined criteria. Examples can be used as placeholders only; no default segments are created automatically."
-													})
-												]
-											}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-												className: "grid gap-4 lg:grid-cols-2",
-												children: segments.map((segment) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", {
-													className: "rounded-[24px] border border-[#E5E7EB] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.05)]",
-													children: [
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "flex items-start justify-between gap-3",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6B7280]",
-																children: "Segment"
-															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h4", {
-																className: "mt-1 text-xl font-semibold text-[#111827]",
-																children: segment.name
-															})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-																className: "rounded-full border border-[#D1FAE5] bg-[#ECFDF5] px-2.5 py-1 text-xs font-semibold text-[#166534]",
-																children: [segment.matchCount, " people"]
-															})]
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-															className: "mt-3 text-sm leading-6 text-[#475569]",
-															children: segment.description || "No description provided."
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "mt-4 rounded-[18px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 text-sm text-[#475569]",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "font-medium text-[#111827]",
-																children: "Criteria"
-															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "mt-2 leading-6",
-																children: segment.criteria || "No conditions added yet."
-															})]
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "mt-4 flex justify-end gap-2",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-																type: "button",
-																onClick: () => {
-																	setSegmentEditingId(segment.id);
-																	setSegmentDraft({
-																		name: segment.name,
-																		description: segment.description,
-																		criteria: segment.criteria
-																	});
-																},
-																className: "inline-flex items-center justify-center rounded-[20px] border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F9FAFB]",
-																children: "Edit Segment"
-															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-																type: "button",
-																onClick: () => handleDeleteSegment(segment.id),
-																className: "inline-flex items-center justify-center rounded-[20px] border border-[#FECACA] bg-[#FEF2F2] px-3 py-2 text-sm font-semibold text-[#B91C1C] transition hover:bg-[#FEE2E2]",
-																children: "Delete Segment"
-															})]
-														})
-													]
-												}, segment.id))
-											})
-										]
-									}) : customerWorkspaceSection === "Sources & Imports" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-										className: "space-y-6",
-										children: [
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-												className: "rounded-[24px] border border-[#E5E7EB] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.05)]",
-												children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-														className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6B7280]",
-														children: "Sources & Imports"
-													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-														className: "mt-1 text-2xl font-semibold text-[#111827]",
-														children: "Where contacts come from"
-													})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "flex flex-wrap gap-2",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-															type: "button",
-															onClick: () => setShowImportForm((current) => !current),
-															className: "inline-flex items-center justify-center gap-2 rounded-[20px] bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Upload, { className: "h-4 w-4" }), "Import Contacts"]
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-															type: "button",
-															onClick: () => setShowImportForm(false),
-															className: "inline-flex items-center justify-center gap-2 rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm font-semibold text-[#111827] transition hover:bg-[#F9FAFB]",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(List, { className: "h-4 w-4" }), "View Sources"]
-														})]
-													})]
-												})
-											}),
-											showImportForm && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "rounded-[24px] border border-[#E5E7EB] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.05)]",
-												children: [
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "grid gap-4 md:grid-cols-2",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
-															className: "space-y-2 text-sm font-medium text-[#111827]",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Import source" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("select", {
-																value: importSource,
-																onChange: (event) => setImportSource(event.target.value),
-																className: "w-full rounded-[18px] border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2.5 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#ECFDF5]",
-																children: [
-																	/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
-																		value: "WhatsApp",
-																		children: "WhatsApp"
-																	}),
-																	/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
-																		value: "Website",
-																		children: "Website"
-																	}),
-																	/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
-																		value: "Email",
-																		children: "Email"
-																	}),
-																	/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
-																		value: "SMS",
-																		children: "SMS"
-																	}),
-																	/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
-																		value: "Manual",
-																		children: "Manual"
-																	}),
-																	/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
-																		value: "Import",
-																		children: "Import"
-																	}),
-																	/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
-																		value: "Google Contacts",
-																		children: "Google Contacts"
-																	}),
-																	/* @__PURE__ */ (0, import_jsx_runtime.jsx)("option", {
-																		value: "Other",
-																		children: "Other"
-																	})
-																]
-															})]
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("label", {
-															className: "space-y-2 text-sm font-medium text-[#111827]",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Initial relationship" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-																type: "text",
-																value: "Contact",
-																readOnly: true,
-																className: "w-full rounded-[18px] border border-[#E5E7EB] bg-[#F9FAFB] px-3 py-2.5 text-sm text-[#111827] outline-none"
-															})]
-														})]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-														className: "mt-4 rounded-[18px] border border-dashed border-[#E5E7EB] bg-[#F9FAFB] p-4 text-sm text-[#475569]",
-														children: "Upload a CSV or paste a contact list. This is a controlled import flow only; no automatic matching or merging is performed."
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-														className: "mt-4 flex justify-end",
-														children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-															type: "button",
-															onClick: () => setShowImportForm(false),
-															className: "inline-flex items-center justify-center rounded-[20px] bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]",
-															children: "Start Import"
-														})
-													})
-												]
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-												className: "grid gap-4 lg:grid-cols-2",
-												children: [
-													{
-														name: "WhatsApp",
-														description: "Messages and customer conversations received from WhatsApp channels.",
-														status: "Available when connected"
-													},
-													{
-														name: "Website",
-														description: "Visitors and inquiries captured through your website forms and chat flows.",
-														status: "Available when connected"
-													},
-													{
-														name: "Email",
-														description: "Email-based contact and inquiry records from your business inbox.",
-														status: "Available when connected"
-													},
-													{
-														name: "SMS",
-														description: "Text-message conversations and follow-ups sent from your business number.",
-														status: "Available when connected"
-													},
-													{
-														name: "Manual",
-														description: "Contacts added directly by a team member in the dashboard.",
-														status: "Ready"
-													},
-													{
-														name: "Import",
-														description: "Bulk contact list imports from spreadsheet or CSV files.",
-														status: "Ready"
-													},
-													{
-														name: "Google Contacts",
-														description: "Available integration option; not connected unless configured separately.",
-														status: "Not connected"
-													},
-													{
-														name: "Other connected integrations",
-														description: "Additional channels connected to the business workspace.",
-														status: "Depends on setup"
-													}
-												].map((source) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", {
-													className: "rounded-[24px] border border-[#E5E7EB] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.05)]",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "flex items-start justify-between gap-3",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-															className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6B7280]",
-															children: "Source"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h4", {
-															className: "mt-1 text-xl font-semibold text-[#111827]",
-															children: source.name
-														})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-															className: "rounded-full border border-[#D1FAE5] bg-[#ECFDF5] px-2.5 py-1 text-[11px] font-semibold text-[#166534]",
-															children: source.status
-														})]
-													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-														className: "mt-3 text-sm leading-6 text-[#475569]",
-														children: source.description
-													})]
-												}, source.name))
-											})
-										]
-									}) : customerWorkspaceSection === "Review" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-										className: "space-y-6",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: "rounded-[24px] border border-[#E5E7EB] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.05)]",
-											children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between",
-												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-													className: "text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6B7280]",
-													children: "Review"
-												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-													className: "mt-1 text-2xl font-semibold text-[#111827]",
-													children: "Customer data review queue"
-												})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-													className: "rounded-full border border-[#D1FAE5] bg-[#ECFDF5] px-3 py-1.5 text-xs font-semibold text-[#166534]",
-													children: [reviewQueue.length, " items"]
-												})]
-											})
-										}), reviewQueue.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-											className: "rounded-[24px] border border-dashed border-[#E5E7EB] bg-[#F9FAFB] p-8 text-center shadow-[0_8px_24px_rgba(15,23,42,0.03)]",
-											children: [
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-													className: "mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-white text-[#22C55E] shadow-sm",
-													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, { className: "h-6 w-6" })
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-													className: "mt-4 text-xl font-semibold text-[#111827]",
-													children: "No review items"
-												}),
-												/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-													className: "mx-auto mt-2 max-w-xl text-sm leading-6 text-[#6B7280]",
-													children: "There are no pending data review items in this workspace right now. New issues will appear here when a business owner needs to validate a record."
-												})
-											]
-										}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: "space-y-4",
-											children: reviewQueue.map((item) => {
-												const isPendingMerge = pendingReviewMergeId === item.id;
-												return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("article", {
-													className: "rounded-[24px] border border-[#E5E7EB] bg-white p-5 shadow-[0_8px_24px_rgba(15,23,42,0.05)]",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "max-w-2xl",
-															children: [
-																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-																	className: "flex items-center gap-2",
-																	children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-																		className: "rounded-full border border-[#D1FAE5] bg-[#ECFDF5] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#166534]",
-																		children: item.category
-																	})
-																}),
-																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h4", {
-																	className: "mt-3 text-xl font-semibold text-[#111827]",
-																	children: item.name
-																}),
-																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																	className: "mt-2 text-sm leading-6 text-[#475569]",
-																	children: item.summary
-																}),
-																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-																	className: "mt-4 grid gap-3 md:grid-cols-2",
-																	children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-																		className: "rounded-[18px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 text-sm text-[#475569]",
-																		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																			className: "font-medium text-[#111827]",
-																			children: "Existing profile"
-																		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																			className: "mt-2",
-																			children: item.existingProfile
-																		})]
-																	}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-																		className: "rounded-[18px] border border-[#E5E7EB] bg-[#F9FAFB] p-3 text-sm text-[#475569]",
-																		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																			className: "font-medium text-[#111827]",
-																			children: "New contact"
-																		}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																			className: "mt-2",
-																			children: item.newContact
-																		})]
-																	})]
-																}),
-																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-																	className: "mt-3 text-sm text-[#475569]",
-																	children: [
-																		/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-																			className: "font-medium text-[#111827]",
-																			children: "Relationship:"
-																		}),
-																		" ",
-																		item.relationship
-																	]
-																})
-															]
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "flex flex-col gap-2 lg:min-w-[180px]",
-															children: [
-																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-																	type: "button",
-																	className: "inline-flex items-center justify-center rounded-[18px] border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F9FAFB]",
-																	children: "Review"
-																}),
-																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-																	type: "button",
-																	onClick: () => setPendingReviewMergeId(item.id),
-																	className: "inline-flex items-center justify-center rounded-[18px] border border-[#D1FAE5] bg-[#ECFDF5] px-3 py-2 text-sm font-semibold text-[#166534] transition hover:bg-[#D1FAE5]",
-																	children: "Merge"
-																}),
-																/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-																	type: "button",
-																	onClick: () => {
-																		setReviewQueue((current) => current.filter((reviewItem) => reviewItem.id !== item.id));
-																		setPendingReviewMergeId((current) => current === item.id ? null : current);
-																	},
-																	className: "inline-flex items-center justify-center rounded-[18px] border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-semibold text-[#475569] transition hover:bg-[#F9FAFB]",
-																	children: "Keep Separate"
-																})
-															]
-														})]
-													}), isPendingMerge && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "mt-4 rounded-[18px] border border-[#FDE68A] bg-[#FEFCE8] p-4",
-														children: [
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "text-sm font-semibold text-[#92400E]",
-																children: "Confirm merge"
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "mt-2 text-sm leading-6 text-[#78350F]",
-																children: "Automatic merging is not enabled. This action requires explicit business-owner confirmation before the records are combined."
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-																className: "mt-4 flex flex-wrap gap-2",
-																children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-																	type: "button",
-																	onClick: () => {
-																		setReviewQueue((current) => current.filter((reviewItem) => reviewItem.id !== item.id));
-																		setPendingReviewMergeId(null);
-																	},
-																	className: "inline-flex items-center justify-center rounded-[18px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#16A34A]",
-																	children: "Confirm Merge"
-																}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-																	type: "button",
-																	onClick: () => setPendingReviewMergeId(null),
-																	className: "inline-flex items-center justify-center rounded-[18px] border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-semibold text-[#111827] transition hover:bg-[#F9FAFB]",
-																	children: "Cancel"
-																})]
-															})
-														]
-													})]
-												}, item.id);
-											})
-										})]
-									}) : filteredCustomerDirectoryItems.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-										className: "rounded-[24px] border border-dashed border-[#E5E7EB] bg-[#F9FAFB] p-8 text-center shadow-[0_8px_24px_rgba(15,23,42,0.03)]",
-										children: [
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-												className: "mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-white text-[#22C55E] shadow-sm",
-												children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(User, { className: "h-6 w-6" })
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-												className: "mt-4 text-xl font-semibold text-[#111827]",
-												children: customerDirectoryQuery || customerDirectoryFilter !== "All" ? "No matching records" : "No customer records yet"
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-												className: "mx-auto mt-2 max-w-xl text-sm leading-6 text-[#6B7280]",
-												children: customerDirectoryQuery || customerDirectoryFilter !== "All" ? "Try a different search term or reset the filter to see the full customer directory." : "There are no customer or contact records available in this workspace yet. Once your business connects a source or imports contacts, they will appear here in a searchable directory."
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "mt-5 flex flex-col items-center justify-center gap-3 sm:flex-row",
-												children: [
-													(customerDirectoryQuery || customerDirectoryFilter !== "All") && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-														type: "button",
-														onClick: () => {
-															setCustomerDirectoryQuery("");
-															setCustomerDirectoryFilter("All");
-														},
-														className: "inline-flex items-center justify-center gap-2 rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm font-semibold text-[#111827] transition hover:bg-[#F9FAFB]",
-														children: "Reset search"
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-														type: "button",
-														className: "inline-flex items-center justify-center gap-2 rounded-[20px] bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Plus, { className: "h-4 w-4" }), "Add Customer"]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-														type: "button",
-														className: "inline-flex items-center justify-center gap-2 rounded-[20px] border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm font-semibold text-[#111827] transition hover:bg-[#F9FAFB]",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Upload, { className: "h-4 w-4" }), "Import"]
-													})
-												]
-											})
-										]
-									}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("section", {
-										className: "overflow-hidden rounded-[24px] border border-[#E5E7EB] bg-white shadow-[0_8px_24px_rgba(15,23,42,0.04)]",
-										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: "overflow-x-auto",
-											children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
-												className: "min-w-full text-left text-sm",
-												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", {
-													className: "bg-[#F8FAFC] text-[#475569]",
-													children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { children: [
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-															className: "px-4 py-3 font-semibold",
-															children: "Name"
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-															className: "px-4 py-3 font-semibold",
-															children: "Relationship"
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-															className: "px-4 py-3 font-semibold",
-															children: "Contact method"
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-															className: "px-4 py-3 font-semibold",
-															children: "Source"
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-															className: "px-4 py-3 font-semibold",
-															children: "Last interaction"
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-															className: "px-4 py-3 font-semibold",
-															children: "Tags"
-														}),
-														/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-															className: "px-4 py-3 font-semibold",
-															children: "Status"
-														})
-													] })
-												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", { children: filteredCustomerDirectoryItems.map((customer) => {
-													return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
-														tabIndex: 0,
-														onClick: () => setSelectedCustomerId(customer.id),
-														onKeyDown: (event) => {
-															if (event.key === "Enter" || event.key === " ") {
-																event.preventDefault();
-																setSelectedCustomerId(customer.id);
-															}
-														},
-														className: `cursor-pointer border-t border-[#E5E7EB] align-top transition hover:bg-[#F8FAFC] focus:outline-none focus:ring-2 focus:ring-[#22C55E] focus:ring-offset-2 ${selectedCustomerId === customer.id ? "bg-[#F3FDF7]" : ""}`,
-														children: [
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-																className: "px-4 py-3 font-medium text-[#111827]",
-																children: customer.name
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-																className: "px-4 py-3",
-																children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-																	className: "rounded-full bg-[#ECFDF5] px-2.5 py-1 text-xs font-semibold text-[#166534]",
-																	children: customer.relationship
-																})
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-																className: "px-4 py-3 text-[#475569]",
-																children: customer.phoneNumbers.length > 0 || customer.emailAddresses.length > 0 || customer.otherContactMethods.length > 0 ? [
-																	...customer.phoneNumbers,
-																	...customer.emailAddresses,
-																	...customer.otherContactMethods
-																].join(", ") : "No contact method added"
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-																className: "px-4 py-3 text-[#475569]",
-																children: customer.source
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-																className: "px-4 py-3 text-[#475569]",
-																children: customer.lastInteraction
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-																className: "px-4 py-3",
-																children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-																	className: "flex flex-wrap gap-2",
-																	children: customer.tags.length > 0 ? customer.tags.map((tag) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-																		className: "rounded-full border border-[#E5E7EB] bg-[#F8FAFC] px-2 py-1 text-[11px] font-medium text-[#475569]",
-																		children: tag
-																	}, `${customer.id}-${tag}`)) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-																		className: "text-[#94A3B8]",
-																		children: "—"
-																	})
-																})
-															}),
-															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-																className: "px-4 py-3",
-																children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-																	className: "rounded-full border border-[#E5E7EB] bg-white px-2.5 py-1 text-xs font-semibold text-[#475569]",
-																	children: customer.status
-																})
-															})
-														]
-													}, customer.id);
-												}) })]
-											})
-										})
-									}),
-									selectedCustomer && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-										className: "fixed inset-0 z-40 flex justify-end bg-black/20 backdrop-blur-[2px]",
-										children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("aside", {
-											className: "h-full w-full max-w-[440px] overflow-y-auto border-l border-[#E5E7EB] bg-white shadow-[0_20px_60px_rgba(15,23,42,0.12)]",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-												className: "border-b border-[#E5E7EB] p-5",
-												children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-													className: "flex items-start justify-between gap-4",
-													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "flex items-center gap-3",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-															className: "flex h-11 w-11 items-center justify-center rounded-full bg-[#ECFDF5] font-semibold text-[#166534]",
-															children: selectedCustomer.name.split(" ").map((part) => part[0]).join("").slice(0, 2).toUpperCase() || "P"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-															className: "text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]",
-															children: "Customer profile"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-															className: "mt-1 text-xl font-semibold text-[#111827]",
-															children: selectedCustomer.name
-														})] })]
-													}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-														type: "button",
-														onClick: () => setSelectedCustomerId(null),
-														className: "inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#E5E7EB] bg-white text-[#475569] transition hover:bg-[#F9FAFB]",
-														"aria-label": "Close customer profile",
-														children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X, { className: "h-4 w-4" })
-													})]
-												})
-											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-												className: "space-y-5 p-5",
-												children: [
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFC] p-4",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-															className: "text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]",
-															children: "Identity"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "mt-3 space-y-3",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "text-xs uppercase tracking-[0.12em] text-[#94A3B8]",
-																children: "Name"
-															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "mt-1 text-sm font-medium text-[#111827]",
-																children: selectedCustomer.name
-															})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "text-xs uppercase tracking-[0.12em] text-[#94A3B8]",
-																children: "Notes"
-															}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																className: "mt-1 text-sm leading-6 text-[#475569]",
-																children: selectedCustomer.notes || "No notes recorded for this person yet."
-															})] })]
-														})]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "rounded-[20px] border border-[#E5E7EB] bg-white p-4",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-															className: "text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]",
-															children: "Contact methods"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-															className: "mt-3 space-y-4 text-sm text-[#475569]",
-															children: [
-																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																	className: "text-xs uppercase tracking-[0.12em] text-[#94A3B8]",
-																	children: "Phone numbers"
-																}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
-																	className: "mt-2 space-y-1",
-																	children: selectedCustomer.phoneNumbers.length > 0 ? selectedCustomer.phoneNumbers.map((phone) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { children: phone }, `${selectedCustomer.id}-phone-${phone}`)) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", {
-																		className: "text-[#94A3B8]",
-																		children: "No phone numbers recorded"
-																	})
-																})] }),
-																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																	className: "text-xs uppercase tracking-[0.12em] text-[#94A3B8]",
-																	children: "Email addresses"
-																}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
-																	className: "mt-2 space-y-1",
-																	children: selectedCustomer.emailAddresses.length > 0 ? selectedCustomer.emailAddresses.map((email) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { children: email }, `${selectedCustomer.id}-email-${email}`)) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", {
-																		className: "text-[#94A3B8]",
-																		children: "No email addresses recorded"
-																	})
-																})] }),
-																/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-																	className: "text-xs uppercase tracking-[0.12em] text-[#94A3B8]",
-																	children: "Other methods"
-																}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
-																	className: "mt-2 space-y-1",
-																	children: selectedCustomer.otherContactMethods.length > 0 ? selectedCustomer.otherContactMethods.map((method) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", { children: method }, `${selectedCustomer.id}-method-${method}`)) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", {
-																		className: "text-[#94A3B8]",
-																		children: "No additional methods recorded"
-																	})
-																})] })
-															]
-														})]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "rounded-[20px] border border-[#E5E7EB] bg-white p-4",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-															className: "text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]",
-															children: "Relationship"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-															className: "mt-3 flex items-center gap-2",
-															children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-																className: "rounded-full bg-[#ECFDF5] px-2.5 py-1 text-xs font-semibold text-[#166534]",
-																children: selectedCustomer.relationship
-															})
-														})]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "rounded-[20px] border border-[#E5E7EB] bg-white p-4",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-															className: "text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]",
-															children: "Source"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-															className: "mt-3 text-sm text-[#475569]",
-															children: selectedCustomer.source || "Source not recorded"
-														})]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "rounded-[20px] border border-[#E5E7EB] bg-white p-4",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-															className: "text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]",
-															children: "Actions"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-															type: "button",
-															onClick: handleOpenInboxForCustomer,
-															className: "mt-3 inline-flex w-full items-center justify-center gap-2 rounded-[18px] bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#16A34A]",
-															children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MessageSquareText, { className: "h-4 w-4" }), "View Conversations"]
-														})]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "rounded-[20px] border border-[#E5E7EB] bg-white p-4",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-															className: "text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]",
-															children: "Activity"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("ul", {
-															className: "mt-3 space-y-2 text-sm text-[#475569]",
-															children: selectedCustomer.recentInteractions.length > 0 ? selectedCustomer.recentInteractions.map((interaction) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", {
-																className: "rounded-lg border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-2",
-																children: interaction
-															}, `${selectedCustomer.id}-interaction-${interaction}`)) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("li", {
-																className: "text-[#94A3B8]",
-																children: "No recent activity recorded yet."
-															})
-														})]
-													}),
-													/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-														className: "rounded-[20px] border border-[#E5E7EB] bg-white p-4",
-														children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-															className: "text-[11px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]",
-															children: "Tags"
-														}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-															className: "mt-3 flex flex-wrap gap-2",
-															children: selectedCustomer.tags.length > 0 ? selectedCustomer.tags.map((tag) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-																className: "rounded-full border border-[#E5E7EB] bg-[#F8FAFC] px-2 py-1 text-[11px] font-medium text-[#475569]",
-																children: tag
-															}, `${selectedCustomer.id}-tag-${tag}`)) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-																className: "text-[#94A3B8]",
-																children: "No tags recorded"
-															})
-														})]
-													})
-												]
-											})]
-										})
-									})
-								]
-							});
-						})(),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CustomersWorkspace, {
+							customers: CUSTOMERS,
+							inboxConversations: INBOX_CONVERSATIONS,
+							setSelected,
+							setActiveConversation
+						}),
 						(selected === "AI Employee" || selected === "Training") && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 							className: "mx-auto w-full max-w-[1280px] space-y-6 px-4 pb-10 lg:px-6",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
