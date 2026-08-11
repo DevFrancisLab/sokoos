@@ -849,6 +849,30 @@ var MessageSquareOff = createLucideIcon("message-square-off", [
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
+var MessageSquareText = createLucideIcon("message-square-text", [
+	["path", {
+		d: "M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z",
+		key: "18887p"
+	}],
+	["path", {
+		d: "M7 11h10",
+		key: "1twpyw"
+	}],
+	["path", {
+		d: "M7 15h6",
+		key: "d9of3u"
+	}],
+	["path", {
+		d: "M7 7h8",
+		key: "af5zfr"
+	}]
+]);
+/**
+* @license lucide-react v0.575.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
 var Package = createLucideIcon("package", [
 	["path", {
 		d: "M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z",
@@ -1234,4 +1258,4 @@ var X = createLucideIcon("x", [["path", {
 	key: "d8bk6v"
 }]]);
 //#endregion
-export { ArrowRight as $, Inbox as A, Cpu as B, MessageCircle as C, List as D, MapPin as E, Facebook as F, Check as G, Circle as H, Eye as I, Brain as J, ChartColumn as K, EyeOff as L, House as M, Heart as N, Linkedin as O, Globe as P, BookOpen as Q, EllipsisVertical as R, MessageSquareOff as S, Megaphone as T, ChevronRight as U, Clock as V, ChevronDown as W, Box as X, Boxes as Y, Bot as Z, Plus as _, Target as a, Paperclip as b, Sparkles as c, Settings as d, Activity as et, Send as f, RefreshCw as g, Repeat as h, Upload as i, Image as j, LayoutGrid as k, Smile as l, Rocket as m, Users as n, Tag as o, Search as p, Calendar as q, User as r, Star as s, X as t, Shield as u, Plug as v, Menu as w, Package as x, Phone as y, Database as z };
+export { BookOpen as $, LayoutGrid as A, Database as B, MessageSquareOff as C, MapPin as D, Megaphone as E, Globe as F, ChevronDown as G, Clock as H, Facebook as I, Calendar as J, Check as K, Eye as L, Image as M, House as N, List as O, Heart as P, Bot as Q, EyeOff as R, MessageSquareText as S, Menu as T, Circle as U, Cpu as V, ChevronRight as W, Boxes as X, Brain as Y, Box as Z, Plus as _, Target as a, Paperclip as b, Sparkles as c, Settings as d, ArrowRight as et, Send as f, RefreshCw as g, Repeat as h, Upload as i, Inbox as j, Linkedin as k, Smile as l, Rocket as m, Users as n, Tag as o, Search as p, ChartColumn as q, User as r, Star as s, X as t, Activity as tt, Shield as u, Plug as v, MessageCircle as w, Package as x, Phone as y, EllipsisVertical as z };

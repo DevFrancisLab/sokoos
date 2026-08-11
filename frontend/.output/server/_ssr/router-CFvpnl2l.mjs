@@ -3,14 +3,14 @@ import { t as sokoos_logo_default } from "./sokoos_logo-B5_i8UVb.mjs";
 import { u as require_react } from "../_libs/@floating-ui/react-dom+[...].mjs";
 import { c as HeadContent, d as Outlet, f as lazyRouteComponent, g as useRouter, h as Link, m as createRootRouteWithContext, p as createFileRoute, s as Scripts, u as createRouter } from "../_libs/@tanstack/react-router+[...].mjs";
 import { o as require_jsx_runtime } from "../_libs/@radix-ui/react-arrow+[...].mjs";
-import { $ as ArrowRight, G as Check, I as Eye, L as EyeOff } from "../_libs/lucide-react.mjs";
-import { n as cn, t as DashboardLayout } from "./dashboard-layout-jVDjLvI0.mjs";
+import { K as Check, L as Eye, R as EyeOff, et as ArrowRight } from "../_libs/lucide-react.mjs";
+import { n as cn, t as DashboardLayout } from "./dashboard-layout-sRqW9ez0.mjs";
 import { t as QueryClient } from "../_libs/tanstack__query-core.mjs";
 import { t as QueryClientProvider } from "../_libs/tanstack__react-query.mjs";
-//#region node_modules/.nitro/vite/services/ssr/assets/router-BJfdIQlZ.js
+//#region node_modules/.nitro/vite/services/ssr/assets/router-CFvpnl2l.js
 var import_react = /* @__PURE__ */ __toESM(require_react());
 var import_jsx_runtime = require_jsx_runtime();
-var styles_default = "/assets/styles-CK0XoS3b.css";
+var styles_default = "/assets/styles-D4IwvCCL.css";
 function reportLovableError(error, context = {}) {
 	if (typeof window === "undefined") return;
 	window.__lovableEvents?.captureException?.(error, {
@@ -840,7 +840,7 @@ var Route$6 = createFileRoute("/dashboard/settings")({ component: SettingsRoute 
 function SettingsRoute() {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DashboardLayout, {});
 }
-var $$splitComponentImporter$1 = () => import("./performance-CiiV_yDf.mjs");
+var $$splitComponentImporter$1 = () => import("./performance-DJqSpiEe.mjs");
 var Route$5 = createFileRoute("/dashboard/performance")({ component: lazyRouteComponent($$splitComponentImporter$1, "component") });
 var Route$4 = createFileRoute("/dashboard/integrations")({ component: IntegrationsRoute });
 function IntegrationsRoute() {
@@ -858,7 +858,7 @@ var Route$1 = createFileRoute("/dashboard/catalog")({ component: CatalogRoute })
 function CatalogRoute() {
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(DashboardLayout, {});
 }
-var $$splitComponentImporter = () => import("./ai-CfLo82T3.mjs");
+var $$splitComponentImporter = () => import("./ai-C-ZDAiz4.mjs");
 var Route = createFileRoute("/dashboard/ai")({ component: lazyRouteComponent($$splitComponentImporter, "component") });
 var SigninRoute = Route$10.update({
 	id: "/signin",

@@ -1,4 +1,4 @@
-//#region \0tanstack-start-manifest:v
+//#region node_modules/.nitro/vite/services/ssr/assets/_tanstack-start-manifest_v-DHHscTsN.js
 var tsrStartManifest = () => ({ routes: {
 	__root__: {
 		filePath: "/home/frank/sokoos/frontend/src/routes/__root.tsx",
@@ -9,27 +9,27 @@ var tsrStartManifest = () => ({ routes: {
 			"/sign-up",
 			"/signin"
 		],
-		preloads: ["/assets/index-DOpUsIKh.js"],
+		preloads: ["/assets/index-DKZKmQQR.js"],
 		scripts: [{ attrs: {
 			type: "module",
 			async: !0,
-			src: "/assets/index-DOpUsIKh.js"
+			src: "/assets/index-DKZKmQQR.js"
 		} }]
 	},
 	"/": {
 		filePath: "/home/frank/sokoos/frontend/src/routes/index.tsx",
 		children: void 0,
-		preloads: ["/assets/routes-aXVhbtAV.js"]
+		preloads: ["/assets/routes-BYdclZlF.js"]
 	},
 	"/dashboard/ai": {
 		filePath: "/home/frank/sokoos/frontend/src/routes/dashboard/ai.tsx",
 		children: void 0,
-		preloads: ["/assets/ai-B_UqWIDN.js"]
+		preloads: ["/assets/ai-BTUZENP5.js"]
 	},
 	"/dashboard/performance": {
 		filePath: "/home/frank/sokoos/frontend/src/routes/dashboard/performance.tsx",
 		children: void 0,
-		preloads: ["/assets/performance-B_UqWIDN.js"]
+		preloads: ["/assets/performance-BTUZENP5.js"]
 	}
 } });
 //#endregion
