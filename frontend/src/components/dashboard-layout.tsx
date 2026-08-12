@@ -110,11 +110,6 @@ const NAV_ITEMS = [
   //   Icon: Cpu,
   // },
 
-  {
-    label: "Settings",
-    href: "/dashboard/settings",
-    Icon: Settings,
-  },
 ];
 const STAT_CARDS = [
   { label: "Messages Today", value: "1,284", delta: "+18%" },
