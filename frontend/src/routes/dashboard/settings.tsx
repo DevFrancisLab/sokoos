@@ -5,6 +5,6 @@ export const Route = createFileRoute("/dashboard/settings")({
   component: SettingsRoute,
 });
 
-export default function SettingsRoute() {
+function SettingsRoute() {
   return <DashboardLayout />;
 }

@@ -5,6 +5,6 @@ export const Route = createFileRoute("/dashboard/catalog")({
   component: CatalogRoute,
 });
 
-export default function CatalogRoute() {
+function CatalogRoute() {
   return <DashboardLayout />;
 }

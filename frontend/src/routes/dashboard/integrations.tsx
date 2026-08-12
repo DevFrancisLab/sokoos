@@ -5,6 +5,6 @@ export const Route = createFileRoute("/dashboard/integrations")({
   component: IntegrationsRoute,
 });
 
-export default function IntegrationsRoute() {
+function IntegrationsRoute() {
   return <DashboardLayout />;
 }

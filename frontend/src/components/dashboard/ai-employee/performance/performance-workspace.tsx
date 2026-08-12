@@ -7,7 +7,7 @@ type Conversation = {
   id: string;
   source: string;
   needsAttention?: boolean;
-  name?: string;
+  name?: string | null;
   message: string;
 };
 
@@ -26,7 +26,7 @@ type IntegrationItem = {
 
 type PerformanceWorkspaceProps = {
   setSelected: (value: string) => void;
-  setActiveWorkspaceSection: (section: string) => void;
+  setActiveWorkspaceSection: (section: any) => void;
   INBOX_CONVERSATIONS: Conversation[];
   CUSTOMERS: Customer[];
   PRODUCTS: Product[];

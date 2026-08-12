@@ -5,6 +5,6 @@ export const Route = createFileRoute("/dashboard/customers")({
   component: CustomersRoute,
 });
 
-export default function CustomersRoute() {
+function CustomersRoute() {
   return <DashboardLayout />;
 }

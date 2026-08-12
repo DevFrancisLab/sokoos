@@ -9,7 +9,7 @@ export const Route = createFileRoute("/dashboard")({
 
 // The layout handles the sidebar and page placeholders; keep this route minimal.
 
-export default function Dashboard() {
+function Dashboard() {
   const router = useRouter();
   const authenticated = isAuthenticated();
 

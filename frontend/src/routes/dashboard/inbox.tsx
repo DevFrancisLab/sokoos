@@ -5,6 +5,6 @@ export const Route = createFileRoute("/dashboard/inbox")({
   component: InboxRoute,
 });
 
-export default function InboxRoute() {
+function InboxRoute() {
   return <DashboardLayout />;
 }

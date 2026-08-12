@@ -10,6 +10,7 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import sokoosLogo from "@/assets/sokoos_logo.png";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { ProtectedRoute } from "@/components/protected-route";
 
@@ -95,7 +96,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: sokoosLogo, type: "image/png" },
+      { rel: "shortcut icon", href: sokoosLogo },
+      { rel: "apple-touch-icon", href: sokoosLogo },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {

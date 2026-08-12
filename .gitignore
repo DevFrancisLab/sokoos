@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+.bun/
+
+# Build outputs
+.output/
+.vercel/
+.wrangler/
+.tanstack/
+dist/
+build/
+
+# Environment and local files
+.env
+.env.local
+.env.*.local
+*.log
+
+# Editor & OS files
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

@@ -15,7 +15,7 @@ export const Route = createFileRoute("/sign-up")({
   component: SignUp,
 });
 
-export default function SignUp() {
+function SignUp() {
   const router = useRouter();
 
   useEffect(() => {
