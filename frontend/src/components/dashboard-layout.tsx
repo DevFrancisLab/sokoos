@@ -126,9 +126,10 @@ type ProfileMenuProps = {
   onAccountSettings: () => void;
   onLogout: () => void;
   variant?: "compact" | "card";
+  onOpenChange?: (open: boolean) => void;
 };
 
-function ProfileMenu({ user, onEditProfile, onAccountSettings, onLogout, variant = "card" }: ProfileMenuProps) {
+function ProfileMenu({ user, onEditProfile, onAccountSettings, onLogout, variant = "card", onOpenChange }: ProfileMenuProps) {
   const initials = user.name
     .trim()
     .split(/\s+/)
@@ -143,7 +144,7 @@ function ProfileMenu({ user, onEditProfile, onAccountSettings, onLogout, variant
       <button
         type="button"
         title={user.name}
-        className="relative z-60 mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-[#F3F4F6] transition hover:bg-[#E5E7EB] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+        className="relative mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-[#F3F4F6] transition hover:bg-[#E5E7EB] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
       >
         <Avatar className="h-9 w-9 rounded-full bg-[#FFFFFF] text-[#111827] shadow-sm">
           {user.avatarUrl ? <AvatarImage src={user.avatarUrl} alt={user.name} /> : <AvatarFallback>{initials}</AvatarFallback>}
@@ -152,6 +153,8 @@ function ProfileMenu({ user, onEditProfile, onAccountSettings, onLogout, variant
     ) : (
       <button
         type="button"
+        title={user.name}
+        aria-label={`Open profile menu for ${user.name}`}
         className="mt-4 flex w-full items-center gap-3 rounded-[24px] border border-[#E5E7EB] bg-white p-3 text-left shadow-sm transition hover:bg-[#F9FAFB] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
       >
         <Avatar className="h-11 w-11 rounded-full bg-[#F8FAFC] text-[#111827]">
@@ -165,8 +168,12 @@ function ProfileMenu({ user, onEditProfile, onAccountSettings, onLogout, variant
       </button>
     );
 
+  const handleOpenChange = (nextOpen: boolean) => {
+    onOpenChange?.(nextOpen);
+  };
+
   return (
-    <DropdownMenu>
+    <DropdownMenu onOpenChange={handleOpenChange}>
       <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
       <DropdownMenuContent
         side={variant === "compact" ? "right" : "top"}
@@ -3275,6 +3282,7 @@ export default function DashboardLayout() {
   const [activeConversation, setActiveConversation] = useState<string>("c1");
   const [searchQuery, setSearchQuery] = useState("");
   const [sidebarHovered, setSidebarHovered] = useState(false);
+  const [sidebarForceOpen, setSidebarForceOpen] = useState(false);
   const [scheduledPosts, setScheduledPosts] = useState(SCHEDULED_POSTS);
   const [newPost, setNewPost] = useState({
     image: "",
@@ -5840,7 +5848,7 @@ export default function DashboardLayout() {
             {renderSidebarNavItems("icon")}
           </nav>
           <div className="px-3 pb-5">
-            {user ? (
+            {user && !(sidebarHovered || sidebarForceOpen) ? (
               <ProfileMenu
                 user={user}
                 onEditProfile={handleEditProfile}
@@ -5850,8 +5858,12 @@ export default function DashboardLayout() {
               />
             ) : null}
           </div>
-          {sidebarHovered && (
-            <div className="fixed inset-y-0 left-0 z-50 w-64 min-w-[248px] bg-[#FFFFFF] border-r border-[#E5E7EB]/10 shadow-[0_18px_48px_rgba(15,23,42,0.12)] transition-all duration-200 ease-out">
+          {(sidebarHovered || sidebarForceOpen) && (
+            <div
+              className="fixed inset-y-0 left-0 z-70 w-[248px] min-w-[248px] bg-[#FFFFFF] border-r border-[#E5E7EB]/10 shadow-[0_18px_48px_rgba(15,23,42,0.12)] transition-all duration-200 ease-out"
+              onMouseEnter={() => setSidebarHovered(true)}
+              onMouseLeave={() => setSidebarHovered(false)}
+            >
               <div className="h-full flex flex-col pt-4">
                 <div className="px-4 pb-4">
                     <div className="flex items-center gap-3">
@@ -5871,6 +5883,7 @@ export default function DashboardLayout() {
                       onEditProfile={handleEditProfile}
                       onAccountSettings={handleAccountSettings}
                       onLogout={handleLogout}
+                      onOpenChange={(open) => setSidebarForceOpen(open)}
                     />
                   ) : null}
                 </div>
