@@ -42,9 +42,10 @@ import {
   ChevronDown,
   Upload,
   MessageSquareText,
+  LogOut,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { KnowledgeWorkspace } from "@/components/knowledge-workspace";
@@ -52,7 +53,8 @@ import { HomeWorkspace } from "@/components/dashboard/home/home-workspace";
 import { InboxWorkspace } from "@/components/dashboard/inbox/inbox-workspace";
 import { CustomersWorkspace } from "@/components/dashboard/customers/customers-workspace";
 import { PerformanceWorkspace } from "@/components/dashboard/ai-employee/performance/performance-workspace";
-import { getMockUser } from "@/lib/auth";
+import { getMockUser, signOutMock } from "@/lib/auth";
+import EditProfileDialog from "@/components/dashboard/edit-profile-dialog";
 import sokoosLogo from "@/assets/sokoos_logo.png";
 
 const NAV_ITEMS = [
@@ -123,9 +125,15 @@ const STAT_CARDS = [
 
 type SidebarUser = { id: string; name: string; email?: string; avatarUrl?: string };
 
-function SidebarProfile({ user }: { user: SidebarUser | null }) {
-  if (!user?.name) return null;
+type ProfileMenuProps = {
+  user: SidebarUser;
+  onEditProfile: () => void;
+  onAccountSettings: () => void;
+  onLogout: () => void;
+  variant?: "compact" | "card";
+};
 
+function ProfileMenu({ user, onEditProfile, onAccountSettings, onLogout, variant = "card" }: ProfileMenuProps) {
   const initials = user.name
     .trim()
     .split(/\s+/)
@@ -135,22 +143,77 @@ function SidebarProfile({ user }: { user: SidebarUser | null }) {
     .join("")
     .toUpperCase();
 
+  const trigger =
+    variant === "compact" ? (
+      <button
+        type="button"
+        title={user.name}
+        className="relative z-60 mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-[#F3F4F6] transition hover:bg-[#E5E7EB] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+      >
+        <Avatar className="h-9 w-9 rounded-full bg-[#FFFFFF] text-[#111827] shadow-sm">
+          {user.avatarUrl ? <AvatarImage src={user.avatarUrl} alt={user.name} /> : <AvatarFallback>{initials}</AvatarFallback>}
+        </Avatar>
+      </button>
+    ) : (
+      <button
+        type="button"
+        className="mt-4 flex w-full items-center gap-3 rounded-[24px] border border-[#E5E7EB] bg-white p-3 text-left shadow-sm transition hover:bg-[#F9FAFB] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+      >
+        <Avatar className="h-11 w-11 rounded-full bg-[#F8FAFC] text-[#111827]">
+          {user.avatarUrl ? <AvatarImage src={user.avatarUrl} alt={user.name} /> : <AvatarFallback>{initials}</AvatarFallback>}
+        </Avatar>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-semibold text-[#111827]">{user.name}</p>
+          {user.email ? <p className="truncate text-xs text-[#64748B]">{user.email}</p> : null}
+        </div>
+        <ChevronRight className="h-4 w-4 text-[#94A3B8]" />
+      </button>
+    );
+
   return (
-    <div className="mt-4 flex items-center gap-3 rounded-[24px] border border-[#E5E7EB] bg-white p-3 shadow-[0_4px_10px_rgba(15,23,42,0.04)]">
-      <Avatar className="h-11 w-11 rounded-full bg-[#F8FAFC] text-[#111827]">
-        {user.avatarUrl ? (
-          <AvatarImage src={user.avatarUrl} alt={user.name} />
-        ) : (
-          <AvatarFallback>{initials}</AvatarFallback>
-        )}
-      </Avatar>
-      <div className="min-w-0">
-        <p className="truncate text-sm font-semibold text-[#111827]">{user.name}</p>
-        {user.email ? (
-          <p className="truncate text-xs text-[#64748B]">{user.email}</p>
-        ) : null}
-      </div>
-    </div>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>{trigger}</DropdownMenuTrigger>
+      <DropdownMenuContent
+        side={variant === "compact" ? "right" : "top"}
+        align={variant === "compact" ? "start" : "start"}
+        className="w-72 rounded-[24px] border border-[#E5E7EB] bg-white shadow-sm z-60"
+      >
+        <div className="rounded-t-[20px] border-b border-[#E5E7EB] bg-[#F8FAFC] p-4">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-11 w-11 rounded-full bg-white text-[#111827] shadow-sm">
+              {user.avatarUrl ? <AvatarImage src={user.avatarUrl} alt={user.name} /> : <AvatarFallback>{initials}</AvatarFallback>}
+            </Avatar>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold text-[#111827]">{user.name}</p>
+              {user.email ? <p className="truncate text-xs text-[#64748B]">{user.email}</p> : null}
+            </div>
+          </div>
+        </div>
+        <DropdownMenuSeparator className="bg-[#E5E7EB]" />
+        <DropdownMenuItem
+          onSelect={onEditProfile}
+          className="gap-3 px-4 py-3 text-sm font-medium text-[#111827] transition hover:bg-[#ECFDF5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+        >
+          <User className="h-4 w-4 text-[#16A34A]" />
+          <span>Edit profile</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onSelect={onAccountSettings}
+          className="gap-3 px-4 py-3 text-sm font-medium text-[#111827] transition hover:bg-[#ECFDF5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+        >
+          <Settings className="h-4 w-4 text-[#16A34A]" />
+          <span>Account settings</span>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator className="bg-[#E5E7EB]" />
+        <DropdownMenuItem
+          onSelect={onLogout}
+          className="gap-3 px-4 py-3 text-sm font-medium text-[#111827] transition hover:bg-[#ECFDF5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+        >
+          <LogOut className="h-4 w-4 text-[#16A34A]" />
+          <span>Log out</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 
@@ -4230,20 +4293,44 @@ export default function DashboardLayout() {
     );
   };
 
+  const [user, setUser] = useState<SidebarUser | null>(null);
+  const [editProfileOpen, setEditProfileOpen] = useState(false);
+
   const handleLogout = () => {
+    signOutMock();
     localStorage.removeItem("sokoos-auth");
     void router.navigate({ to: "/signin", replace: true });
   };
 
-  const user = useMemo<SidebarUser | null>(() => {
+  const handleAccountSettings = () => {
+    void router.navigate({ to: "/dashboard/settings" });
+  };
+
+  const handleEditProfile = () => {
+    setEditProfileOpen(true);
+  };
+
+  const handleProfileSave = (updated: SidebarUser) => {
+    setUser(updated);
+    try {
+      localStorage.setItem("mock_user", JSON.stringify(updated));
+    } catch {
+      // Frontend-only persistence; if storage fails, state is still updated for this session.
+    }
+  };
+
+  useEffect(() => {
     const raw = getMockUser();
-    if (!raw || typeof raw !== "object") return null;
-    return {
+    if (!raw || typeof raw !== "object") {
+      setUser(null);
+      return;
+    }
+    setUser({
       id: String(raw.id ?? ""),
       name: String(raw.name ?? ""),
       email: typeof raw.email === "string" ? raw.email : undefined,
       avatarUrl: typeof raw.avatarUrl === "string" ? raw.avatarUrl : undefined,
-    };
+    });
   }, []);
 
   // Future team state (initialized but not used when hasTeam = false)
@@ -5759,11 +5846,13 @@ export default function DashboardLayout() {
           </nav>
           <div className="px-3 pb-5">
             {user ? (
-              <button type="button" title={user.name} className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-[#F3F4F6] transition hover:bg-[#E5E7EB]">
-                <Avatar className="h-9 w-9 rounded-full bg-[#FFFFFF] text-[#111827] shadow-sm">
-                  {user.avatarUrl ? <AvatarImage src={user.avatarUrl} alt={user.name} /> : <AvatarFallback>{user.name.slice(0, 2).toUpperCase()}</AvatarFallback>}
-                </Avatar>
-              </button>
+              <ProfileMenu
+                user={user}
+                onEditProfile={handleEditProfile}
+                onAccountSettings={handleAccountSettings}
+                onLogout={handleLogout}
+                variant="compact"
+              />
             ) : null}
           </div>
           {sidebarHovered && (
@@ -5781,7 +5870,14 @@ export default function DashboardLayout() {
                   {renderSidebarNavItems("expanded")}
                 </nav>
                 <div className="border-t border-[#E5E7EB]/50 px-4 py-4">
-                  <SidebarProfile user={user} />
+                  {user ? (
+                    <ProfileMenu
+                      user={user}
+                      onEditProfile={handleEditProfile}
+                      onAccountSettings={handleAccountSettings}
+                      onLogout={handleLogout}
+                    />
+                  ) : null}
                 </div>
               </div>
             </div>
@@ -5833,7 +5929,14 @@ export default function DashboardLayout() {
               {renderSidebarNavItems("mobile")}
             </nav>
             <div className="flex-shrink-0 border-t border-[#E5E7EB]/50 p-4">
-              <SidebarProfile user={user} />
+              {user ? (
+                <ProfileMenu
+                  user={user}
+                  onEditProfile={handleEditProfile}
+                  onAccountSettings={handleAccountSettings}
+                  onLogout={handleLogout}
+                />
+              ) : null}
             </div>
           </div>
         </div>
@@ -8967,6 +9070,14 @@ export default function DashboardLayout() {
           )}
         </div>
       </main>
+      {user ? (
+        <EditProfileDialog
+          user={user}
+          open={editProfileOpen}
+          onOpenChange={setEditProfileOpen}
+          onSave={handleProfileSave}
+        />
+      ) : null}
     </div>
   );
 }
