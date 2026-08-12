@@ -5813,8 +5813,8 @@ export default function DashboardLayout() {
             className="absolute inset-0 bg-black/40"
             onClick={() => setMobileOpen(false)}
           />
-          <div className="absolute left-0 top-0 bottom-0 w-72 bg-[#FFFFFF] border-r border-[#E5E7EB]/10 p-4 overflow-y-auto">
-            <div className="flex items-center justify-between mb-4">
+          <div className="absolute left-0 top-0 bottom-0 w-72 bg-[#FFFFFF] border-r border-[#E5E7EB]/10 flex h-full flex-col">
+            <div className="flex items-center justify-between border-b border-[#E5E7EB]/50 p-4">
               <div className="flex items-center gap-3">
                 <div className="h-8 w-8 rounded-[20px] overflow-hidden">
                   <img src={sokoosLogo} alt="Sokoos" className="h-8 w-8 object-cover" />
@@ -5829,10 +5829,10 @@ export default function DashboardLayout() {
               </button>
             </div>
 
-            <nav>
+            <nav className="flex-1 overflow-y-auto px-4 py-4">
               {renderSidebarNavItems("mobile")}
             </nav>
-            <div className="mt-4 border-t border-[#E5E7EB]/50 pt-4">
+            <div className="flex-shrink-0 border-t border-[#E5E7EB]/50 p-4">
               <SidebarProfile user={user} />
             </div>
           </div>
