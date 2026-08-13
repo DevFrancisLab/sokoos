@@ -4068,16 +4068,19 @@ export default function DashboardLayout() {
     workspaceName,
     description,
     acceptedFileTypes,
+    templateHref,
   }: {
     workspaceName: string;
     description: string;
     acceptedFileTypes: string[];
+    templateHref?: string;
   }) => (
     <TrainingTemplateCard
       compact
       workspaceName={workspaceName}
       description={description}
       acceptedFileTypes={acceptedFileTypes}
+      templateHref={templateHref}
     />
   );
   useEffect(() => {
@@ -7068,7 +7071,8 @@ export default function DashboardLayout() {
                       <TrainingTemplateOption
                         workspaceName="Identity"
                         description="Use a worksheet to gather your business identity and brand voice details before entering them here."
-                        acceptedFileTypes={[".docx", ".pdf"]}
+                        templateHref="/templates/sokoos-business-identity-template.txt"
+                        acceptedFileTypes={[".txt", ".docx", ".pdf"]}
                       />
                     )}
                   </div>

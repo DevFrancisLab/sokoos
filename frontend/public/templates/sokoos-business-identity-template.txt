@@ -1,0 +1,231 @@
+SOKOOS
+BUSINESS IDENTITY TEMPLATE
+
+Instructions
+Fill in the sections below and upload the completed template to Sokoos.
+
+This worksheet mirrors the current Identity workspace. Use it to prepare your
+answers, then enter the same information in the Identity lessons. Selecting an
+uploaded file does not automatically update your AI Employee yet.
+
+==========================================================================
+1. BUSINESS IDENTITY
+==========================================================================
+
+Business Name
+Enter the name your AI should use when representing your business.
+
+Answer:
+__________________________________________________________________________
+
+Business Industry
+Select the industry that best matches your business. The current workspace
+offers: Restaurant, Retail Shop, Hardware Store, Electronics Store, Pharmacy,
+Salon, Clinic, School, ISP, Real Estate, Hotel, Agency, Manufacturer,
+Wholesaler, or Other.
+
+Answer:
+__________________________________________________________________________
+
+Specify Industry (only if you selected Other)
+Describe your industry.
+
+Answer:
+__________________________________________________________________________
+
+Business Model
+Select every model that applies: Physical Products, Services, Digital Products,
+Subscriptions, Memberships, Rentals.
+
+Answer:
+__________________________________________________________________________
+
+Country
+Enter the country where your business operates.
+
+Answer:
+__________________________________________________________________________
+
+Business Description
+Explain what your business does so the AI can introduce it clearly.
+
+Answer:
+__________________________________________________________________________
+__________________________________________________________________________
+__________________________________________________________________________
+
+Business Logo (optional)
+The current workspace accepts a separate PNG, JPG, or SVG logo file up to 5 MB.
+Record the logo filename here and add it directly in the Identity workspace.
+
+Logo filename:
+__________________________________________________________________________
+
+==========================================================================
+2. BRAND VOICE
+==========================================================================
+
+Brand Personality
+Choose one: Friendly, Professional, Warm, Playful, Luxury, Technical, Casual,
+or Formal.
+
+Answer:
+__________________________________________________________________________
+
+Communication Style
+Choose one: Short & Direct, Balanced, or Detailed.
+
+Answer:
+__________________________________________________________________________
+
+Emoji Usage
+Choose one: Never, Sometimes, or Often.
+
+Answer:
+__________________________________________________________________________
+
+Preferred Tone
+Choose one: Helpful, Confident, Educational, Sales-focused, or Conversational.
+
+Answer:
+__________________________________________________________________________
+
+Writing Examples
+Write 2–3 example replies that demonstrate how your business communicates.
+
+Example 1:
+__________________________________________________________________________
+__________________________________________________________________________
+
+Example 2:
+__________________________________________________________________________
+__________________________________________________________________________
+
+Example 3:
+__________________________________________________________________________
+__________________________________________________________________________
+
+==========================================================================
+3. GREETINGS
+==========================================================================
+
+Welcome Message
+Use this when a customer starts a conversation.
+
+Answer:
+__________________________________________________________________________
+__________________________________________________________________________
+
+Returning Customer Greeting
+Write the greeting for a customer who has contacted you before.
+
+Answer:
+__________________________________________________________________________
+__________________________________________________________________________
+
+Offline Message
+Write the message for customers when your business is away.
+
+Answer:
+__________________________________________________________________________
+__________________________________________________________________________
+
+After Hours Message
+Write the message for customers who contact you outside business hours.
+
+Answer:
+__________________________________________________________________________
+__________________________________________________________________________
+
+Thank You Message
+Write the message to thank a customer for reaching out.
+
+Answer:
+__________________________________________________________________________
+__________________________________________________________________________
+
+==========================================================================
+4. LANGUAGES
+==========================================================================
+
+Primary Language
+Choose the default language your AI should use first. The current workspace
+offers: English, Kiswahili, French, Arabic, German, Spanish, Portuguese,
+Somali, Amharic, Hindi, Chinese, and Italian.
+
+Answer:
+__________________________________________________________________________
+
+Additional Languages
+List any additional languages the AI should support.
+
+Answer:
+__________________________________________________________________________
+
+==========================================================================
+5. BUSINESS HOURS
+==========================================================================
+
+Timezone
+Choose one: East Africa Time (EAT), West Africa Time (WAT),
+Central Africa Time (CAT), or UTC.
+
+Answer:
+__________________________________________________________________________
+
+Weekly Schedule
+Provide a short weekly schedule, for example: Mon–Fri, 8:00 AM - 6:00 PM.
+
+Answer:
+__________________________________________________________________________
+
+Daily Schedule
+For each day, provide opening and closing times or mark it closed.
+
+Monday:    Open __________  Close __________  Closed? __________
+Tuesday:   Open __________  Close __________  Closed? __________
+Wednesday: Open __________  Close __________  Closed? __________
+Thursday:  Open __________  Close __________  Closed? __________
+Friday:    Open __________  Close __________  Closed? __________
+Saturday:  Open __________  Close __________  Closed? __________
+Sunday:    Open __________  Close __________  Closed? __________
+
+Holiday Mode
+Write the message for public-holiday closures.
+
+Answer:
+__________________________________________________________________________
+__________________________________________________________________________
+
+Vacation Mode
+Write the message for when the business is on vacation.
+
+Answer:
+__________________________________________________________________________
+__________________________________________________________________________
+
+Emergency Contact
+Enter the contact number to use for emergencies.
+
+Answer:
+__________________________________________________________________________
+
+==========================================================================
+6. LOCATIONS
+==========================================================================
+
+Head Office
+Enter the main office location your AI can share with customers.
+
+Answer:
+__________________________________________________________________________
+
+Service Areas
+List the areas your business serves. The current workspace adds one location at
+a time (for example: Nairobi, Westlands, Karen).
+
+Answer:
+__________________________________________________________________________
+__________________________________________________________________________
+
+End of template
