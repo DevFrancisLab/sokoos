@@ -59,6 +59,44 @@ import { getMockUser, signOutMock } from "@/lib/auth";
 import EditProfileDialog from "@/components/dashboard/edit-profile-dialog";
 import sokoosLogo from "@/assets/sokoos_logo.png";
 
+function CatalogueItemImage({
+  src,
+  alt,
+  className,
+}: {
+  src?: string | null;
+  alt: string;
+  className: string;
+}) {
+  const [hasImageError, setHasImageError] = useState(false);
+  const imageSrc = src?.trim();
+
+  useEffect(() => {
+    setHasImageError(false);
+  }, [imageSrc]);
+
+  if (imageSrc && !hasImageError) {
+    return (
+      <img
+        src={imageSrc}
+        alt={alt}
+        className={className}
+        onError={() => setHasImageError(true)}
+      />
+    );
+  }
+
+  return (
+    <div
+      role="img"
+      aria-label={`${alt} image unavailable`}
+      className={`${className} flex items-center justify-center bg-[#F1F5F9] text-[#94A3B8]`}
+    >
+      <Package className="h-1/3 w-1/3 min-h-4 min-w-4" aria-hidden="true" />
+    </div>
+  );
+}
+
 const NAV_ITEMS = [
   {
     label: "Home",
@@ -310,11 +348,6 @@ const parseServiceAreas = (value?: string | string[]) => {
     .split(",")
     .map((item) => item.trim())
     .filter(Boolean);
-};
-
-const calculateCatalogueHealthConfidence = (metrics: Array<{ percentage: number }>) => {
-  if (metrics.length === 0) return 0;
-  return Math.round(metrics.reduce((sum, item) => sum + item.percentage, 0) / metrics.length);
 };
 
 const RECENT_AI_ACTIVITY = [
@@ -2071,7 +2104,7 @@ export default function DashboardLayout() {
   const trainCatalogProductAI = (id: string) => {
     console.log(`Train AI for catalogue item ${id} - placeholder`);
   };
-  const getCatalogueItemReadinessLabel = (item: CatalogProduct) => {
+  const getCatalogueItemReadiness = (item: CatalogProduct) => {
     const hasDescription = typeof item.description === "string" && item.description.trim().length > 0;
     const hasImages = Boolean(
       (item.image && item.image.trim().length > 0) ||
@@ -2081,14 +2114,27 @@ export default function DashboardLayout() {
     const hasPrice = typeof item.price === "string" && item.price.trim().length > 0;
     const hasInventory = typeof item.currentStock === "number";
 
-    if (!hasImages) return "Needs Images";
-    if (!hasFAQs) return "Needs FAQ";
-    if (!hasDescription) return "Needs Description";
-    if (!hasPrice) return "Needs Pricing";
-    if (!hasInventory) return "Needs Inventory";
+    const label = !hasImages
+      ? "Needs Images"
+      : !hasFAQs
+        ? "Needs FAQ"
+        : !hasDescription
+          ? "Needs Description"
+          : !hasPrice
+            ? "Needs Pricing"
+            : !hasInventory
+              ? "Needs Inventory"
+              : "100% Ready";
 
-    return "100% Ready";
+    return {
+      label,
+      isReady: label === "100% Ready",
+      needsInformation: !hasDescription || !hasPrice || !hasInventory,
+      missingImage: !hasImages,
+      missingFaq: !hasFAQs,
+    };
   };
+  const getCatalogueItemReadinessLabel = (item: CatalogProduct) => getCatalogueItemReadiness(item).label;
   const archiveCatalogProduct = (id: string) => {
     setCatalogProducts((list) => list.filter((product) => product.id !== id));
   };
@@ -2464,29 +2510,20 @@ export default function DashboardLayout() {
     [catalogProducts.length, pricingSectionComplete],
   );
 
-  const catalogueHealthMetrics = useMemo(() => {
-    const totalProducts = catalogProducts.length;
-    const pricesCompleted = catalogProducts.filter((product) => typeof product.price === "string" && product.price.trim().length > 0).length;
-    const mediaCompleted = catalogProducts.filter((product) => (product.mediaAssets ?? []).length > 0).length;
-    const aiReadyCompleted = catalogProducts.filter((product) => {
-      const hasName = typeof product.name === "string" && product.name.trim().length > 0;
-      const hasCategory = typeof product.category === "string" && product.category.trim().length > 0;
-      const hasDescription = typeof product.description === "string" && product.description.trim().length > 0;
-      return hasName && hasCategory && hasDescription;
-    }).length;
-
-    return [
-      { label: "Products", completed: totalProducts, missing: Math.max(0, 1 - totalProducts), percentage: totalProducts > 0 ? 100 : 0 },
-      { label: "Prices", completed: pricesCompleted, missing: Math.max(0, totalProducts - pricesCompleted), percentage: totalProducts > 0 ? Math.round((pricesCompleted / totalProducts) * 100) : 0 },
-      { label: "Media", completed: mediaCompleted, missing: Math.max(0, totalProducts - mediaCompleted), percentage: totalProducts > 0 ? Math.round((mediaCompleted / totalProducts) * 100) : 0 },
-      { label: "AI Ready", completed: aiReadyCompleted, missing: Math.max(0, totalProducts - aiReadyCompleted), percentage: totalProducts > 0 ? Math.round((aiReadyCompleted / totalProducts) * 100) : 0 },
-    ];
-  }, [catalogProducts]);
-
-  const catalogueHealthConfidence = useMemo(
-    () => calculateCatalogueHealthConfidence(catalogueHealthMetrics),
-    [catalogueHealthMetrics],
+  const catalogueReadinessSummary = catalogProducts.reduce(
+    (summary, product) => {
+      const readiness = getCatalogueItemReadiness(product);
+      summary.ready += Number(readiness.isReady);
+      summary.needsInformation += Number(readiness.needsInformation);
+      summary.missingImage += Number(readiness.missingImage);
+      summary.missingFaq += Number(readiness.missingFaq);
+      return summary;
+    },
+    { ready: 0, needsInformation: 0, missingImage: 0, missingFaq: 0 },
   );
+  const catalogueReadinessPercentage = catalogProducts.length > 0
+    ? Math.round((catalogueReadinessSummary.ready / catalogProducts.length) * 100)
+    : 0;
 
   const productLessonCompleted = productSteps.filter((step) => step.done).length;
   const productLessonProgress = Math.round((productLessonCompleted / productSteps.length) * 100);
@@ -7100,68 +7137,42 @@ export default function DashboardLayout() {
                               <div className="lg:sticky lg:top-4 rounded-[26px] border border-[#E5E7EB] bg-[#F8FBFF] p-4 shadow-sm">
                                 <div className="flex items-center justify-between gap-4">
                                   <div className="min-w-0">
-                                    <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Catalogue Health</p>
-                                    <p className="mt-1 text-sm font-semibold text-[#111827]">AI readiness</p>
+                                    <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Catalogue readiness</p>
+                                    <p className="mt-1 text-xs leading-5 text-[#64748B]">Information available for AI recommendations</p>
                                   </div>
-                                  <div className="text-right">
-                                    <div className="text-[11px] text-[#64748B]">Overall</div>
-                                    <div className="mt-1 text-lg font-semibold text-[#111827]">{catalogueHealthConfidence}%</div>
-                                  </div>
+                                  <div className="text-3xl font-semibold tracking-[-0.04em] text-[#111827]">{catalogueReadinessPercentage}%</div>
                                 </div>
 
-                                <div className="mt-4 space-y-3 text-sm text-[#475569]">
-                                  {[
-                                    {
-                                      label: "AI Readiness",
-                                      percentage: catalogueHealthMetrics.find((item) => item.label === "AI Ready")?.percentage ?? 0,
-                                    },
-                                    {
-                                      label: "Products",
-                                      percentage: catalogueHealthMetrics.find((item) => item.label === "Products")?.percentage ?? 0,
-                                    },
-                                    {
-                                      label: "Prices",
-                                      percentage: catalogueHealthMetrics.find((item) => item.label === "Prices")?.percentage ?? 0,
-                                    },
-                                    {
-                                      label: "Media",
-                                      percentage: catalogueHealthMetrics.find((item) => item.label === "Media")?.percentage ?? 0,
-                                    },
-                                    {
-                                      label: "FAQs",
-                                      percentage:
-                                        catalogProducts.length > 0
-                                          ? Math.round(
-                                              (catalogProducts.filter((product) => (product as any).faqs && (product as any).faqs.length > 0).length / catalogProducts.length) * 100,
-                                            )
-                                          : 0,
-                                    },
-                                  ].map((item) => (
-                                    <div key={item.label} className="space-y-2">
-                                      <div className="flex items-center justify-between gap-2 text-xs text-[#475569]">
-                                        <span>{item.label}</span>
-                                        <span className="font-semibold text-[#111827]">{item.percentage}%</span>
-                                      </div>
-                                      <div className="h-2 rounded-full bg-[#E5E7EB]">
-                                        <div className="h-full rounded-full bg-[#22C55E]" style={{ width: `${item.percentage}%` }} />
-                                      </div>
+                                <p className="mt-3 text-sm font-semibold text-[#111827]">
+                                  {catalogueReadinessSummary.ready} of {catalogProducts.length} items ready for AI recommendations
+                                </p>
+                                <div className="mt-3 h-2 rounded-full bg-[#E5E7EB]">
+                                  <div className="h-full rounded-full bg-[#22C55E] transition-[width] duration-300" style={{ width: `${catalogueReadinessPercentage}%` }} />
+                                </div>
+
+                                <div className="mt-4 space-y-2 rounded-[12px] border border-[#E5E7EB] bg-white p-3 text-xs">
+                                  <div className="flex items-center justify-between gap-3 text-[#166534]">
+                                    <span className="inline-flex items-center gap-2 font-medium"><Check className="h-3.5 w-3.5" aria-hidden="true" />Ready</span>
+                                    <span className="font-semibold">{catalogueReadinessSummary.ready}</span>
+                                  </div>
+                                  {catalogueReadinessSummary.needsInformation > 0 ? (
+                                    <div className="flex items-center justify-between gap-3 text-[#B45309]">
+                                      <span className="inline-flex items-center gap-2 font-medium"><CircleAlert className="h-3.5 w-3.5" aria-hidden="true" />Needs information</span>
+                                      <span className="font-semibold">{catalogueReadinessSummary.needsInformation}</span>
                                     </div>
-                                  ))}
-                                </div>
-
-                                <div className="mt-4 rounded-[12px] border border-[#E5E7EB] bg-white p-3 text-[11px] text-[#475569]">
-                                  <div className="flex items-center justify-between gap-2 py-1">
-                                    <span>Missing descriptions</span>
-                                    <span className="font-semibold text-[#111827]">{catalogProducts.filter((p) => !(p.description && p.description.trim().length > 0)).length}</span>
-                                  </div>
-                                  <div className="flex items-center justify-between gap-2 py-1">
-                                    <span>Missing images</span>
-                                    <span className="font-semibold text-[#111827]">{catalogProducts.filter((p) => !(p.image && p.image.trim().length > 0) && ((p.mediaAssets ?? []).length === 0)).length}</span>
-                                  </div>
-                                  <div className="flex items-center justify-between gap-2 py-1">
-                                    <span>Missing FAQs</span>
-                                    <span className="font-semibold text-[#111827]">{catalogProducts.filter((p) => !((p as any).faqs && (p as any).faqs.length > 0)).length}</span>
-                                  </div>
+                                  ) : null}
+                                  {catalogueReadinessSummary.missingImage > 0 ? (
+                                    <div className="flex items-center justify-between gap-3 text-[#B45309]">
+                                      <span className="inline-flex items-center gap-2 font-medium"><CircleAlert className="h-3.5 w-3.5" aria-hidden="true" />Missing image</span>
+                                      <span className="font-semibold">{catalogueReadinessSummary.missingImage}</span>
+                                    </div>
+                                  ) : null}
+                                  {catalogueReadinessSummary.missingFaq > 0 ? (
+                                    <div className="flex items-center justify-between gap-3 text-[#B45309]">
+                                      <span className="inline-flex items-center gap-2 font-medium"><CircleAlert className="h-3.5 w-3.5" aria-hidden="true" />Missing FAQ</span>
+                                      <span className="font-semibold">{catalogueReadinessSummary.missingFaq}</span>
+                                    </div>
+                                  ) : null}
                                 </div>
                               </div>
                             </div>
@@ -7330,28 +7341,43 @@ export default function DashboardLayout() {
                                               Membership: 'Membership',
                                             }[item.type] ?? item.type;
                                             const itemCategory = typeof item.category === 'string' ? item.category.trim() : '';
-                                            const hasFaqs = (item as any).faqs && (item as any).faqs.length > 0;
-                                            const faqLabel = hasFaqs ? 'FAQ Ready' : 'Needs FAQ';
-                                            const faqClass = hasFaqs ? 'bg-[#ECFDF5] text-[#166534]' : 'bg-[#FEF3C7] text-[#B45309]';
+                                            const categoryLabel = [itemCategory, itemTypeLabel].filter(Boolean).join(' · ');
+                                            const needsReadinessAction = readinessLabel !== '100% Ready';
 
                                             return (
-                                              <article role="button" tabIndex={0} onClick={() => openProductDrawer(item.id)} onKeyDown={(e) => e.key === 'Enter' && openProductDrawer(item.id)} key={item.id} className="group flex h-full flex-col overflow-hidden rounded-[24px] border border-[#E5E7EB] bg-white shadow-[0_10px_24px_rgba(15,23,42,0.06)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_18px_34px_rgba(15,23,42,0.12)]">
+                                              <article key={item.id} className="group flex h-full min-h-[356px] flex-col overflow-hidden rounded-[24px] border border-[#E5E7EB] bg-white shadow-[0_10px_24px_rgba(15,23,42,0.06)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_18px_34px_rgba(15,23,42,0.12)]">
                                                 <div className="relative overflow-hidden bg-[#F5F5F4] h-40 sm:h-44">
-                                                  {item.image ? (
-                                                    <img src={item.image} alt={item.name} className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]" />
-                                                  ) : (
-                                                    <div className="flex h-full w-full items-center justify-center bg-[#E5E7EB]">
-                                                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="h-12 w-12 text-[#94A3B8]" aria-hidden="true">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7.5a4.5 4.5 0 0 1 9 0 4.5 4.5 0 1 1 9 0v6a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3v-6Z" />
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6.75 15.75 9 13.5l1.5 1.5 3-3 3.75 3.75" />
-                                                      </svg>
-                                                    </div>
-                                                  )}
+                                                  <CatalogueItemImage src={item.image} alt={item.name} className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]" />
                                                   <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent" />
-                                                  <div className="absolute right-3 top-3" onClick={(e) => e.stopPropagation()}>
+                                                </div>
+
+                                                <div className="flex flex-1 flex-col p-5">
+                                                  <div className="min-w-0">
+                                                    <p title={item.name} className="text-base font-semibold leading-6 text-[#111827] line-clamp-2">{item.name}</p>
+                                                    {categoryLabel ? (
+                                                      <p title={categoryLabel} className="mt-1 truncate text-sm text-[#64748B]">{categoryLabel}</p>
+                                                    ) : null}
+                                                    <p title={item.price} className="mt-4 text-lg font-semibold tabular-nums text-[#111827]">{item.price}</p>
+                                                  </div>
+
+                                                  <div className="mt-4 flex flex-wrap gap-2">
+                                                    <span title={item.availability} className={`inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-semibold ${isAvailable ? 'bg-[#ECFDF5] text-[#166534]' : 'bg-[#FFFBEB] text-[#B45309]'}`}>
+                                                      {isAvailable ? <Check className="h-3.5 w-3.5" aria-hidden="true" /> : <CircleAlert className="h-3.5 w-3.5" aria-hidden="true" />}
+                                                      {item.availability}
+                                                    </span>
+                                                    {needsReadinessAction ? (
+                                                      <span title={readinessLabel} className="inline-flex h-8 items-center gap-1.5 rounded-full bg-[#FFFBEB] px-3 text-xs font-semibold text-[#B45309]">
+                                                        <CircleAlert className="h-3.5 w-3.5" aria-hidden="true" />
+                                                        {readinessLabel}
+                                                      </span>
+                                                    ) : null}
+                                                  </div>
+
+                                                  <div className="mt-auto flex items-center justify-end gap-2 border-t border-[#F1F5F9] pt-4">
+                                                    <button type="button" aria-label={`Edit ${item.name}`} onClick={() => openProductDrawer(item.id)} className="inline-flex h-9 items-center justify-center rounded-lg border border-[#E5E7EB] bg-white px-3 text-xs font-semibold text-[#111827] transition hover:bg-[#F8FAFB] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2">Edit</button>
                                                     <DropdownMenu>
                                                       <DropdownMenuTrigger asChild>
-                                                        <button type="button" className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-[#475569] shadow-sm ring-1 ring-[#E5E7EB] transition-colors duration-200 hover:bg-white">
+                                                        <button type="button" aria-label={`More actions for ${item.name}`} className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#E5E7EB] bg-white text-[#475569] transition hover:bg-[#F8FAFB] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2">
                                                           <MoreVertical className="h-4 w-4" />
                                                         </button>
                                                       </DropdownMenuTrigger>
@@ -7363,35 +7389,6 @@ export default function DashboardLayout() {
                                                         <DropdownMenuItem onSelect={() => deleteCatalogProduct(item.id)}>Delete</DropdownMenuItem>
                                                       </DropdownMenuContent>
                                                     </DropdownMenu>
-                                                  </div>
-                                                </div>
-
-                                                <div className="flex flex-1 flex-col justify-between gap-4 p-5">
-                                                  <div className="space-y-3">
-                                                    <div className="flex items-start justify-between gap-3">
-                                                      <div className="min-w-0">
-                                                        <p className="text-base font-semibold text-[#111827] line-clamp-2">{item.name}</p>
-                                                        {itemCategory ? (
-                                                          <p className="mt-1 text-sm text-[#64748B] line-clamp-1">{itemCategory}</p>
-                                                        ) : null}
-                                                      </div>
-                                                      <p className="shrink-0 text-sm font-semibold text-[#111827]">{item.price}</p>
-                                                    </div>
-
-                                                    <div className="flex flex-wrap gap-2">
-                                                      <span className="inline-flex h-9 items-center rounded-full border border-[#E5E7EB] bg-[#F8FAFB] px-3.5 text-xs font-semibold text-[#475569]">
-                                                        {itemTypeLabel}
-                                                      </span>
-                                                      <span className={`inline-flex h-9 items-center rounded-full px-3.5 text-xs font-semibold ${isAvailable ? 'bg-[#ECFDF5] text-[#166534]' : 'bg-[#FFFBEB] text-[#B45309]'}`}>
-                                                        {item.availability}
-                                                      </span>
-                                                      <span className={`inline-flex h-9 items-center rounded-full px-3.5 text-xs font-semibold ${readinessLabel === '100% Ready' ? 'bg-[#ECFDF5] text-[#166534]' : 'bg-[#FFFBEB] text-[#B45309]'}`}>
-                                                        {readinessLabel}
-                                                      </span>
-                                                      <span className={`inline-flex h-9 items-center rounded-full px-3.5 text-xs font-semibold ${faqClass}`}>
-                                                        {faqLabel}
-                                                      </span>
-                                                    </div>
                                                   </div>
                                                 </div>
                                               </article>
@@ -7419,7 +7416,7 @@ export default function DashboardLayout() {
                                                 return (
                                                   <tr key={item.id} onClick={() => openProductDrawer(item.id)} className="hover:bg-white hover:shadow-sm transition-transform hover:-translate-y-1 cursor-pointer">
                                                     <td className="px-4 py-3 align-top">
-                                                      <img src={item.image} alt={item.name} className="h-12 w-12 rounded-md object-cover" />
+                                                      <CatalogueItemImage src={item.image} alt={item.name} className="h-12 w-12 rounded-md object-cover" />
                                                     </td>
                                                     <td className="px-4 py-3 align-top">
                                                       <div className="text-sm font-semibold text-[#111827]">{item.name}</div>
