@@ -4242,7 +4242,6 @@ export default function DashboardLayout() {
               <div className="space-y-1">
                 <button
                   onClick={() => {
-                    setSelected("AI Employee");
                     if (expandedNavItem === item.label) {
                       setExpandedNavItem(null);
                     } else {
