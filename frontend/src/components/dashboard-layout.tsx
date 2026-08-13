@@ -7469,6 +7469,7 @@ export default function DashboardLayout() {
                         <TrainingTemplateOption
                           workspaceName="Catalogue"
                           description="Prepare products and services in a document or spreadsheet before adding them through the catalogue tools."
+                          templateHref="/templates/sokoos-catalogue-template.csv"
                           acceptedFileTypes={[".csv", ".xlsx", ".xls", ".pdf"]}
                         />
                       </div>
