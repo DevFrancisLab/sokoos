@@ -53,6 +53,7 @@ import { HomeWorkspace } from "@/components/dashboard/home/home-workspace";
 import { InboxWorkspace } from "@/components/dashboard/inbox/inbox-workspace";
 import { CustomersWorkspace } from "@/components/dashboard/customers/customers-workspace";
 import { PerformanceWorkspace } from "@/components/dashboard/ai-employee/performance/performance-workspace";
+import { TrainingTemplateCard } from "@/components/dashboard/ai-employee/training/training-template-card";
 import { AccountSettings } from "@/components/dashboard/account-settings";
 import { getMockUser, signOutMock } from "@/lib/auth";
 import EditProfileDialog from "@/components/dashboard/edit-profile-dialog";
@@ -4062,6 +4063,23 @@ export default function DashboardLayout() {
   const handleWorkspaceSectionSelection = (section: (typeof workspaceNavigatorItems)[number]["section"]) => {
     setActiveWorkspaceSection(section);
   };
+
+  const TrainingTemplateOption = ({
+    workspaceName,
+    description,
+    acceptedFileTypes,
+  }: {
+    workspaceName: string;
+    description: string;
+    acceptedFileTypes: string[];
+  }) => (
+    <TrainingTemplateCard
+      compact
+      workspaceName={workspaceName}
+      description={description}
+      acceptedFileTypes={acceptedFileTypes}
+    />
+  );
   useEffect(() => {
     const saved = window.localStorage.getItem("sokoos-ai-training-progress-v2");
     if (saved) {
@@ -7046,12 +7064,24 @@ export default function DashboardLayout() {
                         </div>
                       </div>
                     )}
+                    {activeWorkspaceSection === "Identity" && !onboardingComplete && (
+                      <TrainingTemplateOption
+                        workspaceName="Identity"
+                        description="Use a worksheet to gather your business identity and brand voice details before entering them here."
+                        acceptedFileTypes={[".docx", ".pdf"]}
+                      />
+                    )}
                   </div>
 
                     {activeWorkspaceSection === "Knowledge Hub" && (
                       <KnowledgeWorkspace>
                         <KnowledgeLessonTabs />
                         <CurrentLesson />
+                        <TrainingTemplateOption
+                          workspaceName="Knowledge"
+                          description="Collect source information and supporting documents offline, then select a completed file for review."
+                          acceptedFileTypes={[".docx", ".pdf", ".txt"]}
+                        />
                       </KnowledgeWorkspace>
                     )}
 
@@ -7431,6 +7461,11 @@ export default function DashboardLayout() {
                         </div>
 
                         {/* Dialogs removed: catalogue now focuses on item list only. Use drawer to edit items. */}
+                        <TrainingTemplateOption
+                          workspaceName="Catalogue"
+                          description="Prepare products and services in a document or spreadsheet before adding them through the catalogue tools."
+                          acceptedFileTypes={[".csv", ".xlsx", ".xls", ".pdf"]}
+                        />
                       </div>
                     )}
 
@@ -7519,12 +7554,22 @@ export default function DashboardLayout() {
                             ) : null}
                           </div>
                         </div>
+                        <TrainingTemplateOption
+                          workspaceName="Sales Playbook"
+                          description="Map your sales guidance offline, then select the completed document to keep with this training workflow."
+                          acceptedFileTypes={[".docx", ".pdf"]}
+                        />
                       </div>
                     )}
 
                     {activeWorkspaceSection === "Skills" && (
                       <div className="space-y-6">
                         <SkillsLessonTabs />
+                        <TrainingTemplateOption
+                          workspaceName="Skills"
+                          description="Plan the customer tasks your AI should handle before configuring each skill in the workspace."
+                          acceptedFileTypes={[".docx", ".pdf"]}
+                        />
                       </div>
                     )}
 
@@ -8199,6 +8244,11 @@ export default function DashboardLayout() {
                             </div>
                           ))}
                         </div>
+                        <TrainingTemplateOption
+                          workspaceName="Policies"
+                          description="Document customer rules and AI boundaries offline before configuring the policies above."
+                          acceptedFileTypes={[".docx", ".pdf"]}
+                        />
                       </div>
                     )}
 
@@ -8206,6 +8256,11 @@ export default function DashboardLayout() {
                       <div ref={integrationsPageRef} tabIndex={-1} className="space-y-5">
                         <IntegrationLessonTabs />
                         <CurrentIntegrationLesson />
+                        <TrainingTemplateOption
+                          workspaceName="Integrations"
+                          description="List the channels and business systems to connect before completing the integration lessons."
+                          acceptedFileTypes={[".docx", ".pdf"]}
+                        />
                       </div>
                     )}
 
