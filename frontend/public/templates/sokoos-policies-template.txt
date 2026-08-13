@@ -1,0 +1,206 @@
+SOKOOS POLICIES TEMPLATE
+
+Use this document to prepare the rules you want customers and your team to follow. For each item, record whether it applies, its status, and its details. This file is for preparation only; completing it does not update your workspace.
+
+1. CUSTOMER POLICIES
+
+Use this section for customer-facing rules. Mark the whole section not applicable only if your business does not need customer policies.
+
+Section not applicable (Yes/No): ______
+
+Returns
+Status (Enabled/Disabled): ______
+Policy details: ______________________________________________________________
+
+Refunds
+Status (Enabled/Disabled): ______
+Policy details: ______________________________________________________________
+
+Exchanges
+Status (Enabled/Disabled): ______
+Policy details: ______________________________________________________________
+
+Cancellations
+Status (Enabled/Disabled): ______
+Policy details: ______________________________________________________________
+
+Common optional policy types
+Warranty — Status (Enabled/Disabled): ______  Policy details: __________________
+Delivery — Status (Enabled/Disabled): ______  Policy details: __________________
+Shipping — Status (Enabled/Disabled): ______  Policy details: __________________
+Appointment cancellation — Status (Enabled/Disabled): ______  Policy details: ___
+Membership cancellation — Status (Enabled/Disabled): ______  Policy details: ____
+
+Additional policy
+Policy name: ______________________________
+Status (Enabled/Disabled): ______
+Policy details: ______________________________________________________________
+
+2. PRICING & PAYMENT
+
+Record the payment methods, payment timing, pricing rules, and any customer payment notes. Mark the whole section not applicable only if it does not apply to your business.
+
+Section not applicable (Yes/No): ______
+
+Payment Methods
+Credit cards — Status (Accepted/Disabled): ______
+Bank transfers — Status (Accepted/Disabled): ______
+Mobile money — Status (Accepted/Disabled): ______
+Additional payment method name: ____________________  Status (Accepted/Disabled): ______
+
+Payment Timing
+Before fulfillment — Status (Selected/Not selected): ______
+At fulfillment — Status (Selected/Not selected): ______
+Deposit required — Status (Selected/Not selected): ______
+Other — Status (Selected/Not selected): ______
+
+Pricing Rules
+Taxes included — Status (Active/Disabled): ______
+Rule details: ________________________________________________________________
+
+Fixed pricing — Status (Active/Disabled): ______
+Rule details: ________________________________________________________________
+
+Quotation required — Status (Active/Disabled): ______
+Rule details: ________________________________________________________________
+
+Additional pricing rule name: ______________________
+Status (Active/Disabled): ______
+Rule details: ________________________________________________________________
+
+Payment Notes
+Customer payment and pricing instructions: ___________________________________
+____________________________________________________________________________
+
+3. ORDERS & FULFILLMENT
+
+Record what customers should expect after placing an order, booking a service, or requesting fulfillment. Mark the whole section not applicable only if it does not apply to your business.
+
+Section not applicable (Yes/No): ______
+
+Order Processing
+Processing time — Status (Active/Disabled): ______
+Rule details: ________________________________________________________________
+Order confirmation — Status (Active/Disabled): ______
+Rule details: ________________________________________________________________
+Additional order rule name: ______________________  Status (Active/Disabled): ______
+Rule details: ________________________________________________________________
+
+Delivery / Fulfillment
+Delivery options — Status (Active/Disabled): ______
+Rule details: ________________________________________________________________
+Pickup options — Status (Active/Disabled): ______
+Rule details: ________________________________________________________________
+Fulfillment locations — Status (Active/Disabled): ______
+Rule details: ________________________________________________________________
+Typical fulfillment timeframe — Status (Active/Disabled): ______
+Rule details: ________________________________________________________________
+Additional delivery rule name: ___________________  Status (Active/Disabled): ______
+Rule details: ________________________________________________________________
+
+Changes & Cancellation
+Change window — Status (Active/Disabled): ______
+Rule details: ________________________________________________________________
+Cancellation policy — Status (Active/Disabled): ______
+Rule details: ________________________________________________________________
+Additional change or cancellation rule name: ______  Status (Active/Disabled): ______
+Rule details: ________________________________________________________________
+
+Unavailable Items / Services
+Unavailable items handling — Status (Active/Disabled): ______
+Rule details: ________________________________________________________________
+Additional unavailable-item rule name: ____________  Status (Active/Disabled): ______
+Rule details: ________________________________________________________________
+
+4. PRIVACY & CUSTOMER DATA
+
+Record what customer information may be collected, what must not be requested, and when information may be shared. Mark the whole section not applicable only if it does not apply to your business.
+
+Section not applicable (Yes/No): ______
+
+Information the AI may collect
+Name — Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+Phone number — Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+Available examples: Email / Location / Order details
+Additional information name: _____________________  Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+
+Information the AI should not request
+Passwords — Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+Payment card security codes — Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+Available examples: Authentication codes / Other sensitive credentials
+Additional information name: _____________________  Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+
+Data-sharing instructions
+Internal support — Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+Additional sharing rule name: ____________________  Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+
+5. AI BOUNDARIES
+
+Record the actions or claims that must not be made in customer conversations. Mark the whole section not applicable only if it does not apply to your business.
+
+Section not applicable (Yes/No): ______
+
+Never invent prices — Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+Do not claim availability incorrectly — Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+Do not promise unconfirmed actions — Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+Never invent business policies — Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+Do not disclose internal information — Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+Respect authority limits — Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+Do not provide unknown information — Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+Ask for human help when unsure — Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+Additional boundary name: ________________________  Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+
+6. ESCALATION RULES
+
+Record when a customer conversation should be handed to a person. Mark the whole section not applicable only if it does not apply to your business.
+
+Section not applicable (Yes/No): ______
+
+Customer explicitly requests a human — Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+Serious complaint — Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+Legal or regulatory concern — Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+Privacy or data request — Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+Refund dispute — Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+Payment problem — Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+Situation outside documented policies — Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+Request requiring human approval — Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+AI is unable to answer confidently — Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+Additional escalation name: ______________________  Status (Enabled/Disabled): ______
+Rule details: ________________________________________________________________
+
+7. REVIEW
+
+Confirm each policy lesson has been completed or marked not applicable.
+
+Customer Policies: Configured / Not configured / Not applicable: ______
+Pricing & Payment: Configured / Not configured / Not applicable: ______
+Orders & Fulfillment: Configured / Not configured / Not applicable: ______
+Privacy & Customer Data: Configured / Not configured / Not applicable: ______
+AI Boundaries: Configured / Not configured / Not applicable: ______
+Escalation Rules: Configured / Not configured / Not applicable: ______

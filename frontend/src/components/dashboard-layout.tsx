@@ -4038,7 +4038,6 @@ export default function DashboardLayout() {
     Policies: ["Knowledge Hub"],
     Skills: ["Policies"],
     Integrations: ["Knowledge Hub"],
-    Performance: ["Integrations"],
   };
   const workspaceProgressBySection = {
     Identity: identityLessonActivityPercent,
@@ -4048,7 +4047,6 @@ export default function DashboardLayout() {
     Policies: Math.min(100, Math.round((Object.values(policies).filter(Boolean).length / 3) * 100)),
     Skills: 0,
     Integrations: Math.min(100, Math.round((Object.values(communicationChannels).filter(Boolean).length / Math.max(1, Object.keys(communicationChannels).length)) * 100)),
-    Performance: aiEmployeeLaunched ? 100 : Math.min(100, 20 + (trainingCompletedSteps.length > 0 ? 10 : 0)),
   };
   const workspaceNavigatorItems = [
     { title: "Identity", description: "Who your AI represents", section: "Identity" as const, Icon: User, complete: workspaceProgressBySection.Identity >= 100, percent: workspaceProgressBySection.Identity, unlocked: true },
@@ -4058,7 +4056,6 @@ export default function DashboardLayout() {
     { title: "Policies", description: "Rules it follows", section: "Policies" as const, Icon: Shield, complete: workspaceProgressBySection.Policies >= 100, percent: workspaceProgressBySection.Policies, unlocked: true },
     { title: "Skills", description: "Work it can do", section: "Skills" as const, Icon: Sparkles, complete: workspaceProgressBySection.Skills >= 100, percent: workspaceProgressBySection.Skills, unlocked: true },
     { title: "Integrations", description: "Where it connects", section: "Integrations" as const, Icon: Plug, complete: workspaceProgressBySection.Integrations >= 100, percent: workspaceProgressBySection.Integrations, unlocked: true },
-    { title: "Performance", description: "How it is improving", section: "Performance" as const, Icon: BarChart3, complete: workspaceProgressBySection.Performance >= 100, percent: workspaceProgressBySection.Performance, unlocked: true },
   ];
   const handleWorkspaceSectionSelection = (section: (typeof workspaceNavigatorItems)[number]["section"]) => {
     setActiveWorkspaceSection(section);
@@ -6147,7 +6144,7 @@ export default function DashboardLayout() {
                           <div><p className="text-base font-semibold text-[#111827]">Your AI Employee is Ready</p><p className="mt-1 text-sm text-[#64748B]">Your AI has successfully completed the identity curriculum and is ready to represent your business.</p><div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs font-semibold text-[#166534]">{identityLessons.map((lesson) => <span key={lesson}>✓ {lesson}</span>)}</div></div>
                         </div>
                         <div className="flex flex-wrap gap-2">
-                          <button type="button" onClick={() => setActiveWorkspaceSection("Performance")} className="rounded-lg bg-[#111827] px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#334155]">View AI Profile</button>
+                          <button type="button" onClick={() => { setSelected("Performance"); window.history.pushState({}, "", "/dashboard/performance"); }} className="rounded-lg bg-[#111827] px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#334155]">View AI Profile</button>
                           <button type="button" onClick={() => { setSelected("Inbox"); window.history.pushState({}, "", "/dashboard/inbox"); }} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition hover:bg-[#F8FAFC] hover:text-[#111827]">Start Conversations</button>
                           <button type="button" onClick={() => setActiveWorkspaceSection("Test AI")} className="rounded-lg border border-[#BBF7D0] bg-[#ECFDF5] px-3 py-2 text-xs font-semibold text-[#166534] transition hover:bg-[#DCFCE7]">Test AI</button>
                           <button type="button" onClick={() => { setAiEmployeeLaunched(false); setCompletedIdentitySteps([]); focusIdentityLesson(0); }} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition hover:bg-[#F8FAFC] hover:text-[#111827]">Teach More</button>
@@ -7563,7 +7560,8 @@ export default function DashboardLayout() {
                         <TrainingTemplateOption
                           workspaceName="Sales Playbook"
                           description="Map your sales guidance offline, then select the completed document to keep with this training workflow."
-                          acceptedFileTypes={[".docx", ".pdf"]}
+                          templateHref="/templates/sokoos-sales-playbook-template.txt"
+                          acceptedFileTypes={[".txt", ".docx", ".pdf"]}
                         />
                       </div>
                     )}
@@ -7574,7 +7572,8 @@ export default function DashboardLayout() {
                         <TrainingTemplateOption
                           workspaceName="Skills"
                           description="Plan the customer tasks your AI should handle before configuring each skill in the workspace."
-                          acceptedFileTypes={[".docx", ".pdf"]}
+                          templateHref="/templates/sokoos-skills-template.txt"
+                          acceptedFileTypes={[".txt", ".docx", ".pdf"]}
                         />
                       </div>
                     )}
@@ -8253,7 +8252,8 @@ export default function DashboardLayout() {
                         <TrainingTemplateOption
                           workspaceName="Policies"
                           description="Document customer rules and AI boundaries offline before configuring the policies above."
-                          acceptedFileTypes={[".docx", ".pdf"]}
+                          templateHref="/templates/sokoos-policies-template.txt"
+                          acceptedFileTypes={[".txt", ".docx", ".pdf"]}
                         />
                       </div>
                     )}
@@ -8265,7 +8265,8 @@ export default function DashboardLayout() {
                         <TrainingTemplateOption
                           workspaceName="Integrations"
                           description="List the channels and business systems to connect before completing the integration lessons."
-                          acceptedFileTypes={[".docx", ".pdf"]}
+                          templateHref="/templates/sokoos-integration-setup-checklist.txt"
+                          acceptedFileTypes={[".txt", ".docx", ".pdf"]}
                         />
                       </div>
                     )}
@@ -8364,121 +8365,6 @@ export default function DashboardLayout() {
                       </div>
                     )}
 
-                    {activeWorkspaceSection === "Performance" && (
-                      <div className="space-y-6">
-                        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                          {PERFORMANCE_METRICS.slice(0, 4).map((metric) => (
-                            <div key={metric.label} className="rounded-[20px] border border-[#E5E7EB] bg-white p-5">
-                              <div className="flex items-center justify-between gap-3">
-                                <p className="text-sm font-semibold text-[#111827]">{metric.label}</p>
-                                <span className="rounded-full bg-[#ECFDF5] px-2 py-1 text-xs font-semibold text-[#16A34A]">{metric.delta}</span>
-                              </div>
-                              <p className="mt-5 text-3xl font-semibold text-[#111827]">{metric.value}</p>
-                              <div className="mt-5 flex items-center gap-2">
-                                {metric.trend.map((point, index) => (
-                                  <div key={index} className="h-2 rounded-full bg-[#22C55E]" style={{ width: `${Math.max(8, point)}%` }} />
-                                ))}
-                              </div>
-                              <div className="mt-4 h-2 w-full rounded-full bg-[#E5E7EB]">
-                                <div className="h-2 rounded-full bg-[#22C55E]" style={{ width: `${metric.progress}%` }} />
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="grid gap-4 xl:grid-cols-4">
-                          {PERFORMANCE_METRICS.slice(4).map((metric) => (
-                            <div key={metric.label} className="rounded-[20px] border border-[#E5E7EB] bg-white p-5">
-                              <div className="flex items-center justify-between gap-3">
-                                <p className="text-sm font-semibold text-[#111827]">{metric.label}</p>
-                                <span className="text-sm text-[#6B7280]">{metric.delta}</span>
-                              </div>
-                              <p className="mt-5 text-3xl font-semibold text-[#111827]">{metric.value}</p>
-                              <div className="mt-4 h-2 w-full rounded-full bg-[#E5E7EB]">
-                                <div className="h-2 rounded-full bg-[#2563EB]" style={{ width: `${metric.progress}%` }} />
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
-                          <div className="rounded-[20px] border border-[#E5E7EB] bg-white p-5">
-                            <div className="flex items-start justify-between gap-4">
-                              <div>
-                                <p className="text-sm font-semibold text-[#111827]">Knowledge Usage</p>
-                                <p className="mt-2 text-sm text-[#6B7280]">How often the AI referred to internal knowledge sources.</p>
-                              </div>
-                              <span className="rounded-full bg-[#F3F4F6] px-3 py-1 text-xs font-semibold text-[#6B7280]">Mock data</span>
-                            </div>
-                            <div className="mt-6 space-y-4">
-                              {KNOWLEDGE_USAGE.map((item) => (
-                                <div key={item.label}>
-                                  <div className="flex items-center justify-between text-sm text-[#475569]">
-                                    <span>{item.label}</span>
-                                    <span>{item.percent}%</span>
-                                  </div>
-                                  <div className="mt-2 h-2 w-full rounded-full bg-[#E5E7EB]">
-                                    <div className="h-2 rounded-full bg-[#2563EB]" style={{ width: `${item.percent}%` }} />
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-
-                          <div className="grid gap-4">
-                            <div className="rounded-[20px] border border-[#E5E7EB] bg-white p-5">
-                              <p className="text-sm font-semibold text-[#111827]">Top Questions</p>
-                              <p className="mt-2 text-sm text-[#6B7280]">Most asked questions this week.</p>
-                              <div className="mt-4 space-y-3">
-                                {PERFORMANCE_TOP_QUESTIONS.map((question) => (
-                                  <div key={question} className="rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFB] px-4 py-3 text-sm text-[#111827]">{question}</div>
-                                ))}
-                              </div>
-                            </div>
-
-                            <div className="rounded-[20px] border border-[#E5E7EB] bg-white p-5">
-                              <p className="text-sm font-semibold text-[#111827]">Most Viewed Products</p>
-                              <p className="mt-2 text-sm text-[#6B7280]">Products the AI referenced most in conversations.</p>
-                              <div className="mt-4 space-y-3">
-                                {MOST_VIEWED_PRODUCTS.map((product) => (
-                                  <div key={product.name}>
-                                    <div className="flex items-center justify-between text-sm text-[#475569]">
-                                      <span>{product.name}</span>
-                                      <span className="font-semibold text-[#111827]">{product.views}</span>
-                                    </div>
-                                    <div className="mt-2 h-2 w-full rounded-full bg-[#E5E7EB]">
-                                      <div className="h-2 rounded-full bg-[#22C55E]" style={{ width: `${Math.min(100, (product.views / 512) * 100)}%` }} />
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="rounded-[20px] border border-[#E5E7EB] bg-white p-5">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <p className="text-sm font-semibold text-[#111827]">Recent AI Activity</p>
-                              <p className="mt-2 text-sm text-[#6B7280]">Timeline of the latest AI Employee actions.</p>
-                            </div>
-                          </div>
-                          <div className="mt-6 space-y-4">
-                            {RECENT_AI_ACTIVITY.map((activity) => (
-                              <div key={activity.title} className="rounded-[20px] border border-[#F3F4F6] bg-[#F8FAFB] p-4">
-                                <div className="flex items-center justify-between gap-2">
-                                  <div>
-                                    <p className="text-sm font-semibold text-[#111827]">{activity.title}</p>
-                                    <p className="text-xs text-[#6B7280]">{activity.type}</p>
-                                  </div>
-                                  <p className="text-xs text-[#94A3B8]">{activity.time}</p>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    )}
                 </main>
               </div>
           )}

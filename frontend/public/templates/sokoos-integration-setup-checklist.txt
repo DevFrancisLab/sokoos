@@ -1,0 +1,152 @@
+SOKOOS INTEGRATION SETUP CHECKLIST
+
+Use this checklist to plan which business services to connect. Do not write passwords, API keys, access tokens, OAuth secrets, payment credentials, WhatsApp credentials, database credentials, private keys, or any other secret in this document.
+
+Connect and authorize every service only inside Sokoos. For each service you need, make sure you have an authorized business account available, then open Integrations in Sokoos, choose the matching lesson and service, complete the connection there, and confirm its status in Sokoos.
+
+Use one status for each service: Not needed / Ready to connect / Connected in Sokoos / Setup required / Coming soon.
+
+1. CHANNELS
+
+Use these services for customer conversations.
+
+WhatsApp Business
+Used for: Reply to customers directly inside WhatsApp.
+Non-sensitive setup ready: Authorized business account available (Yes/No) ______
+Status in Sokoos: ____________________________________________________________
+
+Facebook Messenger
+Used for: Reply to customers on Facebook Messenger.
+Non-sensitive setup ready: Authorized business account available (Yes/No) ______
+Status in Sokoos: ____________________________________________________________
+
+Instagram
+Used for: Respond to Instagram messages and DMs.
+Non-sensitive setup ready: Authorized business account available (Yes/No) ______
+Status in Sokoos: ____________________________________________________________
+
+Telegram
+Used for: Manage Telegram conversations.
+Non-sensitive setup ready: Authorized business account available (Yes/No) ______
+Status in Sokoos: ____________________________________________________________
+
+Email
+Used for: Read and send business emails.
+Non-sensitive setup ready: Authorized business account available (Yes/No) ______
+Status in Sokoos: ____________________________________________________________
+
+2. PAYMENTS
+
+Use these services for payment-related tasks. Complete all payment connection and authorization steps only inside Sokoos.
+
+M-Pesa
+Used for: Mobile money payments and reconciliation.
+Non-sensitive setup ready: Authorized business account available (Yes/No) ______
+Status in Sokoos: ____________________________________________________________
+
+Stripe
+Used for: Generate payment links.
+Non-sensitive setup ready: Authorized business account available (Yes/No) ______
+Status in Sokoos: ____________________________________________________________
+
+PayPal
+Used for: Generate PayPal payment links.
+Non-sensitive setup ready: Authorized business account available (Yes/No) ______
+Status in Sokoos: ____________________________________________________________
+
+Flutterwave
+Used for: Process payments across Africa and generate payment links.
+Non-sensitive setup ready: Authorized business account available (Yes/No) ______
+Status in Sokoos: ____________________________________________________________
+
+3. BUSINESS TOOLS
+
+Use these services to work with products, orders, appointments, and business information.
+
+Shopify
+Used for: Answer product questions using your store catalog.
+Non-sensitive setup ready: Authorized business account available (Yes/No) ______
+Status in Sokoos: ____________________________________________________________
+
+WooCommerce
+Used for: Access your WooCommerce product catalog and orders.
+Non-sensitive setup ready: Authorized business account available (Yes/No) ______
+Status in Sokoos: ____________________________________________________________
+
+Custom Website API
+Used for: Query your site's product and order APIs.
+Non-sensitive setup ready: Website or system owner available (Yes/No) ______
+Status in Sokoos: ____________________________________________________________
+
+Google Business Profile
+Used for: Update and read your business profile and respond to reviews.
+Non-sensitive setup ready: Authorized business account available (Yes/No) ______
+Status in Sokoos: ____________________________________________________________
+
+Google Calendar
+Used for: Schedule appointments.
+Non-sensitive setup ready: Authorized business account available (Yes/No) ______
+Status in Sokoos: ____________________________________________________________
+
+Microsoft Outlook
+Used for: Schedule meetings and manage business email/calendar.
+Non-sensitive setup ready: Authorized business account available (Yes/No) ______
+Status in Sokoos: ____________________________________________________________
+
+4. COMMUNICATION
+
+Use these services to keep customers and your team informed.
+
+Meta Ads
+Used for: Sync campaign data and create audiences.
+Non-sensitive setup ready: Authorized business account available (Yes/No) ______
+Status in Sokoos: ____________________________________________________________
+
+Google Ads
+Used for: Pull campaign performance and recommend optimizations.
+Non-sensitive setup ready: Authorized business account available (Yes/No) ______
+Status in Sokoos: ____________________________________________________________
+
+TikTok
+Used for: Manage TikTok ad campaigns and creatives.
+Non-sensitive setup ready: Authorized business account available (Yes/No) ______
+Status in Sokoos: ____________________________________________________________
+
+Mailchimp
+Used for: Sync contact lists and send marketing campaigns.
+Non-sensitive setup ready: Authorized business account available (Yes/No) ______
+Status in Sokoos: ____________________________________________________________
+
+Brevo
+Used for: Send campaigns and sync contact lists.
+Non-sensitive setup ready: Authorized business account available (Yes/No) ______
+Status in Sokoos: ____________________________________________________________
+
+5. DATA & SYNC
+
+Use these services to keep business documents and knowledge files available in Sokoos.
+
+Google Drive
+Used for: Access business documents and knowledge files.
+Non-sensitive setup ready: Authorized business account available (Yes/No) ______
+Status in Sokoos: ____________________________________________________________
+
+Dropbox
+Used for: Access business documents stored in Dropbox.
+Non-sensitive setup ready: Authorized business account available (Yes/No) ______
+Status in Sokoos: ____________________________________________________________
+
+OneDrive
+Used for: Access business documents stored in OneDrive.
+Non-sensitive setup ready: Authorized business account available (Yes/No) ______
+Status in Sokoos: ____________________________________________________________
+
+6. REVIEW
+
+Review each lesson after completing the connections inside Sokoos. Record the status shown in Sokoos; do not add credentials or secrets here.
+
+Channels: _________________________________________________________________
+Payments: _________________________________________________________________
+Business Tools: ___________________________________________________________
+Communication: ____________________________________________________________
+Data & Sync: ______________________________________________________________

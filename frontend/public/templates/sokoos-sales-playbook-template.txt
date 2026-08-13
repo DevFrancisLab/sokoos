@@ -1,0 +1,87 @@
+SOKOOS SALES PLAYBOOK TEMPLATE
+
+Use this document to prepare your sales guidance before configuring your Sales Playbook. Complete the spaces below using the choices shown in each section.
+
+1. SALES OBJECTIVES
+
+Choose the objectives that matter to your business. Number your selected objectives in priority order, with 1 as the highest priority.
+
+Sell products or services: Priority ______
+Generate qualified leads: Priority ______
+Book appointments: Priority ______
+Collect customer information: Priority ______
+Answer pre-sales questions: Priority ______
+Increase order value (Upsell): Priority ______
+Retain existing customers: Priority ______
+
+2. CUSTOMER QUALIFICATION
+
+For each question, note whether it must be collected before making a recommendation.
+
+Budget: Required (Yes/No) ______
+Preferred location: Required (Yes/No) ______
+Timeline: Required (Yes/No) ______
+Company size: Required (Yes/No) ______
+Industry: Required (Yes/No) ______
+
+3. SALES STRATEGY
+
+Mark the recommendation approaches you want to use.
+
+Recommend the best match: Use (Yes/No) ______
+Recommend best sellers: Use (Yes/No) ______
+Recommend premium options: Use (Yes/No) ______
+Recommend budget alternatives: Use (Yes/No) ______
+Recommend complementary items: Use (Yes/No) ______
+Recommend promotional items: Use (Yes/No) ______
+Recommend newest items: Use (Yes/No) ______
+
+4. PRICING & NEGOTIATION
+
+Mark the pricing actions that are allowed. Then set the maximum discount and when human approval is needed.
+
+Share prices: Allowed (Yes/No) ______
+Generate quotations: Allowed (Yes/No) ______
+Offer discounts: Allowed (Yes/No) ______
+Apply coupons: Allowed (Yes/No) ______
+Reserve inventory: Allowed (Yes/No) ______
+
+Maximum discount (0–20%): ______%
+Human approval (choose one: Always / Above maximum discount / Never): ______
+
+5. HUMAN HANDOFF
+
+Mark the situations that should be passed to a team member.
+
+Customer requests a human: Pass to team member (Yes/No) ______
+Complaint: Pass to team member (Yes/No) ______
+Refund request: Pass to team member (Yes/No) ______
+Payment issue: Pass to team member (Yes/No) ______
+Large order: Pass to team member (Yes/No) ______
+Custom quotation: Pass to team member (Yes/No) ______
+Technical issue: Pass to team member (Yes/No) ______
+VIP customer: Pass to team member (Yes/No) ______
+
+6. CLOSING & FOLLOW-UP
+
+Mark the actions to use at the end of a sales conversation. Choose one follow-up timing; only use it when the customer has not completed the intended action.
+
+Share checkout link: Use (Yes/No) ______
+Book appointment: Use (Yes/No) ______
+Send quotation: Use (Yes/No) ______
+Collect phone number: Use (Yes/No) ______
+Collect email: Use (Yes/No) ______
+Connect to staff: Use (Yes/No) ______
+
+Follow-up timing (choose one: Never / After 2 hours / After 24 hours / After 3 days): ______
+
+7. REVIEW
+
+Before you configure the Sales Playbook, confirm each section is complete.
+
+Sales Objectives: Configured (Yes/No) ______
+Customer Qualification: Configured (Yes/No) ______
+Sales Strategy: Configured (Yes/No) ______
+Pricing & Negotiation: Configured (Yes/No) ______
+Human Handoff: Configured (Yes/No) ______
+Closing & Follow-up: Configured (Yes/No) ______

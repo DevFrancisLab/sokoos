@@ -1,0 +1,125 @@
+SOKOOS SKILLS TEMPLATE
+
+Use this document to choose the customer-facing business tasks Sokoos should handle. For each task, mark whether it should be enabled. Tasks that require a connected business tool can only be enabled after that tool is connected.
+
+1. COMMUNICATION
+
+Choose the communication tasks Sokoos can handle for customers.
+
+Answer customer questions: Enable (Yes/No) ______
+Explain products and services: Enable (Yes/No) ______
+Provide business information: Enable (Yes/No) ______
+Handle common customer requests: Enable (Yes/No) ______
+Communicate in configured languages: Enable (Yes/No) ______
+
+2. LEADS & SALES
+
+Choose the sales and lead-management tasks Sokoos can perform.
+
+Capture leads: Enable (Yes/No) ______
+Qualify leads: Enable (Yes/No) ______
+Recommend products or services: Enable (Yes/No) ______
+Upsell: Enable (Yes/No) ______
+Cross-sell: Enable (Yes/No) ______
+Collect customer requirements: Enable (Yes/No) ______
+Request human follow-up: Enable (Yes/No) ______
+
+3. BOOKINGS
+
+Choose the booking and scheduling tasks Sokoos can perform. Each task requires a connected Google Calendar or Microsoft Outlook integration.
+
+Book appointments: Enable (Yes/No) ______
+Check availability: Enable (Yes/No) ______
+Reschedule appointments: Enable (Yes/No) ______
+Cancel appointments: Enable (Yes/No) ______
+Send booking confirmations: Enable (Yes/No) ______
+
+Connected integration available (Google Calendar / Microsoft Outlook): ______
+
+4. ORDERS & PAYMENTS
+
+Choose the order and payment-related tasks Sokoos can perform. Record whether the required business tool is connected.
+
+Create orders: Enable (Yes/No) ______
+Required integration: Shopify / WooCommerce / Custom Website API
+Connected integration available: ______
+
+Check order status: Enable (Yes/No) ______
+Required integration: Shopify / WooCommerce / Custom Website API
+Connected integration available: ______
+
+Generate quotations: Enable (Yes/No) ______
+Required integration: WhatsApp Business / Shopify / Custom Website API / WooCommerce
+Connected integration available: ______
+
+Send payment instructions: Enable (Yes/No) ______
+Required integration: M-Pesa / Stripe / PayPal / Flutterwave
+Connected integration available: ______
+
+Confirm payment: Enable (Yes/No) ______
+Required integration: M-Pesa / Stripe / PayPal / Flutterwave
+Connected integration available: ______
+
+Update order information: Enable (Yes/No) ______
+Required integration: Shopify / WooCommerce / Custom Website API
+Connected integration available: ______
+
+Cancel orders: Enable (Yes/No) ______
+Required integration: Shopify / WooCommerce / Custom Website API
+Connected integration available: ______
+
+5. CUSTOMER SUPPORT
+
+Choose the support tasks Sokoos can handle before involving a person.
+
+Answer support questions: Enable (Yes/No) ______
+Troubleshoot common issues: Enable (Yes/No) ______
+Explain documented solutions: Enable (Yes/No) ______
+Create support requests: Enable (Yes/No) ______
+Collect information for support: Enable (Yes/No) ______
+Escalate to a human: Enable (Yes/No) ______
+
+6. FOLLOW-UP
+
+Choose the tasks Sokoos can perform after a customer interaction. Messaging tasks require a connected WhatsApp Business, Facebook Messenger, or Instagram integration.
+
+Follow up with leads: Enable (Yes/No) ______
+Send appointment reminders: Enable (Yes/No) ______
+Send order updates: Enable (Yes/No) ______
+Re-engage inactive conversations: Enable (Yes/No) ______
+Request additional information: Enable (Yes/No) ______
+
+Connected messaging integration available (WhatsApp Business / Facebook Messenger / Instagram): ______
+
+Notify a human when follow-up is required: Enable (Yes/No) ______
+
+7. REVIEW
+
+Review the status of the chosen tasks in each lesson.
+
+Communication
+Enabled capabilities: ________________________________________________________
+Capabilities not enabled: ____________________________________________________
+
+Leads & Sales
+Enabled capabilities: ________________________________________________________
+Capabilities not enabled: ____________________________________________________
+
+Bookings
+Enabled capabilities: ________________________________________________________
+Capabilities requiring integration: ___________________________________________
+Capabilities not enabled: ____________________________________________________
+
+Orders & Payments
+Enabled capabilities: ________________________________________________________
+Capabilities requiring integration: ___________________________________________
+Capabilities not enabled: ____________________________________________________
+
+Customer Support
+Enabled capabilities: ________________________________________________________
+Capabilities not enabled: ____________________________________________________
+
+Follow-up
+Enabled capabilities: ________________________________________________________
+Capabilities requiring integration: ___________________________________________
+Capabilities not enabled: ____________________________________________________
