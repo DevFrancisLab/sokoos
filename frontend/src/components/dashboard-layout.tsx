@@ -7084,7 +7084,8 @@ export default function DashboardLayout() {
                         <TrainingTemplateOption
                           workspaceName="Knowledge"
                           description="Collect source information and supporting documents offline, then select a completed file for review."
-                          acceptedFileTypes={[".docx", ".pdf", ".txt"]}
+                          templateHref="/templates/sokoos-knowledge-template.txt"
+                          acceptedFileTypes={[".txt", ".docx", ".pdf"]}
                         />
                       </KnowledgeWorkspace>
                     )}
