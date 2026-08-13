@@ -1,424 +1,166 @@
+import { ArrowRight, Bot, CheckCircle2, CircleAlert, MessageCircle, UsersRound } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+
 interface HomeWorkspaceProps {
-  handleLogout: () => void;
+  userName: string;
+  aiEmployeeLaunched: boolean;
+  aiEnabled: boolean;
+  attentionConversations: Array<{ id: string; name: string | null; source: string; needsAttention?: boolean }>;
   CARD: string;
   SECTION_HEADING: string;
   CARD_TITLE: string;
 }
 
-export function HomeWorkspace({ handleLogout, CARD, SECTION_HEADING, CARD_TITLE }: HomeWorkspaceProps) {
+const todayMetrics = [
+  { label: "Conversations", Icon: MessageCircle },
+  { label: "Customers", Icon: UsersRound },
+  { label: "Sales", Icon: CheckCircle2 },
+];
+
+type AiEmployeeStatus = "Active" | "Needs attention" | "Not set up" | "Paused";
+
+const aiStatusStyles: Record<AiEmployeeStatus, { badge: string; dot: string; description: string }> = {
+  Active: {
+    badge: "bg-[#ECFDF5] text-[#15803D]",
+    dot: "bg-[#22C55E]",
+    description: "Your AI employee is working and handling customer interactions.",
+  },
+  "Needs attention": {
+    badge: "bg-[#FFF7ED] text-[#C2410C]",
+    dot: "bg-[#F97316]",
+    description: "Your AI employee needs your review before it can continue.",
+  },
+  "Not set up": {
+    badge: "bg-[#F1F5F9] text-[#475569]",
+    dot: "bg-[#94A3B8]",
+    description: "Set up your AI employee to start handling customer interactions.",
+  },
+  Paused: {
+    badge: "bg-[#FEF2F2] text-[#B91C1C]",
+    dot: "bg-[#EF4444]",
+    description: "Your AI employee is paused and is not handling customer interactions.",
+  },
+};
+
+export function HomeWorkspace({ userName, aiEmployeeLaunched, aiEnabled, attentionConversations, CARD, SECTION_HEADING, CARD_TITLE }: HomeWorkspaceProps) {
+  const firstName = userName.trim().split(/\s+/)[0] || "there";
+  const actionableItems = attentionConversations.filter((conversation) => conversation.source === "needs_attention" || conversation.needsAttention);
+  const aiStatus: AiEmployeeStatus = !aiEmployeeLaunched ? "Not set up" : !aiEnabled ? "Paused" : actionableItems.length > 0 ? "Needs attention" : "Active";
+  const statusDetails = aiStatusStyles[aiStatus];
+
   return (
     <div className="h-full overflow-y-auto space-y-6 pr-2">
-      <div className="relative overflow-hidden rounded-[32px] border border-[#DCFCE7] bg-gradient-to-br from-[#F0FDF4] via-white to-[#ECFDF5] p-8 shadow-sm">
-        <div className="absolute right-[-60px] top-[-60px] h-56 w-56 rounded-full bg-[#22C55E]/10 blur-3xl" />
-        <div className="absolute bottom-[-80px] left-[-80px] h-72 w-72 rounded-full bg-[#16A34A]/10 blur-3xl" />
+      <header className="px-1 pt-2">
+        <p className={SECTION_HEADING}>Home</p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-[-0.02em] text-[#111827] sm:text-4xl">Good morning, {firstName} 👋</h1>
+        <p className="mt-2 text-sm leading-6 text-[#64748B] sm:text-base">Here&apos;s what&apos;s happening with your business.</p>
+      </header>
 
-        <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex-1">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#16A34A]">
-              AI Growth Dashboard
-            </p>
-
-            <h1 className="mt-3 text-4xl font-bold text-[#111827]">
-              Good morning, Francis 👋 Your AI Employee is already at
-              work.
-            </h1>
-
-            <p className="mt-3 max-w-3xl text-lg text-[#64748B] leading-8">
-              Your AI is responding to customers, qualifying leads,
-              booking appointments and following up automatically.
-              Here's how your business is growing today.
-            </p>
-
-            <div className="mt-8 flex flex-wrap gap-3">
-              <button className="rounded-xl bg-[#16A34A] px-5 py-3 font-semibold text-white hover:bg-[#15803D] transition">
-                Open Inbox
-              </button>
-
-              <button className="rounded-xl border border-[#E5E7EB] bg-white px-5 py-3 font-semibold text-[#111827] hover:bg-[#F9FAFB] transition">
-                Chat with AI Employee
-              </button>
-
-              <button className="rounded-xl border border-[#E5E7EB] bg-white px-5 py-3 font-semibold text-[#111827] hover:bg-[#F9FAFB] transition">
-                Create Campaign
-              </button>
-
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="rounded-xl border border-[#E5E7EB] bg-white px-5 py-3 font-semibold text-[#111827] hover:bg-[#F9FAFB] transition"
-              >
-                Logout
-              </button>
+      <section className={CARD} aria-labelledby="ai-employee-heading">
+        {!aiEmployeeLaunched ? (
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-4">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#15803D]">
+                <Bot className="h-5 w-5" aria-hidden="true" />
+              </div>
+              <div className="min-w-0">
+                <h2 id="ai-employee-heading" className={CARD_TITLE}>AI Employee</h2>
+                <p className="text-sm leading-6 text-[#64748B]">Complete your setup so Sokoos can start working for your business.</p>
+              </div>
             </div>
+            <Link to="/dashboard/ai" className="inline-flex shrink-0 items-center gap-1 rounded-md text-sm font-semibold text-[#047857] transition hover:text-[#065F46] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2">
+              Continue setup <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
           </div>
-
-          <div className="grid w-full max-w-md grid-cols-2 gap-4">
-            <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm">
-              <p className="text-sm text-[#64748B]">AI Conversations</p>
-
-              <p className="mt-2 text-3xl font-bold text-[#111827]">
-                124
-              </p>
-
-              <p className="mt-1 text-sm text-[#16A34A]">↑ 18 today</p>
+        ) : (
+          <>
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-start gap-4">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#15803D]">
+                  <Bot className="h-5 w-5" aria-hidden="true" />
+                </div>
+                <div className="min-w-0">
+                  <h2 id="ai-employee-heading" className={CARD_TITLE}>AI Employee</h2>
+                  <p className="text-sm leading-6 text-[#64748B]">{statusDetails.description}</p>
+                </div>
+              </div>
+              <div className={`flex shrink-0 items-center gap-2 rounded-full px-3 py-1.5 text-sm font-semibold ${statusDetails.badge}`}>
+                <span className={`h-2 w-2 rounded-full ${statusDetails.dot}`} /> {aiStatus}
+              </div>
             </div>
+            <Link to="/dashboard/ai" className="mt-5 inline-flex items-center gap-1 rounded-md text-sm font-semibold text-[#047857] transition hover:text-[#065F46] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2">
+              View AI Employee <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+          </>
+        )}
+      </section>
 
-            <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm">
-              <p className="text-sm text-[#64748B]">Qualified Leads</p>
-
-              <p className="mt-2 text-3xl font-bold text-[#111827]">
-                27
-              </p>
-
-              <p className="mt-1 text-sm text-[#16A34A]">
-                AI identified today
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm">
-              <p className="text-sm text-[#64748B]">Appointments</p>
-
-              <p className="mt-2 text-3xl font-bold text-[#111827]">
-                8
-              </p>
-
-              <p className="mt-1 text-sm text-[#16A34A]">
-                Booked automatically
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-sm">
-              <p className="text-sm text-[#64748B]">Customer Rating</p>
-
-              <p className="mt-2 text-3xl font-bold text-[#111827]">
-                ★ 4.9
-              </p>
-
-              <p className="mt-1 text-sm text-[#16A34A]">
-                Based on AI conversations
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <section className={CARD}>
-        <div className="flex items-center justify-between">
+      <section className={CARD} aria-labelledby="attention-heading">
+        <div className="flex items-start justify-between gap-4">
           <div>
-            <p className={SECTION_HEADING}>Ask Sokoos</p>
-
-            <h2 className={CARD_TITLE}>Your AI Employee is ready</h2>
+            <h2 id="attention-heading" className={CARD_TITLE}>Needs your attention</h2>
           </div>
-
-          <div className="text-[#22C55E] text-3xl">🤖</div>
+          {actionableItems.length > 0 ? (
+            <Link to="/dashboard/inbox" className="inline-flex shrink-0 items-center gap-1 rounded-md text-sm font-semibold text-[#047857] transition hover:text-[#065F46] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2">
+              View <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+          ) : null}
         </div>
-
-        <div className="mt-6">
-          <div className="rounded-2xl border border-[#E5E7EB] bg-[#F9FAFB] px-5 py-4">
-            <input
-              type="text"
-              placeholder="Ask your AI Employee anything..."
-              className="w-full bg-transparent text-[15px] outline-none placeholder:text-[#94A3B8]"
-            />
+        {actionableItems.length > 0 ? (
+          <div className="mt-4 space-y-2">
+            {actionableItems.slice(0, 3).map((conversation) => (
+              <Link
+                key={conversation.id}
+                to="/dashboard/inbox"
+                className="flex items-center gap-3 rounded-xl bg-[#FFF7ED] px-3 py-3 text-sm transition hover:bg-[#FFEDD5] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2"
+              >
+                <CircleAlert className="h-4 w-4 shrink-0 text-[#C2410C]" aria-hidden="true" />
+                <span className="min-w-0 flex-1 truncate font-medium text-[#111827]">
+                  Conversation{conversation.name ? ` with ${conversation.name}` : ""} needs a response
+                </span>
+                <ArrowRight className="h-4 w-4 shrink-0 text-[#C2410C]" aria-hidden="true" />
+              </Link>
+            ))}
           </div>
-
-          <div className="mt-5 flex flex-wrap gap-3">
-            <button className="rounded-full border border-[#E5E7EB] px-4 py-2 text-sm hover:bg-[#F9FAFB]">
-              Create Campaign
-            </button>
-
-            <button className="rounded-full border border-[#E5E7EB] px-4 py-2 text-sm hover:bg-[#F9FAFB]">
-              Generate Quote
-            </button>
-
-            <button className="rounded-full border border-[#E5E7EB] px-4 py-2 text-sm hover:bg-[#F9FAFB]">
-              Build Landing Page
-            </button>
-
-            <button className="rounded-full border border-[#E5E7EB] px-4 py-2 text-sm hover:bg-[#F9FAFB]">
-              Show Today's Leads
-            </button>
-
-            <button className="rounded-full border border-[#E5E7EB] px-4 py-2 text-sm hover:bg-[#F9FAFB]">
-              Train on PDF
-            </button>
-
-            <button className="rounded-full border border-[#E5E7EB] px-4 py-2 text-sm hover:bg-[#F9FAFB]">
-              Summarize Conversations
-            </button>
+        ) : (
+          <div className="mt-4 flex items-start gap-3 rounded-xl bg-[#F8FAFC] px-4 py-3">
+            <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-[#16A34A]" aria-hidden="true" />
+            <div>
+              <p className="text-sm font-semibold text-[#111827]">You&apos;re all caught up.</p>
+              <p className="mt-1 text-sm leading-6 text-[#64748B]">Your AI employee is handling everything.</p>
+            </div>
           </div>
+        )}
+      </section>
+
+      <section aria-labelledby="today-heading">
+        <div className="mb-4 px-1">
+          <h2 id="today-heading" className={CARD_TITLE}>Today</h2>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-3">
+          {todayMetrics.map(({ label, Icon }) => (
+            <article key={label} className="rounded-[20px] border border-[#E5E7EB] bg-white p-4">
+              <div className="flex items-center justify-between gap-3">
+                <p className="text-sm font-medium text-[#64748B]">{label}</p>
+                <Icon className="h-5 w-5 text-[#16A34A]" aria-hidden="true" />
+              </div>
+              <p className="mt-4 text-sm font-medium text-[#64748B]">Not available</p>
+            </article>
+          ))}
         </div>
       </section>
 
-      <div className="grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-        <section className={CARD}>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className={SECTION_HEADING}>AI Command Center</p>
-
-              <h2 className={CARD_TITLE}>AI Employee Status</h2>
-            </div>
-
-            <div className="text-[#22C55E] text-3xl">🤖</div>
+      <section className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFC] px-4 py-4 sm:px-5" aria-labelledby="performance-heading">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 id="performance-heading" className="text-base font-semibold text-[#111827]">Performance</h2>
+            <p className="mt-1 text-sm leading-6 text-[#64748B]">A summary of your conversations, customers, and sales will appear when data is available.</p>
           </div>
-
-          <div className="mt-6 space-y-5">
-            <div className="flex justify-between">
-              <span>AI Confidence</span>
-              <strong>96%</strong>
-            </div>
-
-            <div className="flex justify-between">
-              <span>Currently Replying</span>
-              <strong>17 customers</strong>
-            </div>
-
-            <div className="flex justify-between">
-              <span>Human Takeovers</span>
-              <strong>4</strong>
-            </div>
-
-            <div className="flex justify-between">
-              <span>Average Response</span>
-              <strong>6 sec</strong>
-            </div>
-          </div>
-
-          <button className="mt-8 w-full rounded-xl bg-[#16A34A] py-3 font-semibold text-white hover:bg-[#15803D]">
-            Train AI Employee
-          </button>
-        </section>
-
-        <section className={CARD}>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className={SECTION_HEADING}>Business Knowledge</p>
-
-              <h2 className={CARD_TITLE}>Manage Knowledge</h2>
-            </div>
-
-            <div className="text-3xl">📚</div>
-          </div>
-
-          <div className="mt-6 space-y-5">
-            <div className="flex justify-between">
-              <span>Products</span>
-              <strong>12</strong>
-            </div>
-
-            <div className="flex justify-between">
-              <span>FAQs</span>
-              <strong>18</strong>
-            </div>
-
-            <div className="flex justify-between">
-              <span>Policies</span>
-              <strong>7</strong>
-            </div>
-
-            <div className="flex justify-between">
-              <span>Training Score</span>
-              <strong className="text-[#16A34A]">92%</strong>
-            </div>
-          </div>
-
-          <button className="mt-8 w-full rounded-xl border border-[#E5E7EB] py-3 font-semibold hover:bg-[#F9FAFB]">
-            Improve Knowledge
-          </button>
-        </section>
-
-        <section className={CARD}>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className={SECTION_HEADING}>Customer Growth</p>
-
-              <h2 className={CARD_TITLE}>Growth Today</h2>
-            </div>
-
-            <div className="text-3xl">💰</div>
-          </div>
-
-          <div className="mt-6 space-y-5">
-            <div className="flex justify-between">
-              <span>Qualified Leads</span>
-              <strong>24</strong>
-            </div>
-
-            <div className="flex justify-between">
-              <span>Quotes Sent</span>
-              <strong>11</strong>
-            </div>
-
-            <div className="flex justify-between">
-              <span>Follow-ups Sent</span>
-              <strong>8</strong>
-            </div>
-
-            <div className="flex justify-between">
-              <span>Conversions</span>
-              <strong className="text-[#16A34A]">8 customers</strong>
-            </div>
-          </div>
-
-          <button className="mt-8 w-full rounded-xl border border-[#E5E7EB] py-3 font-semibold hover:bg-[#F9FAFB]">
-            View Customers
-          </button>
-        </section>
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-[1.8fr_1fr]">
-        <section className={CARD}>
-          <div className="flex items-center justify-between">
-            <div>
-              <p className={SECTION_HEADING}>Recent AI Activity</p>
-
-              <h2 className={CARD_TITLE}>
-                What your AI Employee has been doing
-              </h2>
-            </div>
-
-            <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-sm font-semibold text-[#15803D]">
-              Live
-            </span>
-          </div>
-
-          <div className="mt-8 space-y-5">
-            <div className="flex items-start gap-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ECFDF5]">
-                🤖
-              </div>
-
-              <div className="flex-1">
-                <p className="font-semibold">
-                  AI answered a pricing enquiry
-                </p>
-
-                <p className="text-sm text-[#64748B]">
-                  James asked about installation pricing and received an
-                  instant reply.
-                </p>
-              </div>
-
-              <span className="text-sm text-[#94A3B8]">2 min ago</span>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#EFF6FF]">
-                📅
-              </div>
-
-              <div className="flex-1">
-                <p className="font-semibold">Appointment booked</p>
-
-                <p className="text-sm text-[#64748B]">
-                  Site installation scheduled automatically for
-                  tomorrow.
-                </p>
-              </div>
-
-              <span className="text-sm text-[#94A3B8]">12 min ago</span>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FEF3C7]">
-                💬
-              </div>
-
-              <div className="flex-1">
-                <p className="font-semibold">Follow-up sent</p>
-
-                <p className="text-sm text-[#64748B]">
-                  AI followed up with a customer who requested a
-                  quotation yesterday.
-                </p>
-              </div>
-
-              <span className="text-sm text-[#94A3B8]">21 min ago</span>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FEF2F2]">
-                👤
-              </div>
-
-              <div className="flex-1">
-                <p className="font-semibold">
-                  Human takeover requested
-                </p>
-
-                <p className="text-sm text-[#64748B]">
-                  AI detected a negotiation and asked you to continue
-                  the conversation.
-                </p>
-              </div>
-
-              <span className="text-sm text-[#94A3B8]">37 min ago</span>
-            </div>
-
-            <div className="flex items-start gap-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FDF4FF]">
-                ⭐
-              </div>
-
-              <div className="flex-1">
-                <p className="font-semibold">
-                  Customer left a 5-star rating
-                </p>
-
-                <p className="text-sm text-[#64748B]">
-                  &quot;Fast replies and excellent service.&quot;
-                </p>
-              </div>
-
-              <span className="text-sm text-[#94A3B8]">1 hour ago</span>
-            </div>
-          </div>
-        </section>
-
-        <section className={CARD}>
-          <p className={SECTION_HEADING}>WhatsApp Overview</p>
-
-          <h2 className={CARD_TITLE}>Current Inbox Status</h2>
-
-          <div className="mt-8 space-y-5">
-            <div className="flex justify-between">
-              <span className="text-[#64748B]">
-                Unread Conversations
-              </span>
-
-              <strong>3</strong>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="text-[#64748B]">AI Handling</span>
-
-              <strong className="text-[#16A34A]">17</strong>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="text-[#64748B]">Waiting For You</span>
-
-              <strong className="text-[#DC2626]">2</strong>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="text-[#64748B]">Resolved Today</span>
-
-              <strong>36</strong>
-            </div>
-
-            <div className="flex justify-between">
-              <span className="text-[#64748B]">Average Response</span>
-
-              <strong className="text-[#16A34A]">6 sec</strong>
-            </div>
-
-            <button className="mt-6 w-full rounded-xl bg-[#16A34A] py-3 font-semibold text-white transition hover:bg-[#15803D]">
-              Open Inbox
-            </button>
-          </div>
-        </section>
-      </div>
+          <Link to="/dashboard/performance" className="inline-flex shrink-0 items-center gap-1 rounded-md text-sm font-semibold text-[#047857] transition hover:text-[#065F46] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2">
+            View Performance <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }

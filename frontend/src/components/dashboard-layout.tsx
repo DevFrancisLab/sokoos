@@ -53,6 +53,7 @@ import { HomeWorkspace } from "@/components/dashboard/home/home-workspace";
 import { InboxWorkspace } from "@/components/dashboard/inbox/inbox-workspace";
 import { CustomersWorkspace } from "@/components/dashboard/customers/customers-workspace";
 import { PerformanceWorkspace } from "@/components/dashboard/ai-employee/performance/performance-workspace";
+import { AccountSettings } from "@/components/dashboard/account-settings";
 import { getMockUser, signOutMock } from "@/lib/auth";
 import EditProfileDialog from "@/components/dashboard/edit-profile-dialog";
 import sokoosLogo from "@/assets/sokoos_logo.png";
@@ -4306,6 +4307,7 @@ export default function DashboardLayout() {
   };
 
   const handleAccountSettings = () => {
+    setSelected("Settings");
     void router.navigate({ to: "/dashboard/settings" });
   };
 
@@ -5956,7 +5958,10 @@ export default function DashboardLayout() {
           {/* Render placeholder pages based on selected state */}
           {selected === "Home" && (
             <HomeWorkspace
-              handleLogout={handleLogout}
+              userName={user?.name || "there"}
+              aiEmployeeLaunched={aiEmployeeLaunched}
+              aiEnabled={aiEnabled}
+              attentionConversations={INBOX_CONVERSATIONS}
               CARD={CARD}
               SECTION_HEADING={SECTION_HEADING}
               CARD_TITLE={CARD_TITLE}
@@ -8709,7 +8714,10 @@ export default function DashboardLayout() {
             </div>
           )}
 
-          {selected === "Settings" && (
+          {selected === "Settings" && user && (
+            <>
+              <AccountSettings user={user} onEditProfile={handleEditProfile} />
+              {/*
             <div className="space-y-6">
               <div className={`${CARD}`}>
                 <div className="flex items-center justify-between">
@@ -9074,7 +9082,8 @@ export default function DashboardLayout() {
                   </div>
                 </aside>
               </div>
-            </div>
+              </div>*/}
+            </>
           )}
         </div>
       </main>
