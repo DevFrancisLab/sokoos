@@ -1965,15 +1965,9 @@ export default function DashboardLayout() {
   const [catalogProducts, setCatalogProducts] = useState<CatalogProduct[]>(() => CATALOG_ITEMS.map((product) => ({ ...product, mediaAssets: product.mediaAssets ?? [] })));
   const [productSearch, setProductSearch] = useState("");
   const [catalogView, setCatalogView] = useState<'grid' | 'table'>('grid');
+  type CatalogueAttentionFilter = "all" | "low-stock" | "needs-information";
+  const [catalogueAttentionFilter, setCatalogueAttentionFilter] = useState<CatalogueAttentionFilter>("all");
   type CatalogueTab = "All" | "Products" | "Services" | "Subscriptions" | "Digital Products" | "Memberships" | "Rentals";
-  const BUSINESS_MODEL_TO_CATALOG_TAB: Record<string, Exclude<CatalogueTab, "All">> = {
-    "Physical Products": "Products",
-    Services: "Services",
-    "Digital Products": "Digital Products",
-    Subscriptions: "Subscriptions",
-    Memberships: "Memberships",
-    Rentals: "Rentals",
-  };
   const CATALOG_TAB_TO_PRODUCT_TYPE: Record<Exclude<CatalogueTab, "All">, string> = {
     Products: "Product",
     Services: "Service",
@@ -2004,8 +1998,8 @@ export default function DashboardLayout() {
     const tabs: CatalogueTab[] = ["All"];
     const seen = new Set<CatalogueTab>(tabs);
 
-    businessModelSelections.forEach((selection) => {
-      const tab = BUSINESS_MODEL_TO_CATALOG_TAB[selection];
+    catalogProducts.forEach((product) => {
+      const tab = Object.entries(CATALOG_TAB_TO_PRODUCT_TYPE).find(([, type]) => type === product.type)?.[0] as Exclude<CatalogueTab, "All"> | undefined;
       if (tab && !seen.has(tab)) {
         tabs.push(tab);
         seen.add(tab);
@@ -2013,7 +2007,7 @@ export default function DashboardLayout() {
     });
 
     return tabs;
-  }, [businessModelSelections]);
+  }, [catalogProducts]);
   const catalogueFilterTabOrder: CatalogueTab[] = ["All", "Products", "Services", "Subscriptions", "Digital Products", "Memberships", "Rentals"];
   const sortedCatalogueFilterTabs = useMemo(
     () => [...catalogueFilterTabs].sort((a, b) => catalogueFilterTabOrder.indexOf(a) - catalogueFilterTabOrder.indexOf(b)),
@@ -2210,12 +2204,16 @@ export default function DashboardLayout() {
     stockStatus?: string;
     lowStockThreshold?: number;
     warehouseLocation?: string;
+    currency?: string;
+    appointmentRequired?: boolean;
+    faqs?: string[];
+    customerInformation?: string;
   };
 
   const [pricingSaved, setPricingSaved] = useState(false);
   const [pricingSectionComplete, setPricingSectionComplete] = useState(false);
   const [availabilitySaved, setAvailabilitySaved] = useState(false);
-  const [importMenuOpen, setImportMenuOpen] = useState(false);
+  const [catalogueImportOpen, setCatalogueImportOpen] = useState(false);
   const [showProductTypeDialog, setShowProductTypeDialog] = useState(false);
   const [showAddProductForm, setShowAddProductForm] = useState(false);
   const [selectedProductType, setSelectedProductType] = useState<string | null>(null);
@@ -2225,8 +2223,17 @@ export default function DashboardLayout() {
   const [productDrawerTab, setProductDrawerTab] = useState<"general" | "pricing" | "media" | "inventory" | "ai">("general");
   const [completedProductStepIds, setCompletedProductStepIds] = useState<string[]>([]);
   const [addProductFormData, setAddProductFormData] = useState<{ name: string; category: string; price: string; availability: string; image?: string; type: string } | null>(null);
+  const [productFormErrors, setProductFormErrors] = useState<Record<string, string>>({});
   const productSectionIds = ["products","pricing"];
   const selectedProduct = selectedProductId ? catalogProducts.find((product) => product.id === selectedProductId) ?? null : null;
+  useEffect(() => {
+    if (!productDrawerOpen) return;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closeProductDrawer();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [productDrawerOpen]);
   const createProductMediaAssets = (files: FileList | null) => {
     if (!files) return [];
     return Array.from(files).map((file) => ({
@@ -2292,11 +2299,13 @@ export default function DashboardLayout() {
     setSelectedProductId(id);
     setProductDrawerOpen(true);
     setProductDrawerTab("general");
+    setProductFormErrors({});
   };
   const openProductDrawerToTab = (id: string, tab: "general" | "pricing" | "media" | "inventory" | "ai") => {
     setSelectedProductId(id);
     setProductDrawerTab(tab);
     setProductDrawerOpen(true);
+    setProductFormErrors({});
   };
 
   const fixMissingDescriptions = () => {
@@ -2316,6 +2325,19 @@ export default function DashboardLayout() {
   const closeProductDrawer = () => {
     setProductDrawerOpen(false);
     setSelectedProductId(null);
+    setProductFormErrors({});
+  };
+  const saveProductDrawer = () => {
+    if (!selectedProduct) return;
+    const errors: Record<string, string> = {};
+    if (!selectedProduct.name.trim()) errors.name = "Add a clear name so customers and Sokoos can identify this item.";
+    if (!selectedProduct.type.trim()) errors.type = "Choose whether this is a product or service.";
+    if (!selectedProduct.category.trim()) errors.category = "Add a category to help Sokoos recommend it.";
+    if (!selectedProduct.description.trim()) errors.description = "Describe what customers receive or can expect.";
+    if (!selectedProduct.price.trim()) errors.price = "Add a price or pricing guidance.";
+    setProductFormErrors(errors);
+    if (Object.keys(errors).length > 0) return;
+    closeProductDrawer();
   };
   const handleProductImageUpload = (files: FileList | null) => {
     if (!files || !selectedProduct) return;
@@ -2736,43 +2758,57 @@ export default function DashboardLayout() {
     window.open(url, "_blank");
   };
 
-  const IMPORT_TYPES = ["Excel", "CSV", "PDF Catalogues", "Website Import"] as const;
+  type CatalogueImportPreview = { headers: string[]; rows: Array<Record<string, string>> };
+  type CatalogueImportStatus = "idle" | "selected" | "preview" | "error" | "ready" | "confirmed";
+  const [catalogueImport, setCatalogueImport] = useState<{ file?: File; status: CatalogueImportStatus; errors: string[]; preview?: CatalogueImportPreview }>({ status: "idle", errors: [] });
 
-  type ImportResult = {
-    productsImported: number;
-    warnings: string[];
-    duplicatesFound: number;
-    message: string;
+  const parseCatalogueCsvLine = (line: string) => {
+    const values: string[] = [];
+    let value = "";
+    let inQuotes = false;
+    for (let index = 0; index < line.length; index += 1) {
+      const character = line[index];
+      if (character === '"') {
+        if (inQuotes && line[index + 1] === '"') { value += '"'; index += 1; } else inQuotes = !inQuotes;
+      } else if (character === "," && !inQuotes) {
+        values.push(value.trim());
+        value = "";
+      } else value += character;
+    }
+    values.push(value.trim());
+    return values;
   };
 
-  const [importState, setImportState] = useState<Record<string, { progress: number; status: "idle" | "uploading" | "done"; result?: ImportResult }>>(
-    () =>
-      IMPORT_TYPES.reduce((acc, t) => {
-        acc[t] = { progress: 0, status: "idle" };
-        return acc;
-      }, {} as Record<string, { progress: number; status: "idle" | "uploading" | "done"; result?: ImportResult }>),
-  );
+  const handleCatalogueImportFile = async (file?: File | null) => {
+    if (!file) return;
+    const extension = file.name.split(".").pop()?.toLowerCase();
+    if (!extension || !["csv", "xlsx", "xls"].includes(extension)) {
+      setCatalogueImport({ file, status: "error", errors: ["Choose a CSV or Excel catalogue template."] });
+      return;
+    }
+    if (extension !== "csv") {
+      setCatalogueImport({ file, status: "selected", errors: [] });
+      return;
+    }
 
-  const simulateImport = (type: string, file?: File | null) => {
-    setImportState((s) => ({ ...s, [type]: { progress: 0, status: "uploading" } }));
-    let progress = 0;
-    const id = setInterval(() => {
-      progress += Math.floor(Math.random() * 12) + 8;
-      if (progress >= 100) progress = 100;
-      setImportState((s) => ({ ...s, [type]: { ...(s[type] || { progress: 0, status: "uploading" }), progress } }));
-      if (progress >= 100) {
-        clearInterval(id);
-        // Create mock result
-        const productsImported = Math.floor(Math.random() * 90) + 10;
-        const duplicatesFound = Math.floor(Math.random() * 5);
-        const warnings: string[] = [];
-        if (Math.random() > 0.7) warnings.push("Some rows had missing prices");
-        if (Math.random() > 0.85) warnings.push("Invalid category mappings for 2 items");
-        const message = `Imported ${productsImported} products successfully.`;
-        setImportState((s) => ({ ...s, [type]: { progress: 100, status: "done", result: { productsImported, duplicatesFound, warnings, message } } }));
-      }
-    }, 400 + Math.random() * 300);
+    const lines = (await file.text()).split(/\r?\n/).filter((line) => line.trim());
+    const headerIndex = lines.findIndex((line) => parseCatalogueCsvLine(line).map((value) => value.toLowerCase()).includes("name") && parseCatalogueCsvLine(line).map((value) => value.toLowerCase()).includes("category"));
+    if (headerIndex === -1) {
+      setCatalogueImport({ file, status: "error", errors: ["We could not find the template header row. Download the template and keep the name and category columns."] });
+      return;
+    }
+    const headers = parseCatalogueCsvLine(lines[headerIndex]);
+    const rows = lines.slice(headerIndex + 1).map(parseCatalogueCsvLine).filter((row) => row.some(Boolean)).map((row) => Object.fromEntries(headers.map((header, index) => [header, row[index] ?? ""])));
+    if (rows.length === 0) {
+      setCatalogueImport({ file, status: "error", errors: ["This template does not contain any catalogue items to preview."], preview: { headers, rows } });
+      return;
+    }
+    const requiredFields = ["name", "category", "description", "price"];
+    const invalidRows = rows.filter((row) => requiredFields.some((field) => !row[field]?.trim()));
+    setCatalogueImport({ file, status: invalidRows.length ? "error" : "ready", errors: invalidRows.length ? [`${invalidRows.length} ${invalidRows.length === 1 ? "row is" : "rows are"} missing a name, category, description, or price.`] : [], preview: { headers, rows } });
   };
+
+  const confirmCatalogueImport = () => setCatalogueImport((current) => ({ ...current, status: "confirmed" }));
 
   type QuoteTemplate = {
     id: string;
@@ -7125,52 +7161,45 @@ export default function DashboardLayout() {
                     )}
 
                     {activeWorkspaceSection === "Catalogue" && (
-                      <div className="w-full max-w-[1600px] min-w-0 space-y-6 overflow-x-hidden lg:space-y-6">
-                        <div className="rounded-[32px] border border-[#E5E7EB] bg-white p-6 shadow-[0_20px_40px_rgba(15,23,42,0.08)] sm:p-7">
-                          <div className="flex flex-col gap-4 xl:flex-row xl:items-start xl:justify-between">
+                      <div className="w-full max-w-[1600px] min-w-0 space-y-4 overflow-x-hidden">
+                        <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-5">
+                          <div className="flex flex-col gap-3 xl:flex-row xl:items-start xl:justify-between">
                             <div className="min-w-0">
-                              <h1 className="text-3xl font-semibold tracking-[-0.02em] text-[#111827]">Catalogue Workspace</h1>
-                              <p className="mt-2 max-w-3xl text-sm leading-6 text-[#475569]">Manage your catalogue items, pricing, inventory, media, and AI readiness in one modern workspace.</p>
+                              <h1 className="text-2xl font-semibold tracking-[-0.02em] text-[#111827]">Catalogue</h1>
+                              <p className="mt-1 max-w-3xl text-sm text-[#475569]">Teach your AI what your business sells.</p>
                             </div>
 
-                            <div className="w-full lg:w-[340px]">
-                              <div className="lg:sticky lg:top-4 rounded-[26px] border border-[#E5E7EB] bg-[#F8FBFF] p-4 shadow-sm">
+                            <div className="w-full xl:w-[420px]">
+                              <div className="rounded-[18px] border border-[#E5E7EB] bg-[#F8FBFF] p-3">
                                 <div className="flex items-center justify-between gap-4">
                                   <div className="min-w-0">
                                     <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Catalogue readiness</p>
-                                    <p className="mt-1 text-xs leading-5 text-[#64748B]">Information available for AI recommendations</p>
+                                    <p className="mt-0.5 text-xs text-[#64748B]">{catalogueReadinessSummary.ready} of {catalogProducts.length} items ready</p>
                                   </div>
-                                  <div className="text-3xl font-semibold tracking-[-0.04em] text-[#111827]">{catalogueReadinessPercentage}%</div>
+                                  <div className="text-2xl font-semibold tracking-[-0.04em] text-[#111827]">{catalogueReadinessPercentage}%</div>
                                 </div>
 
-                                <p className="mt-3 text-sm font-semibold text-[#111827]">
-                                  {catalogueReadinessSummary.ready} of {catalogProducts.length} items ready for AI recommendations
-                                </p>
-                                <div className="mt-3 h-2 rounded-full bg-[#E5E7EB]">
+                                <div className="mt-2 h-1.5 rounded-full bg-[#E5E7EB]">
                                   <div className="h-full rounded-full bg-[#22C55E] transition-[width] duration-300" style={{ width: `${catalogueReadinessPercentage}%` }} />
                                 </div>
 
-                                <div className="mt-4 space-y-2 rounded-[12px] border border-[#E5E7EB] bg-white p-3 text-xs">
-                                  <div className="flex items-center justify-between gap-3 text-[#166534]">
-                                    <span className="inline-flex items-center gap-2 font-medium"><Check className="h-3.5 w-3.5" aria-hidden="true" />Ready</span>
-                                    <span className="font-semibold">{catalogueReadinessSummary.ready}</span>
+                                <div className="mt-3 flex flex-wrap gap-2 text-xs">
+                                  <div className="inline-flex items-center gap-1.5 rounded-full bg-[#ECFDF5] px-2.5 py-1 font-medium text-[#166534]">
+                                    <Check className="h-3.5 w-3.5" aria-hidden="true" />Ready {catalogueReadinessSummary.ready}
                                   </div>
                                   {catalogueReadinessSummary.needsInformation > 0 ? (
-                                    <div className="flex items-center justify-between gap-3 text-[#B45309]">
-                                      <span className="inline-flex items-center gap-2 font-medium"><CircleAlert className="h-3.5 w-3.5" aria-hidden="true" />Needs information</span>
-                                      <span className="font-semibold">{catalogueReadinessSummary.needsInformation}</span>
+                                    <div className="inline-flex items-center gap-1.5 rounded-full bg-[#FFFBEB] px-2.5 py-1 font-medium text-[#B45309]">
+                                      <CircleAlert className="h-3.5 w-3.5" aria-hidden="true" />Needs information {catalogueReadinessSummary.needsInformation}
                                     </div>
                                   ) : null}
                                   {catalogueReadinessSummary.missingImage > 0 ? (
-                                    <div className="flex items-center justify-between gap-3 text-[#B45309]">
-                                      <span className="inline-flex items-center gap-2 font-medium"><CircleAlert className="h-3.5 w-3.5" aria-hidden="true" />Missing image</span>
-                                      <span className="font-semibold">{catalogueReadinessSummary.missingImage}</span>
+                                    <div className="inline-flex items-center gap-1.5 rounded-full bg-[#FFFBEB] px-2.5 py-1 font-medium text-[#B45309]">
+                                      <CircleAlert className="h-3.5 w-3.5" aria-hidden="true" />Missing image {catalogueReadinessSummary.missingImage}
                                     </div>
                                   ) : null}
                                   {catalogueReadinessSummary.missingFaq > 0 ? (
-                                    <div className="flex items-center justify-between gap-3 text-[#B45309]">
-                                      <span className="inline-flex items-center gap-2 font-medium"><CircleAlert className="h-3.5 w-3.5" aria-hidden="true" />Missing FAQ</span>
-                                      <span className="font-semibold">{catalogueReadinessSummary.missingFaq}</span>
+                                    <div className="inline-flex items-center gap-1.5 rounded-full bg-[#FFFBEB] px-2.5 py-1 font-medium text-[#B45309]">
+                                      <CircleAlert className="h-3.5 w-3.5" aria-hidden="true" />Missing FAQ {catalogueReadinessSummary.missingFaq}
                                     </div>
                                   ) : null}
                                 </div>
@@ -7178,39 +7207,42 @@ export default function DashboardLayout() {
                             </div>
                           </div>
 
-                          <div className="mt-5 w-full xl:max-w-[1100px]">
+                          <div className="mt-4 w-full">
                             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                               <div className="flex items-center gap-3">
                                 <button type="button" onClick={handleAddItemClick} className="inline-flex h-11 items-center justify-center rounded-[16px] bg-[#111827] px-5 text-sm font-semibold text-white shadow-sm transition duration-200 hover:bg-[#1F2937]">{addButtonLabel}</button>
-                                <div className="relative">
-                                  <button type="button" onClick={() => setImportMenuOpen((s) => !s)} className="inline-flex h-11 items-center justify-center rounded-[16px] border border-[#E5E7EB] bg-white px-5 text-sm font-semibold text-[#111827] shadow-sm transition duration-200 hover:bg-[#F8FAFB]">
-                                    Import
-                                    <ChevronDown className="ml-2 h-4 w-4 text-[#6B7280]" />
-                                  </button>
-                                  {importMenuOpen && (
-                                    <div className="absolute right-0 top-full z-50 mt-2 w-48 rounded-[18px] border border-[#E5E7EB] bg-white shadow-lg">
-                                      <label className="block cursor-pointer px-3 py-3 text-sm text-[#111827] transition hover:bg-[#F8FAFB]">
-                                        CSV
-                                        <input type="file" accept=".csv" className="hidden" onChange={(e) => { setImportMenuOpen(false); simulateImport('CSV', e.target.files?.[0] ?? null); }} />
-                                      </label>
-                                      <label className="block cursor-pointer px-3 py-3 text-sm text-[#111827] transition hover:bg-[#F8FAFB]">
-                                        Excel
-                                        <input type="file" accept=".xlsx,.xls" className="hidden" onChange={(e) => { setImportMenuOpen(false); simulateImport('Excel', e.target.files?.[0] ?? null); }} />
-                                      </label>
-                                      <label className="block cursor-pointer rounded-b-[18px] px-3 py-3 text-sm text-[#111827] transition hover:bg-[#F8FAFB]">
-                                        PDF
-                                        <input type="file" accept=".pdf" className="hidden" onChange={(e) => { setImportMenuOpen(false); simulateImport('PDF Catalogues', e.target.files?.[0] ?? null); }} />
-                                      </label>
-                                    </div>
-                                  )}
-                                </div>
+                                <button type="button" aria-expanded={catalogueImportOpen} onClick={() => setCatalogueImportOpen((open) => !open)} className="inline-flex h-11 items-center justify-center rounded-[16px] border border-[#E5E7EB] bg-white px-5 text-sm font-semibold text-[#111827] shadow-sm transition duration-200 hover:bg-[#F8FAFB]"><Upload className="mr-2 h-4 w-4 text-[#475569]" aria-hidden="true" />Import catalogue</button>
                               </div>
                             </div>
+
+                            {catalogueImportOpen ? (
+                              <section aria-labelledby="catalogue-import-title" className="mt-5 rounded-[24px] border border-[#E5E7EB] bg-[#F8FAFB] p-5 sm:p-6">
+                                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div><h2 id="catalogue-import-title" className="text-lg font-semibold text-[#111827]">Import catalogue</h2><p className="mt-1 text-sm text-[#64748B]">Add multiple products or services at once.</p></div><button type="button" onClick={() => setCatalogueImportOpen(false)} className="inline-flex h-9 w-9 items-center justify-center self-end rounded-lg text-[#64748B] hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] sm:self-auto" aria-label="Close catalogue import"><X className="h-4 w-4" aria-hidden="true" /></button></div>
+                                <div className="mt-5 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:items-center"><a href="/templates/sokoos-catalogue-template.csv" download className="inline-flex h-11 items-center justify-center rounded-xl border border-[#E5E7EB] bg-white px-4 text-sm font-semibold text-[#111827] transition hover:bg-[#F8FAFB] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]"><Upload className="mr-2 h-4 w-4" aria-hidden="true" />Download template</a><span className="text-center text-xs font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">or</span><label className="inline-flex h-11 cursor-pointer items-center justify-center rounded-xl bg-[#111827] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937] focus-within:ring-2 focus-within:ring-[#22C55E] focus-within:ring-offset-2"><Upload className="mr-2 h-4 w-4" aria-hidden="true" />Upload completed template<input type="file" accept=".csv,.xlsx,.xls" className="sr-only" onChange={(event) => { void handleCatalogueImportFile(event.target.files?.[0]); event.currentTarget.value = ""; }} /></label></div>
+                                <p className="mt-3 text-center text-xs text-[#64748B]">Supported formats: CSV / Excel</p>
+
+                                {catalogueImport.file ? <div className="mt-5 rounded-xl border border-[#E5E7EB] bg-white p-4"><div className="flex items-start justify-between gap-3"><div><p className="text-sm font-semibold text-[#111827]">File selected</p><p className="mt-1 text-sm text-[#64748B]">{catalogueImport.file.name} · {(catalogueImport.file.size / 1024).toFixed(1)} KB</p></div><button type="button" onClick={() => setCatalogueImport({ status: "idle", errors: [] })} className="text-sm font-semibold text-[#475569] underline underline-offset-4 hover:text-[#111827]">Remove</button></div></div> : null}
+
+                                {catalogueImport.status === "selected" ? <div className="mt-4 rounded-xl border border-[#BFDBFE] bg-[#EFF6FF] p-4 text-sm text-[#1D4ED8]"><p className="font-semibold">Excel file selected</p><p className="mt-1">Excel row preview and validation will be enabled when the file parser or backend integration is connected. No items can be imported from this frontend prototype yet.</p></div> : null}
+                                {catalogueImport.preview ? <div className="mt-4 rounded-xl border border-[#E5E7EB] bg-white p-4"><div className="flex flex-wrap items-center justify-between gap-2"><div><p className="text-sm font-semibold text-[#111827]">Preview</p><p className="mt-1 text-sm text-[#64748B]">Showing the first {Math.min(catalogueImport.preview.rows.length, 5)} of {catalogueImport.preview.rows.length} items from your CSV.</p></div><span className={`rounded-full px-3 py-1 text-xs font-semibold ${catalogueImport.status === "ready" ? "bg-[#ECFDF5] text-[#166534]" : "bg-[#FFFBEB] text-[#B45309]"}`}>{catalogueImport.status === "ready" ? "Ready to import" : "Needs attention"}</span></div><div className="mt-4 overflow-x-auto"><table className="min-w-full text-left text-sm"><thead className="border-b border-[#E5E7EB] text-xs text-[#64748B]"><tr><th className="pb-2 pr-4 font-semibold">Name</th><th className="pb-2 pr-4 font-semibold">Category</th><th className="pb-2 font-semibold">Price</th></tr></thead><tbody className="divide-y divide-[#F1F5F9]">{catalogueImport.preview.rows.slice(0, 5).map((row, index) => <tr key={`${row.name}-${index}`}><td className="py-2 pr-4 text-[#111827]">{row.name || "—"}</td><td className="py-2 pr-4 text-[#475569]">{row.category || "—"}</td><td className="py-2 text-[#111827]">{row.price || "—"}</td></tr>)}</tbody></table></div></div> : null}
+                                {catalogueImport.errors.length > 0 ? <div className="mt-4 rounded-xl border border-[#FECACA] bg-[#FEF2F2] p-4 text-sm text-[#B91C1C]" role="alert"><p className="font-semibold">Fix these before confirming</p><ul className="mt-2 list-disc space-y-1 pl-5">{catalogueImport.errors.map((error) => <li key={error}>{error}</li>)}</ul></div> : null}
+                                {catalogueImport.status === "ready" ? <div className="mt-4 flex flex-col gap-3 rounded-xl border border-[#BBF7D0] bg-[#F0FDF4] p-4 sm:flex-row sm:items-center sm:justify-between"><p className="text-sm text-[#166534]">Your CSV is ready for the future import step. Confirming now will not change your catalogue.</p><button type="button" onClick={confirmCatalogueImport} className="inline-flex h-10 shrink-0 items-center justify-center rounded-lg bg-[#111827] px-4 text-sm font-semibold text-white transition hover:bg-[#1F2937] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2">Confirm import</button></div> : null}
+                                {catalogueImport.status === "confirmed" ? <div className="mt-4 rounded-xl border border-[#BBF7D0] bg-[#F0FDF4] p-4 text-sm text-[#166534]" role="status"><p className="font-semibold">Frontend import confirmed</p><p className="mt-1">No catalogue items were added or sent anywhere. This confirmation is ready to connect to the future import API.</p></div> : null}
+                              </section>
+                            ) : null}
                           </div>
 
-                          <div className="grid gap-6">
+                          <div className="mt-4 grid gap-4">
                             {(() => {
                               const query = productSearch.trim().toLowerCase();
+                              const isLowStock = (product: CatalogProduct) => {
+                                const stock = product.currentStock;
+                                const threshold = product.lowStockThreshold ?? 5;
+                                return product.availability.toLowerCase() === "low stock" || (typeof stock === "number" && stock <= threshold);
+                              };
+                              const needsInformation = (product: CatalogProduct) => !getCatalogueItemReadiness(product).isReady;
+                              const lowStockCount = catalogProducts.filter(isLowStock).length;
+                              const needsInformationCount = catalogProducts.filter(needsInformation).length;
                               const filtered = catalogProducts
                                 .filter((product) => {
                                   if (!query) return true;
@@ -7232,61 +7264,65 @@ export default function DashboardLayout() {
                                   if (selectedCatalogueTab === "All") return true;
                                   const expectedType = CATALOG_TAB_TO_PRODUCT_TYPE[selectedCatalogueTab as Exclude<CatalogueTab, "All">];
                                   return expectedType ? product.type === expectedType : true;
+                                })
+                                .filter((product) => {
+                                  if (catalogueAttentionFilter === "low-stock") return isLowStock(product);
+                                  if (catalogueAttentionFilter === "needs-information") return needsInformation(product);
+                                  return true;
                                 });
 
                               return (
-                                <div className="rounded-[28px] border border-[#E5E7EB] bg-white p-6 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
-                                  <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-                                    <div>
+                                <div className="rounded-[20px] border border-[#E5E7EB] bg-white p-4 shadow-[0_6px_18px_rgba(15,23,42,0.05)] sm:p-5">
+                                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                    <div className="min-w-0">
                                       <p className="text-sm font-semibold text-[#111827]">Catalogue items</p>
-                                      <p className="mt-2 text-sm text-[#64748B]">Products and services are managed as catalogue items. Update pricing, inventory, media, and AI readiness directly on each item.</p>
+                                      <p className="mt-1 text-sm text-[#64748B]">Browse, update, and prepare items for AI recommendations.</p>
                                     </div>
-                                    <div className="inline-flex items-center gap-3 rounded-[18px] border border-[#E5E7EB] bg-[#F8FAFB] px-4 py-3 text-sm font-semibold text-[#111827] shadow-sm">
-                                      <span>{filtered.length}</span>
+                                    <div className="inline-flex items-center gap-2 rounded-full border border-[#E5E7EB] bg-[#F8FAFB] px-3 py-1.5 text-sm font-semibold text-[#111827]">
+                                      <span>{catalogProducts.length}</span>
                                       <span className="text-[#64748B]">items</span>
                                     </div>
                                   </div>
-<div className="mt-4 flex flex-wrap items-center gap-3">
-                                          <div className="flex flex-wrap items-center gap-3">
-                                            {[...sortedCatalogueFilterTabs].map((tab) => (
-                                              <button
-                                                key={tab}
-                                                type="button"
-                                                onClick={() => setSelectedCatalogueTab(tab)}
-                                                className={`inline-flex h-10 items-center justify-center rounded-full border px-4 text-xs font-semibold transition-colors duration-200 ${selectedCatalogueTab === tab ? 'border-[#111827] bg-[#111827] text-white shadow-sm' : 'border-[#E5E7EB] bg-white text-[#475569] hover:border-[#CBD5E1] hover:bg-[#F8FAFB]'}`}
-                                        >
+                                  <div className="relative mt-4">
+                                    <label className="sr-only" htmlFor="catalogue-search">Search products or services</label>
+                                    <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" aria-hidden="true" />
+                                    <input id="catalogue-search" type="search" value={productSearch} onChange={(event) => setProductSearch(event.target.value)} placeholder="Search products or services..." className="h-11 w-full rounded-xl border border-[#E5E7EB] bg-white py-2 pl-11 pr-11 text-sm text-[#111827] outline-none transition placeholder:text-[#94A3B8] focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20" />
+                                    {productSearch ? (
+                                      <button type="button" aria-label="Clear catalogue search" onClick={() => setProductSearch("")} className="absolute right-2 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-[#64748B] transition hover:bg-[#F1F5F9] hover:text-[#111827] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]">
+                                        <X className="h-4 w-4" aria-hidden="true" />
+                                      </button>
+                                    ) : null}
+                                  </div>
+
+                                  <div className="mt-3 flex flex-col gap-2.5 lg:flex-row lg:items-center lg:justify-between">
+                                    <div className="flex flex-wrap gap-2" aria-label="Filter catalogue items by type">
+                                      {sortedCatalogueFilterTabs.map((tab) => (
+                                        <button key={tab} type="button" onClick={() => { setSelectedCatalogueTab(tab); if (tab === "All") setCatalogueAttentionFilter("all"); }} className={`inline-flex h-9 items-center justify-center rounded-full border px-3.5 text-xs font-semibold transition-colors ${selectedCatalogueTab === tab ? 'border-[#111827] bg-[#111827] text-white shadow-sm' : 'border-[#E5E7EB] bg-white text-[#475569] hover:border-[#CBD5E1] hover:bg-[#F8FAFB]'}`}>
                                           {tab}
                                         </button>
                                       ))}
                                     </div>
 
-                                    <div className="ml-auto inline-flex items-center gap-2 rounded-full bg-white/50 p-1">
-                                      <button aria-label="Grid view" title="Grid view" onClick={() => setCatalogView('grid')} className={`inline-flex h-10 w-10 items-center justify-center rounded-full ${catalogView === 'grid' ? 'bg-[#111827] text-white shadow-sm' : 'text-[#475569] hover:bg-[#F3F4F6]'}`}>
-                                        <LayoutGrid className="h-4 w-4" />
+                                    <div className="flex flex-wrap items-center gap-2">
+                                      <button type="button" aria-pressed={catalogueAttentionFilter === "low-stock"} onClick={() => setCatalogueAttentionFilter((current) => current === "low-stock" ? "all" : "low-stock")} className={`inline-flex h-9 items-center gap-2 rounded-full border px-3.5 text-xs font-semibold transition-colors ${catalogueAttentionFilter === "low-stock" ? 'border-[#B45309] bg-[#FFFBEB] text-[#B45309]' : 'border-[#E5E7EB] bg-white text-[#475569] hover:border-[#CBD5E1] hover:bg-[#F8FAFB]'}`}>
+                                        Low stock <span className="tabular-nums">{lowStockCount}</span>
                                       </button>
-                                      <button aria-label="Table view" title="Table view" onClick={() => setCatalogView('table')} className={`inline-flex h-10 w-10 items-center justify-center rounded-full ${catalogView === 'table' ? 'bg-[#111827] text-white shadow-sm' : 'text-[#475569] hover:bg-[#F3F4F6]'}`}>
-                                        <List className="h-4 w-4" />
+                                      <button type="button" aria-pressed={catalogueAttentionFilter === "needs-information"} onClick={() => setCatalogueAttentionFilter((current) => current === "needs-information" ? "all" : "needs-information")} className={`inline-flex h-9 items-center gap-2 rounded-full border px-3.5 text-xs font-semibold transition-colors ${catalogueAttentionFilter === "needs-information" ? 'border-[#B45309] bg-[#FFFBEB] text-[#B45309]' : 'border-[#E5E7EB] bg-white text-[#475569] hover:border-[#CBD5E1] hover:bg-[#F8FAFB]'}`}>
+                                        Needs information <span className="tabular-nums">{needsInformationCount}</span>
                                       </button>
+                                      <div className="inline-flex items-center rounded-full border border-[#E5E7EB] bg-white p-1">
+                                        <button aria-label="Grid view" title="Grid view" onClick={() => setCatalogView('grid')} className={`inline-flex h-7 w-7 items-center justify-center rounded-full ${catalogView === 'grid' ? 'bg-[#111827] text-white shadow-sm' : 'text-[#475569] hover:bg-[#F3F4F6]'}`}><LayoutGrid className="h-4 w-4" /></button>
+                                        <button aria-label="List view" title="List view" onClick={() => setCatalogView('table')} className={`inline-flex h-7 w-7 items-center justify-center rounded-full ${catalogView === 'table' ? 'bg-[#111827] text-white shadow-sm' : 'text-[#475569] hover:bg-[#F3F4F6]'}`}><List className="h-4 w-4" /></button>
+                                      </div>
                                     </div>
                                   </div>
 
-                                  <div className="mt-3 flex flex-wrap items-center gap-3">
-                                    <button type="button" onClick={() => {}} className="inline-flex h-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-4 text-xs font-semibold text-[#111827] shadow-sm transition-colors duration-200 hover:border-[#CBD5E1] hover:bg-[#F8FAFB]">
-                                      Total Items: {filtered.length}
-                                    </button>
-                                    <button type="button" onClick={() => {}} className="inline-flex h-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-4 text-xs font-semibold text-[#111827] shadow-sm transition hover:border-[#CBD5E1] hover:bg-[#F8FAFB]">
-                                      Low Stock: {filtered.filter((product) => typeof (product as any).currentStock === 'number' && (product as any).currentStock <= 5).length}
-                                    </button>
-                                    <button type="button" onClick={() => {}} className="inline-flex h-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-4 text-xs font-semibold text-[#111827] shadow-sm transition hover:border-[#CBD5E1] hover:bg-[#F8FAFB]">
-                                      Missing Images: {filtered.filter((product) => !(product.image && product.image.trim().length > 0) && ((product.mediaAssets ?? []).length === 0)).length}
-                                    </button>
-                                    <button type="button" onClick={() => {}} className="inline-flex h-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-4 text-xs font-semibold text-[#111827] shadow-sm transition hover:border-[#CBD5E1] hover:bg-[#F8FAFB]">
-                                      Missing FAQs: {filtered.filter((product) => !((product as any).faqs && (product as any).faqs.length > 0)).length}
-                                    </button>
-                                    <button type="button" onClick={() => {}} className="inline-flex h-10 items-center justify-center rounded-full border border-[#E5E7EB] bg-white px-4 text-xs font-semibold text-[#111827] shadow-sm transition hover:border-[#CBD5E1] hover:bg-[#F8FAFB]">
-                                      AI Ready: {filtered.length > 0 ? Math.round(filtered.filter((product) => product.name?.trim() && product.category?.trim() && product.description?.trim()).length / filtered.length * 100) : 0}%
-                                    </button>
-                                  </div>
+                                  {(productSearch || selectedCatalogueTab !== "All" || catalogueAttentionFilter !== "all") ? (
+                                    <div className="mt-3 flex items-center gap-3 text-xs text-[#64748B]">
+                                      <span>{filtered.length} matching {filtered.length === 1 ? "item" : "items"}</span>
+                                      <button type="button" onClick={() => { setProductSearch(""); setSelectedCatalogueTab("All"); setCatalogueAttentionFilter("all"); }} className="font-semibold text-[#111827] underline decoration-[#CBD5E1] underline-offset-4 transition hover:text-[#166534]">Clear filters</button>
+                                    </div>
+                                  ) : null}
 
                                   {catalogProducts.length === 0 ? (
                                     <div className="mt-6 rounded-[28px] border border-dashed border-[#CBD5E1] bg-[#F8FAFB] p-8 text-center shadow-sm">
@@ -7326,7 +7362,7 @@ export default function DashboardLayout() {
                                       <button type="button" onClick={handleAddItemClick} className="mt-6 inline-flex items-center justify-center rounded-[16px] bg-[#111827] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937]">Add your first item</button>
                                     </div>
                                   ) : (
-                                    <div className="mt-6">
+                                    <div className="mt-4">
                                       {catalogView === 'grid' ? (
                                         <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                                           {filtered.map((item) => {
@@ -7345,22 +7381,22 @@ export default function DashboardLayout() {
                                             const needsReadinessAction = readinessLabel !== '100% Ready';
 
                                             return (
-                                              <article key={item.id} className="group flex h-full min-h-[356px] flex-col overflow-hidden rounded-[24px] border border-[#E5E7EB] bg-white shadow-[0_10px_24px_rgba(15,23,42,0.06)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_18px_34px_rgba(15,23,42,0.12)]">
-                                                <div className="relative overflow-hidden bg-[#F5F5F4] h-40 sm:h-44">
+                                              <article key={item.id} className="group flex h-full min-h-[328px] flex-col overflow-hidden rounded-[20px] border border-[#E5E7EB] bg-white shadow-[0_6px_18px_rgba(15,23,42,0.05)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_28px_rgba(15,23,42,0.10)]">
+                                                <div className="relative h-36 overflow-hidden bg-[#F5F5F4] sm:h-40">
                                                   <CatalogueItemImage src={item.image} alt={item.name} className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]" />
                                                   <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent" />
                                                 </div>
 
-                                                <div className="flex flex-1 flex-col p-5">
+                                                <div className="flex flex-1 flex-col p-4">
                                                   <div className="min-w-0">
                                                     <p title={item.name} className="text-base font-semibold leading-6 text-[#111827] line-clamp-2">{item.name}</p>
                                                     {categoryLabel ? (
                                                       <p title={categoryLabel} className="mt-1 truncate text-sm text-[#64748B]">{categoryLabel}</p>
                                                     ) : null}
-                                                    <p title={item.price} className="mt-4 text-lg font-semibold tabular-nums text-[#111827]">{item.price}</p>
+                                                    <p title={item.price} className="mt-3 text-base font-semibold tabular-nums text-[#111827]">{item.price}</p>
                                                   </div>
 
-                                                  <div className="mt-4 flex flex-wrap gap-2">
+                                                  <div className="mt-3 flex flex-wrap gap-2">
                                                     <span title={item.availability} className={`inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-semibold ${isAvailable ? 'bg-[#ECFDF5] text-[#166534]' : 'bg-[#FFFBEB] text-[#B45309]'}`}>
                                                       {isAvailable ? <Check className="h-3.5 w-3.5" aria-hidden="true" /> : <CircleAlert className="h-3.5 w-3.5" aria-hidden="true" />}
                                                       {item.availability}
@@ -7373,7 +7409,7 @@ export default function DashboardLayout() {
                                                     ) : null}
                                                   </div>
 
-                                                  <div className="mt-auto flex items-center justify-end gap-2 border-t border-[#F1F5F9] pt-4">
+                                                  <div className="mt-auto flex items-center justify-end gap-2 border-t border-[#F1F5F9] pt-3">
                                                     <button type="button" aria-label={`Edit ${item.name}`} onClick={() => openProductDrawer(item.id)} className="inline-flex h-9 items-center justify-center rounded-lg border border-[#E5E7EB] bg-white px-3 text-xs font-semibold text-[#111827] transition hover:bg-[#F8FAFB] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2">Edit</button>
                                                     <DropdownMenu>
                                                       <DropdownMenuTrigger asChild>
@@ -7459,7 +7495,75 @@ export default function DashboardLayout() {
                           </div>
                         </div>
 
-                        {/* Dialogs removed: catalogue now focuses on item list only. Use drawer to edit items. */}
+                        {addItemChoiceOpen ? (
+                          <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0F172A]/30 p-4" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setAddItemChoiceOpen(false); }}>
+                            <section role="dialog" aria-modal="true" aria-labelledby="catalogue-item-type-title" className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+                              <div className="flex items-start justify-between gap-4"><div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#64748B]">Add to catalogue</p><h2 id="catalogue-item-type-title" className="mt-1 text-xl font-semibold text-[#111827]">What are you adding?</h2><p className="mt-2 text-sm text-[#64748B]">Choose the offer type so Sokoos knows how to recommend it.</p></div><button type="button" aria-label="Close offer type selection" onClick={() => setAddItemChoiceOpen(false)} className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-[#64748B] hover:bg-[#F1F5F9] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]"><X className="h-5 w-5" aria-hidden="true" /></button></div>
+                              <div className="mt-5 grid gap-3 sm:grid-cols-2">{Array.from(new Set(businessModelSelections.map((model) => BUSINESS_MODEL_TO_ADD_LABEL[model]).filter(Boolean))).map((type) => <button key={type} type="button" onClick={() => handleAddItemSelection(type)} className="rounded-xl border border-[#E5E7EB] bg-white px-4 py-4 text-left text-sm font-semibold text-[#111827] transition hover:border-[#86EFAC] hover:bg-[#F0FDF4] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]">{type}</button>)}</div>
+                            </section>
+                          </div>
+                        ) : null}
+
+                        {productDrawerOpen && selectedProduct ? (() => {
+                          const readiness = getCatalogueItemReadiness(selectedProduct);
+                          const isStockItem = ["Product", "Rental"].includes(selectedProduct.type);
+                          const isService = ["Service", "Subscription", "Membership"].includes(selectedProduct.type);
+                          const faqs = selectedProduct.faqs ?? [];
+                          const inputClass = "mt-2 h-10 w-full rounded-lg border border-[#E5E7EB] bg-white px-3 text-sm text-[#111827] outline-none transition placeholder:text-[#94A3B8] focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20";
+                          const labelClass = "text-sm font-semibold text-[#111827]";
+                          return (
+                            <div className="fixed inset-0 z-50 flex justify-end bg-[#0F172A]/30" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) closeProductDrawer(); }}>
+                              <section role="dialog" aria-modal="true" aria-labelledby="catalogue-item-editor-title" className="flex h-full w-full max-w-2xl flex-col bg-[#F8FAFB] shadow-2xl">
+                                <header className="flex items-start justify-between gap-4 border-b border-[#E5E7EB] bg-white px-5 py-5 sm:px-7">
+                                  <div>
+                                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#64748B]">Teach Sokoos about your offer</p>
+                                    <h2 id="catalogue-item-editor-title" className="mt-1 text-xl font-semibold text-[#111827]">{selectedProduct.name.trim() ? `Edit ${selectedProduct.name}` : "Add item"}</h2>
+                                    <p className="mt-1 text-sm text-[#64748B]">Add the details customers need to make a confident choice.</p>
+                                  </div>
+                                  <button type="button" aria-label="Close item editor" onClick={closeProductDrawer} className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-[#64748B] transition hover:bg-[#F1F5F9] hover:text-[#111827] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]">
+                                    <X className="h-5 w-5" aria-hidden="true" />
+                                  </button>
+                                </header>
+
+                                <div className="flex-1 overflow-y-auto px-5 py-6 sm:px-7">
+                                  <form id="catalogue-item-form" noValidate onSubmit={(event) => { event.preventDefault(); saveProductDrawer(); }} className="space-y-5">
+                                    <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5">
+                                      <h3 className="text-base font-semibold text-[#111827]">Basic information</h3>
+                                      <p className="mt-1 text-sm text-[#64748B]">The essentials Sokoos uses to identify and describe this item.</p>
+                                      <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                                        <label className="sm:col-span-2"><span className={labelClass}>Name <span className="text-[#DC2626]">*</span></span><input value={selectedProduct.name} onChange={(event) => updateCatalogProductField(selectedProduct.id, "name", event.target.value)} aria-invalid={Boolean(productFormErrors.name)} aria-describedby={productFormErrors.name ? "item-name-error" : undefined} className={inputClass} placeholder="e.g. Deluxe hair treatment" />{productFormErrors.name ? <span id="item-name-error" className="mt-1 block text-xs text-[#B91C1C]">{productFormErrors.name}</span> : null}</label>
+                                        <label><span className={labelClass}>Product or service <span className="text-[#DC2626]">*</span></span><select value={selectedProduct.type} onChange={(event) => updateCatalogProductField(selectedProduct.id, "type", event.target.value)} aria-invalid={Boolean(productFormErrors.type)} className={inputClass}><option value="Product">Product</option><option value="Service">Service</option><option value="Subscription">Subscription</option><option value="Digital Product">Digital product</option><option value="Membership">Membership</option><option value="Rental">Rental</option></select>{productFormErrors.type ? <span className="mt-1 block text-xs text-[#B91C1C]">{productFormErrors.type}</span> : null}</label>
+                                        <label><span className={labelClass}>Category <span className="text-[#DC2626]">*</span></span><input value={selectedProduct.category} onChange={(event) => updateCatalogProductField(selectedProduct.id, "category", event.target.value)} aria-invalid={Boolean(productFormErrors.category)} className={inputClass} placeholder="e.g. Hair care" />{productFormErrors.category ? <span className="mt-1 block text-xs text-[#B91C1C]">{productFormErrors.category}</span> : null}</label>
+                                        <label className="sm:col-span-2"><span className={labelClass}>Description <span className="text-[#DC2626]">*</span></span><textarea value={selectedProduct.description} onChange={(event) => updateCatalogProductField(selectedProduct.id, "description", event.target.value)} aria-invalid={Boolean(productFormErrors.description)} className="mt-2 min-h-28 w-full rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-sm text-[#111827] outline-none transition placeholder:text-[#94A3B8] focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20" placeholder="What is it, and what does the customer get?" />{productFormErrors.description ? <span className="mt-1 block text-xs text-[#B91C1C]">{productFormErrors.description}</span> : null}</label>
+                                      </div>
+                                    </div>
+
+                                    <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5">
+                                      <h3 className="text-base font-semibold text-[#111827]">Pricing</h3>
+                                      <div className="mt-5 grid gap-4 sm:grid-cols-3"><label className="sm:col-span-2"><span className={labelClass}>Price <span className="text-[#DC2626]">*</span></span><input value={selectedProduct.price} onChange={(event) => updateCatalogProductField(selectedProduct.id, "price", event.target.value)} aria-invalid={Boolean(productFormErrors.price)} className={inputClass} placeholder="e.g. $45.00 or From $45" />{productFormErrors.price ? <span className="mt-1 block text-xs text-[#B91C1C]">{productFormErrors.price}</span> : null}</label><label><span className={labelClass}>Currency</span><select value={selectedProduct.currency ?? "USD"} onChange={(event) => updateCatalogProductField(selectedProduct.id, "currency", event.target.value)} className={inputClass}><option value="USD">USD</option><option value="KES">KES</option><option value="EUR">EUR</option><option value="GBP">GBP</option></select></label></div>
+                                    </div>
+
+                                    <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5">
+                                      <h3 className="text-base font-semibold text-[#111827]">Availability</h3>
+                                      <div className="mt-5 grid gap-4 sm:grid-cols-2"><label><span className={labelClass}>Customer availability</span><select value={selectedProduct.availability} onChange={(event) => updateCatalogProductField(selectedProduct.id, "availability", event.target.value)} className={inputClass}><option value="Available">Available</option><option value="In stock">In stock</option><option value="Low stock">Low stock</option><option value="Unavailable">Unavailable</option><option value="By appointment">By appointment</option></select></label>{isStockItem ? <label><span className={labelClass}>Stock on hand</span><input type="number" min="0" value={selectedProduct.currentStock ?? ""} onChange={(event) => updateCatalogProductField(selectedProduct.id, "currentStock", event.target.value === "" ? undefined : Number(event.target.value))} className={inputClass} placeholder="Optional" /></label> : null}</div>{isService ? <label className="mt-4 flex cursor-pointer items-center gap-3 rounded-xl bg-[#F8FAFB] p-3 text-sm text-[#475569]"><input type="checkbox" checked={Boolean(selectedProduct.appointmentRequired)} onChange={(event) => updateCatalogProductField(selectedProduct.id, "appointmentRequired", event.target.checked)} className="h-4 w-4 rounded border-[#CBD5E1] text-[#22C55E] focus:ring-[#22C55E]" />Appointment required</label> : null}</div>
+
+                                    <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5">
+                                      <h3 className="text-base font-semibold text-[#111827]">Customer information</h3><p className="mt-1 text-sm text-[#64748B]">Capture the details Sokoos should share with customers.</p>
+                                      <div className="mt-5 space-y-3">{faqs.map((faq, index) => <div key={`${selectedProduct.id}-faq-${index}`} className="flex gap-2"><input value={faq} onChange={(event) => updateCatalogProductField(selectedProduct.id, "faqs", faqs.map((item, itemIndex) => itemIndex === index ? event.target.value : item))} className="h-10 min-w-0 flex-1 rounded-lg border border-[#E5E7EB] px-3 text-sm outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20" placeholder="e.g. Is this suitable for sensitive skin?" /><button type="button" aria-label="Remove FAQ" onClick={() => updateCatalogProductField(selectedProduct.id, "faqs", faqs.filter((_, itemIndex) => itemIndex !== index))} className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-[#64748B] hover:bg-[#F1F5F9] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]"><X className="h-4 w-4" aria-hidden="true" /></button></div>)}</div>
+                                      <button type="button" onClick={() => updateCatalogProductField(selectedProduct.id, "faqs", [...faqs, ""])} className="mt-3 text-sm font-semibold text-[#166534] hover:text-[#15803D] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2">+ Add FAQ</button>
+                                      <label className="mt-4 block"><span className={labelClass}>Important customer-facing information</span><textarea value={selectedProduct.customerInformation ?? ""} onChange={(event) => updateCatalogProductField(selectedProduct.id, "customerInformation", event.target.value)} className="mt-2 min-h-24 w-full rounded-lg border border-[#E5E7EB] px-3 py-2 text-sm outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20" placeholder="Anything customers should know before they buy or book." /></label>
+                                    </div>
+
+                                    <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5"><h3 className="text-base font-semibold text-[#111827]">Media</h3><p className="mt-1 text-sm text-[#64748B]">A clear image helps customers recognize this item.</p><div className="mt-4 flex items-center gap-4"><CatalogueItemImage src={selectedProduct.image} alt={selectedProduct.name || "Item"} className="h-16 w-16 shrink-0 rounded-xl object-cover" /><label className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg border border-[#E5E7EB] bg-white px-3 text-sm font-semibold text-[#111827] transition hover:bg-[#F8FAFB] focus-within:ring-2 focus-within:ring-[#22C55E]"><span>Upload image</span><input type="file" accept="image/*" className="sr-only" onChange={(event) => handleProductImageUpload(event.target.files)} /></label></div></div>
+
+                                    <div className={`rounded-2xl border p-5 ${readiness.isReady ? "border-[#BBF7D0] bg-[#F0FDF4]" : "border-[#FDE68A] bg-[#FFFBEB]"}`}><div className="flex items-start gap-3">{readiness.isReady ? <Check className="mt-0.5 h-5 w-5 text-[#166534]" aria-hidden="true" /> : <CircleAlert className="mt-0.5 h-5 w-5 text-[#B45309]" aria-hidden="true" />}<div><h3 className="font-semibold text-[#111827]">AI readiness</h3><p className="mt-1 text-sm text-[#475569]">{readiness.isReady ? "Sokoos has the details it needs to recommend this item confidently." : `Still needed: ${readiness.label.replace("Needs ", "").toLowerCase()}.`}</p></div></div></div>
+                                  </form>
+                                </div>
+                                <footer className="flex items-center justify-end gap-3 border-t border-[#E5E7EB] bg-white px-5 py-4 sm:px-7"><button type="button" onClick={closeProductDrawer} className="inline-flex h-10 items-center justify-center rounded-lg px-4 text-sm font-semibold text-[#475569] transition hover:bg-[#F1F5F9] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]">Cancel</button><button type="submit" form="catalogue-item-form" className="inline-flex h-10 items-center justify-center rounded-lg bg-[#111827] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2">Save item</button></footer>
+                              </section>
+                            </div>
+                          );
+                        })() : null}
                         <TrainingTemplateOption
                           workspaceName="Catalogue"
                           description="Prepare products and services in a document or spreadsheet before adding them through the catalogue tools."
