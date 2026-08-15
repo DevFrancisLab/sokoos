@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type DragEvent } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -37,6 +37,7 @@ export default function EditProfileDialog({ user, open, onOpenChange, onSave }: 
   const [avatarPreview, setAvatarPreview] = useState<string | undefined>(user.avatarUrl);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [photoError, setPhotoError] = useState<string | null>(null);
+  const [isDraggingPhoto, setIsDraggingPhoto] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const isSubmittingRef = useRef(false);
 
@@ -97,6 +98,23 @@ export default function EditProfileDialog({ user, open, onOpenChange, onSave }: 
     onFileChange(file);
   };
 
+  const handlePhotoDragOver = (event: DragEvent<HTMLElement>) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "copy";
+  };
+
+  const handlePhotoDrop = (event: DragEvent<HTMLElement>) => {
+    event.preventDefault();
+    setIsDraggingPhoto(false);
+    handleFileSelection(event.dataTransfer.files[0]);
+  };
+
+  const handlePhotoDragLeave = (event: DragEvent<HTMLElement>) => {
+    if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+      setIsDraggingPhoto(false);
+    }
+  };
+
   const handleOpenChange = (nextOpen: boolean) => {
     if (!nextOpen) {
       if (isSaving) return;
@@ -139,7 +157,17 @@ export default function EditProfileDialog({ user, open, onOpenChange, onSave }: 
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-7">
-            <section aria-label="Profile photo" className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFC] p-4 sm:p-5">
+            <section
+              aria-label="Profile photo"
+              className={`rounded-[20px] border border-dashed bg-[#F8FAFC] p-4 transition-colors sm:p-5 ${isDraggingPhoto ? "border-[#22C55E] bg-[#F0FDF4]" : "border-[#E5E7EB]"}`}
+              onDragEnter={(event) => {
+                event.preventDefault();
+                setIsDraggingPhoto(true);
+              }}
+              onDragOver={handlePhotoDragOver}
+              onDragLeave={handlePhotoDragLeave}
+              onDrop={handlePhotoDrop}
+            >
               <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
                 <Avatar className="h-20 w-20 shrink-0 rounded-full bg-white text-[#111827] shadow-sm">
                   {avatarPreview ? (
@@ -171,7 +199,7 @@ export default function EditProfileDialog({ user, open, onOpenChange, onSave }: 
                       }}
                     />
                   </label>
-                  <p id="profile-photo-help" className="text-sm text-[#64748B]">PNG or JPG · max 5MB</p>
+                  <p id="profile-photo-help" className="text-sm text-[#64748B]">PNG or JPG · max 5MB · or drag and drop here</p>
                   {photoError ? <p id="profile-photo-error" role="alert" className="text-sm font-medium text-[#DC2626]">{photoError}</p> : null}
                 </div>
               </div>

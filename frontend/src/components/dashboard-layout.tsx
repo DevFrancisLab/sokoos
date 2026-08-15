@@ -4452,6 +4452,7 @@ export default function DashboardLayout() {
 
   const [user, setUser] = useState<SidebarUser | null>(null);
   const [editProfileOpen, setEditProfileOpen] = useState(false);
+  const profileVersionRef = useRef(0);
 
   const handleLogout = async () => {
     try {
@@ -4509,6 +4510,7 @@ export default function DashboardLayout() {
     const profile = response.data?.user;
     if (!profile) throw new Error("Unable to save your profile. Please try again.");
 
+    profileVersionRef.current += 1;
     saveAuthSession(getAuthToken() ?? "", profile);
     setUser({
       id: String(profile.id),
@@ -4519,6 +4521,7 @@ export default function DashboardLayout() {
   };
 
   useEffect(() => {
+    const profileVersion = profileVersionRef.current;
     const raw = getCurrentUser();
     if (!raw || typeof raw !== "object") {
       setUser(null);
@@ -4532,7 +4535,7 @@ export default function DashboardLayout() {
     });
     void apiRequest<AuthUser>("/api/auth/me/", { headers: getAuthorizationHeader() })
       .then(({ data }) => {
-        if (!data) return;
+        if (!data || profileVersion !== profileVersionRef.current) return;
         saveAuthSession(getAuthToken() ?? "", data);
         setUser({ id: String(data.id), name: getUserDisplayName(data), email: data.email, avatarUrl: data.avatar_url ?? undefined });
       })

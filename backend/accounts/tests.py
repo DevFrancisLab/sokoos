@@ -1,6 +1,7 @@
 from io import BytesIO
 from tempfile import TemporaryDirectory
 
+from django.core.files.storage import FileSystemStorage
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import SimpleTestCase
 from PIL import Image
@@ -14,11 +15,18 @@ class AvatarProcessingTests(SimpleTestCase):
         Image.new("RGB", (1200, 400), "red").save(source, format="JPEG")
         avatar = SimpleUploadedFile("wide-photo.jpg", source.getvalue(), content_type="image/jpeg")
 
-        with TemporaryDirectory() as media_root, self.settings(MEDIA_ROOT=media_root):
+        with TemporaryDirectory() as media_root:
+            avatar_field = User._meta.get_field("avatar")
+            original_storage = avatar_field.storage
+            avatar_field.storage = FileSystemStorage(location=media_root, base_url="/media/")
             user = User(email="person@example.com", avatar=avatar)
-            user._resize_avatar()
 
-            with Image.open(user.avatar.path) as processed:
-                self.assertEqual(processed.size, (512, 512))
-                self.assertEqual(processed.format, "JPEG")
-            self.assertTrue(user.avatar.name.startswith("avatar/"))
+            try:
+                user._resize_avatar()
+
+                with Image.open(user.avatar.path) as processed:
+                    self.assertEqual(processed.size, (512, 512))
+                    self.assertEqual(processed.format, "JPEG")
+                self.assertTrue(user.avatar.name.startswith("avatar/"))
+            finally:
+                avatar_field.storage = original_storage
