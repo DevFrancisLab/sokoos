@@ -79,7 +79,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Sokoos — The Operating System for Growing Businesses" },
+      { title: "Sokoos — Your AI Employee for Business Growth" },
       {
         name: "description",
         content:

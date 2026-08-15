@@ -26,10 +26,58 @@ Select every source included in this template:
 ==========================================================================
 
 Instruction
-Provide important company information your AI should remember that is not
-already captured in the Identity workspace.
+Provide the deeper business context Sokoos should understand. Basic identity,
+contact, and location details are configured separately in the Identity workspace.
 
-Supporting company information:
+Business vision:
+__________________________________________________________________________
+
+Business mission:
+__________________________________________________________________________
+
+Short-term goals (next 3–12 months):
+__________________________________________________________________________
+
+Long-term goals:
+__________________________________________________________________________
+
+Target customers:
+__________________________________________________________________________
+
+Customer problems or needs:
+__________________________________________________________________________
+
+Primary market or area served:
+__________________________________________________________________________
+
+Customer segments:
+__________________________________________________________________________
+
+What makes the business different?
+__________________________________________________________________________
+
+Main competitive advantages:
+__________________________________________________________________________
+
+Key selling points:
+__________________________________________________________________________
+
+Competitors or alternatives customers may consider:
+__________________________________________________________________________
+
+Preferred brand tone:
+__________________________________________________________________________
+
+Words or phrases to use:
+__________________________________________________________________________
+
+Words or phrases to avoid:
+__________________________________________________________________________
+
+Additional brand guidance:
+__________________________________________________________________________
+
+Important things Sokoos should know:
 __________________________________________________________________________
 __________________________________________________________________________
 __________________________________________________________________________

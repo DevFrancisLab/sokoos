@@ -1,4 +1,4 @@
-import { type ChangeEvent, type ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { type ChangeEvent, type ReactNode, type SetStateAction, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "@tanstack/react-router";
 import {
   Home,
@@ -1792,9 +1792,80 @@ export default function DashboardLayout() {
   const [completedIdentitySteps, setCompletedIdentitySteps] = useState<number[]>([]);
   const [activeIntegrationStep, setActiveIntegrationStep] = useState(0);
   const [completedIntegrationSteps, setCompletedIntegrationSteps] = useState<number[]>([]);
-  const [activeKnowledgeStep, setActiveKnowledgeStep] = useState(0);
-  const [completedKnowledgeSteps, setCompletedKnowledgeSteps] = useState<number[]>([]);
-  const [selectedKnowledgeSources, setSelectedKnowledgeSources] = useState<string[]>([]);
+  type KnowledgeDocument = {
+    id: string;
+    name: string;
+    size: string;
+    uploaded: string;
+    status: string;
+    extracted: string;
+    kind: string;
+    progress?: number;
+  };
+  type KnowledgeSource = "company" | "faqs" | "documents" | "website";
+  type WebsiteScanSummary = { pages: number; products: number; faqs: number; contact: number; policies: number; blog: number };
+  type KnowledgeTrainingState = {
+    companyInformation: {
+      vision: string;
+      mission: string;
+      shortTermGoals: string;
+      longTermGoals: string;
+      targetCustomers: string;
+      customerProblems: string;
+      primaryMarket: string;
+      customerSegments: string;
+      differentiators: string;
+      competitiveAdvantages: string;
+      keySellingPoints: string;
+      competitors: string;
+      preferredBrandTones: string[];
+      wordsToUse: string;
+      wordsToAvoid: string;
+      brandGuidance: string;
+      importantThingsToKnow: string;
+      additionalNotes: string;
+    };
+    faqs: Array<{ id: string; question: string; answer: string; category?: string }>;
+    documents: KnowledgeDocument[];
+    website: { websiteUrl: string; instructions: string; status: "not_connected" | "ready" | "syncing" | "complete"; scanSummary: WebsiteScanSummary | null };
+    selectedSources: KnowledgeSource[];
+    completedLessons: number[];
+    currentLesson: number;
+  };
+  const [knowledgeTraining, setKnowledgeTraining] = useState<KnowledgeTrainingState>({
+    companyInformation: { vision: "", mission: "", shortTermGoals: "", longTermGoals: "", targetCustomers: "", customerProblems: "", primaryMarket: "", customerSegments: "", differentiators: "", competitiveAdvantages: "", keySellingPoints: "", competitors: "", preferredBrandTones: [], wordsToUse: "", wordsToAvoid: "", brandGuidance: "", importantThingsToKnow: "", additionalNotes: "" },
+    faqs: [],
+    documents: [],
+    website: { websiteUrl: "", instructions: "", status: "not_connected", scanSummary: null },
+    selectedSources: [],
+    completedLessons: [],
+    currentLesson: 0,
+  });
+  const resolveKnowledgeState = <T,>(next: SetStateAction<T>, current: T) => typeof next === "function" ? (next as (value: T) => T)(current) : next;
+  const activeKnowledgeStep = knowledgeTraining.currentLesson;
+  const setActiveKnowledgeStep = (next: SetStateAction<number>) => setKnowledgeTraining((current) => ({ ...current, currentLesson: resolveKnowledgeState(next, current.currentLesson) }));
+  const completedKnowledgeSteps = knowledgeTraining.completedLessons;
+  const setCompletedKnowledgeSteps = (next: SetStateAction<number[]>) => setKnowledgeTraining((current) => ({ ...current, completedLessons: resolveKnowledgeState(next, current.completedLessons) }));
+  const knowledgeSourceOrder: KnowledgeSource[] = ["company", "faqs", "documents", "website"];
+  const selectedKnowledgeSources = knowledgeSourceOrder.filter((source) => knowledgeTraining.selectedSources.includes(source));
+  const setSelectedKnowledgeSources = (next: SetStateAction<KnowledgeSource[]>) => setKnowledgeTraining((current) => {
+    const currentSources = knowledgeSourceOrder.filter((source) => current.selectedSources.includes(source));
+    const requestedSources = resolveKnowledgeState(next, currentSources);
+    const nextSources = knowledgeSourceOrder.filter((source) => requestedSources.includes(source));
+    const completedSources = currentSources.filter((source, index) => current.completedLessons.includes(index + 1));
+    return {
+      ...current,
+      selectedSources: nextSources,
+      completedLessons: [
+        ...(current.completedLessons.includes(0) ? [0] : []),
+        ...nextSources.flatMap((source, index) => completedSources.includes(source) ? [index + 1] : []),
+      ],
+    };
+  });
+  const [businessInformationValidationAttempted, setBusinessInformationValidationAttempted] = useState(false);
+  const updateCompanyInformation = (field: keyof KnowledgeTrainingState["companyInformation"], value: string | string[]) => {
+    setKnowledgeTraining((current) => ({ ...current, companyInformation: { ...current.companyInformation, [field]: value } }));
+  };
   const [completionToast, setCompletionToast] = useState<string | null>(null);
   const [previewReplyVisible, setPreviewReplyVisible] = useState(true);
   const [onboardingRestored, setOnboardingRestored] = useState(false);
@@ -1807,9 +1878,9 @@ export default function DashboardLayout() {
   const knowledgeLessons = ["Knowledge Sources", "Review"];
   const knowledgeSourceLessonTitles = {
     company: "Business Information",
-    faqs: "Frequently Asked Questions",
-    documents: "Resources",
-    website: "Products & Services",
+    faqs: "FAQs",
+    documents: "Documents",
+    website: "Website",
   } as const;
   const knowledgeLessonSequence = [
     "Knowledge Sources",
@@ -1825,9 +1896,9 @@ export default function DashboardLayout() {
           .sort((a, b) => a - b)
       : [];
 
-  const sanitizeSelectedKnowledgeSources = (sources: unknown[]) =>
+  const sanitizeSelectedKnowledgeSources = (sources: unknown[]): KnowledgeSource[] =>
     Array.isArray(sources)
-      ? sources.filter((source) => typeof source === "string").map((source) => String(source))
+      ? knowledgeSourceOrder.filter((source) => sources.includes(source))
       : [];
 
   const focusIdentityLesson = (step: number) => {
@@ -1860,11 +1931,16 @@ export default function DashboardLayout() {
     }, 0);
   };
   const completeKnowledgeLesson = (step: number) => {
+    if (!canContinueKnowledgeLesson(step)) return;
     setCompletedKnowledgeSteps((current) => (current.includes(step) ? current : [...current, step]));
     setCompletionToast(`${knowledgeLessonCompletionNames[step]} complete — your knowledge onboarding path is moving forward.`);
     window.setTimeout(() => setCompletionToast(null), 2200);
     if (step < knowledgeLessonSequence.length - 1) {
-      window.setTimeout(() => focusKnowledgeLesson(step + 1), 500);
+      const reviewStep = knowledgeLessonSequence.length - 1;
+      const nextStep = step + 1;
+      const sourceLessonsWillBeComplete = selectedKnowledgeSources.every((_, sourceIndex) => completedKnowledgeSteps.includes(sourceIndex + 1) || sourceIndex + 1 === step);
+      const firstIncompleteSource = selectedKnowledgeSources.findIndex((_, sourceIndex) => !completedKnowledgeSteps.includes(sourceIndex + 1) && sourceIndex + 1 !== step);
+      window.setTimeout(() => focusKnowledgeLesson(nextStep === reviewStep && !sourceLessonsWillBeComplete && firstIncompleteSource >= 0 ? firstIncompleteSource + 1 : nextStep), 500);
     }
   };
   const identityLessonCardClass = (step: number) => `rounded-[28px] border bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-300 sm:p-6 ${completedIdentitySteps.includes(step) ? "border-[#86EFAC] shadow-[0_14px_34px_rgba(34,197,94,0.14)]" : "border-[#E5E7EB]"}`;
@@ -3517,14 +3593,6 @@ export default function DashboardLayout() {
   const [isIndustryDropdownOpen, setIsIndustryDropdownOpen] = useState(false);
   const [otherIndustryValue, setOtherIndustryValue] = useState("");
   const [serviceAreaInput, setServiceAreaInput] = useState("");
-  const [companyAbout, setCompanyAbout] = useState<string>("");
-  const [companyMission, setCompanyMission] = useState<string>("");
-  const [companyVision, setCompanyVision] = useState<string>("");
-  const [yearsInBusiness, setYearsInBusiness] = useState<string>("");
-  const [industriesServed, setIndustriesServed] = useState<string>("");
-  const [targetCustomers, setTargetCustomers] = useState<string>("");
-  const [differentiators, setDifferentiators] = useState<string>("");
-  const [customerProblems, setCustomerProblems] = useState<string>("");
 
   const filteredIndustryOptions = useMemo(() => {
     const searchValue = industrySearch.trim().toLowerCase();
@@ -3547,9 +3615,6 @@ export default function DashboardLayout() {
     setOtherIndustryValue(businessInfo.type);
   }, [businessInfo.type]);
 
-  useEffect(() => {
-    setCompanyAbout(businessInfo.about || "");
-  }, [businessInfo.about]);
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -3812,14 +3877,11 @@ export default function DashboardLayout() {
     setNewContact({ name: "", relationship: "", phone: "" });
   };
   // Personal-contact helpers (moved here so personalContacts is defined first)
-  const [faqItems, setFaqItems] = useState([
-    {
-      id: "faq1",
-      question: "Do you offer installation?",
-      answer: "Yes, installation costs KES 2,000.",
-    },
-  ]);
+  const faqItems = knowledgeTraining.faqs;
+  const setFaqItems = (next: SetStateAction<typeof faqItems>) => setKnowledgeTraining((current) => ({ ...current, faqs: resolveKnowledgeState(next, current.faqs) }));
   const [editingFaqId, setEditingFaqId] = useState<string | null>(null);
+  const [faqDraft, setFaqDraft] = useState({ question: "", answer: "", category: "" });
+  const [faqValidationAttempted, setFaqValidationAttempted] = useState(false);
   const [expandedPolicy, setExpandedPolicy] = useState<string | null>(null);
   const [policiesText, setPoliciesText] = useState<Record<string, string>>({
     refund: "",
@@ -3840,9 +3902,21 @@ export default function DashboardLayout() {
   const [selectedKnowledgeItems, setSelectedKnowledgeItems] = useState<string[]>([]);
   const [editingKnowledgeId, setEditingKnowledgeId] = useState<string | null>(null);
   const [previewKnowledgeId, setPreviewKnowledgeId] = useState<string | null>(null);
-  const [websiteImportUrl, setWebsiteImportUrl] = useState("https://theirbusiness.com");
+  const websiteImportUrl = knowledgeTraining.website.websiteUrl;
+  const [websiteUrlDraft, setWebsiteUrlDraft] = useState("");
+  const [websiteValidationAttempted, setWebsiteValidationAttempted] = useState(false);
+  const [websiteEditorOpen, setWebsiteEditorOpen] = useState(false);
+  const isValidWebsiteUrl = (value: string) => {
+    try {
+      const url = new URL(value.trim());
+      return url.protocol === "http:" || url.protocol === "https:";
+    } catch {
+      return false;
+    }
+  };
   const [websiteImportProgress, setWebsiteImportProgress] = useState(100);
-  const [websiteImportStatus, setWebsiteImportStatus] = useState<"ready" | "syncing" | "complete">("ready");
+  const websiteImportStatus = knowledgeTraining.website.status === "not_connected" ? "ready" : knowledgeTraining.website.status;
+  const setWebsiteImportStatus = (status: "ready" | "syncing" | "complete") => setKnowledgeTraining((current) => ({ ...current, website: { ...current.website, status } }));
   const [websiteImportHistory, setWebsiteImportHistory] = useState([
     { id: "website-sync-1", time: "Today, 10:42 AM", result: "18 pages scanned · 42 knowledge items updated" },
     { id: "website-sync-2", time: "Jul 24, 2:18 PM", result: "16 pages scanned · 38 knowledge items updated" },
@@ -3855,65 +3929,36 @@ export default function DashboardLayout() {
     { id: "learning-5", day: "3 days ago", title: "Added refund policy", detail: "Customer policy guidance added", Icon: Shield },
   ]);
   const knowledgeDocumentInputRef = useRef<HTMLInputElement>(null);
-  type KnowledgeDocument = {
-    id: string;
-    name: string;
-    size: string;
-    uploaded: string;
-    status: string;
-    extracted: string;
-    kind: string;
-    progress?: number;
-  };
-  const [knowledgeDocuments, setKnowledgeDocuments] = useState<KnowledgeDocument[]>([
-    { id: "knowledge-doc-1", name: "Internet Plans 2026.pdf", size: "2.4 MB", uploaded: "Today, 9:42 AM", status: "Ready", extracted: "16 knowledge items", kind: "PDF" },
-    { id: "knowledge-doc-2", name: "Customer Support FAQ.docx", size: "86 KB", uploaded: "Jul 26, 2026", status: "Ready", extracted: "24 knowledge items", kind: "DOCX" },
-  ]);
+  const knowledgeDocuments = knowledgeTraining.documents;
+  const setKnowledgeDocuments = (next: SetStateAction<KnowledgeDocument[]>) => setKnowledgeTraining((current) => ({ ...current, documents: resolveKnowledgeState(next, current.documents) }));
   const [knowledgeDocumentDragActive, setKnowledgeDocumentDragActive] = useState(false);
-  const [replacingKnowledgeDocumentId, setReplacingKnowledgeDocumentId] = useState<string | null>(null);
-  const [previewKnowledgeDocumentId, setPreviewKnowledgeDocumentId] = useState<string | null>(null);
+  const [knowledgeDocumentErrors, setKnowledgeDocumentErrors] = useState<string[]>([]);
   const addKnowledgeDocuments = (files: FileList | File[]) => {
-    const entries = Array.from(files).map((file) => ({ id: `knowledge-doc-${Date.now()}-${file.name}`, name: file.name, size: file.size >= 1024 * 1024 ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` : `${Math.max(1, Math.round(file.size / 1024))} KB`, uploaded: "Just now", status: "Processing", extracted: "Extracting knowledge…", kind: file.name.split(".").pop()?.toUpperCase() || "FILE" }));
-    if (replacingKnowledgeDocumentId && entries[0]) {
-      setKnowledgeDocuments((documents) => documents.map((document) => document.id === replacingKnowledgeDocumentId ? { ...entries[0], id: document.id } : document));
-      setReplacingKnowledgeDocumentId(null);
-    } else setKnowledgeDocuments((documents) => [...entries, ...documents]);
-    if (entries.length) setAiLearningTimeline((timeline) => [{ id: `learning-doc-${Date.now()}`, day: "Today", title: replacingKnowledgeDocumentId ? "Replaced knowledge document" : "Uploaded knowledge document", detail: `${entries.length} document${entries.length === 1 ? "" : "s"} sent for AI learning`, Icon: Paperclip }, ...timeline]);
-    window.setTimeout(() => setKnowledgeDocuments((documents) => documents.map((document) => entries.some((entry) => entry.id === document.id) || (replacingKnowledgeDocumentId && document.id === replacingKnowledgeDocumentId) ? { ...document, status: "Ready", extracted: "Knowledge extracted" } : document)), 700);
-  };
-
-  const uploadMock = (files: FileList | File[]) => {
-    const entries = Array.from(files).map((file) => ({
-      id: `knowledge-doc-${Date.now()}-${file.name}`,
-      name: file.name,
-      size: file.size >= 1024 * 1024 ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` : `${Math.max(1, Math.round(file.size / 1024))} KB`,
-      uploaded: "Just now",
-      status: "Reading...",
-      progress: 0,
-      extracted: "Pending extraction",
-      kind: file.name.split(".").pop()?.toUpperCase() || "FILE",
-    }));
-
-    setKnowledgeDocuments((docs) => [...entries, ...docs]);
-
-    entries.forEach((entry, idx) => {
-      const startDelay = idx * 250;
-      window.setTimeout(() => {
-        let p = 0;
-        const timer = window.setInterval(() => {
-          p += Math.floor(15 + Math.random() * 30);
-          if (p >= 100) {
-            p = 100;
-            setKnowledgeDocuments((docs) => docs.map((d) => (d.id === entry.id ? { ...d, progress: p, status: "Indexed" } : d)));
-            window.clearInterval(timer as any);
-            window.setTimeout(() => setKnowledgeDocuments((docs) => docs.map((d) => (d.id === entry.id ? { ...d, progress: 100, status: "Ready" } : d))), 600 + Math.random() * 600);
-          } else {
-            setKnowledgeDocuments((docs) => docs.map((d) => (d.id === entry.id ? { ...d, progress: p, status: "Reading..." } : d)));
-          }
-        }, 300 + Math.random() * 200);
-      }, startDelay);
+    const supportedTypes = new Set(["pdf", "docx", "txt", "csv", "xlsx"]);
+    const maxFileSize = 10 * 1024 * 1024;
+    const errors: string[] = [];
+    const entries = Array.from(files).flatMap((file, index) => {
+      const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
+      if (!supportedTypes.has(extension)) {
+        errors.push(`${file.name}: use a PDF, DOCX, TXT, CSV, or XLSX file.`);
+        return [];
+      }
+      if (file.size > maxFileSize) {
+        errors.push(`${file.name}: files must be 10 MB or smaller.`);
+        return [];
+      }
+      return [{
+        id: `knowledge-doc-${Date.now()}-${index}-${file.name}`,
+        name: file.name,
+        size: file.size >= 1024 * 1024 ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` : `${Math.max(1, Math.round(file.size / 1024))} KB`,
+        uploaded: "Just now",
+        status: "Selected",
+        extracted: "Ready to upload",
+        kind: extension.toUpperCase(),
+      }];
     });
-    setAiLearningTimeline((timeline) => [{ id: `learning-doc-${Date.now()}`, day: "Today", title: "Uploaded knowledge document", detail: `${entries.length} document${entries.length === 1 ? "" : "s"} sent for AI learning`, Icon: Paperclip }, ...timeline]);
+    setKnowledgeDocumentErrors(errors);
+    if (entries.length) setKnowledgeDocuments((documents) => [...documents, ...entries]);
   };
   const syncWebsiteKnowledge = () => {
     setWebsiteImportStatus("syncing");
@@ -3926,7 +3971,8 @@ export default function DashboardLayout() {
       setAiLearningTimeline((timeline) => [{ id: `learning-${Date.now()}`, day: "Today", title: "Imported website", detail: "42 knowledge items learned from 18 pages", Icon: Globe }, ...timeline]);
     }, 950);
   };
-  const [websiteScanSummary, setWebsiteScanSummary] = useState<null | { pages: number; products: number; faqs: number; contact: number; policies: number; blog: number; }>(null);
+  const websiteScanSummary = knowledgeTraining.website.scanSummary;
+  const setWebsiteScanSummary = (summary: WebsiteScanSummary | null) => setKnowledgeTraining((current) => ({ ...current, website: { ...current.website, scanSummary: summary } }));
 
   // Enhanced mock scanning: set a fake summary after scanning completes
   const scanWebsite = () => {
@@ -4028,9 +4074,9 @@ export default function DashboardLayout() {
   const knowledgeSourceLessonProgress = selectedKnowledgeSources.map((source) => {
     if (source === "company") {
       return Math.round(([
-        businessInfo.name,
-        businessInfo.about,
-        companyAbout || companyMission || companyVision || targetCustomers,
+        knowledgeTraining.companyInformation.vision,
+        knowledgeTraining.companyInformation.mission,
+        knowledgeTraining.companyInformation.importantThingsToKnow || knowledgeTraining.companyInformation.additionalNotes,
       ].filter(Boolean).length / 3) * 100);
     }
     if (source === "faqs") {
@@ -4040,7 +4086,7 @@ export default function DashboardLayout() {
       return knowledgeDocuments.length > 0 ? 100 : 0;
     }
     if (source === "website") {
-      return websiteScanSummary?.pages ? 100 : 0;
+      return isValidWebsiteUrl(knowledgeTraining.website.websiteUrl) && knowledgeTraining.website.status !== "not_connected" ? 100 : 0;
     }
     return 0;
   });
@@ -4073,7 +4119,7 @@ export default function DashboardLayout() {
   const aiReadiness = overallTrainingComplete ? 100 : Math.min(100, Math.round(18 + (completedTrainingLessonCount / Math.max(1, totalTrainingLessonCount)) * 82));
   const totalProductMediaAssets = catalogProducts.reduce((count, product) => count + (product.mediaAssets?.length ?? 0), 0);
   const knowledgeSourceSummary = [
-    { label: "Website", value: "42 pages", Icon: Globe, ready: websiteImportStatus !== "syncing" },
+    { label: "Website", value: websiteScanSummary?.pages ? `${websiteScanSummary.pages} pages` : "Not connected", Icon: Globe, ready: Boolean(websiteScanSummary?.pages) },
     { label: "FAQ", value: `${faqItems.length} items`, Icon: MessageCircle, ready: faqItems.length > 0 },
     { label: "Products", value: `${knowledgeProducts.length} products`, Icon: Package, ready: knowledgeProducts.length > 0 },
     { label: "Policies", value: `${Object.values(policies).filter(Boolean).length}`, Icon: Shield, ready: Object.values(policies).some(Boolean) },
@@ -4160,6 +4206,7 @@ export default function DashboardLayout() {
         const progress = JSON.parse(saved) as {
           step?: number;
           completed?: number[];
+          knowledgeTraining?: Partial<KnowledgeTrainingState>;
           launched?: boolean;
           scrollY?: number;
           businessInfo?: typeof businessInfo;
@@ -4188,6 +4235,20 @@ export default function DashboardLayout() {
           if (typeof progress.businessHours === "string") setBusinessHours(progress.businessHours);
           if (typeof progress.step === "number") setActiveIdentityStep(progress.step);
           if (Array.isArray(progress.completed)) setCompletedIdentitySteps(sanitizeStepIndices(progress.completed, identityLessons.length));
+          const savedKnowledgeTraining = progress.knowledgeTraining;
+          if (savedKnowledgeTraining) {
+            setKnowledgeTraining((current) => ({
+              ...current,
+              ...savedKnowledgeTraining,
+              companyInformation: { ...current.companyInformation, ...savedKnowledgeTraining.companyInformation },
+              website: { ...current.website, ...savedKnowledgeTraining.website },
+              faqs: Array.isArray(savedKnowledgeTraining.faqs) ? savedKnowledgeTraining.faqs : current.faqs,
+              documents: Array.isArray(savedKnowledgeTraining.documents) ? savedKnowledgeTraining.documents : current.documents,
+              selectedSources: Array.isArray(savedKnowledgeTraining.selectedSources) ? sanitizeSelectedKnowledgeSources(savedKnowledgeTraining.selectedSources) : current.selectedSources,
+              completedLessons: Array.isArray(savedKnowledgeTraining.completedLessons) ? savedKnowledgeTraining.completedLessons : current.completedLessons,
+              currentLesson: typeof savedKnowledgeTraining.currentLesson === "number" ? savedKnowledgeTraining.currentLesson : current.currentLesson,
+            }));
+          }
           const loadedSelectedKnowledgeSources = Array.isArray((progress as any).selectedKnowledgeSources)
             ? sanitizeSelectedKnowledgeSources((progress as any).selectedKnowledgeSources)
             : [];
@@ -4224,6 +4285,7 @@ export default function DashboardLayout() {
       activeKnowledgeStep,
       completedKnowledge: completedKnowledgeSteps,
       selectedKnowledgeSources,
+      knowledgeTraining,
       launched: aiEmployeeLaunched,
       scrollY: window.scrollY,
       businessInfo,
@@ -4231,7 +4293,7 @@ export default function DashboardLayout() {
       businessModels: businessModelSelections,
       businessHours,
     }));
-  }, [activeIdentityStep, completedIdentitySteps, activeKnowledgeStep, completedKnowledgeSteps, selectedKnowledgeSources, aiEmployeeLaunched, businessHours, businessInfo, onboardingRestored]);
+  }, [activeIdentityStep, completedIdentitySteps, activeKnowledgeStep, completedKnowledgeSteps, selectedKnowledgeSources, knowledgeTraining, aiEmployeeLaunched, businessHours, businessInfo, onboardingRestored]);
   const [businessProfile, setBusinessProfile] = useState({
     name: "Sokoos Internet",
     industry: "Telecom & Connectivity",
@@ -4527,11 +4589,33 @@ export default function DashboardLayout() {
 
   const canContinueIntegrationLesson = (_step: number) => true;
 
+  const knowledgeSourceHasRequiredInformation = (source: KnowledgeSource) => {
+    if (source === "company") {
+      const { companyInformation } = knowledgeTraining;
+      return Boolean(companyInformation.vision.trim() && companyInformation.mission.trim());
+    }
+    if (source === "faqs") return knowledgeTraining.faqs.some((faq) => faq.question.trim() && faq.answer.trim());
+    if (source === "documents") return knowledgeTraining.documents.length > 0;
+    return isValidWebsiteUrl(knowledgeTraining.website.websiteUrl) && knowledgeTraining.website.status !== "not_connected";
+  };
+
   const canContinueKnowledgeLesson = (step: number) => {
     if (step === 0) {
       return selectedKnowledgeSources.length > 0;
     }
-    return true;
+
+    if (step === knowledgeLessonSequence.length - 1) {
+      return selectedKnowledgeSources.length > 0 && selectedKnowledgeSources.every(knowledgeSourceHasRequiredInformation);
+    }
+
+    const source = selectedKnowledgeSources[step - 1];
+    return source ? knowledgeSourceHasRequiredInformation(source) : false;
+  };
+
+  const canOpenKnowledgeLesson = (step: number) => {
+    const reviewStep = knowledgeLessonSequence.length - 1;
+    if (step !== reviewStep) return true;
+    return selectedKnowledgeSources.every((_, sourceIndex) => completedKnowledgeSteps.includes(sourceIndex + 1));
   };
 
   useEffect(() => {
@@ -4541,6 +4625,14 @@ export default function DashboardLayout() {
     }
     setCompletedKnowledgeSteps((current) => current.filter((step) => step >= 0 && step <= maxStep));
   }, [knowledgeLessonSequence.length]);
+
+  useEffect(() => {
+    const reviewStep = knowledgeLessonSequence.length - 1;
+    if (activeKnowledgeStep === reviewStep && !canOpenKnowledgeLesson(reviewStep)) {
+      const firstIncompleteSource = selectedKnowledgeSources.findIndex((_, sourceIndex) => !completedKnowledgeSteps.includes(sourceIndex + 1));
+      setActiveKnowledgeStep(firstIncompleteSource >= 0 ? firstIncompleteSource + 1 : 0);
+    }
+  }, [activeKnowledgeStep, completedKnowledgeSteps, knowledgeLessonSequence.length, selectedKnowledgeSources]);
 
   const KnowledgeLessonTabs = () => (
     <section className="relative z-20 rounded-[24px] border border-[#E5E7EB] bg-white px-3 py-3 shadow-[0_6px_18px_rgba(15,23,42,0.04)]" aria-label="Knowledge onboarding progress">
@@ -4571,9 +4663,10 @@ export default function DashboardLayout() {
             <button
               key={lesson}
               type="button"
-              onClick={() => focusKnowledgeLesson(index)}
+              disabled={!canOpenKnowledgeLesson(index)}
+              onClick={() => { if (canOpenKnowledgeLesson(index)) focusKnowledgeLesson(index); }}
               aria-current={active ? "step" : undefined}
-              className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition ${active ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534] shadow-sm" : completed ? "border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#86EFAC] hover:text-[#111827]"}`}
+              className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-45 ${active ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534] shadow-sm" : completed ? "border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#86EFAC] hover:text-[#111827]"}`}
             >
               <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${completed ? "bg-[#22C55E] text-white" : active ? "bg-[#111827] text-white" : "bg-[#F8FAFC] text-[#64748B]"}`}>
                 {completed ? <Check className="h-3.5 w-3.5" /> : <span className="text-[11px]">{index + 1}</span>}
@@ -5781,6 +5874,162 @@ export default function DashboardLayout() {
     );
   };
 
+  const FaqEditor = () => {
+    const isEditing = editingFaqId !== null;
+    const questionError = faqValidationAttempted && !faqDraft.question.trim();
+    const answerError = faqValidationAttempted && !faqDraft.answer.trim();
+    const resetDraft = () => {
+      setFaqDraft({ question: "", answer: "", category: "" });
+      setEditingFaqId(null);
+      setFaqValidationAttempted(false);
+    };
+    const saveFaq = () => {
+      if (!faqDraft.question.trim() || !faqDraft.answer.trim()) {
+        setFaqValidationAttempted(true);
+        return;
+      }
+
+      const nextFaq = {
+        question: faqDraft.question.trim(),
+        answer: faqDraft.answer.trim(),
+        ...(faqDraft.category ? { category: faqDraft.category } : {}),
+      };
+      if (editingFaqId) {
+        setFaqItems((items) => items.map((faq) => faq.id === editingFaqId ? { ...faq, ...nextFaq } : faq));
+      } else {
+        setFaqItems((items) => [...items, { id: `faq-${Date.now()}`, ...nextFaq }]);
+      }
+      resetDraft();
+    };
+    const editFaq = (faq: typeof faqItems[number]) => {
+      setEditingFaqId(faq.id);
+      setFaqDraft({ question: faq.question, answer: faq.answer, category: faq.category ?? "" });
+      setFaqValidationAttempted(false);
+    };
+
+    return (
+      <div className="space-y-4">
+        {faqItems.length === 0 && !isEditing && !faqDraft.question && !faqDraft.answer ? (
+          <div className="rounded-2xl border border-dashed border-[#DCE3EA] bg-[#F8FAFC] px-5 py-8 text-center">
+            <p className="text-base font-semibold text-[#111827]">No FAQs yet</p>
+            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-[#64748B]">Add common customer questions and the answers Sokoos should use.</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {faqItems.map((faq) => (
+              <article key={faq.id} className="rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-sm">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-semibold text-[#111827]">{faq.question}</p>
+                    <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-[#475569]">{faq.answer}</p>
+                    {faq.category && <span className="mt-3 inline-flex rounded-full bg-[#ECFDF5] px-2.5 py-1 text-xs font-semibold text-[#166534]">{faq.category}</span>}
+                  </div>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <button type="button" onClick={() => editFaq(faq)} className="rounded-lg px-2.5 py-2 text-sm font-semibold text-[#334155] transition hover:bg-[#F1F5F9] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]">Edit</button>
+                    <button type="button" onClick={() => { setFaqItems((items) => items.filter((item) => item.id !== faq.id)); if (editingFaqId === faq.id) resetDraft(); }} className="rounded-lg px-2.5 py-2 text-sm font-semibold text-[#B91C1C] transition hover:bg-[#FEF2F2] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EF4444]">Delete</button>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+
+        <section className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <h3 className="text-base font-semibold text-[#111827]">{isEditing ? "Edit FAQ" : "Add an FAQ"}</h3>
+              <p className="mt-1 text-sm text-[#64748B]">Keep each answer clear and ready for customers.</p>
+            </div>
+          </div>
+          <div className="mt-4 grid gap-4">
+            <label className="grid gap-1.5 text-sm font-medium text-[#334155]">
+              Question
+              <input aria-invalid={questionError} value={faqDraft.question} onChange={(event) => setFaqDraft((draft) => ({ ...draft, question: event.target.value }))} placeholder="Enter a common customer question" className={`h-10 rounded-lg border bg-white px-3 text-sm text-[#111827] outline-none focus:ring-2 ${questionError ? "border-[#DC2626] focus:border-[#DC2626] focus:ring-[#FECACA]" : "border-[#DCE3EA] focus:border-[#22C55E] focus:ring-[#22C55E]/20"}`} />
+              {questionError && <span className="text-sm font-normal text-[#B91C1C]">Enter a question to save this FAQ.</span>}
+            </label>
+            <label className="grid gap-1.5 text-sm font-medium text-[#334155]">
+              Answer
+              <Textarea aria-invalid={answerError} value={faqDraft.answer} onChange={(event) => setFaqDraft((draft) => ({ ...draft, answer: event.target.value }))} placeholder="Enter the answer Sokoos should give" className={`min-h-24 resize-y bg-white text-sm focus-visible:ring-2 ${answerError ? "border-[#DC2626] focus-visible:border-[#DC2626] focus-visible:ring-[#FECACA]" : "border-[#DCE3EA] focus-visible:ring-[#22C55E]"}`} />
+              {answerError && <span className="text-sm font-normal text-[#B91C1C]">Enter an answer to save this FAQ.</span>}
+            </label>
+            <label className="grid gap-1.5 text-sm font-medium text-[#334155]">
+              Optional category
+              <select value={faqDraft.category} onChange={(event) => setFaqDraft((draft) => ({ ...draft, category: event.target.value }))} className="h-10 rounded-lg border border-[#DCE3EA] bg-white px-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20">
+                <option value="">No category</option>
+                {["General", "Pricing", "Delivery", "Support", "Other"].map((category) => <option key={category} value={category}>{category}</option>)}
+              </select>
+            </label>
+          </div>
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            <button type="button" onClick={saveFaq} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">{isEditing ? "Save changes" : <><Plus className="h-4 w-4" />Add FAQ</>}</button>
+            {isEditing && <button type="button" onClick={resetDraft} className="rounded-lg px-3 py-2.5 text-sm font-semibold text-[#64748B] transition hover:bg-white hover:text-[#111827]">Cancel</button>}
+          </div>
+        </section>
+      </div>
+    );
+  };
+
+  const WebsiteEditor = () => {
+    const configured = isValidWebsiteUrl(websiteImportUrl) && knowledgeTraining.website.status !== "not_connected";
+    const showForm = websiteEditorOpen || !configured;
+    const urlError = websiteValidationAttempted && !isValidWebsiteUrl(websiteUrlDraft);
+    const addWebsite = () => {
+      if (!isValidWebsiteUrl(websiteUrlDraft)) {
+        setWebsiteValidationAttempted(true);
+        return;
+      }
+      setKnowledgeTraining((current) => ({ ...current, website: { ...current.website, websiteUrl: websiteUrlDraft.trim(), status: "ready", scanSummary: null } }));
+      setWebsiteValidationAttempted(false);
+      setWebsiteEditorOpen(false);
+    };
+    const editWebsite = () => {
+      setWebsiteUrlDraft(websiteImportUrl);
+      setWebsiteValidationAttempted(false);
+      setWebsiteEditorOpen(true);
+    };
+    const removeWebsite = () => {
+      setKnowledgeTraining((current) => ({ ...current, website: { ...current.website, websiteUrl: "", instructions: "", status: "not_connected", scanSummary: null } }));
+      setWebsiteUrlDraft("");
+      setWebsiteValidationAttempted(false);
+      setWebsiteEditorOpen(true);
+    };
+
+    return (
+      <div className="space-y-4">
+        {showForm && (
+          <section className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+            <label className="grid gap-1.5 text-sm font-medium text-[#334155]">
+              Website URL
+              <input type="url" aria-invalid={urlError} value={websiteUrlDraft} onChange={(event) => setWebsiteUrlDraft(event.target.value)} placeholder="https://example.com" className={`h-10 rounded-lg border bg-white px-3 text-sm text-[#111827] outline-none focus:ring-2 ${urlError ? "border-[#DC2626] focus:border-[#DC2626] focus:ring-[#FECACA]" : "border-[#DCE3EA] focus:border-[#22C55E] focus:ring-[#22C55E]/20"}`} />
+              <span className="font-normal leading-5 text-[#64748B]">Give Sokoos your business website so it can use the information published there when answering customers.</span>
+              {urlError && <span className="font-normal text-[#B91C1C]">Enter a valid website URL that starts with http:// or https://.</span>}
+            </label>
+            <div className="mt-5 flex flex-wrap items-center gap-3">
+              <button type="button" onClick={addWebsite} className="rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Add website</button>
+              {configured && <button type="button" onClick={() => { setWebsiteEditorOpen(false); setWebsiteValidationAttempted(false); }} className="rounded-lg px-3 py-2.5 text-sm font-semibold text-[#64748B] transition hover:bg-white hover:text-[#111827]">Cancel</button>}
+            </div>
+          </section>
+        )}
+        {configured && !showForm && (
+          <section className="rounded-2xl border border-[#BBF7D0] bg-[#F7FEF9] p-5 sm:p-6">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-[#111827]">Website URL</p>
+                <p className="mt-1 break-all text-sm text-[#475569]">{websiteImportUrl}</p>
+                <p className="mt-4 text-sm font-semibold text-[#166534]">Connection status</p>
+                <p className="mt-1 text-sm text-[#475569]"><span className="font-semibold text-[#166534]">Website added</span> · This source is configured and waiting for processing.</p>
+              </div>
+              <div className="flex shrink-0 items-center gap-2">
+                <button type="button" onClick={editWebsite} className="rounded-lg px-2.5 py-2 text-sm font-semibold text-[#334155] transition hover:bg-white">Edit</button>
+                <button type="button" onClick={removeWebsite} className="rounded-lg px-2.5 py-2 text-sm font-semibold text-[#B91C1C] transition hover:bg-[#FEF2F2]">Remove</button>
+              </div>
+            </div>
+          </section>
+        )}
+      </div>
+    );
+  };
+
   const CurrentLesson = () => {
     const currentLesson = knowledgeLessonSequence[activeKnowledgeStep] ?? knowledgeLessonSequence[0];
     const isSourceLesson = activeKnowledgeStep > 0 && activeKnowledgeStep < knowledgeLessonSequence.length - 1;
@@ -5798,10 +6047,10 @@ export default function DashboardLayout() {
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             {[
-              { key: "company", title: "Company Information", desc: "Give your AI important company information it should remember.", Icon: User },
-              { key: "faqs", title: "FAQs", desc: "Teach your AI the answers customers ask most.", Icon: MessageCircle },
-              { key: "documents", title: "Documents", desc: "Provide documents and references your AI can use.", Icon: Paperclip },
-              { key: "website", title: "Website", desc: "Teach your AI everything you offer.", Icon: Globe },
+              { key: "company" as KnowledgeSource, title: "Company Information", desc: "Give your AI important company information it should remember.", Icon: User },
+              { key: "faqs" as KnowledgeSource, title: "FAQs", desc: "Teach your AI the answers customers ask most.", Icon: MessageCircle },
+              { key: "documents" as KnowledgeSource, title: "Documents", desc: "Provide documents and references your AI can use.", Icon: Paperclip },
+              { key: "website" as KnowledgeSource, title: "Website", desc: "Teach your AI from your existing website.", Icon: Globe },
             ].map((item) => {
               const selected = selectedKnowledgeSources.includes(item.key);
               return (
@@ -5837,12 +6086,12 @@ export default function DashboardLayout() {
       if (!sourceKey) return null;
       const title = knowledgeSourceLessonTitles[sourceKey as keyof typeof knowledgeSourceLessonTitles] ?? sourceKey;
       const desc = sourceKey === "company"
-        ? "Give your AI important company information it should remember."
+        ? "Give your AI the context, goals, and direction it should understand about your business."
         : sourceKey === "faqs"
           ? "Teach your AI the answers customers ask most."
           : sourceKey === "documents"
             ? "Provide documents and references your AI can use."
-            : "Teach your AI everything you offer.";
+            : "Teach your AI from your existing website.";
       const Icon = sourceKey === "company" ? User : sourceKey === "faqs" ? MessageCircle : sourceKey === "documents" ? Paperclip : Globe;
 
       return (
@@ -5855,13 +6104,104 @@ export default function DashboardLayout() {
                 <p className="mt-2 text-sm leading-6 text-[#6B7280]">{desc}</p>
               </div>
             </div>
-            <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
-              <p className="text-sm font-semibold text-[#111827]">Next step</p>
-              <p className="mt-3 text-sm text-[#475569]">This lesson is tailored to the source you selected. Continue when you’re ready to move on.</p>
-            </div>
+            {sourceKey === "company" && (() => {
+              const companyInformation = knowledgeTraining.companyInformation;
+              const showVisionError = businessInformationValidationAttempted && !companyInformation.vision.trim();
+              const showMissionError = businessInformationValidationAttempted && !companyInformation.mission.trim();
+              const textareaClass = "min-h-24 resize-y border-[#DCE3EA] bg-white text-sm focus-visible:ring-[#22C55E]";
+              const fieldClass = "h-10 rounded-lg border border-[#DCE3EA] bg-white px-3 text-sm text-[#111827] outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20";
+              const sectionTitleClass = "text-base font-semibold text-[#111827]";
+              const helperClass = "mt-1 text-sm leading-5 text-[#64748B]";
+
+              return (
+                <div className="space-y-5">
+                  <section className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                    <h3 className={sectionTitleClass}>Business Direction</h3>
+                    <p className={helperClass}>Help Sokoos understand why your business exists and where you want it to go.</p>
+                    <div className="mt-4 grid gap-4 md:grid-cols-2">
+                      <label className="grid gap-1.5 text-sm font-medium text-[#334155]">
+                        Business vision <span className="font-normal text-[#64748B]">(required)</span>
+                        <Textarea aria-invalid={showVisionError} value={companyInformation.vision} onChange={(event) => updateCompanyInformation("vision", event.target.value)} placeholder="Where do you want your business to be in the future?" className={textareaClass} />
+                        {showVisionError && <span className="text-sm text-[#B91C1C]">Add your business vision to continue.</span>}
+                      </label>
+                      <label className="grid gap-1.5 text-sm font-medium text-[#334155]">
+                        Business mission <span className="font-normal text-[#64748B]">(required)</span>
+                        <Textarea aria-invalid={showMissionError} value={companyInformation.mission} onChange={(event) => updateCompanyInformation("mission", event.target.value)} placeholder="What does your business do and why does it exist?" className={textareaClass} />
+                        {showMissionError && <span className="text-sm text-[#B91C1C]">Add your business mission to continue.</span>}
+                      </label>
+                      <label className="grid gap-1.5 text-sm font-medium text-[#334155]">
+                        Short-term goals <span className="font-normal text-[#64748B]">(optional)</span>
+                        <Textarea value={companyInformation.shortTermGoals} onChange={(event) => updateCompanyInformation("shortTermGoals", event.target.value)} placeholder="What are you trying to achieve in the next 3–12 months?" className={textareaClass} />
+                      </label>
+                      <label className="grid gap-1.5 text-sm font-medium text-[#334155]">
+                        Long-term goals <span className="font-normal text-[#64748B]">(optional)</span>
+                        <Textarea value={companyInformation.longTermGoals} onChange={(event) => updateCompanyInformation("longTermGoals", event.target.value)} placeholder="What do you want the business to achieve over the next few years?" className={textareaClass} />
+                      </label>
+                    </div>
+                  </section>
+
+                  <section className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                    <h3 className={sectionTitleClass}>Customers &amp; Market</h3>
+                    <p className={helperClass}>Clarify who you serve, what they need, and where your business focuses.</p>
+                    <div className="mt-4 grid gap-4 md:grid-cols-2">
+                      <label className="grid gap-1.5 text-sm font-medium text-[#334155]">Target customers<Textarea value={companyInformation.targetCustomers} onChange={(event) => updateCompanyInformation("targetCustomers", event.target.value)} placeholder="Describe the types of customers your business mainly serves." className={textareaClass} /></label>
+                      <label className="grid gap-1.5 text-sm font-medium text-[#334155]">Customer problems or needs<Textarea value={companyInformation.customerProblems} onChange={(event) => updateCompanyInformation("customerProblems", event.target.value)} placeholder="Describe the problems your customers are trying to solve." className={textareaClass} /></label>
+                      <label className="grid gap-1.5 text-sm font-medium text-[#334155]">Primary market or area served<input value={companyInformation.primaryMarket} onChange={(event) => updateCompanyInformation("primaryMarket", event.target.value)} placeholder="e.g. Nairobi and nearby towns" className={fieldClass} /></label>
+                      <label className="grid gap-1.5 text-sm font-medium text-[#334155]">Customer segments<input value={companyInformation.customerSegments} onChange={(event) => updateCompanyInformation("customerSegments", event.target.value)} placeholder="e.g. Families, small businesses" className={fieldClass} /></label>
+                    </div>
+                  </section>
+
+                  <section className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                    <h3 className={sectionTitleClass}>Positioning</h3>
+                    <p className={helperClass}>This guides how Sokoos presents your business in conversations and marketing.</p>
+                    <div className="mt-4 grid gap-4 md:grid-cols-2">
+                      <label className="grid gap-1.5 text-sm font-medium text-[#334155]">What makes the business different?<Textarea value={companyInformation.differentiators} onChange={(event) => updateCompanyInformation("differentiators", event.target.value)} placeholder="What sets you apart from similar businesses?" className={textareaClass} /></label>
+                      <label className="grid gap-1.5 text-sm font-medium text-[#334155]">Main competitive advantages<Textarea value={companyInformation.competitiveAdvantages} onChange={(event) => updateCompanyInformation("competitiveAdvantages", event.target.value)} placeholder="Describe strengths customers value most." className={textareaClass} /></label>
+                      <label className="grid gap-1.5 text-sm font-medium text-[#334155]">Key selling points<Textarea value={companyInformation.keySellingPoints} onChange={(event) => updateCompanyInformation("keySellingPoints", event.target.value)} placeholder="What should the AI highlight when recommending you?" className={textareaClass} /></label>
+                      <label className="grid gap-1.5 text-sm font-medium text-[#334155]">Competitors or alternatives<Textarea value={companyInformation.competitors} onChange={(event) => updateCompanyInformation("competitors", event.target.value)} placeholder="What alternatives might customers consider?" className={textareaClass} /></label>
+                    </div>
+                  </section>
+
+                  <section className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                    <h3 className={sectionTitleClass}>Additional Business Context</h3>
+                    <p className={helperClass}>Use this space for context that does not fit into the structured fields above.</p>
+                    <div className="mt-4 grid gap-4">
+                      <label className="grid gap-1.5 text-sm font-medium text-[#334155]">Important things the AI should know<Textarea value={companyInformation.importantThingsToKnow} onChange={(event) => updateCompanyInformation("importantThingsToKnow", event.target.value)} placeholder="Share important context that helps Sokoos make better decisions." className="min-h-28 resize-y border-[#DCE3EA] bg-white text-sm focus-visible:ring-[#22C55E]" /></label>
+                      <label className="grid gap-1.5 text-sm font-medium text-[#334155]">Additional notes<Textarea value={companyInformation.additionalNotes} onChange={(event) => updateCompanyInformation("additionalNotes", event.target.value)} placeholder="Anything else Sokoos should know about your business." className="min-h-28 resize-y border-[#DCE3EA] bg-white text-sm focus-visible:ring-[#22C55E]" /></label>
+                    </div>
+                  </section>
+                </div>
+              );
+            })()}
+            {sourceKey === "faqs" && <FaqEditor />}
+            {sourceKey === "documents" && (
+              <div className="space-y-4 rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                <input ref={knowledgeDocumentInputRef} type="file" accept=".pdf,.docx,.txt,.csv,.xlsx" multiple className="hidden" onChange={(event) => { if (event.target.files?.length) addKnowledgeDocuments(event.target.files); event.target.value = ""; }} />
+                <div
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => knowledgeDocumentInputRef.current?.click()}
+                  onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); knowledgeDocumentInputRef.current?.click(); } }}
+                  onDragEnter={(event) => { event.preventDefault(); setKnowledgeDocumentDragActive(true); }}
+                  onDragOver={(event) => { event.preventDefault(); setKnowledgeDocumentDragActive(true); }}
+                  onDragLeave={(event) => { event.preventDefault(); setKnowledgeDocumentDragActive(false); }}
+                  onDrop={(event) => { event.preventDefault(); setKnowledgeDocumentDragActive(false); if (event.dataTransfer.files.length) addKnowledgeDocuments(event.dataTransfer.files); }}
+                  className={`cursor-pointer rounded-2xl border-2 border-dashed px-5 py-9 text-center transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 ${knowledgeDocumentDragActive ? "border-[#22C55E] bg-[#ECFDF5]" : "border-[#DCE3EA] bg-white hover:border-[#86EFAC] hover:bg-[#F7FEF9]"}`}
+                >
+                  <span className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><Upload className="h-5 w-5" /></span>
+                  <p className="mt-3 text-sm font-semibold text-[#111827]">Upload documents</p>
+                  <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-[#64748B]">Add documents your AI can learn from, such as price lists, policies, brochures, manuals, menus, or business guides.</p>
+                  <p className="mt-3 text-sm font-semibold text-[#166534]">Drag and drop files here or <span className="underline">browse files</span></p>
+                  <p className="mt-2 text-xs text-[#64748B]">PDF, DOCX, TXT, CSV, or XLSX · up to 10 MB each</p>
+                </div>
+                {knowledgeDocumentErrors.length > 0 && <div role="alert" className="rounded-xl border border-[#FECACA] bg-[#FEF2F2] px-4 py-3 text-sm text-[#B91C1C]"><p className="font-semibold">Some files could not be selected.</p><ul className="mt-1 list-disc space-y-1 pl-5">{knowledgeDocumentErrors.map((error) => <li key={error}>{error}</li>)}</ul></div>}
+                {knowledgeDocuments.length > 0 && <div className="space-y-2"><p className="text-sm font-semibold text-[#334155]">Selected documents</p>{knowledgeDocuments.map((document) => <div key={document.id} className="flex items-center justify-between gap-3 rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm"><div className="flex min-w-0 items-center gap-3"><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#EFF6FF] text-xs font-bold text-[#1D4ED8]">{document.kind}</span><div className="min-w-0"><p className="truncate font-semibold text-[#111827]">{document.name}</p><p className="mt-0.5 text-xs text-[#64748B]">{document.kind} · {document.size} · <span className="font-semibold text-[#475569]">{document.status}</span></p></div></div><button type="button" onClick={() => setKnowledgeDocuments((documents) => documents.filter((item) => item.id !== document.id))} className="shrink-0 rounded-lg px-2.5 py-2 text-sm font-semibold text-[#B91C1C] transition hover:bg-[#FEF2F2] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EF4444]">Remove</button></div>)}</div>}
+              </div>
+            )}
+            {sourceKey === "website" && <WebsiteEditor />}
             <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
               <button type="button" onClick={() => focusKnowledgeLesson(activeKnowledgeStep - 1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-              <button type="button" onClick={() => completeKnowledgeLesson(activeKnowledgeStep)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+              <button type="button" disabled={sourceKey !== "company" && !canContinueKnowledgeLesson(activeKnowledgeStep)} onClick={() => { if (sourceKey === "company") setBusinessInformationValidationAttempted(true); if (!canContinueKnowledgeLesson(activeKnowledgeStep)) return; completeKnowledgeLesson(activeKnowledgeStep); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Save & Continue <ChevronRight className="h-4 w-4" /></button>
             </div>
           </div>
         </section>
@@ -5875,32 +6215,40 @@ export default function DashboardLayout() {
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><Sparkles className="h-5 w-5" /></div>
             <div>
               <p className="text-[20px] font-semibold text-[#111827]">Review</p>
-              <p className="mt-2 text-sm leading-6 text-[#6B7280]">Confirm your AI has everything it needs to answer confidently.</p>
+              <p className="mt-2 text-sm leading-6 text-[#6B7280]">Check what Sokoos has been taught before you finish.</p>
             </div>
           </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <div className="rounded-2xl border border-[#EEF2F6] bg-white p-5">
-              <p className="text-sm font-semibold text-[#111827]">Selected knowledge sources</p>
-              <div className="mt-3 space-y-2 text-sm text-[#475569]">
-                {selectedKnowledgeSources.length > 0 ? (
-                  selectedKnowledgeSources.map((source) => (
-                    <div key={source} className="rounded-lg bg-[#F8FAFC] px-3 py-2">
-                      {source === "company" ? "Business Information" : source === "faqs" ? "Frequently Asked Questions" : source === "documents" ? "Resources" : source === "website" ? "Products & Services" : source}
+          <div className="space-y-3">
+            {selectedKnowledgeSources.map((source, sourceIndex) => {
+              const complete = knowledgeSourceHasRequiredInformation(source);
+              const title = knowledgeSourceLessonTitles[source];
+              const edit = () => focusKnowledgeLesson(sourceIndex + 1);
+              const details = source === "company"
+                ? <div className="space-y-2"><div className="rounded-lg bg-[#F8FAFC] px-3 py-2"><span className="font-semibold text-[#334155]">Vision:</span> {knowledgeTraining.companyInformation.vision}</div><div className="rounded-lg bg-[#F8FAFC] px-3 py-2"><span className="font-semibold text-[#334155]">Mission:</span> {knowledgeTraining.companyInformation.mission}</div></div>
+                : source === "faqs"
+                  ? <div className="space-y-2">{faqItems.filter((faq) => faq.question.trim() && faq.answer.trim()).map((faq) => <div key={faq.id} className="rounded-lg bg-[#F8FAFC] px-3 py-2"><p className="font-semibold text-[#334155]">{faq.question}</p><p className="mt-1 text-[#64748B]">{faq.answer}</p>{faq.category && <span className="mt-2 inline-flex rounded-full bg-[#ECFDF5] px-2 py-0.5 text-xs font-semibold text-[#166534]">{faq.category}</span>}</div>)}</div>
+                  : source === "documents"
+                    ? <div className="space-y-2">{knowledgeDocuments.map((document) => <div key={document.id} className="flex items-center justify-between gap-3 rounded-lg bg-[#F8FAFC] px-3 py-2"><span className="min-w-0 truncate font-semibold text-[#334155]">{document.name}</span><span className="shrink-0 text-xs text-[#64748B]">{document.kind} · {document.size}</span></div>)}</div>
+                    : <div className="rounded-lg bg-[#F8FAFC] px-3 py-2 break-all text-[#334155]">{knowledgeTraining.website.websiteUrl}</div>;
+              const missingMessage = source === "company" ? "Add both your business vision and mission." : source === "faqs" ? "Add at least one FAQ with a question and answer." : source === "documents" ? "Select at least one supported business document." : "Add a valid HTTP or HTTPS website URL.";
+
+              return (
+                <section key={source} className={`rounded-2xl border bg-white p-4 sm:p-5 ${complete ? "border-[#BBF7D0]" : "border-[#FDE68A]"}`}>
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="flex items-start gap-3">
+                      <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${complete ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#FEF3C7] text-[#B45309]"}`}>{complete ? <Check className="h-4 w-4" /> : <CircleAlert className="h-4 w-4" />}</span>
+                      <div><p className="text-sm font-semibold text-[#111827]">{title}</p><p className={`mt-1 text-sm ${complete ? "text-[#166534]" : "text-[#B45309]"}`}>{complete ? "Ready" : missingMessage}</p></div>
                     </div>
-                  ))
-                ) : (
-                  <p className="text-sm text-[#94A3B8]">No knowledge source selected yet.</p>
-                )}
-              </div>
-            </div>
-            <div className="rounded-2xl border border-[#EEF2F6] bg-white p-5">
-              <p className="text-sm font-semibold text-[#111827]">Policies training</p>
-              <p className="mt-3 text-sm text-[#475569]">Policy rules are configured in the Policies workspace, so this step focuses on knowledge sources only.</p>
-            </div>
+                    <button type="button" onClick={edit} className="rounded-lg px-2.5 py-2 text-sm font-semibold text-[#334155] transition hover:bg-[#F1F5F9] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]">Edit</button>
+                  </div>
+                  {complete && <div className="mt-4 text-sm leading-6 text-[#475569]">{details}</div>}
+                </section>
+              );
+            })}
           </div>
           <div className="flex items-center justify-between border-t border-[#D1FAE5] pt-4">
             <button type="button" onClick={() => focusKnowledgeLesson(activeKnowledgeStep - 1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-            <button type="button" onClick={() => { completeKnowledgeLesson(activeKnowledgeStep); setActiveWorkspaceSection("Catalogue"); }} className="inline-flex items-center gap-2 rounded-lg bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"><Sparkles className="h-4 w-4" />Finish training</button>
+            <button type="button" disabled={!canContinueKnowledgeLesson(activeKnowledgeStep)} onClick={() => { if (!canContinueKnowledgeLesson(activeKnowledgeStep)) return; completeKnowledgeLesson(activeKnowledgeStep); }} className="inline-flex items-center gap-2 rounded-lg bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A] disabled:cursor-not-allowed disabled:opacity-45"><Sparkles className="h-4 w-4" />Complete Knowledge Training</button>
           </div>
         </div>
       </section>
