@@ -78,6 +78,15 @@ class UserProfileSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Choose an image smaller than 5MB.")
         return value
 
+    def update(self, instance, validated_data):
+        """Persist only the fields exposed by the Edit Profile form."""
+        for field in ("email", "first_name", "last_name", "avatar"):
+            if field in validated_data:
+                setattr(instance, field, validated_data[field])
+
+        instance.save()
+        return instance
+
     def get_avatar_url(self, user):
         if not user.avatar:
             return None
