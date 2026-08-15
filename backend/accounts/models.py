@@ -1,5 +1,12 @@
+from io import BytesIO
+
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from django.core.files.base import ContentFile
 from django.db import models
+from PIL import Image, ImageOps
+
+
+AVATAR_SIZE = (512, 512)
 
 
 class UserManager(BaseUserManager):
@@ -54,6 +61,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         blank=True,
     )
 
+    avatar = models.ImageField(
+        upload_to="avatar/",
+        blank=True,
+        null=True,
+    )
+
     is_active = models.BooleanField(
         default=True,
     )
@@ -79,6 +92,42 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = "email"
 
     REQUIRED_FIELDS = []
+
+    def save(self, *args, **kwargs):
+        """Store newly uploaded avatars as consistently sized, web-ready images."""
+        if self.avatar and not self.avatar._committed:
+            self._resize_avatar()
+        super().save(*args, **kwargs)
+
+    def _resize_avatar(self):
+        with Image.open(self.avatar) as source:
+            image = ImageOps.exif_transpose(source)
+            has_transparency = image.mode in {"RGBA", "LA"} or "transparency" in image.info
+
+            if has_transparency:
+                image = image.convert("RGBA")
+                image_format, extension, save_kwargs = "PNG", ".png", {"optimize": True}
+            else:
+                image = image.convert("RGB")
+                image_format, extension, save_kwargs = "JPEG", ".jpg", {
+                    "quality": 90,
+                    "optimize": True,
+                }
+
+            image = ImageOps.fit(
+                image,
+                AVATAR_SIZE,
+                method=Image.Resampling.LANCZOS,
+                centering=(0.5, 0.5),
+            )
+            output = BytesIO()
+            image.save(output, format=image_format, **save_kwargs)
+
+        self.avatar.save(
+            f"avatar{extension}",
+            ContentFile(output.getvalue()),
+            save=False,
+        )
 
     def __str__(self):
         return self.email

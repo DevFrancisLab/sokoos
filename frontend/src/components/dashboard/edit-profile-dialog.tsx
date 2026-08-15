@@ -16,11 +16,13 @@ export type EditProfileValues = {
   email: string;
 };
 
+export type ProfileUpdate = SidebarUser & { avatarFile?: File | null };
+
 type EditProfileDialogProps = {
   user: SidebarUser;
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSave: (values: SidebarUser) => void | Promise<void>;
+  onSave: (values: ProfileUpdate) => void | Promise<void>;
 };
 
 export default function EditProfileDialog({ user, open, onOpenChange, onSave }: EditProfileDialogProps) {
@@ -81,9 +83,9 @@ export default function EditProfileDialog({ user, open, onOpenChange, onSave }: 
   const handleFileSelection = (file?: File) => {
     if (!file) return;
 
-    const supportedTypes = ["image/png", "image/jpeg", "image/svg+xml"];
+    const supportedTypes = ["image/png", "image/jpeg"];
     if (!supportedTypes.includes(file.type)) {
-      setPhotoError("Choose a PNG, JPG, or SVG image.");
+      setPhotoError("Choose a PNG or JPG image.");
       return;
     }
 
@@ -114,8 +116,13 @@ export default function EditProfileDialog({ user, open, onOpenChange, onSave }: 
         name: values.name.trim(),
         email: values.email.trim(),
         avatarUrl: avatarPreview,
+        avatarFile: selectedFile,
       });
       onOpenChange(false);
+    } catch (error) {
+      form.setError("root", {
+        message: error instanceof Error ? error.message : "Unable to save your profile. Please try again.",
+      });
     } finally {
       isSubmittingRef.current = false;
       setIsSaving(false);
@@ -154,7 +161,7 @@ export default function EditProfileDialog({ user, open, onOpenChange, onSave }: 
                     Add photo
                     <input
                       type="file"
-                      accept="image/png,image/jpeg,image/svg+xml"
+                      accept="image/png,image/jpeg"
                       className="hidden"
                       aria-describedby={photoError ? "profile-photo-error" : "profile-photo-help"}
                       aria-invalid={Boolean(photoError)}
@@ -164,7 +171,7 @@ export default function EditProfileDialog({ user, open, onOpenChange, onSave }: 
                       }}
                     />
                   </label>
-                  <p id="profile-photo-help" className="text-sm text-[#64748B]">PNG, JPG or SVG · max 5MB</p>
+                  <p id="profile-photo-help" className="text-sm text-[#64748B]">PNG or JPG · max 5MB</p>
                   {photoError ? <p id="profile-photo-error" role="alert" className="text-sm font-medium text-[#DC2626]">{photoError}</p> : null}
                 </div>
               </div>
@@ -210,6 +217,7 @@ export default function EditProfileDialog({ user, open, onOpenChange, onSave }: 
             </div>
 
             <div className="flex flex-col gap-3 border-t border-[#E5E7EB] pt-5 sm:flex-row sm:justify-end">
+              {form.formState.errors.root?.message ? <p className="mr-auto text-sm text-[#B91C1C]" role="alert">{form.formState.errors.root.message}</p> : null}
               <Button variant="secondary" type="button" onClick={() => handleOpenChange(false)} disabled={isSaving}>
                 Cancel
               </Button>

@@ -3,8 +3,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 
-from .serializers import SignupSerializer, LoginSerializer
+from .serializers import LoginSerializer, SignupSerializer, UserProfileSerializer
 
 
 class SignupView(APIView):
@@ -44,18 +45,28 @@ class SignupView(APIView):
 
 class CurrentUserView(APIView):
     permission_classes = [IsAuthenticated]
+    parser_classes = [JSONParser, FormParser, MultiPartParser]
 
     def get(self, request):
-        user = request.user
+        return Response(UserProfileSerializer(request.user, context={"request": request}).data)
 
+    def patch(self, request):
+        serializer = UserProfileSerializer(
+            request.user,
+            data=request.data,
+            partial=True,
+            context={"request": request},
+        )
+
+        if not serializer.is_valid():
+            return Response(
+                {"success": False, "errors": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        serializer.save()
         return Response(
-            {
-                "id": user.id,
-                "email": user.email,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-                "is_verified": user.is_verified,
-            },
+            {"success": True, "user": serializer.data},
             status=status.HTTP_200_OK,
         )
 

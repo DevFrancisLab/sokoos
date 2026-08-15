@@ -40,12 +40,14 @@ export async function apiRequest<T>(
   let response: Response;
 
   try {
+    const isFormData = options.body instanceof FormData;
+
     response = await fetch(
       `${apiBaseUrl}${path.startsWith("/") ? path : `/${path}`}`,
       {
         ...options,
         headers: {
-          "Content-Type": "application/json",
+          ...(isFormData ? {} : { "Content-Type": "application/json" }),
           ...options.headers,
         },
       },

@@ -57,7 +57,7 @@ import { TrainingTemplateCard } from "@/components/dashboard/ai-employee/trainin
 import { AccountSettings } from "@/components/dashboard/account-settings";
 import { getAuthToken, getAuthorizationHeader, getCurrentUser, getUserDisplayName, saveAuthSession, signOutMock, type AuthUser } from "@/lib/auth";
 import { apiRequest } from "@/lib/api";
-import EditProfileDialog from "@/components/dashboard/edit-profile-dialog";
+import EditProfileDialog, { type ProfileUpdate } from "@/components/dashboard/edit-profile-dialog";
 import sokoosLogo from "@/assets/sokoos_logo.png";
 
 function CatalogueItemImage({
@@ -4490,22 +4490,32 @@ export default function DashboardLayout() {
     setEditProfileOpen(true);
   };
 
-  const handleProfileSave = (updated: SidebarUser) => {
-    setUser(updated);
-    try {
-      const currentUser = getCurrentUser();
-      if (currentUser) {
-        const nameParts = updated.name.trim().split(/\s+/);
-        saveAuthSession(getAuthToken() ?? "", {
-          ...currentUser,
-          email: updated.email ?? currentUser.email,
-          first_name: nameParts[0] ?? "",
-          last_name: nameParts.slice(1).join(" "),
-        });
-      }
-    } catch {
-      // Frontend-only persistence; if storage fails, state is still updated for this session.
-    }
+  const handleProfileSave = async (updated: ProfileUpdate) => {
+    const currentUser = getCurrentUser();
+    if (!currentUser) throw new Error("Your session has expired. Please sign in again.");
+
+    const nameParts = updated.name.trim().split(/\s+/);
+    const formData = new FormData();
+    formData.append("email", updated.email ?? currentUser.email);
+    formData.append("first_name", nameParts[0] ?? "");
+    formData.append("last_name", nameParts.slice(1).join(" "));
+    if (updated.avatarFile) formData.append("avatar", updated.avatarFile);
+
+    const response = await apiRequest<{ success: boolean; user: AuthUser }>("/api/auth/me/", {
+      method: "PATCH",
+      headers: getAuthorizationHeader(),
+      body: formData,
+    });
+    const profile = response.data?.user;
+    if (!profile) throw new Error("Unable to save your profile. Please try again.");
+
+    saveAuthSession(getAuthToken() ?? "", profile);
+    setUser({
+      id: String(profile.id),
+      name: getUserDisplayName(profile),
+      email: profile.email,
+      avatarUrl: profile.avatar_url ?? undefined,
+    });
   };
 
   useEffect(() => {
@@ -4518,13 +4528,13 @@ export default function DashboardLayout() {
       id: String(raw.id ?? ""),
       name: getUserDisplayName(raw),
       email: typeof raw.email === "string" ? raw.email : undefined,
-      avatarUrl: typeof raw.avatarUrl === "string" ? raw.avatarUrl : undefined,
+      avatarUrl: typeof raw.avatar_url === "string" ? raw.avatar_url : undefined,
     });
     void apiRequest<AuthUser>("/api/auth/me/", { headers: getAuthorizationHeader() })
       .then(({ data }) => {
         if (!data) return;
         saveAuthSession(getAuthToken() ?? "", data);
-        setUser({ id: String(data.id), name: getUserDisplayName(data), email: data.email });
+        setUser({ id: String(data.id), name: getUserDisplayName(data), email: data.email, avatarUrl: data.avatar_url ?? undefined });
       })
       .catch(() => undefined);
   }, []);

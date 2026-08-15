@@ -4,6 +4,7 @@ export type AuthUser = {
   first_name: string;
   last_name: string;
   is_verified?: boolean;
+  avatar_url?: string | null;
 };
 
 const authTokenKey = "sokoos-auth-token";
