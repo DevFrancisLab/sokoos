@@ -43,6 +43,7 @@ type SettingsCategory = "profile" | "security" | "notifications" | "preferences"
 type AccountSettingsProps = {
   user: AccountUser;
   onEditProfile: () => void;
+  onDeleteAccount: () => Promise<void>;
 };
 
 const navigation: Array<{
@@ -163,7 +164,7 @@ function UnavailableNotice({ children }: { children: React.ReactNode }) {
   return <p className="rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] px-4 py-3 text-sm leading-6 text-[#475569]">{children}</p>;
 }
 
-export function AccountSettings({ user, onEditProfile }: AccountSettingsProps) {
+export function AccountSettings({ user, onEditProfile, onDeleteAccount }: AccountSettingsProps) {
   const [activeCategory, setActiveCategory] = useState<SettingsCategory>("profile");
   const [notificationPreferences, setNotificationPreferences] = useState(defaultNotificationPreferences);
   const [preferences, setPreferences] = useState<AccountPreferences>({
@@ -173,6 +174,21 @@ export function AccountSettings({ user, onEditProfile }: AccountSettingsProps) {
     currency: preferenceOptions.currencies[0],
   });
   const [deletionAcknowledged, setDeletionAcknowledged] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deletionError, setDeletionError] = useState("");
+
+  const handleDeleteAccount = async () => {
+    if (!deletionAcknowledged || isDeleting) return;
+
+    setIsDeleting(true);
+    setDeletionError("");
+    try {
+      await onDeleteAccount();
+    } catch (error) {
+      setDeletionError(error instanceof Error ? error.message : "Unable to delete your account. Please try again.");
+      setIsDeleting(false);
+    }
+  };
 
   const renderContent = () => {
     switch (activeCategory) {
@@ -393,7 +409,8 @@ export function AccountSettings({ user, onEditProfile }: AccountSettingsProps) {
             <div className="rounded-[20px] border border-[#FECACA] bg-[#FFF7F7] p-4 sm:p-5">
               <h3 className="text-sm font-semibold text-[#991B1B]">Delete account</h3>
               <p className="mt-1 text-sm leading-6 text-[#7F1D1D]">This action may permanently remove your account and workspace data.</p>
-              <AlertDialog onOpenChange={(open) => { if (!open) setDeletionAcknowledged(false); }}>
+              {deletionError ? <p className="mt-4 rounded-xl border border-[#FECACA] bg-[#FEF2F2] px-4 py-3 text-sm text-[#B91C1C]" role="alert">{deletionError}</p> : null}
+              <AlertDialog onOpenChange={(open) => { if (!open) { setDeletionAcknowledged(false); setDeletionError(""); } }}>
                 <AlertDialogTrigger asChild>
                   <Button type="button" variant="destructive" className="mt-4">Delete account</Button>
                 </AlertDialogTrigger>
@@ -413,10 +430,15 @@ export function AccountSettings({ user, onEditProfile }: AccountSettingsProps) {
                     />
                     <span>I understand that deleting my account may be permanent and cannot be undone.</span>
                   </label>
-                  <p className="text-sm leading-6 text-[#64748B]">Account deletion is not connected to a backend service yet.</p>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction disabled className="bg-[#DC2626] hover:bg-[#B91C1C]">Deletion unavailable</AlertDialogAction>
+                    <AlertDialogAction
+                      disabled={!deletionAcknowledged || isDeleting}
+                      onClick={handleDeleteAccount}
+                      className="bg-[#DC2626] hover:bg-[#B91C1C]"
+                    >
+                      {isDeleting ? "Deleting account…" : "Delete account"}
+                    </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>

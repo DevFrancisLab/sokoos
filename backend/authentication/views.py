@@ -24,11 +24,13 @@ class SignupView(APIView):
             )
 
         user = serializer.save()
+        token, _ = Token.objects.get_or_create(user=user)
 
         return Response(
             {
                 "success": True,
                 "message": "Account created successfully.",
+                "token": token.key,
                 "user": {
                     "id": user.id,
                     "email": user.email,
@@ -38,6 +40,40 @@ class SignupView(APIView):
             },
             status=status.HTTP_201_CREATED,
         )
+
+
+class CurrentUserView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+
+        return Response(
+            {
+                "id": user.id,
+                "email": user.email,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "is_verified": user.is_verified,
+            },
+            status=status.HTTP_200_OK,
+        )
+
+
+class DeleteAccountView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request):
+        request.user.delete()
+
+        return Response(
+            {
+                "success": True,
+                "message": "Account deleted successfully.",
+            },
+            status=status.HTTP_200_OK,
+        )
+
 
 class LoginView(APIView):
     authentication_classes = []

@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { Checkbox } from "@/components/auth/checkbox";
@@ -8,6 +8,8 @@ import { TextInput } from "@/components/auth/text-input";
 import { AuthCard } from "@/components/auth-card";
 import { AuthHeader } from "@/components/auth-header";
 import { AuthLayout } from "@/components/auth-layout";
+import { ApiError, apiRequest } from "@/lib/api";
+import { saveAuthSession } from "@/lib/auth";
 
 export const Route = createFileRoute("/sign-up")({
   component: SignUp,
@@ -15,7 +17,43 @@ export const Route = createFileRoute("/sign-up")({
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+type SignupResponse = {
+  success: boolean;
+  message: string;
+  token: string;
+  user: {
+    id: number;
+    email: string;
+    first_name: string;
+    last_name: string;
+  };
+};
+
+type BackendErrors = Record<string, string[]>;
+
+function splitFullName(fullName: string) {
+  const [firstName = "", ...lastNameParts] = fullName.trim().split(/\s+/);
+  return { firstName, lastName: lastNameParts.join(" ") };
+}
+
+function getBackendErrors(data: unknown): BackendErrors | null {
+  if (!data || typeof data !== "object" || !("errors" in data)) return null;
+
+  const { errors } = data as { errors: unknown };
+  if (!errors || typeof errors !== "object" || Array.isArray(errors))
+    return null;
+
+  return Object.fromEntries(
+    Object.entries(errors).filter(
+      ([, messages]) =>
+        Array.isArray(messages) &&
+        messages.every((message) => typeof message === "string"),
+    ),
+  ) as BackendErrors;
+}
+
 function SignUp() {
+  const router = useRouter();
   const [formValues, setFormValues] = useState({
     fullName: "",
     email: "",
@@ -30,9 +68,15 @@ function SignUp() {
     confirmPassword: false,
     terms: false,
   });
+  const [backendErrors, setBackendErrors] = useState<BackendErrors>({});
   const [formMessage, setFormMessage] = useState("");
+  const [messageType, setMessageType] = useState<"error" | "success" | null>(
+    null,
+  );
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSignupComplete, setIsSignupComplete] = useState(false);
 
-  const errors = {
+  const clientErrors = {
     fullName: !formValues.fullName.trim() ? "Full name is required." : "",
     email: !formValues.email.trim()
       ? "Email address is required."
@@ -53,8 +97,17 @@ function SignUp() {
       ? "You must agree to the Terms and Conditions."
       : "",
   };
+  const isValid = Object.values(clientErrors).every((error) => !error);
+  const fullNameBackendError = [
+    ...(backendErrors.first_name ?? []),
+    ...(backendErrors.last_name ?? []),
+  ][0];
 
-  const isValid = Object.values(errors).every((error) => !error);
+  const clearServerFeedback = () => {
+    setBackendErrors({});
+    setFormMessage("");
+    setMessageType(null);
+  };
 
   const markAllTouched = () => {
     setTouched({
@@ -66,16 +119,72 @@ function SignUp() {
     });
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     markAllTouched();
-    setFormMessage("");
+    clearServerFeedback();
 
-    if (!isValid) return;
+    if (!isValid || isSubmitting) return;
 
-    setFormMessage(
-      "Account creation will be available when authentication is connected.",
-    );
+    const { firstName, lastName } = splitFullName(formValues.fullName);
+    setIsSubmitting(true);
+
+    try {
+      const response = await apiRequest<SignupResponse>("/api/auth/signup/", {
+        method: "POST",
+        body: JSON.stringify({
+          email: formValues.email.trim(),
+          password: formValues.password,
+          first_name: firstName,
+          last_name: lastName,
+        }),
+      });
+
+      if (response.data?.success && response.data.token) {
+        saveAuthSession(response.data.token, response.data.user);
+        setIsSignupComplete(true);
+        setFormMessage("Account created successfully. Redirecting to your dashboard…");
+        setMessageType("success");
+        window.setTimeout(() => {
+          void router.navigate({ to: "/dashboard", replace: true });
+        }, 400);
+        return;
+      }
+
+      setFormMessage("Something went wrong. Please try again.");
+      setMessageType("error");
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 400) {
+        const errors = getBackendErrors(error.data);
+
+        if (errors) {
+          setBackendErrors(errors);
+          const unknownMessages = Object.entries(errors)
+            .filter(
+              ([field]) =>
+                !["email", "password", "first_name", "last_name"].includes(
+                  field,
+                ),
+            )
+            .flatMap(([, messages]) => messages);
+
+          if (unknownMessages.length) {
+            setFormMessage(unknownMessages[0]);
+            setMessageType("error");
+          }
+          return;
+        }
+      }
+
+      setFormMessage(
+        error instanceof ApiError && error.isNetworkError
+          ? error.message
+          : "Something went wrong. Please try again.",
+      );
+      setMessageType("error");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -111,21 +220,26 @@ function SignUp() {
                     ...prev,
                     fullName: event.target.value,
                   }));
-                  setFormMessage("");
+                  clearServerFeedback();
                 }}
                 onBlur={() =>
                   setTouched((prev) => ({ ...prev, fullName: true }))
                 }
-                aria-invalid={touched.fullName && Boolean(errors.fullName)}
+                aria-invalid={
+                  touched.fullName &&
+                  Boolean(clientErrors.fullName || fullNameBackendError)
+                }
                 aria-describedby={
-                  touched.fullName && errors.fullName
+                  touched.fullName &&
+                  (clientErrors.fullName || fullNameBackendError)
                     ? "full-name-error"
                     : undefined
                 }
               />
-              {touched.fullName && errors.fullName ? (
+              {touched.fullName &&
+              (clientErrors.fullName || fullNameBackendError) ? (
                 <p id="full-name-error" className="text-sm text-[#DC2626]">
-                  {errors.fullName}
+                  {clientErrors.fullName || fullNameBackendError}
                 </p>
               ) : null}
             </div>
@@ -143,17 +257,24 @@ function SignUp() {
                     ...prev,
                     email: event.target.value,
                   }));
-                  setFormMessage("");
+                  clearServerFeedback();
                 }}
                 onBlur={() => setTouched((prev) => ({ ...prev, email: true }))}
-                aria-invalid={touched.email && Boolean(errors.email)}
+                aria-invalid={
+                  touched.email &&
+                  Boolean(clientErrors.email || backendErrors.email?.[0])
+                }
                 aria-describedby={
-                  touched.email && errors.email ? "email-error" : undefined
+                  touched.email &&
+                  (clientErrors.email || backendErrors.email?.[0])
+                    ? "email-error"
+                    : undefined
                 }
               />
-              {touched.email && errors.email ? (
+              {touched.email &&
+              (clientErrors.email || backendErrors.email?.[0]) ? (
                 <p id="email-error" className="text-sm text-[#DC2626]">
-                  {errors.email}
+                  {clientErrors.email || backendErrors.email?.[0]}
                 </p>
               ) : null}
             </div>
@@ -170,19 +291,25 @@ function SignUp() {
                     ...prev,
                     password: event.target.value,
                   }));
-                  setFormMessage("");
+                  clearServerFeedback();
                 }}
                 onBlur={() =>
                   setTouched((prev) => ({ ...prev, password: true }))
                 }
-                aria-invalid={touched.password && Boolean(errors.password)}
+                aria-invalid={
+                  touched.password &&
+                  Boolean(clientErrors.password || backendErrors.password?.[0])
+                }
                 aria-describedby="password-requirements"
               />
               <p id="password-requirements" className="text-sm text-[#64748B]">
                 Use at least 8 characters.
               </p>
-              {touched.password && errors.password ? (
-                <p className="text-sm text-[#DC2626]">{errors.password}</p>
+              {touched.password &&
+              (clientErrors.password || backendErrors.password?.[0]) ? (
+                <p className="text-sm text-[#DC2626]">
+                  {clientErrors.password || backendErrors.password?.[0]}
+                </p>
               ) : null}
             </div>
 
@@ -198,26 +325,27 @@ function SignUp() {
                     ...prev,
                     confirmPassword: event.target.value,
                   }));
-                  setFormMessage("");
+                  clearServerFeedback();
                 }}
                 onBlur={() =>
                   setTouched((prev) => ({ ...prev, confirmPassword: true }))
                 }
                 aria-invalid={
-                  touched.confirmPassword && Boolean(errors.confirmPassword)
+                  touched.confirmPassword &&
+                  Boolean(clientErrors.confirmPassword)
                 }
                 aria-describedby={
-                  touched.confirmPassword && errors.confirmPassword
+                  touched.confirmPassword && clientErrors.confirmPassword
                     ? "confirm-password-error"
                     : undefined
                 }
               />
-              {touched.confirmPassword && errors.confirmPassword ? (
+              {touched.confirmPassword && clientErrors.confirmPassword ? (
                 <p
                   id="confirm-password-error"
                   className="text-sm text-[#DC2626]"
                 >
-                  {errors.confirmPassword}
+                  {clientErrors.confirmPassword}
                 </p>
               ) : null}
             </div>
@@ -232,31 +360,42 @@ function SignUp() {
                     ...prev,
                     terms: event.target.checked,
                   }));
-                  setFormMessage("");
+                  clearServerFeedback();
                 }}
                 onBlur={() => setTouched((prev) => ({ ...prev, terms: true }))}
-                aria-invalid={touched.terms && Boolean(errors.terms)}
+                aria-invalid={touched.terms && Boolean(clientErrors.terms)}
                 aria-describedby={
-                  touched.terms && errors.terms ? "terms-error" : undefined
+                  touched.terms && clientErrors.terms
+                    ? "terms-error"
+                    : undefined
                 }
               />
-              {touched.terms && errors.terms ? (
+              {touched.terms && clientErrors.terms ? (
                 <p id="terms-error" className="text-sm text-[#DC2626]">
-                  {errors.terms}
+                  {clientErrors.terms}
                 </p>
               ) : null}
             </div>
 
             {formMessage ? (
               <p
-                className="rounded-2xl border border-[#DCFCE7] bg-[#F0FDF4] px-4 py-3 text-sm font-medium text-[#166534]"
+                className={
+                  messageType === "success"
+                    ? "rounded-2xl border border-[#DCFCE7] bg-[#F0FDF4] px-4 py-3 text-sm font-medium text-[#166534]"
+                    : "rounded-2xl border border-[#FECACA] bg-[#FEF2F2] px-4 py-3 text-sm font-medium text-[#B91C1C]"
+                }
                 role="status"
               >
                 {formMessage}
               </p>
             ) : null}
 
-            <PrimaryButton type="submit">Create account</PrimaryButton>
+            <PrimaryButton
+              type="submit"
+              disabled={isSubmitting || isSignupComplete}
+            >
+              {isSubmitting ? "Creating account…" : "Create account"}
+            </PrimaryButton>
           </form>
         </div>
       </AuthCard>

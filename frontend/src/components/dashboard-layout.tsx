@@ -55,7 +55,8 @@ import { CustomersWorkspace } from "@/components/dashboard/customers/customers-w
 import { PerformanceWorkspace } from "@/components/dashboard/ai-employee/performance/performance-workspace";
 import { TrainingTemplateCard } from "@/components/dashboard/ai-employee/training/training-template-card";
 import { AccountSettings } from "@/components/dashboard/account-settings";
-import { getMockUser, signOutMock } from "@/lib/auth";
+import { getAuthToken, getAuthorizationHeader, getCurrentUser, getUserDisplayName, saveAuthSession, signOutMock, type AuthUser } from "@/lib/auth";
+import { apiRequest } from "@/lib/api";
 import EditProfileDialog from "@/components/dashboard/edit-profile-dialog";
 import sokoosLogo from "@/assets/sokoos_logo.png";
 
@@ -4452,10 +4453,32 @@ export default function DashboardLayout() {
   const [user, setUser] = useState<SidebarUser | null>(null);
   const [editProfileOpen, setEditProfileOpen] = useState(false);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await apiRequest("/api/auth/logout/", { method: "POST", headers: getAuthorizationHeader() });
+    } catch {
+      // Always clear the local session, even if the token has already expired.
+    }
     signOutMock();
-    localStorage.removeItem("sokoos-auth");
     void router.navigate({ to: "/signin", replace: true });
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      await apiRequest("/api/auth/delete-account/", {
+        method: "DELETE",
+        headers: getAuthorizationHeader(),
+      });
+    } catch (error) {
+      throw new Error(
+        error instanceof Error && error.message
+          ? error.message
+          : "Unable to delete your account. Please try again.",
+      );
+    }
+
+    signOutMock();
+    await router.navigate({ to: "/signin", replace: true });
   };
 
   const handleAccountSettings = () => {
@@ -4470,24 +4493,40 @@ export default function DashboardLayout() {
   const handleProfileSave = (updated: SidebarUser) => {
     setUser(updated);
     try {
-      localStorage.setItem("mock_user", JSON.stringify(updated));
+      const currentUser = getCurrentUser();
+      if (currentUser) {
+        const nameParts = updated.name.trim().split(/\s+/);
+        saveAuthSession(getAuthToken() ?? "", {
+          ...currentUser,
+          email: updated.email ?? currentUser.email,
+          first_name: nameParts[0] ?? "",
+          last_name: nameParts.slice(1).join(" "),
+        });
+      }
     } catch {
       // Frontend-only persistence; if storage fails, state is still updated for this session.
     }
   };
 
   useEffect(() => {
-    const raw = getMockUser();
+    const raw = getCurrentUser();
     if (!raw || typeof raw !== "object") {
       setUser(null);
       return;
     }
     setUser({
       id: String(raw.id ?? ""),
-      name: String(raw.name ?? ""),
+      name: getUserDisplayName(raw),
       email: typeof raw.email === "string" ? raw.email : undefined,
       avatarUrl: typeof raw.avatarUrl === "string" ? raw.avatarUrl : undefined,
     });
+    void apiRequest<AuthUser>("/api/auth/me/", { headers: getAuthorizationHeader() })
+      .then(({ data }) => {
+        if (!data) return;
+        saveAuthSession(getAuthToken() ?? "", data);
+        setUser({ id: String(data.id), name: getUserDisplayName(data), email: data.email });
+      })
+      .catch(() => undefined);
   }, []);
 
   // Future team state (initialized but not used when hasTeam = false)
@@ -9111,7 +9150,11 @@ export default function DashboardLayout() {
 
           {selected === "Settings" && user && (
             <>
-              <AccountSettings user={user} onEditProfile={handleEditProfile} />
+              <AccountSettings
+                user={user}
+                onEditProfile={handleEditProfile}
+                onDeleteAccount={handleDeleteAccount}
+              />
               {/*
             <div className="space-y-6">
               <div className={`${CARD}`}>

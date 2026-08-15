@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { Checkbox } from "@/components/auth/checkbox";
@@ -8,6 +8,8 @@ import { TextInput } from "@/components/auth/text-input";
 import { AuthCard } from "@/components/auth-card";
 import { AuthHeader } from "@/components/auth-header";
 import { AuthLayout } from "@/components/auth-layout";
+import { ApiError, apiRequest } from "@/lib/api";
+import { saveAuthSession, type AuthUser } from "@/lib/auth";
 
 export const Route = createFileRoute("/sign-in")({
   component: SignIn,
@@ -15,12 +17,30 @@ export const Route = createFileRoute("/sign-in")({
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+type LoginResponse = {
+  success: boolean;
+  message: string;
+  token: string;
+  user: AuthUser;
+};
+
+function getErrorMessage(data: unknown) {
+  if (!data || typeof data !== "object" || !("errors" in data)) return null;
+  const errors = (data as { errors: unknown }).errors;
+  if (!errors || typeof errors !== "object") return null;
+  return Object.values(errors as Record<string, unknown>)
+    .flatMap((messages) => (Array.isArray(messages) ? messages : []))
+    .find((message): message is string => typeof message === "string");
+}
+
 export function SignIn() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [touched, setTouched] = useState({ email: false, password: false });
   const [formMessage, setFormMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const errors = {
     email: !email.trim()
@@ -32,16 +52,38 @@ export function SignIn() {
   };
   const isValid = Object.values(errors).every((error) => !error);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setTouched({ email: true, password: true });
     setFormMessage("");
 
-    if (!isValid) return;
+    if (!isValid || isSubmitting) return;
 
-    setFormMessage(
-      "Sign in will be available when authentication is connected.",
-    );
+    setIsSubmitting(true);
+    try {
+      const response = await apiRequest<LoginResponse>("/api/auth/login/", {
+        method: "POST",
+        body: JSON.stringify({ email: email.trim(), password }),
+      });
+
+      if (response.data?.success && response.data.token) {
+        saveAuthSession(response.data.token, response.data.user);
+        void router.navigate({ to: "/dashboard", replace: true });
+        return;
+      }
+
+      setFormMessage("Unable to sign in. Please try again.");
+    } catch (error) {
+      const backendMessage = error instanceof ApiError ? getErrorMessage(error.data) : null;
+      setFormMessage(
+        backendMessage ??
+          (error instanceof ApiError && error.isNetworkError
+            ? error.message
+            : "Unable to sign in. Please check your details and try again."),
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -136,15 +178,14 @@ export function SignIn() {
             </div>
 
             {formMessage ? (
-              <p
-                className="rounded-2xl border border-[#DCFCE7] bg-[#F0FDF4] px-4 py-3 text-sm font-medium text-[#166534]"
-                role="status"
-              >
+              <p className="rounded-2xl border border-[#FECACA] bg-[#FEF2F2] px-4 py-3 text-sm font-medium text-[#B91C1C]" role="alert">
                 {formMessage}
               </p>
             ) : null}
 
-            <PrimaryButton type="submit">Sign in</PrimaryButton>
+            <PrimaryButton type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Signing in…" : "Sign in"}
+            </PrimaryButton>
           </form>
         </div>
       </AuthCard>

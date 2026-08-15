@@ -1,18 +1,18 @@
 import { Outlet, useRouter } from "@tanstack/react-router";
 import { useEffect } from "react";
+import { isAuthenticated } from "@/lib/auth";
 
 export function ProtectedRoute() {
   const router = useRouter();
-  const isAuthenticated =
-    typeof window !== "undefined" && localStorage.getItem("sokoos-auth") === "true";
+  const authenticated = isAuthenticated();
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!authenticated) {
       void router.navigate({ to: "/signin", replace: true });
     }
-  }, [isAuthenticated, router]);
+  }, [authenticated, router]);
 
-  if (!isAuthenticated) {
+  if (!authenticated) {
     return null;
   }
 
