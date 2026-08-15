@@ -1,129 +1,81 @@
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 
-import { AuthCard } from "@/components/auth-card";
-import { AuthHeader } from "@/components/auth-header";
-import { AuthLayout } from "@/components/auth-layout";
 import { Checkbox } from "@/components/auth/checkbox";
 import { PasswordInput } from "@/components/auth/password-input";
 import { PrimaryButton } from "@/components/auth/primary-button";
-import { SelectInput } from "@/components/auth/select-input";
 import { TextInput } from "@/components/auth/text-input";
-import { signInMock } from "@/lib/auth";
+import { AuthCard } from "@/components/auth-card";
+import { AuthHeader } from "@/components/auth-header";
+import { AuthLayout } from "@/components/auth-layout";
 
 export const Route = createFileRoute("/sign-up")({
   component: SignUp,
 });
 
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 function SignUp() {
-  const router = useRouter();
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && localStorage.getItem("sokoos-auth") === "true") {
-      void router.navigate({ to: "/dashboard", replace: true });
-    }
-  }, [router]);
-
   const [formValues, setFormValues] = useState({
     fullName: "",
-    businessEmail: "",
+    email: "",
     password: "",
     confirmPassword: "",
-    businessName: "",
-    businessType: "",
-    phoneNumber: "",
-    country: "Kenya",
     terms: false,
   });
   const [touched, setTouched] = useState({
     fullName: false,
-    businessEmail: false,
+    email: false,
     password: false,
     confirmPassword: false,
-    businessName: false,
-    businessType: false,
-    phoneNumber: false,
-    country: false,
     terms: false,
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [formMessage, setFormMessage] = useState("");
 
-  const fullNameError = !formValues.fullName.trim() ? "Full name is required." : "";
-  const businessEmailError = !formValues.businessEmail.trim()
-    ? "Business email is required."
-    : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formValues.businessEmail)
-      ? "Enter a valid email address."
-      : "";
-  const passwordError = formValues.password.length < 8 ? "Password must be at least 8 characters." : "";
-  const confirmPasswordError =
-    !formValues.confirmPassword.trim()
+  const errors = {
+    fullName: !formValues.fullName.trim() ? "Full name is required." : "",
+    email: !formValues.email.trim()
+      ? "Email address is required."
+      : !emailPattern.test(formValues.email.trim())
+        ? "Enter a valid email address."
+        : "",
+    password: !formValues.password
+      ? "Password is required."
+      : formValues.password.length < 8
+        ? "Password must be at least 8 characters."
+        : "",
+    confirmPassword: !formValues.confirmPassword
       ? "Please confirm your password."
       : formValues.password !== formValues.confirmPassword
         ? "Passwords must match."
-        : "";
-  const businessNameError = !formValues.businessName.trim() ? "Business name is required." : "";
-  const businessTypeError = !formValues.businessType ? "Please select a business type." : "";
-  const phoneNumberError = !formValues.phoneNumber.trim() ? "Phone number is required." : "";
-  const countryError = !formValues.country.trim() ? "Country is required." : "";
-  const termsError = !formValues.terms ? "You must agree to the terms." : "";
-
-  const errors = {
-    fullName: fullNameError,
-    businessEmail: businessEmailError,
-    password: passwordError,
-    confirmPassword: confirmPasswordError,
-    businessName: businessNameError,
-    businessType: businessTypeError,
-    phoneNumber: phoneNumberError,
-    country: countryError,
-    terms: termsError,
+        : "",
+    terms: !formValues.terms
+      ? "You must agree to the Terms and Conditions."
+      : "",
   };
 
   const isValid = Object.values(errors).every((error) => !error);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const markAllTouched = () => {
     setTouched({
       fullName: true,
-      businessEmail: true,
+      email: true,
       password: true,
       confirmPassword: true,
-      businessName: true,
-      businessType: true,
-      phoneNumber: true,
-      country: true,
       terms: true,
     });
+  };
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    markAllTouched();
+    setFormMessage("");
 
     if (!isValid) return;
 
-    try {
-      window.localStorage.setItem(
-        "sokoos-workspace-signup",
-        JSON.stringify({
-          businessName: formValues.businessName,
-          businessType: formValues.businessType,
-          country: formValues.country,
-          businessEmail: formValues.businessEmail,
-          phoneNumber: formValues.phoneNumber,
-        }),
-      );
-    } catch {
-      // ignore storage errors
-    }
-
-    setIsSubmitting(true);
-    setSuccessMessage("");
-
-    window.setTimeout(() => {
-      setIsSubmitting(false);
-      setSuccessMessage("Workspace created successfully.");
-      signInMock({ id: "demo", name: "Demo User" });
-      window.setTimeout(() => {
-        void router.navigate({ to: "/dashboard" });
-      }, 800);
-    }, 2000);
+    setFormMessage(
+      "Account creation will be available when authentication is connected.",
+    );
   };
 
   return (
@@ -131,8 +83,11 @@ function SignUp() {
       <AuthCard
         footer={
           <>
-            Already have an account? {" "}
-            <Link to="/signin" className="font-semibold text-[#111827] transition-colors hover:text-[#16A34A]">
+            Already have an account?{" "}
+            <Link
+              to="/signin"
+              className="font-semibold text-[#111827] transition-colors hover:text-[#16A34A]"
+            >
               Sign in
             </Link>
           </>
@@ -140,177 +95,168 @@ function SignUp() {
       >
         <div className="space-y-6">
           <AuthHeader
-            eyebrow="Preview access"
-            title="Create your AI Employee"
-            description="Create your Sokoos workspace in under a minute."
+            title="Create your Sokoos account"
+            description="Create your account to get started with Sokoos."
           />
 
           <form className="space-y-4" onSubmit={handleSubmit} noValidate>
             <div className="space-y-1">
               <TextInput
                 id="full-name"
-                label="Full Name"
+                label="Full name"
                 placeholder="Jane Doe"
                 value={formValues.fullName}
-                onChange={(event) =>
-                  setFormValues((prev) => ({ ...prev, fullName: event.target.value }))
+                onChange={(event) => {
+                  setFormValues((prev) => ({
+                    ...prev,
+                    fullName: event.target.value,
+                  }));
+                  setFormMessage("");
+                }}
+                onBlur={() =>
+                  setTouched((prev) => ({ ...prev, fullName: true }))
                 }
-                onBlur={() => setTouched((prev) => ({ ...prev, fullName: true }))}
+                aria-invalid={touched.fullName && Boolean(errors.fullName)}
+                aria-describedby={
+                  touched.fullName && errors.fullName
+                    ? "full-name-error"
+                    : undefined
+                }
               />
               {touched.fullName && errors.fullName ? (
-                <p className="text-sm text-[#DC2626]">{errors.fullName}</p>
+                <p id="full-name-error" className="text-sm text-[#DC2626]">
+                  {errors.fullName}
+                </p>
               ) : null}
             </div>
 
             <div className="space-y-1">
               <TextInput
-                id="business-email"
-                label="Business Email"
+                id="email"
+                label="Email address"
                 type="email"
-                placeholder="you@company.com"
-                value={formValues.businessEmail}
-                onChange={(event) =>
-                  setFormValues((prev) => ({ ...prev, businessEmail: event.target.value }))
+                autoComplete="email"
+                placeholder="you@example.com"
+                value={formValues.email}
+                onChange={(event) => {
+                  setFormValues((prev) => ({
+                    ...prev,
+                    email: event.target.value,
+                  }));
+                  setFormMessage("");
+                }}
+                onBlur={() => setTouched((prev) => ({ ...prev, email: true }))}
+                aria-invalid={touched.email && Boolean(errors.email)}
+                aria-describedby={
+                  touched.email && errors.email ? "email-error" : undefined
                 }
-                onBlur={() => setTouched((prev) => ({ ...prev, businessEmail: true }))}
               />
-              {touched.businessEmail && errors.businessEmail ? (
-                <p className="text-sm text-[#DC2626]">{errors.businessEmail}</p>
+              {touched.email && errors.email ? (
+                <p id="email-error" className="text-sm text-[#DC2626]">
+                  {errors.email}
+                </p>
               ) : null}
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-1">
-                <PasswordInput
-                  id="password"
-                  label="Password"
-                  placeholder="Create a password"
-                  value={formValues.password}
-                  onChange={(event) =>
-                    setFormValues((prev) => ({ ...prev, password: event.target.value }))
-                  }
-                  onBlur={() => setTouched((prev) => ({ ...prev, password: true }))}
-                />
-                {touched.password && errors.password ? (
-                  <p className="text-sm text-[#DC2626]">{errors.password}</p>
-                ) : null}
-              </div>
-
-              <div className="space-y-1">
-                <PasswordInput
-                  id="confirm-password"
-                  label="Confirm Password"
-                  placeholder="Repeat password"
-                  value={formValues.confirmPassword}
-                  onChange={(event) =>
-                    setFormValues((prev) => ({ ...prev, confirmPassword: event.target.value }))
-                  }
-                  onBlur={() => setTouched((prev) => ({ ...prev, confirmPassword: true }))}
-                />
-                {touched.confirmPassword && errors.confirmPassword ? (
-                  <p className="text-sm text-[#DC2626]">{errors.confirmPassword}</p>
-                ) : null}
-              </div>
-            </div>
-
             <div className="space-y-1">
-              <TextInput
-                id="business-name"
-                label="Business Name"
-                placeholder="Sokoos Labs"
-                value={formValues.businessName}
-                onChange={(event) =>
-                  setFormValues((prev) => ({ ...prev, businessName: event.target.value }))
+              <PasswordInput
+                id="password"
+                label="Password"
+                autoComplete="new-password"
+                placeholder="Create a password"
+                value={formValues.password}
+                onChange={(event) => {
+                  setFormValues((prev) => ({
+                    ...prev,
+                    password: event.target.value,
+                  }));
+                  setFormMessage("");
+                }}
+                onBlur={() =>
+                  setTouched((prev) => ({ ...prev, password: true }))
                 }
-                onBlur={() => setTouched((prev) => ({ ...prev, businessName: true }))}
+                aria-invalid={touched.password && Boolean(errors.password)}
+                aria-describedby="password-requirements"
               />
-              {touched.businessName && errors.businessName ? (
-                <p className="text-sm text-[#DC2626]">{errors.businessName}</p>
+              <p id="password-requirements" className="text-sm text-[#64748B]">
+                Use at least 8 characters.
+              </p>
+              {touched.password && errors.password ? (
+                <p className="text-sm text-[#DC2626]">{errors.password}</p>
               ) : null}
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-1">
-                <SelectInput
-                  id="business-type"
-                  label="Business Type"
-                  value={formValues.businessType}
-                  onChange={(event) =>
-                    setFormValues((prev) => ({ ...prev, businessType: event.target.value }))
-                  }
-                  onBlur={() => setTouched((prev) => ({ ...prev, businessType: true }))}
-                  options={[
-                    { label: "Select type", value: "" },
-                    { label: "Retail", value: "retail" },
-                    { label: "Restaurant", value: "restaurant" },
-                    { label: "Service Business", value: "service" },
-                    { label: "Education", value: "education" },
-                    { label: "Healthcare", value: "healthcare" },
-                    { label: "Other", value: "other" },
-                  ]}
-                />
-                {touched.businessType && errors.businessType ? (
-                  <p className="text-sm text-[#DC2626]">{errors.businessType}</p>
-                ) : null}
-              </div>
-
-              <div className="space-y-1">
-                <TextInput
-                  id="phone-number"
-                  label="Phone Number"
-                  placeholder="0712 345 678"
-                  value={formValues.phoneNumber}
-                  onChange={(event) =>
-                    setFormValues((prev) => ({ ...prev, phoneNumber: event.target.value }))
-                  }
-                  onBlur={() => setTouched((prev) => ({ ...prev, phoneNumber: true }))}
-                />
-                {touched.phoneNumber && errors.phoneNumber ? (
-                  <p className="text-sm text-[#DC2626]">{errors.phoneNumber}</p>
-                ) : null}
-              </div>
-            </div>
-
             <div className="space-y-1">
-              <TextInput
-                id="country"
-                label="Country"
-                defaultValue="Kenya"
-                value={formValues.country}
-                onChange={(event) =>
-                  setFormValues((prev) => ({ ...prev, country: event.target.value }))
+              <PasswordInput
+                id="confirm-password"
+                label="Confirm password"
+                autoComplete="new-password"
+                placeholder="Repeat your password"
+                value={formValues.confirmPassword}
+                onChange={(event) => {
+                  setFormValues((prev) => ({
+                    ...prev,
+                    confirmPassword: event.target.value,
+                  }));
+                  setFormMessage("");
+                }}
+                onBlur={() =>
+                  setTouched((prev) => ({ ...prev, confirmPassword: true }))
                 }
-                onBlur={() => setTouched((prev) => ({ ...prev, country: true }))}
+                aria-invalid={
+                  touched.confirmPassword && Boolean(errors.confirmPassword)
+                }
+                aria-describedby={
+                  touched.confirmPassword && errors.confirmPassword
+                    ? "confirm-password-error"
+                    : undefined
+                }
               />
-              {touched.country && errors.country ? (
-                <p className="text-sm text-[#DC2626]">{errors.country}</p>
+              {touched.confirmPassword && errors.confirmPassword ? (
+                <p
+                  id="confirm-password-error"
+                  className="text-sm text-[#DC2626]"
+                >
+                  {errors.confirmPassword}
+                </p>
               ) : null}
             </div>
 
             <div className="space-y-1">
               <Checkbox
                 id="terms"
-                label="I agree to the Terms"
+                label="I agree to the Terms and Conditions"
                 checked={formValues.terms}
-                onChange={(event) =>
-                  setFormValues((prev) => ({ ...prev, terms: event.target.checked }))
-                }
+                onChange={(event) => {
+                  setFormValues((prev) => ({
+                    ...prev,
+                    terms: event.target.checked,
+                  }));
+                  setFormMessage("");
+                }}
                 onBlur={() => setTouched((prev) => ({ ...prev, terms: true }))}
+                aria-invalid={touched.terms && Boolean(errors.terms)}
+                aria-describedby={
+                  touched.terms && errors.terms ? "terms-error" : undefined
+                }
               />
               {touched.terms && errors.terms ? (
-                <p className="text-sm text-[#DC2626]">{errors.terms}</p>
+                <p id="terms-error" className="text-sm text-[#DC2626]">
+                  {errors.terms}
+                </p>
               ) : null}
             </div>
 
-            {successMessage ? (
-              <p className="rounded-2xl border border-[#DCFCE7] bg-[#F0FDF4] px-4 py-3 text-sm font-medium text-[#166534]">
-                {successMessage}
+            {formMessage ? (
+              <p
+                className="rounded-2xl border border-[#DCFCE7] bg-[#F0FDF4] px-4 py-3 text-sm font-medium text-[#166534]"
+                role="status"
+              >
+                {formMessage}
               </p>
             ) : null}
 
-            <PrimaryButton type="submit" disabled={!isValid || isSubmitting}>
-              {isSubmitting ? "Creating Workspace..." : "Create Workspace"}
-            </PrimaryButton>
+            <PrimaryButton type="submit">Create account</PrimaryButton>
           </form>
         </div>
       </AuthCard>

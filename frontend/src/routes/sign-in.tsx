@@ -1,56 +1,47 @@
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
 
-import { AuthCard } from "@/components/auth-card";
-import { AuthHeader } from "@/components/auth-header";
-import { AuthLayout } from "@/components/auth-layout";
 import { Checkbox } from "@/components/auth/checkbox";
 import { PasswordInput } from "@/components/auth/password-input";
 import { PrimaryButton } from "@/components/auth/primary-button";
 import { TextInput } from "@/components/auth/text-input";
-import { signInMock } from "@/lib/auth";
+import { AuthCard } from "@/components/auth-card";
+import { AuthHeader } from "@/components/auth-header";
+import { AuthLayout } from "@/components/auth-layout";
 
 export const Route = createFileRoute("/sign-in")({
   component: SignIn,
 });
 
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export function SignIn() {
-  const router = useRouter();
-
-  useEffect(() => {
-    if (typeof window !== "undefined" && localStorage.getItem("sokoos-auth") === "true") {
-      void router.navigate({ to: "/dashboard", replace: true });
-    }
-  }, [router]);
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const [touched, setTouched] = useState({ email: false, password: false });
-  const [authError, setAuthError] = useState("");
+  const [formMessage, setFormMessage] = useState("");
 
-  const emailError = !email.trim()
-    ? "Email is required."
-    : !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-      ? "Enter a valid email address."
-      : "";
-  const passwordError = !password.trim() ? "Password is required." : "";
-  const isValid = !emailError && !passwordError;
+  const errors = {
+    email: !email.trim()
+      ? "Email address is required."
+      : !emailPattern.test(email.trim())
+        ? "Enter a valid email address."
+        : "",
+    password: !password ? "Password is required." : "",
+  };
+  const isValid = Object.values(errors).every((error) => !error);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setTouched({ email: true, password: true });
+    setFormMessage("");
 
     if (!isValid) return;
 
-    if (email.trim() === "demo@sokoos.com" && password === "password123") {
-      localStorage.setItem("sokoos-auth", "true");
-      signInMock({ id: "demo", name: "Demo User" });
-      setAuthError("");
-      void router.navigate({ to: "/dashboard" });
-      return;
-    }
-
-    setAuthError("Invalid email or password.");
+    setFormMessage(
+      "Sign in will be available when authentication is connected.",
+    );
   };
 
   return (
@@ -58,8 +49,11 @@ export function SignIn() {
       <AuthCard
         footer={
           <>
-            New to Sokoos? {" "}
-            <Link to="/sign-up" className="font-semibold text-[#111827] transition-colors hover:text-[#16A34A]">
+            New to Sokoos?{" "}
+            <Link
+              to="/sign-up"
+              className="font-semibold text-[#111827] transition-colors hover:text-[#16A34A]"
+            >
               Create an account
             </Link>
           </>
@@ -67,24 +61,33 @@ export function SignIn() {
       >
         <div className="space-y-6">
           <AuthHeader
-            eyebrow="Preview access"
             title="Welcome back"
-            description="Sign in to your Sokoos workspace."
+            description="Sign in to your Sokoos account."
           />
 
           <form className="space-y-5" onSubmit={handleSubmit} noValidate>
             <div className="space-y-1">
               <TextInput
                 id="email"
-                label="Email Address"
+                label="Email address"
                 type="email"
-                placeholder="you@company.com"
+                autoComplete="email"
+                placeholder="you@example.com"
                 value={email}
-                onChange={(event) => setEmail(event.target.value)}
+                onChange={(event) => {
+                  setEmail(event.target.value);
+                  setFormMessage("");
+                }}
                 onBlur={() => setTouched((prev) => ({ ...prev, email: true }))}
+                aria-invalid={touched.email && Boolean(errors.email)}
+                aria-describedby={
+                  touched.email && errors.email ? "email-error" : undefined
+                }
               />
-              {touched.email && emailError ? (
-                <p className="text-sm text-[#DC2626]">{emailError}</p>
+              {touched.email && errors.email ? (
+                <p id="email-error" className="text-sm text-[#DC2626]">
+                  {errors.email}
+                </p>
               ) : null}
             </div>
 
@@ -92,29 +95,56 @@ export function SignIn() {
               <PasswordInput
                 id="password"
                 label="Password"
+                autoComplete="current-password"
                 placeholder="Enter your password"
                 value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                onBlur={() => setTouched((prev) => ({ ...prev, password: true }))}
+                onChange={(event) => {
+                  setPassword(event.target.value);
+                  setFormMessage("");
+                }}
+                onBlur={() =>
+                  setTouched((prev) => ({ ...prev, password: true }))
+                }
+                aria-invalid={touched.password && Boolean(errors.password)}
+                aria-describedby={
+                  touched.password && errors.password
+                    ? "password-error"
+                    : undefined
+                }
               />
-              {touched.password && passwordError ? (
-                <p className="text-sm text-[#DC2626]">{passwordError}</p>
+              {touched.password && errors.password ? (
+                <p id="password-error" className="text-sm text-[#DC2626]">
+                  {errors.password}
+                </p>
               ) : null}
             </div>
 
             <div className="flex items-center justify-between gap-3 text-sm">
-              <Checkbox id="remember-me" label="Remember Me" />
+              <Checkbox
+                id="remember-me"
+                label="Remember me"
+                checked={rememberMe}
+                onChange={(event) => setRememberMe(event.target.checked)}
+              />
 
-              <a href="#" className="font-medium text-[#111827] transition-colors hover:text-[#16A34A]">
-                Forgot Password?
+              <a
+                href="#"
+                className="font-medium text-[#111827] transition-colors hover:text-[#16A34A]"
+              >
+                Forgot password?
               </a>
             </div>
 
-            {authError ? <p className="text-sm font-medium text-[#DC2626]">{authError}</p> : null}
+            {formMessage ? (
+              <p
+                className="rounded-2xl border border-[#DCFCE7] bg-[#F0FDF4] px-4 py-3 text-sm font-medium text-[#166534]"
+                role="status"
+              >
+                {formMessage}
+              </p>
+            ) : null}
 
-            <PrimaryButton type="submit" disabled={!isValid}>
-              Sign In
-            </PrimaryButton>
+            <PrimaryButton type="submit">Sign in</PrimaryButton>
           </form>
         </div>
       </AuthCard>

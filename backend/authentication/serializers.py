@@ -1,4 +1,4 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers
 
 
@@ -40,3 +40,34 @@ class SignupSerializer(serializers.ModelSerializer):
         )
 
         return user
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(
+        write_only=True,
+        style={"input_type": "password"},
+    )
+
+    def validate(self, attrs):
+        email = attrs["email"].strip().lower()
+        password = attrs["password"]
+
+        user = authenticate(
+            request=self.context.get("request"),
+            username=email,
+            password=password,
+        )
+
+        if user is None:
+            raise serializers.ValidationError(
+                "Invalid email or password."
+            )
+
+        if not user.is_active:
+            raise serializers.ValidationError(
+                "This account is inactive."
+            )
+
+        attrs["user"] = user
+
+        return attrs
