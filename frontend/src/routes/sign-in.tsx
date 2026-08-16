@@ -169,12 +169,12 @@ export function SignIn() {
                 onChange={(event) => setRememberMe(event.target.checked)}
               />
 
-              <a
-                href="#"
+              <Link
+                to="/forgot-password"
                 className="font-medium text-[#111827] transition-colors hover:text-[#16A34A]"
               >
                 Forgot password?
-              </a>
+              </Link>
             </div>
 
             {formMessage ? (

@@ -55,8 +55,8 @@ import { CustomersWorkspace } from "@/components/dashboard/customers/customers-w
 import { PerformanceWorkspace } from "@/components/dashboard/ai-employee/performance/performance-workspace";
 import { TrainingTemplateCard } from "@/components/dashboard/ai-employee/training/training-template-card";
 import { AccountSettings } from "@/components/dashboard/account-settings";
-import { getAuthToken, getAuthorizationHeader, getCurrentUser, getUserDisplayName, saveAuthSession, signOutMock, type AuthUser } from "@/lib/auth";
-import { apiRequest } from "@/lib/api";
+import { clearAuthSession, getAuthToken, getAuthorizationHeader, getCurrentUser, getUserDisplayName, saveAuthSession, signOutMock, type AuthUser } from "@/lib/auth";
+import { apiRequest, changePassword } from "@/lib/api";
 import EditProfileDialog, { type ProfileUpdate } from "@/components/dashboard/edit-profile-dialog";
 import sokoosLogo from "@/assets/sokoos_logo.png";
 
@@ -4479,6 +4479,16 @@ export default function DashboardLayout() {
     }
 
     signOutMock();
+    await router.navigate({ to: "/signin", replace: true });
+  };
+
+  const handleChangePassword = async (
+    currentPassword: string,
+    newPassword: string,
+    confirmNewPassword: string,
+  ) => {
+    await changePassword(currentPassword, newPassword, confirmNewPassword);
+    clearAuthSession();
     await router.navigate({ to: "/signin", replace: true });
   };
 
@@ -9167,6 +9177,7 @@ export default function DashboardLayout() {
                 user={user}
                 onEditProfile={handleEditProfile}
                 onDeleteAccount={handleDeleteAccount}
+                onChangePassword={handleChangePassword}
               />
               {/*
             <div className="space-y-6">

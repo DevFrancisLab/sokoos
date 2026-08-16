@@ -1,3 +1,5 @@
+import { getAuthorizationHeader } from "./auth";
+
 const defaultApiBaseUrl = "http://127.0.0.1:8000";
 
 const apiBaseUrl = (
@@ -72,4 +74,62 @@ export async function apiRequest<T>(
   }
 
   return { data: data as T | null, status: response.status };
+}
+
+export type PasswordResetRequestResponse = {
+  success: boolean;
+  message: string;
+};
+
+export type PasswordResetConfirmResponse = {
+  success: boolean;
+  message: string;
+};
+
+export type ChangePasswordResponse = {
+  success: boolean;
+  message: string;
+};
+
+export function requestPasswordReset(email: string) {
+  return apiRequest<PasswordResetRequestResponse>("/api/auth/password-reset/", {
+    method: "POST",
+    body: JSON.stringify({ email }),
+  });
+}
+
+export function confirmPasswordReset(
+  uid: string,
+  token: string,
+  newPassword: string,
+  confirmNewPassword: string,
+) {
+  return apiRequest<PasswordResetConfirmResponse>(
+    "/api/auth/password-reset/confirm/",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        uid,
+        token,
+        new_password: newPassword,
+        confirm_new_password: confirmNewPassword,
+      }),
+    },
+  );
+}
+
+export function changePassword(
+  currentPassword: string,
+  newPassword: string,
+  confirmNewPassword: string,
+) {
+  return apiRequest<ChangePasswordResponse>("/api/auth/change-password/", {
+    method: "POST",
+    headers: getAuthorizationHeader() as HeadersInit,
+    body: JSON.stringify({
+      current_password: currentPassword,
+      new_password: newPassword,
+      confirm_new_password: confirmNewPassword,
+    }),
+  });
 }

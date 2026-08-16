@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import {
   ArrowRight,
   Bell,
@@ -28,8 +29,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { ApiError } from "@/lib/api";
 
 type AccountUser = {
   id: string;
@@ -44,7 +49,34 @@ type AccountSettingsProps = {
   user: AccountUser;
   onEditProfile: () => void;
   onDeleteAccount: () => Promise<void>;
+  onChangePassword: (
+    currentPassword: string,
+    newPassword: string,
+    confirmNewPassword: string,
+  ) => Promise<void>;
 };
+
+type ChangePasswordValues = {
+  currentPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+};
+
+type BackendErrors = Record<string, string[]>;
+
+function getBackendErrors(data: unknown): BackendErrors | null {
+  if (!data || typeof data !== "object" || !("errors" in data)) return null;
+  const errors = (data as { errors: unknown }).errors;
+  if (!errors || typeof errors !== "object" || Array.isArray(errors)) return null;
+
+  return Object.fromEntries(
+    Object.entries(errors).filter(
+      ([, messages]) =>
+        Array.isArray(messages) &&
+        messages.every((message) => typeof message === "string"),
+    ),
+  ) as BackendErrors;
+}
 
 const navigation: Array<{
   heading?: string;
@@ -164,7 +196,7 @@ function UnavailableNotice({ children }: { children: React.ReactNode }) {
   return <p className="rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] px-4 py-3 text-sm leading-6 text-[#475569]">{children}</p>;
 }
 
-export function AccountSettings({ user, onEditProfile, onDeleteAccount }: AccountSettingsProps) {
+export function AccountSettings({ user, onEditProfile, onDeleteAccount, onChangePassword }: AccountSettingsProps) {
   const [activeCategory, setActiveCategory] = useState<SettingsCategory>("profile");
   const [notificationPreferences, setNotificationPreferences] = useState(defaultNotificationPreferences);
   const [preferences, setPreferences] = useState<AccountPreferences>({
@@ -176,6 +208,61 @@ export function AccountSettings({ user, onEditProfile, onDeleteAccount }: Accoun
   const [deletionAcknowledged, setDeletionAcknowledged] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [deletionError, setDeletionError] = useState("");
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
+  const changePasswordForm = useForm<ChangePasswordValues>({
+    defaultValues: {
+      currentPassword: "",
+      newPassword: "",
+      confirmNewPassword: "",
+    },
+    mode: "onChange",
+  });
+
+  const handleChangePasswordOpenChange = (open: boolean) => {
+    if (!open && !changePasswordForm.formState.isSubmitting) {
+      changePasswordForm.reset();
+    }
+    setChangePasswordOpen(open);
+  };
+
+  const handleChangePassword = async (values: ChangePasswordValues) => {
+    try {
+      await onChangePassword(
+        values.currentPassword,
+        values.newPassword,
+        values.confirmNewPassword,
+      );
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 400) {
+        const errors = getBackendErrors(error.data);
+        if (errors) {
+          if (errors.current_password?.[0]) {
+            changePasswordForm.setError("currentPassword", {
+              message: errors.current_password[0],
+            });
+          }
+          if (errors.new_password?.[0]) {
+            changePasswordForm.setError("newPassword", {
+              message: errors.new_password[0],
+            });
+          }
+          if (errors.confirm_new_password?.[0]) {
+            changePasswordForm.setError("confirmNewPassword", {
+              message: errors.confirm_new_password[0],
+            });
+          }
+          return;
+        }
+      }
+
+      changePasswordForm.setError("root", {
+        message:
+          error instanceof ApiError && error.isNetworkError
+            ? error.message
+            : "Something went wrong. Please try again.",
+      });
+    }
+  };
 
   const handleDeleteAccount = async () => {
     if (!deletionAcknowledged || isDeleting) return;
@@ -229,7 +316,13 @@ export function AccountSettings({ user, onEditProfile, onDeleteAccount }: Accoun
                     <p className="mt-1 text-sm leading-6 text-[#64748B]">Change your account password.</p>
                   </div>
                 </div>
-                <Button type="button" variant="outline" disabled>Change password</Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => handleChangePasswordOpenChange(true)}
+                >
+                  Change password
+                </Button>
               </div>
               <div className="flex flex-col gap-4 rounded-[20px] border border-[#E5E7EB] p-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex gap-3">
@@ -251,7 +344,7 @@ export function AccountSettings({ user, onEditProfile, onDeleteAccount }: Accoun
                 </div>
                 <Button type="button" variant="outline" disabled>Set up 2FA</Button>
               </div>
-              <UnavailableNotice>Security actions are not connected to an account service yet.</UnavailableNotice>
+              <UnavailableNotice>Session management and two-factor authentication are not connected to an account service yet.</UnavailableNotice>
             </div>
           </SettingsPanel>
         );
@@ -449,6 +542,7 @@ export function AccountSettings({ user, onEditProfile, onDeleteAccount }: Accoun
   };
 
   return (
+    <>
     <div className="mx-auto w-full max-w-6xl space-y-6 pb-4">
       <header>
         <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#64748B]">Account settings</p>
@@ -498,5 +592,84 @@ export function AccountSettings({ user, onEditProfile, onDeleteAccount }: Accoun
         <div className="min-w-0">{renderContent()}</div>
       </div>
     </div>
+    <Dialog open={changePasswordOpen} onOpenChange={handleChangePasswordOpenChange}>
+      <DialogContent className="w-[calc(100%-2rem)] max-w-xl rounded-[24px] border-[#E5E7EB] p-6 sm:p-7">
+        <DialogHeader className="space-y-2 text-left">
+          <DialogTitle>Change password</DialogTitle>
+          <DialogDescription>Choose a new password for your Sokoos account.</DialogDescription>
+        </DialogHeader>
+
+        <Form {...changePasswordForm}>
+          <form onSubmit={changePasswordForm.handleSubmit(handleChangePassword)} className="space-y-5">
+            <FormField
+              control={changePasswordForm.control}
+              name="currentPassword"
+              rules={{ required: "Current password is required." }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Current password</FormLabel>
+                  <FormControl>
+                    <Input type="password" autoComplete="current-password" placeholder="Enter your current password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={changePasswordForm.control}
+              name="newPassword"
+              rules={{
+                required: "New password is required.",
+                minLength: { value: 8, message: "Password must be at least 8 characters." },
+              }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>New password</FormLabel>
+                  <FormControl>
+                    <Input type="password" autoComplete="new-password" placeholder="Create a new password" {...field} />
+                  </FormControl>
+                  <p className="text-sm text-[#64748B]">Use at least 8 characters.</p>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={changePasswordForm.control}
+              name="confirmNewPassword"
+              rules={{
+                required: "Please confirm your new password.",
+                validate: (value) =>
+                  value === changePasswordForm.getValues("newPassword") || "Passwords must match.",
+              }}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm new password</FormLabel>
+                  <FormControl>
+                    <Input type="password" autoComplete="new-password" placeholder="Repeat your new password" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {changePasswordForm.formState.errors.root?.message ? (
+              <p className="rounded-xl border border-[#FECACA] bg-[#FEF2F2] px-4 py-3 text-sm text-[#B91C1C]" role="alert">
+                {changePasswordForm.formState.errors.root.message}
+              </p>
+            ) : null}
+
+            <div className="flex flex-col gap-3 border-t border-[#E5E7EB] pt-5 sm:flex-row sm:justify-end">
+              <Button type="button" variant="secondary" onClick={() => handleChangePasswordOpenChange(false)} disabled={changePasswordForm.formState.isSubmitting}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={!changePasswordForm.formState.isValid || changePasswordForm.formState.isSubmitting}>
+                {changePasswordForm.formState.isSubmitting ? "Changing password..." : "Change password"}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
+    </>
   );
 }
