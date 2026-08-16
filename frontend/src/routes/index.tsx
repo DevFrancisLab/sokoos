@@ -412,38 +412,31 @@ function Hero() {
         <Reveal>
           <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
             <div className="inline-flex items-center rounded-full bg-[#ECFDF5] px-4 py-2 text-sm font-semibold text-[#166534] shadow-sm shadow-[#ECFDF5]/60">
-              ✨ Acquire • Convert • Retain
+              ✨ Get More Customers • Make More Sales • Keep Them Coming Back
             </div>
             <h1 className="mt-6 text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl">
-              Never Miss a <span className="text-[#16A34A]">Lead</span> or Lose a{" "}
-              <span className="text-[#16A34A]">Customer</span> Again
+              Your Business With a <span className="text-[#16A34A]">Bot</span>{" "}
+              That Sells
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Your AI employee that acquires customers, converts leads into customers, and keeps them coming back, <span className="relative isolate font-semibold text-[#166534] after:absolute after:bottom-[-0.16em] after:left-0 after:-z-10 after:h-[0.42em] after:w-full after:-rotate-[1.5deg] after:rounded-[55%_45%_50%_45%] after:bg-[#86EFAC]/70">across every channel.</span>
+              Sokoos gives your business a bot that attracts customers, creates
+              marketing, closes sales, and keeps customers coming back —{" "}
+              <span className="relative isolate font-semibold text-[#166534] after:absolute after:bottom-[-0.16em] after:left-0 after:-z-10 after:h-[0.42em] after:w-full after:-rotate-[1.5deg] after:rounded-[55%_45%_50%_45%] after:bg-[#86EFAC]/70">
+                across your channels.
+              </span>
             </p>
             <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
               <Link
                 to="/sign-up"
                 className="group inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] transition-transform hover:-translate-y-0.5"
               >
-                Get Started
+                Get Your Business Bot
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
             </div>
             <div className="mt-4 flex flex-col items-center gap-2 text-sm text-muted-foreground sm:flex-row">
-              <span className="inline-flex items-center gap-2 text-[#166534]">
-                <BarChart3 className="h-4 w-4 text-[#16A34A]" />
-                Acquire Customers
-              </span>
-              <span className="hidden sm:inline">→</span>
-              <span className="inline-flex items-center gap-2 text-[#166534]">
-                <MessageCircle className="h-4 w-4 text-[#16A34A]" />
-                Convert Leads
-              </span>
-              <span className="hidden sm:inline">→</span>
-              <span className="inline-flex items-center gap-2 text-[#166534]">
-                <Heart className="h-4 w-4 text-[#16A34A]" />
-                Retain Customers
+              <span className="text-[#166534]">
+                Attract → Engage → Sell → Retain
               </span>
             </div>
           </div>
