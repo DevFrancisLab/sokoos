@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Checkbox } from "@/components/auth/checkbox";
 import { PasswordInput } from "@/components/auth/password-input";
@@ -9,7 +9,7 @@ import { AuthCard } from "@/components/auth-card";
 import { AuthHeader } from "@/components/auth-header";
 import { AuthLayout } from "@/components/auth-layout";
 import { ApiError, apiRequest } from "@/lib/api";
-import { saveAuthSession, type AuthUser } from "@/lib/auth";
+import { isAuthenticated, saveAuthSession, type AuthUser } from "@/lib/auth";
 
 export const Route = createFileRoute("/sign-in")({
   component: SignIn,
@@ -35,6 +35,7 @@ function getErrorMessage(data: unknown) {
 
 export function SignIn() {
   const router = useRouter();
+  const authenticated = isAuthenticated();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
@@ -52,6 +53,12 @@ export function SignIn() {
   };
   const isValid = Object.values(errors).every((error) => !error);
 
+  useEffect(() => {
+    if (authenticated) {
+      void router.navigate({ to: "/dashboard", replace: true });
+    }
+  }, [authenticated, router]);
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setTouched({ email: true, password: true });
@@ -67,7 +74,7 @@ export function SignIn() {
       });
 
       if (response.data?.success && response.data.token) {
-        saveAuthSession(response.data.token, response.data.user);
+        saveAuthSession(response.data.token, response.data.user, rememberMe);
         void router.navigate({ to: "/dashboard", replace: true });
         return;
       }

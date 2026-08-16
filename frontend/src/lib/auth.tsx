@@ -9,30 +9,45 @@ export type AuthUser = {
 
 const authTokenKey = "sokoos-auth-token";
 const currentUserKey = "sokoos-current-user";
+let transientAuthToken: string | null = null;
+let transientCurrentUser: AuthUser | null = null;
 
 export function getAuthToken() {
   try {
-    return localStorage.getItem(authTokenKey);
+    return localStorage.getItem(authTokenKey) ?? transientAuthToken;
   } catch {
-    return null;
+    return transientAuthToken;
   }
 }
 
 export function getCurrentUser(): AuthUser | null {
   try {
     const storedUser = localStorage.getItem(currentUserKey);
-    return storedUser ? (JSON.parse(storedUser) as AuthUser) : null;
+    return storedUser ? (JSON.parse(storedUser) as AuthUser) : transientCurrentUser;
   } catch {
-    return null;
+    return transientCurrentUser;
   }
 }
 
-export function saveAuthSession(token: string, user: AuthUser) {
+export function saveAuthSession(token: string, user: AuthUser, remember = true) {
   try {
-    localStorage.setItem(authTokenKey, token);
-    localStorage.setItem(currentUserKey, JSON.stringify(user));
+    localStorage.removeItem(authTokenKey);
+    localStorage.removeItem(currentUserKey);
+    sessionStorage.removeItem(authTokenKey);
+    sessionStorage.removeItem(currentUserKey);
+    transientAuthToken = null;
+    transientCurrentUser = null;
+
+    if (remember) {
+      localStorage.setItem(authTokenKey, token);
+      localStorage.setItem(currentUserKey, JSON.stringify(user));
+    } else {
+      transientAuthToken = token;
+      transientCurrentUser = user;
+    }
   } catch {
-    // Storage may be unavailable in the current browser context.
+    transientAuthToken = token;
+    transientCurrentUser = user;
   }
 }
 
@@ -40,8 +55,13 @@ export function clearAuthSession() {
   try {
     localStorage.removeItem(authTokenKey);
     localStorage.removeItem(currentUserKey);
+    sessionStorage.removeItem(authTokenKey);
+    sessionStorage.removeItem(currentUserKey);
+    transientAuthToken = null;
+    transientCurrentUser = null;
   } catch {
-    // Storage may be unavailable in the current browser context.
+    transientAuthToken = null;
+    transientCurrentUser = null;
   }
 }
 
