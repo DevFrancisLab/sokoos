@@ -2,8 +2,10 @@ from io import BytesIO
 from unittest.mock import patch
 
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import SimpleTestCase
+from django.test import SimpleTestCase, TestCase
+from django.urls import reverse
 from PIL import Image
+from rest_framework.test import APIClient
 
 from accounts.models import User
 
@@ -39,5 +41,35 @@ class UserProfileSerializerTests(SimpleTestCase):
 
         self.assertFalse(serializer.is_valid())
         self.assertIn("avatar", serializer.errors)
+
+
+class SignupEmailTests(TestCase):
+    def test_successful_signup_sends_a_welcome_email(self):
+        client = APIClient()
+
+        with patch("authentication.views.send_mail") as send_mail:
+            with self.captureOnCommitCallbacks(execute=True):
+                response = client.post(
+                    reverse("signup"),
+                    {
+                        "email": "new.user@example.com",
+                        "password": "SecurePassword123!",
+                        "first_name": "New",
+                        "last_name": "User",
+                    },
+                    format="json",
+                )
+
+        self.assertEqual(response.status_code, 201)
+        send_mail.assert_called_once_with(
+            subject="Welcome to Sokoos",
+            message=(
+                "Hi New,\n\n"
+                "Welcome to Sokoos. Your account has been created successfully."
+            ),
+            from_email=None,
+            recipient_list=["new.user@example.com"],
+            fail_silently=False,
+        )
 
 # Create your tests here.

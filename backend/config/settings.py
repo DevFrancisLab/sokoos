@@ -138,14 +138,16 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 
-# Email
+# Email (Zoho SMTP)
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
 
-MAILERS = {
-    'default': {
-        'BACKEND': 'django.core.mail.backends.console.EmailBackend',
-    },
-}
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = os.getenv("ZOHO_SMTP_HOST", "smtp.zoho.com")
+EMAIL_PORT = int(os.getenv("ZOHO_SMTP_PORT", "587"))
+EMAIL_USE_TLS = os.getenv("ZOHO_SMTP_USE_TLS", "true").lower() == "true"
+EMAIL_HOST_USER = os.getenv("ZOHO_SMTP_USER")
+EMAIL_HOST_PASSWORD = os.getenv("ZOHO_SMTP_PASSWORD")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", EMAIL_HOST_USER)
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
