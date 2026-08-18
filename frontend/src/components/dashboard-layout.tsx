@@ -56,7 +56,7 @@ import { PerformanceWorkspace } from "@/components/dashboard/ai-employee/perform
 import { TrainingTemplateCard } from "@/components/dashboard/ai-employee/training/training-template-card";
 import { AccountSettings } from "@/components/dashboard/account-settings";
 import { clearAuthSession, getAuthToken, getAuthorizationHeader, getCurrentUser, getUserDisplayName, saveAuthSession, signOutMock, type AuthUser } from "@/lib/auth";
-import { apiRequest, changePassword } from "@/lib/api";
+import { ApiError, apiRequest, changePassword, createCatalogCategory, createCatalogItem, deleteCatalogCategory, deleteCatalogItem, deleteCatalogMedia, getCatalog, getCatalogCategories, getCatalogMedia, updateCatalogCategory, updateCatalogItem, updateCatalogMedia, uploadCatalogMedia, type CatalogItem, type CatalogItemInput, type CatalogItemType } from "@/lib/api";
 import EditProfileDialog, { type ProfileUpdate } from "@/components/dashboard/edit-profile-dialog";
 import sokoosLogo from "@/assets/sokoos_logo.png";
 
@@ -1953,93 +1953,23 @@ export default function DashboardLayout() {
       block: "start",
     });
   }, [activeWorkspaceSection]);
-  const CATALOG_ITEMS: CatalogProduct[] = [
-    {
-      id: "p-restaurant-001",
-      name: "Ginger Citrus Salad",
-      category: "Restaurant",
-      type: "Service",
-      price: "$8.50",
-      description: "Fresh mixed greens, candied ginger, citrus segments, and sesame vinaigrette.",
-      availability: "In stock",
-      image: "/assets/sample/food-salad.jpg",
-      mediaAssets: [],
-    },
-    {
-      id: "p-retail-001",
-      name: "Everyday Cotton Tee",
-      category: "Retail",
-      type: "Product",
-      price: "$19.99",
-      description: "Soft 100% cotton tee available in multiple colors and sizes.",
-      availability: "Low stock",
-      image: "/assets/sample/tee.jpg",
-      mediaAssets: [],
-    },
-    {
-      id: "p-clinic-001",
-      name: "Adult Wellness Check",
-      category: "Clinic",
-      type: "Service",
-      price: "$65.00",
-      description: "Comprehensive check-up including vitals and basic blood work.",
-      availability: "By appointment",
-      image: "/assets/sample/clinic.jpg",
-      mediaAssets: [],
-    },
-    {
-      id: "p-school-001",
-      name: "Primary Math Workbook",
-      category: "School",
-      type: "Digital Product",
-      price: "$12.00",
-      description: "Grade 3 math workbook with exercises and answer key.",
-      availability: "In stock",
-      image: "/assets/sample/workbook.jpg",
-      mediaAssets: [],
-    },
-    {
-      id: "p-realestate-001",
-      name: "2-Bedroom Riverside Apartment",
-      category: "Real Estate",
-      type: "Service",
-      price: "$250,000",
-      description: "Modern apartment with river views, 2 bed, 2 bath, parking included.",
-      availability: "Available",
-      image: "/assets/sample/apartment.jpg",
-      mediaAssets: [],
-    },
-    {
-      id: "p-salon-001",
-      name: "Deluxe Hair Treatment",
-      category: "Salon",
-      type: "Service",
-      price: "$45.00",
-      description: "Repairing deep-conditioning treatment with scalp massage.",
-      availability: "In stock",
-      image: "/assets/sample/salon.jpg",
-      mediaAssets: [],
-    },
-    {
-      id: "p-electronics-001",
-      name: "Noise-Cancelling Headphones",
-      category: "Electronics",
-      type: "Product",
-      price: "$129.99",
-      description: "Wireless over-ear headphones with 30h battery life.",
-      availability: "In stock",
-      image: "/assets/sample/headphones.jpg",
-      mediaAssets: [],
-    },
-  ];
   const [businessModelSelections, setBusinessModelSelections] = useState<string[]>([]);
+  // This count is still consumed by the unrelated Knowledge Hub progress UI.
+  // Catalog itself is sourced exclusively from the API below.
+  const CATALOG_ITEMS = new Array(7).fill(null);
   const toggleBusinessModelSelection = (option: string) => {
     setBusinessModelSelections((current) =>
       current.includes(option) ? current.filter((item) => item !== option) : [...current, option],
     );
     setHasUnsavedChanges(true);
   };
-  const [catalogProducts, setCatalogProducts] = useState<CatalogProduct[]>(() => CATALOG_ITEMS.map((product) => ({ ...product, mediaAssets: product.mediaAssets ?? [] })));
+  const [catalogProducts, setCatalogProducts] = useState<CatalogProduct[]>([]);
+  const [catalogLoading, setCatalogLoading] = useState(true);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
+  const [catalogError, setCatalogError] = useState<string | null>(null);
+  const [catalogSaving, setCatalogSaving] = useState(false);
+  const [catalogDeletingId, setCatalogDeletingId] = useState<number | null>(null);
+  const [mediaUploading, setMediaUploading] = useState(false);
   const [productSearch, setProductSearch] = useState("");
   const [catalogView, setCatalogView] = useState<'grid' | 'table'>('grid');
   type CatalogueAttentionFilter = "all" | "low-stock" | "needs-information";
@@ -2071,20 +2001,7 @@ export default function DashboardLayout() {
   };
   const addButtonLabel = getAddButtonLabel(businessModelSelections);
 
-  const catalogueFilterTabs = useMemo(() => {
-    const tabs: CatalogueTab[] = ["All"];
-    const seen = new Set<CatalogueTab>(tabs);
-
-    catalogProducts.forEach((product) => {
-      const tab = Object.entries(CATALOG_TAB_TO_PRODUCT_TYPE).find(([, type]) => type === product.type)?.[0] as Exclude<CatalogueTab, "All"> | undefined;
-      if (tab && !seen.has(tab)) {
-        tabs.push(tab);
-        seen.add(tab);
-      }
-    });
-
-    return tabs;
-  }, [catalogProducts]);
+  const catalogueFilterTabs: CatalogueTab[] = ["All", "Products", "Services", "Subscriptions", "Digital Products", "Memberships", "Rentals"];
   const catalogueFilterTabOrder: CatalogueTab[] = ["All", "Products", "Services", "Subscriptions", "Digital Products", "Memberships", "Rentals"];
   const sortedCatalogueFilterTabs = useMemo(
     () => [...catalogueFilterTabs].sort((a, b) => catalogueFilterTabOrder.indexOf(a) - catalogueFilterTabOrder.indexOf(b)),
@@ -2096,25 +2013,61 @@ export default function DashboardLayout() {
       setSelectedCatalogueTab("All");
     }
   }, [catalogueFilterTabs, selectedCatalogueTab]);
-  const [categories, setCategories] = useState(() =>
-    Array.from(new Set(CATALOG_ITEMS.map((product) => product.category).filter(Boolean))).map((name, index) => ({
-      id: `category-${index + 1}`,
-      name: name as string,
-      productCount: CATALOG_ITEMS.filter((product) => product.category === name).length,
-    }))
-  );
+  const [categories, setCategories] = useState<Array<{ id: number; name: string }>>([]);
   const [showAddCategoryInput, setShowAddCategoryInput] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
-  const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
-  const [categoryDrafts, setCategoryDrafts] = useState<Record<string, string>>({});
+  const [editingCategoryId, setEditingCategoryId] = useState<number | null>(null);
+  const [categoryDrafts, setCategoryDrafts] = useState<Record<number, string>>({});
+  const typeToApi: Record<string, CatalogItemType> = { Product: "product", Service: "service", Subscription: "subscription", "Digital Product": "digital_product", Membership: "membership", Rental: "rental" };
+  const apiToType: Record<CatalogItemType, string> = { product: "Product", service: "Service", subscription: "Subscription", digital_product: "Digital Product", membership: "Membership", rental: "Rental" };
+  const availabilityToApi: Record<string, CatalogItem["availability"]> = { Available: "available", "In stock": "available", "Low stock": "available", Unavailable: "unavailable", "By appointment": "by_appointment" };
+  const apiToAvailability: Record<CatalogItem["availability"], string> = { available: "Available", unavailable: "Unavailable", by_appointment: "By appointment" };
+  const toCatalogProduct = (item: CatalogItem): CatalogProduct => ({
+    id: item.id, name: item.name, category: item.category.name, categoryId: item.category.id,
+    type: apiToType[item.item_type], price: item.price, description: item.description,
+    availability: apiToAvailability[item.availability], image: item.media.find((media) => media.is_thumbnail)?.file ?? item.media[0]?.file ?? "",
+    mediaAssets: item.media.map((media) => ({ id: media.id, name: media.original_name, fileType: media.mime_type.split("/")[0], uploadDate: media.created_at, size: "", url: media.file, mime: media.mime_type, altText: media.alt_text, isThumbnail: media.is_thumbnail })),
+    sku: item.sku, tags: item.tags, priceNote: item.price_note, currentStock: item.current_stock ?? undefined,
+    stockStatus: item.stock_status ?? undefined, lowStockThreshold: item.low_stock_threshold ?? undefined,
+    warehouseLocation: item.warehouse_location, currency: item.currency, appointmentRequired: item.appointment_required,
+    serviceDurationMinutes: item.service_duration_minutes ?? undefined, faqs: item.faq_items, customerInformation: item.customer_information,
+    readiness: item.readiness,
+  });
+  const getApiErrorMessage = (error: unknown) => {
+    if (!(error instanceof ApiError)) return "Unable to complete the catalog request.";
+    const errors = (error.data as { errors?: Record<string, string[] | string> } | null)?.errors;
+    if (errors) return Object.values(errors).flat().join(" ");
+    return error.isNetworkError ? error.message : "The catalog request could not be completed.";
+  };
+  const toCatalogItemInput = (product: CatalogProduct, categoryId = product.categoryId): CatalogItemInput => {
+    if (!categoryId) throw new Error("Choose or create a category before saving this item.");
+    const itemType = typeToApi[product.type];
+    const input: CatalogItemInput = {
+      category_id: categoryId, name: product.name.trim(), item_type: itemType, description: product.description.trim(),
+      price: product.price.trim(), currency: product.currency ?? "USD", price_note: product.priceNote ?? "",
+      availability: availabilityToApi[product.availability] ?? "available", sku: product.sku ?? "", tags: product.tags ?? [],
+      customer_information: product.customerInformation ?? "", faq_items: (product.faqs ?? []).filter((faq) => faq.trim()),
+    };
+    if (itemType === "product" || itemType === "rental") {
+      input.current_stock = product.currentStock ?? null;
+      input.low_stock_threshold = product.lowStockThreshold ?? null;
+      input.warehouse_location = product.warehouseLocation ?? "";
+    }
+    if (["service", "subscription", "membership"].includes(itemType)) {
+      input.appointment_required = product.appointmentRequired ?? false;
+      input.service_duration_minutes = product.serviceDurationMinutes ?? null;
+    }
+    return input;
+  };
   const addProduct = (type: string = "Product") => {
-    const id = `p-${Date.now()}`;
+    const id = -Date.now();
     const newItem = {
       id,
       name: `${type} ${catalogProducts.length + 1}`,
-      category: type,
+      category: categories[0]?.name ?? "",
+      categoryId: categories[0]?.id,
       type,
-      price: "$0.00",
+      price: "0.00",
       description: "",
       availability: "Available",
       image: "/assets/sample/placeholder.png",
@@ -2153,29 +2106,38 @@ export default function DashboardLayout() {
 
     setAddItemChoiceOpen(true);
   };
-  const updateCatalogProductField = (id: string, field: string, value: any) => {
+  const updateCatalogProductField = (id: number, field: string, value: any) => {
     setCatalogProducts((list) => list.map((p) => (p.id === id ? { ...p, [field]: value } : p)));
   };
-  const deleteCatalogProduct = (id: string) => {
-    setCatalogProducts((list) => list.filter((product) => product.id !== id));
+  const deleteCatalogProduct = async (id: number) => {
+    if (catalogDeletingId !== null || id < 0) return;
+    setCatalogDeletingId(id);
+    setCatalogError(null);
+    try {
+      await deleteCatalogItem(id);
+      setCatalogProducts((list) => list.filter((product) => product.id !== id));
+      if (selectedProductId === id) closeProductDrawer();
+    } catch (error) { setCatalogError(getApiErrorMessage(error)); }
+    finally { setCatalogDeletingId(null); }
   };
-  const duplicateCatalogProduct = (id: string) => {
+  const duplicateCatalogProduct = async (id: number) => {
     const original = catalogProducts.find((product) => product.id === id);
-    if (!original) return;
-    const duplicated = {
-      ...original,
-      id: `p-${Date.now()}`,
-      name: `${original.name} copy`,
-    };
-    setCatalogProducts((list) => [duplicated, ...list]);
+    if (!original || catalogSaving) return;
+    setCatalogSaving(true); setCatalogError(null);
+    try {
+      const result = await createCatalogItem(toCatalogItemInput({ ...original, name: `${original.name} copy` }));
+      setCatalogProducts((list) => [toCatalogProduct(result.data!.catalog_item), ...list]);
+    } catch (error) { setCatalogError(getApiErrorMessage(error)); }
+    finally { setCatalogSaving(false); }
   };
-  const previewCatalogProduct = (id: string) => {
+  const previewCatalogProduct = (id: number) => {
     console.log(`Preview catalogue item ${id} - placeholder`);
   };
-  const trainCatalogProductAI = (id: string) => {
+  const trainCatalogProductAI = (id: number) => {
     console.log(`Train AI for catalogue item ${id} - placeholder`);
   };
   const getCatalogueItemReadiness = (item: CatalogProduct) => {
+    if (item.readiness) return { label: item.readiness.label, isReady: item.readiness.is_ready, needsInformation: item.readiness.needs_information, missingImage: item.readiness.missing_image, missingFaq: item.readiness.missing_faq };
     const hasDescription = typeof item.description === "string" && item.description.trim().length > 0;
     const hasImages = Boolean(
       (item.image && item.image.trim().length > 0) ||
@@ -2206,53 +2168,27 @@ export default function DashboardLayout() {
     };
   };
   const getCatalogueItemReadinessLabel = (item: CatalogProduct) => getCatalogueItemReadiness(item).label;
-  const archiveCatalogProduct = (id: string) => {
-    setCatalogProducts((list) => list.filter((product) => product.id !== id));
-  };
-  const handleAddCategory = () => {
+  const archiveCatalogProduct = deleteCatalogProduct;
+  const handleAddCategory = async () => {
     const trimmedName = newCategoryName.trim();
     if (!trimmedName) return;
 
-    const normalizedName = trimmedName.toLowerCase();
-    const exists = categories.some((category) => category.name.toLowerCase() === normalizedName);
-    if (exists) {
-      setNewCategoryName("");
-      setShowAddCategoryInput(false);
-      return;
-    }
-
-    setCategories((current) => [...current, { id: `category-${Date.now()}`, name: trimmedName, productCount: 0 }]);
-    setNewCategoryName("");
-    setShowAddCategoryInput(false);
+    try { const result = await createCatalogCategory(trimmedName); setCategories((current) => [...current, result.data!.category]); setNewCategoryName(""); setShowAddCategoryInput(false); }
+    catch (error) { setCatalogError(getApiErrorMessage(error)); }
   };
-  const handleEditCategory = (categoryId: string) => {
+  const handleEditCategory = async (categoryId: number) => {
     const nextName = (categoryDrafts[categoryId] ?? "").trim();
     if (!nextName) return;
 
-    const normalizedName = nextName.toLowerCase();
-    const exists = categories.some((category) => category.id !== categoryId && category.name.toLowerCase() === normalizedName);
-    if (exists) return;
-
-    const currentCategory = categories.find((category) => category.id === categoryId);
-    if (!currentCategory) return;
-
-    setCategories((current) => current.map((category) => (category.id === categoryId ? { ...category, name: nextName } : category)));
-    setCatalogProducts((list) => list.map((product) => (product.category === currentCategory.name ? { ...product, category: nextName } : product)));
-    setEditingCategoryId(null);
-    setCategoryDrafts((current) => {
-      const { [categoryId]: _, ...rest } = current;
-      return rest;
-    });
+    try { const result = await updateCatalogCategory(categoryId, nextName); setCategories((current) => current.map((category) => category.id === categoryId ? result.data!.category : category)); setCatalogProducts((items) => items.map((item) => item.categoryId === categoryId ? { ...item, category: result.data!.category.name } : item)); setEditingCategoryId(null); }
+    catch (error) { setCatalogError(getApiErrorMessage(error)); }
   };
-  const handleDeleteCategory = (categoryId: string) => {
-    const currentCategory = categories.find((category) => category.id === categoryId);
-    if (!currentCategory) return;
-
-    setCategories((current) => current.filter((category) => category.id !== categoryId));
-    setCatalogProducts((list) => list.map((product) => (product.category === currentCategory.name ? { ...product, category: "Uncategorized" } : product)));
+  const handleDeleteCategory = async (categoryId: number) => {
+    try { await deleteCatalogCategory(categoryId); setCategories((current) => current.filter((category) => category.id !== categoryId)); }
+    catch (error) { setCatalogError(getApiErrorMessage(error)); }
   };
   type MediaAsset = {
-    id: string;
+    id: number | string;
     name: string;
     fileType: string;
     uploadDate: string;
@@ -2265,9 +2201,10 @@ export default function DashboardLayout() {
   };
 
   type CatalogProduct = {
-    id: string;
+    id: number;
     name: string;
     category: string;
+    categoryId?: number;
     type: string;
     price: string;
     description: string;
@@ -2281,10 +2218,12 @@ export default function DashboardLayout() {
     stockStatus?: string;
     lowStockThreshold?: number;
     warehouseLocation?: string;
-    currency?: string;
+    currency?: CatalogItem["currency"];
     appointmentRequired?: boolean;
+    serviceDurationMinutes?: number;
     faqs?: string[];
     customerInformation?: string;
+    readiness?: CatalogItem["readiness"];
   };
 
   const [pricingSaved, setPricingSaved] = useState(false);
@@ -2294,7 +2233,7 @@ export default function DashboardLayout() {
   const [showProductTypeDialog, setShowProductTypeDialog] = useState(false);
   const [showAddProductForm, setShowAddProductForm] = useState(false);
   const [selectedProductType, setSelectedProductType] = useState<string | null>(null);
-  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
   const [productDrawerOpen, setProductDrawerOpen] = useState(false);
   const [addItemChoiceOpen, setAddItemChoiceOpen] = useState(false);
   const [productDrawerTab, setProductDrawerTab] = useState<"general" | "pricing" | "media" | "inventory" | "ai">("general");
@@ -2304,6 +2243,30 @@ export default function DashboardLayout() {
   const productSectionIds = ["products","pricing"];
   const selectedProduct = selectedProductId ? catalogProducts.find((product) => product.id === selectedProductId) ?? null : null;
   useEffect(() => {
+    let active = true;
+    const loadCatalog = async () => {
+      setCatalogLoading(true); setCatalogError(null);
+      try {
+        const itemType = selectedCatalogueTab === "All" ? undefined : typeToApi[CATALOG_TAB_TO_PRODUCT_TYPE[selectedCatalogueTab as Exclude<CatalogueTab, "All">]];
+        const result = await getCatalog({ search: productSearch, item_type: itemType, low_stock: catalogueAttentionFilter === "low-stock" ? true : undefined, readiness: catalogueAttentionFilter === "needs-information" ? "needs_information" : undefined });
+        if (active) setCatalogProducts((result.data ?? []).map(toCatalogProduct));
+      } catch (error) { if (active) setCatalogError(getApiErrorMessage(error)); }
+      finally { if (active) setCatalogLoading(false); }
+    };
+    const timer = window.setTimeout(() => { void loadCatalog(); }, productSearch ? 250 : 0);
+    return () => { active = false; window.clearTimeout(timer); };
+  }, [productSearch, selectedCatalogueTab, catalogueAttentionFilter]);
+  useEffect(() => {
+    let active = true;
+    void (async () => {
+      setCategoriesLoading(true);
+      try { const result = await getCatalogCategories(); if (active) setCategories(result.data ?? []); }
+      catch (error) { if (active) setCatalogError(getApiErrorMessage(error)); }
+      finally { if (active) setCategoriesLoading(false); }
+    })();
+    return () => { active = false; };
+  }, []);
+  useEffect(() => {
     if (!productDrawerOpen) return;
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") closeProductDrawer();
@@ -2311,74 +2274,35 @@ export default function DashboardLayout() {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [productDrawerOpen]);
-  const createProductMediaAssets = (files: FileList | null) => {
-    if (!files) return [];
-    return Array.from(files).map((file) => ({
-      id: `asset-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
-      name: file.name,
-      fileType: file.type.split("/")[0] || "file",
-      uploadDate: new Date().toLocaleString(),
-      size: `${Math.round(file.size / 1024)} KB`,
-      url: URL.createObjectURL(file),
-      mime: file.type,
-      altText: "",
-      isThumbnail: false,
-    }));
+  const refreshCatalogMedia = async (productId: number) => {
+    const result = await getCatalogMedia(productId);
+    const mediaAssets = (result.data ?? []).map((media) => ({ id: media.id, name: media.original_name, fileType: media.mime_type.split("/")[0], uploadDate: media.created_at, size: "", url: media.file, mime: media.mime_type, altText: media.alt_text, isThumbnail: media.is_thumbnail }));
+    setCatalogProducts((items) => items.map((item) => item.id === productId ? { ...item, mediaAssets, image: mediaAssets.find((media) => media.isThumbnail)?.url ?? mediaAssets[0]?.url ?? "" } : item));
   };
-  const addProductMediaAssets = (productId: string, files: FileList | null) => {
-    if (!files) return;
-    const assets = createProductMediaAssets(files);
-    setCatalogProducts((list: CatalogProduct[]) =>
-      list.map((product) =>
-        product.id === productId ? { ...product, mediaAssets: [...assets, ...(product.mediaAssets ?? [])] } : product
-      )
-    );
+  const addProductMediaAssets = async (productId: number, files: FileList | null) => {
+    if (!files || productId < 0 || mediaUploading) return;
+    setMediaUploading(true); setCatalogError(null);
+    try { for (const file of Array.from(files)) await uploadCatalogMedia(productId, file, "", !(catalogProducts.find((item) => item.id === productId)?.mediaAssets.length)); await refreshCatalogMedia(productId); }
+    catch (error) { setCatalogError(getApiErrorMessage(error)); }
+    finally { setMediaUploading(false); }
   };
-  const updateProductMediaAssetField = (productId: string, assetId: string, field: string, value: any) => {
-    setCatalogProducts((list: CatalogProduct[]) =>
-      list.map((product) =>
-        product.id === productId
-          ? {
-              ...product,
-              mediaAssets: (product.mediaAssets ?? []).map((asset) =>
-                asset.id === assetId ? { ...asset, [field]: value } : asset
-              ),
-            }
-          : product
-      )
-    );
+  const updateProductMediaAssetField = async (productId: number, assetId: number, field: string, value: any) => {
+    if (field !== "altText" && field !== "isThumbnail") return;
+    try { await updateCatalogMedia(productId, assetId, field === "altText" ? { alt_text: value } : { is_thumbnail: value }); await refreshCatalogMedia(productId); }
+    catch (error) { setCatalogError(getApiErrorMessage(error)); }
   };
-  const deleteProductMediaAsset = (productId: string, assetId: string) => {
-    setCatalogProducts((list: CatalogProduct[]) =>
-      list.map((product) =>
-        product.id === productId
-          ? { ...product, mediaAssets: (product.mediaAssets ?? []).filter((asset) => asset.id !== assetId) }
-          : product
-      )
-    );
+  const deleteProductMediaAsset = async (productId: number, assetId: number) => {
+    try { await deleteCatalogMedia(productId, assetId); await refreshCatalogMedia(productId); }
+    catch (error) { setCatalogError(getApiErrorMessage(error)); }
   };
-  const selectProductThumbnail = (productId: string, assetId: string) => {
-    setCatalogProducts((list: CatalogProduct[]) =>
-      list.map((product) =>
-        product.id === productId
-          ? {
-              ...product,
-              mediaAssets: (product.mediaAssets ?? []).map((asset) => ({
-                ...asset,
-                isThumbnail: asset.id === assetId,
-              })),
-            }
-          : product
-      )
-    );
-  };
-  const openProductDrawer = (id: string) => {
+  const selectProductThumbnail = (productId: number, assetId: number) => updateProductMediaAssetField(productId, assetId, "isThumbnail", true);
+  const openProductDrawer = (id: number) => {
     setSelectedProductId(id);
     setProductDrawerOpen(true);
     setProductDrawerTab("general");
     setProductFormErrors({});
   };
-  const openProductDrawerToTab = (id: string, tab: "general" | "pricing" | "media" | "inventory" | "ai") => {
+  const openProductDrawerToTab = (id: number, tab: "general" | "pricing" | "media" | "inventory" | "ai") => {
     setSelectedProductId(id);
     setProductDrawerTab(tab);
     setProductDrawerOpen(true);
@@ -2404,7 +2328,7 @@ export default function DashboardLayout() {
     setSelectedProductId(null);
     setProductFormErrors({});
   };
-  const saveProductDrawer = () => {
+  const saveProductDrawer = async () => {
     if (!selectedProduct) return;
     const errors: Record<string, string> = {};
     if (!selectedProduct.name.trim()) errors.name = "Add a clear name so customers and Sokoos can identify this item.";
@@ -2413,14 +2337,28 @@ export default function DashboardLayout() {
     if (!selectedProduct.description.trim()) errors.description = "Describe what customers receive or can expect.";
     if (!selectedProduct.price.trim()) errors.price = "Add a price or pricing guidance.";
     setProductFormErrors(errors);
-    if (Object.keys(errors).length > 0) return;
-    closeProductDrawer();
+    if (Object.keys(errors).length > 0 || catalogSaving) return;
+    setCatalogSaving(true); setCatalogError(null);
+    try {
+      let categoryId = selectedProduct.categoryId;
+      const matchingCategory = categories.find((category) => category.name.trim().toLowerCase() === selectedProduct.category.trim().toLowerCase());
+      if (matchingCategory) categoryId = matchingCategory.id;
+      else {
+        const categoryResult = await createCatalogCategory(selectedProduct.category.trim());
+        categoryId = categoryResult.data!.category.id;
+        setCategories((current) => [...current, categoryResult.data!.category]);
+      }
+      const input = toCatalogItemInput(selectedProduct, categoryId);
+      const result = selectedProduct.id < 0 ? await createCatalogItem(input) : await updateCatalogItem(selectedProduct.id, input);
+      const product = toCatalogProduct(result.data!.catalog_item);
+      setCatalogProducts((items) => selectedProduct.id < 0 ? [product, ...items.filter((item) => item.id !== selectedProduct.id)] : items.map((item) => item.id === product.id ? product : item));
+      closeProductDrawer();
+    } catch (error) { setCatalogError(error instanceof Error && !(error instanceof ApiError) ? error.message : getApiErrorMessage(error)); }
+    finally { setCatalogSaving(false); }
   };
   const handleProductImageUpload = (files: FileList | null) => {
     if (!files || !selectedProduct) return;
-    const file = files[0];
-    const url = URL.createObjectURL(file);
-    updateCatalogProductField(selectedProduct.id, "image", url);
+    void addProductMediaAssets(selectedProduct.id, files);
   };
 
   const renderPricingEditor = () => (
@@ -2542,7 +2480,7 @@ export default function DashboardLayout() {
                       </div>
                       <div className="mt-4 flex items-center justify-end gap-2">
                         <button type="button" onClick={() => viewServiceAsset(asset)} className="rounded-[8px] border border-[#E5E7EB] bg-white px-2.5 py-1.5 text-xs font-semibold">Preview</button>
-                        <button type="button" onClick={() => deleteServiceAsset(asset.id)} className="rounded-[8px] border border-[#FECACA] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#B91C1C]">Delete</button>
+                        <button type="button" onClick={() => deleteServiceAsset(String(asset.id))} className="rounded-[8px] border border-[#FECACA] bg-white px-2.5 py-1.5 text-xs font-semibold text-[#B91C1C]">Delete</button>
                       </div>
                     </div>
                   </div>
@@ -2652,7 +2590,7 @@ export default function DashboardLayout() {
   const productMediaFileInputRef = useRef<HTMLInputElement | null>(null);
   const serviceFileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const handleProductMediaFiles = (productId: string, files: FileList | null) => {
+  const handleProductMediaFiles = (productId: number, files: FileList | null) => {
     if (!files || files.length === 0) return;
     addProductMediaAssets(productId, files);
     if (productMediaFileInputRef.current) productMediaFileInputRef.current.value = "";
@@ -2809,7 +2747,7 @@ export default function DashboardLayout() {
     setSelectedServiceId(id);
   };
   const addProductWithData = (data: { name: string; category: string; price: string; availability: string; image?: string; type: string }) => {
-    const id = `p-${Date.now()}`;
+    const id = -Date.now();
     const newItem = {
       id,
       name: data.name,
@@ -2824,7 +2762,7 @@ export default function DashboardLayout() {
     setCatalogProducts((p) => [newItem, ...p]);
   };
 
-  const onDrop = (e: React.DragEvent<HTMLDivElement>, productId: string) => {
+  const onDrop = (e: React.DragEvent<HTMLDivElement>, productId: number) => {
     e.preventDefault();
     addProductMediaAssets(productId, e.dataTransfer.files);
   };
@@ -7653,33 +7591,7 @@ export default function DashboardLayout() {
                               const needsInformation = (product: CatalogProduct) => !getCatalogueItemReadiness(product).isReady;
                               const lowStockCount = catalogProducts.filter(isLowStock).length;
                               const needsInformationCount = catalogProducts.filter(needsInformation).length;
-                              const filtered = catalogProducts
-                                .filter((product) => {
-                                  if (!query) return true;
-
-                                  const searchableText = [
-                                    product.name,
-                                    product.category,
-                                    product.sku ?? "",
-                                    ...(product.tags ?? []),
-                                    product.description,
-                                  ]
-                                    .filter((value): value is string => typeof value === "string")
-                                    .join(" ")
-                                    .toLowerCase();
-
-                                  return searchableText.includes(query);
-                                })
-                                .filter((product) => {
-                                  if (selectedCatalogueTab === "All") return true;
-                                  const expectedType = CATALOG_TAB_TO_PRODUCT_TYPE[selectedCatalogueTab as Exclude<CatalogueTab, "All">];
-                                  return expectedType ? product.type === expectedType : true;
-                                })
-                                .filter((product) => {
-                                  if (catalogueAttentionFilter === "low-stock") return isLowStock(product);
-                                  if (catalogueAttentionFilter === "needs-information") return needsInformation(product);
-                                  return true;
-                                });
+                              const filtered = catalogProducts;
 
                               return (
                                 <div className="rounded-[20px] border border-[#E5E7EB] bg-white p-4 shadow-[0_6px_18px_rgba(15,23,42,0.05)] sm:p-5">
@@ -7734,7 +7646,11 @@ export default function DashboardLayout() {
                                     </div>
                                   ) : null}
 
-                                  {catalogProducts.length === 0 ? (
+                                  {catalogError ? <p role="alert" className="mt-4 rounded-xl border border-[#FECACA] bg-[#FEF2F2] px-4 py-3 text-sm text-[#B91C1C]">{catalogError}</p> : null}
+
+                                  {catalogLoading ? (
+                                    <div className="mt-6 rounded-[28px] border border-dashed border-[#CBD5E1] bg-[#F8FAFB] p-8 text-center text-sm text-[#64748B]">Loading catalogue items…</div>
+                                  ) : catalogProducts.length === 0 ? (
                                     <div className="mt-6 rounded-[28px] border border-dashed border-[#CBD5E1] bg-[#F8FAFB] p-8 text-center shadow-sm">
                                       <div className="mx-auto mb-6 flex h-40 w-40 items-center justify-center rounded-[2rem] bg-white shadow-sm">
                                         <div className="flex h-24 w-24 items-center justify-center rounded-[1.75rem] bg-[#DBEAFE] text-[#1D4ED8]">
@@ -7964,12 +7880,12 @@ export default function DashboardLayout() {
                                       <label className="mt-4 block"><span className={labelClass}>Important customer-facing information</span><textarea value={selectedProduct.customerInformation ?? ""} onChange={(event) => updateCatalogProductField(selectedProduct.id, "customerInformation", event.target.value)} className="mt-2 min-h-24 w-full rounded-lg border border-[#E5E7EB] px-3 py-2 text-sm outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20" placeholder="Anything customers should know before they buy or book." /></label>
                                     </div>
 
-                                    <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5"><h3 className="text-base font-semibold text-[#111827]">Media</h3><p className="mt-1 text-sm text-[#64748B]">A clear image helps customers recognize this item.</p><div className="mt-4 flex items-center gap-4"><CatalogueItemImage src={selectedProduct.image} alt={selectedProduct.name || "Item"} className="h-16 w-16 shrink-0 rounded-xl object-cover" /><label className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg border border-[#E5E7EB] bg-white px-3 text-sm font-semibold text-[#111827] transition hover:bg-[#F8FAFB] focus-within:ring-2 focus-within:ring-[#22C55E]"><span>Upload image</span><input type="file" accept="image/*" className="sr-only" onChange={(event) => handleProductImageUpload(event.target.files)} /></label></div></div>
+                                    <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5"><h3 className="text-base font-semibold text-[#111827]">Media</h3><p className="mt-1 text-sm text-[#64748B]">A clear image helps customers recognize this item.</p><div className="mt-4 flex items-center gap-4"><CatalogueItemImage src={selectedProduct.image} alt={selectedProduct.name || "Item"} className="h-16 w-16 shrink-0 rounded-xl object-cover" /><label className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg border border-[#E5E7EB] bg-white px-3 text-sm font-semibold text-[#111827] transition hover:bg-[#F8FAFB] focus-within:ring-2 focus-within:ring-[#22C55E]"><span>{mediaUploading ? "Uploading…" : "Upload image"}</span><input type="file" accept="image/*" disabled={mediaUploading || selectedProduct.id < 0} className="sr-only" onChange={(event) => handleProductImageUpload(event.target.files)} /></label></div>{selectedProduct.id < 0 ? <p className="mt-3 text-xs text-[#64748B]">Save the item before uploading images.</p> : selectedProduct.mediaAssets.length > 0 ? <div className="mt-4 flex flex-wrap gap-3">{selectedProduct.mediaAssets.map((asset) => <div key={asset.id} className="flex items-center gap-2 rounded-lg border border-[#E5E7EB] p-2"><CatalogueItemImage src={asset.url} alt={asset.altText || asset.name} className="h-10 w-10 rounded object-cover" /><div className="flex gap-1"><button type="button" disabled={asset.isThumbnail} onClick={() => selectProductThumbnail(selectedProduct.id, Number(asset.id))} className="rounded px-2 py-1 text-xs font-semibold text-[#166534] disabled:text-[#94A3B8]">{asset.isThumbnail ? "Thumbnail" : "Set thumbnail"}</button><button type="button" onClick={() => deleteProductMediaAsset(selectedProduct.id, Number(asset.id))} className="rounded px-2 py-1 text-xs font-semibold text-[#B91C1C]">Delete</button></div></div>)}</div> : null}</div>
 
                                     <div className={`rounded-2xl border p-5 ${readiness.isReady ? "border-[#BBF7D0] bg-[#F0FDF4]" : "border-[#FDE68A] bg-[#FFFBEB]"}`}><div className="flex items-start gap-3">{readiness.isReady ? <Check className="mt-0.5 h-5 w-5 text-[#166534]" aria-hidden="true" /> : <CircleAlert className="mt-0.5 h-5 w-5 text-[#B45309]" aria-hidden="true" />}<div><h3 className="font-semibold text-[#111827]">AI readiness</h3><p className="mt-1 text-sm text-[#475569]">{readiness.isReady ? "Sokoos has the details it needs to recommend this item confidently." : `Still needed: ${readiness.label.replace("Needs ", "").toLowerCase()}.`}</p></div></div></div>
                                   </form>
                                 </div>
-                                <footer className="flex items-center justify-end gap-3 border-t border-[#E5E7EB] bg-white px-5 py-4 sm:px-7"><button type="button" onClick={closeProductDrawer} className="inline-flex h-10 items-center justify-center rounded-lg px-4 text-sm font-semibold text-[#475569] transition hover:bg-[#F1F5F9] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]">Cancel</button><button type="submit" form="catalogue-item-form" className="inline-flex h-10 items-center justify-center rounded-lg bg-[#111827] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2">Save item</button></footer>
+                                <footer className="flex items-center justify-end gap-3 border-t border-[#E5E7EB] bg-white px-5 py-4 sm:px-7"><button type="button" onClick={closeProductDrawer} disabled={catalogSaving} className="inline-flex h-10 items-center justify-center rounded-lg px-4 text-sm font-semibold text-[#475569] transition hover:bg-[#F1F5F9] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] disabled:opacity-60">Cancel</button><button type="submit" form="catalogue-item-form" disabled={catalogSaving} className="inline-flex h-10 items-center justify-center rounded-lg bg-[#111827] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 disabled:opacity-60">{catalogSaving ? "Saving…" : "Save item"}</button></footer>
                               </section>
                             </div>
                           );

@@ -133,3 +133,159 @@ export function changePassword(
     }),
   });
 }
+
+export type CatalogItemType =
+  | "product"
+  | "service"
+  | "subscription"
+  | "digital_product"
+  | "membership"
+  | "rental";
+
+export type CatalogCategory = {
+  id: number;
+  name: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type CatalogMedia = {
+  id: number;
+  file: string;
+  original_name: string;
+  mime_type: string;
+  alt_text: string;
+  is_thumbnail: boolean;
+  created_at: string;
+};
+
+export type CatalogItem = {
+  id: number;
+  category: Pick<CatalogCategory, "id" | "name">;
+  name: string;
+  item_type: CatalogItemType;
+  description: string;
+  price: string;
+  currency: "USD" | "KES" | "EUR" | "GBP";
+  price_note: string;
+  availability: "available" | "unavailable" | "by_appointment";
+  sku: string;
+  tags: string[];
+  current_stock: number | null;
+  low_stock_threshold: number | null;
+  stock_status: "in_stock" | "low_stock" | "out_of_stock" | null;
+  warehouse_location: string;
+  appointment_required: boolean;
+  service_duration_minutes: number | null;
+  customer_information: string;
+  faq_items: string[];
+  media: CatalogMedia[];
+  readiness: {
+    label: string;
+    is_ready: boolean;
+    needs_information: boolean;
+    missing_image: boolean;
+    missing_faq: boolean;
+  };
+  created_at: string;
+  updated_at: string;
+};
+
+export type CatalogItemInput = {
+  category_id: number;
+  name: string;
+  item_type: CatalogItemType;
+  description: string;
+  price: string;
+  currency: CatalogItem["currency"];
+  price_note: string;
+  availability: CatalogItem["availability"];
+  sku: string;
+  tags: string[];
+  current_stock?: number | null;
+  low_stock_threshold?: number | null;
+  warehouse_location?: string;
+  appointment_required?: boolean;
+  service_duration_minutes?: number | null;
+  customer_information: string;
+  faq_items: string[];
+};
+
+type CatalogItemMutation = { success: boolean; catalog_item: CatalogItem };
+type CatalogCategoryMutation = { success: boolean; category: CatalogCategory };
+type CatalogMediaMutation = { success: boolean; media: CatalogMedia };
+
+const authenticatedJson = (method: string, body?: unknown): RequestInit => ({
+  method,
+  headers: getAuthorizationHeader() as HeadersInit,
+  ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+});
+
+export function getCatalog(params: {
+  search?: string;
+  item_type?: CatalogItemType;
+  low_stock?: boolean;
+  readiness?: "needs_information";
+} = {}) {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== "") query.set(key, String(value));
+  });
+  return apiRequest<CatalogItem[]>(`/api/catalog/${query.size ? `?${query}` : ""}`, authenticatedJson("GET"));
+}
+
+export function getCatalogItem(itemId: number) {
+  return apiRequest<CatalogItem>(`/api/catalog/${itemId}/`, authenticatedJson("GET"));
+}
+
+export function createCatalogItem(item: CatalogItemInput) {
+  return apiRequest<CatalogItemMutation>("/api/catalog/", authenticatedJson("POST", item));
+}
+
+export function updateCatalogItem(itemId: number, item: Partial<CatalogItemInput>) {
+  return apiRequest<CatalogItemMutation>(`/api/catalog/${itemId}/`, authenticatedJson("PATCH", item));
+}
+
+export function deleteCatalogItem(itemId: number) {
+  return apiRequest<{ success: boolean; message: string }>(`/api/catalog/${itemId}/`, authenticatedJson("DELETE"));
+}
+
+export function getCatalogCategories() {
+  return apiRequest<CatalogCategory[]>("/api/catalog/categories/", authenticatedJson("GET"));
+}
+
+export function createCatalogCategory(name: string) {
+  return apiRequest<CatalogCategoryMutation>("/api/catalog/categories/", authenticatedJson("POST", { name }));
+}
+
+export function updateCatalogCategory(categoryId: number, name: string) {
+  return apiRequest<CatalogCategoryMutation>(`/api/catalog/categories/${categoryId}/`, authenticatedJson("PATCH", { name }));
+}
+
+export function deleteCatalogCategory(categoryId: number) {
+  return apiRequest<{ success: boolean; message: string }>(`/api/catalog/categories/${categoryId}/`, authenticatedJson("DELETE"));
+}
+
+export function getCatalogMedia(itemId: number) {
+  return apiRequest<CatalogMedia[]>(`/api/catalog/${itemId}/media/`, authenticatedJson("GET"));
+}
+
+export function uploadCatalogMedia(itemId: number, file: File, altText = "", isThumbnail = false) {
+  const body = new FormData();
+  body.append("file", file);
+  body.append("alt_text", altText);
+  body.append("is_thumbnail", String(isThumbnail));
+  return apiRequest<CatalogMediaMutation>(`/api/catalog/${itemId}/media/`, {
+    method: "POST",
+    headers: getAuthorizationHeader() as HeadersInit,
+    body,
+  });
+}
+
+export function updateCatalogMedia(itemId: number, mediaId: number, data: { alt_text?: string; is_thumbnail?: boolean }) {
+  return apiRequest<CatalogMediaMutation>(`/api/catalog/${itemId}/media/${mediaId}/`, authenticatedJson("PATCH", data));
+}
+
+export function deleteCatalogMedia(itemId: number, mediaId: number) {
+  return apiRequest<{ success: boolean; message: string }>(`/api/catalog/${itemId}/media/${mediaId}/`, authenticatedJson("DELETE"));
+}
