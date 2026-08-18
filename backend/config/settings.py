@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'customers',
     'conversations',
     'catalog',
+    'ai_employee',
 ]
 
 MIDDLEWARE = [
