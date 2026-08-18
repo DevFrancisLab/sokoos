@@ -6407,11 +6407,6 @@ export default function DashboardLayout() {
           )}
           {selected === "Inbox" && (
             <InboxWorkspace
-              conversations={INBOX_CONVERSATIONS}
-              messages={INBOX_MESSAGES}
-              customerProfiles={CUSTOMER_PROFILES}
-              ownerNames={OWNER_NAMES}
-              personalContacts={personalContacts}
               CARD={CARD}
               PANEL_TITLE={PANEL_TITLE}
               SECONDARY={SECONDARY}

@@ -1,43 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Bot, Calendar, ChevronRight, MessageCircle, Search, Send, User, X } from "lucide-react";
-
-type InboxConversation = {
-  id: string;
-  name: string | null;
-  phone: string;
-  message: string;
-  time: string;
-  badge: number;
-  source: string;
-  isSaved: boolean;
-  avatar: string;
-};
-
-type InboxMessage = {
-  from: "customer" | "agent";
-  text: string;
-  time: string;
-};
-
-type CustomerProfile = {
-  name: string;
-  company: string;
-  phone: string;
-  email: string;
-  location: string;
-  tags: string[];
-  status: string;
-  lastOrder: string;
-  leadStatus: string;
-  interestedProducts: string[];
-};
+import { ApiError, getConversationMessages, getConversations, markConversationRead, sendConversationMessage, updateConversation, type Conversation, type ConversationMessage } from "@/lib/api";
 
 type InboxWorkspaceProps = {
-  conversations: InboxConversation[];
-  messages: Record<string, Array<{ from: string; text: string; time: string }>>;
-  customerProfiles: Record<string, CustomerProfile>;
-  ownerNames: Record<string, string>;
-  personalContacts: Array<{ id: string; name: string; phone: string; relationship: string; notes?: string }>;
   CARD: string;
   PANEL_TITLE: string;
   SECONDARY: string;
@@ -47,14 +12,24 @@ type InboxWorkspaceProps = {
   SECTION_HEADING: string;
 };
 
-const formatConversationTime = (time: string | undefined) => time || "Unknown";
+const formatConversationTime = (value: string | null | undefined) => {
+  if (!value) return "Unknown";
+  const date = new Date(value);
+  const elapsed = Date.now() - date.getTime();
+  if (elapsed < 60_000) return "Now";
+  if (elapsed < 3_600_000) return `${Math.floor(elapsed / 60_000)}m`;
+  if (elapsed < 86_400_000) return `${Math.floor(elapsed / 3_600_000)}h`;
+  return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+};
+
+const formatMessageTime = (value: string) => new Date(value).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+const errorMessage = (error: unknown) => {
+  if (!(error instanceof ApiError)) return "Unable to complete the inbox request.";
+  const errors = (error.data as { errors?: Record<string, string[] | string> } | null)?.errors;
+  return errors ? Object.values(errors).flat().join(" ") : error.message;
+};
 
 export function InboxWorkspace({
-  conversations,
-  messages,
-  customerProfiles,
-  ownerNames,
-  personalContacts,
   CARD,
   PANEL_TITLE,
   SECONDARY,
@@ -68,62 +43,34 @@ export function InboxWorkspace({
 
   const [activeTab, setActiveTab] = useState<InboxTab>("All");
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeConversation, setActiveConversation] = useState<string>(conversations[0]?.id ?? "");
-  const [sourceOverrides, setSourceOverrides] = useState<Record<string, string>>({});
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [activeConversation, setActiveConversation] = useState<number | null>(null);
+  const [messages, setMessages] = useState<ConversationMessage[]>([]);
+  const [listLoading, setListLoading] = useState(true);
+  const [messagesLoading, setMessagesLoading] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [modeLoading, setModeLoading] = useState(false);
+  const [inboxError, setInboxError] = useState<string | null>(null);
   const [customerCollapsed, setCustomerCollapsed] = useState(false);
   const [messageInput, setMessageInput] = useState("");
   const [customerPanelFading, setCustomerPanelFading] = useState(false);
-  const [summaryGenerated, setSummaryGenerated] = useState(false);
-  const [summaryVisible, setSummaryVisible] = useState(false);
-  const [aiSummary, setAiSummary] = useState<{
-    customerIntent: string;
-    buyingProbability: number;
-    sentiment: {
-      label: string;
-      icon: string;
-      badgeClassName: string;
-    };
-    buyingSignals: string[];
-    recommendedNextAction: string;
-    suggestedReply: string[];
-    knowledgeSources: string[];
-  } | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   const activeConversationData = conversations.find((item) => item.id === activeConversation);
-  const activeCustomerProfile = customerProfiles[activeConversation as keyof typeof customerProfiles] ?? customerProfiles.c1;
-  const activeMessages = messages[activeConversation as keyof typeof messages] ?? [];
+  const activeCustomerProfile = activeConversationData?.customer ?? null;
 
   const inboxCounts = useMemo(
     () => ({
       All: conversations.length,
-      "AI Active": conversations.filter((item) => item.source === "ai_handling").length,
-      Human: conversations.filter((item) => item.source === "owner").length,
-      "Needs Reply": conversations.filter((item) => item.source === "needs_attention").length,
+      "AI Active": conversations.filter((item) => item.handling_mode === "ai").length,
+      Human: conversations.filter((item) => item.handling_mode === "human").length,
+      "Needs Reply": conversations.filter((item) => item.status === "needs_reply").length,
     }),
     [conversations],
   );
 
-  const getEffectiveSource = (id: string, original?: string) => sourceOverrides[id] ?? original ?? "owner";
-
-  const isPersonalByPhone = (phone?: string | null) => !!phone && personalContacts.some((pc) => pc.phone === phone);
-
-  const isPersonalActive = isPersonalByPhone(activeConversationData?.phone ?? null);
-  const effectiveActiveSource = isPersonalActive ? "personal" : getEffectiveSource(activeConversation, activeConversationData?.source);
-  const activeAgentName = isPersonalActive ? "Personal" : String(effectiveActiveSource).startsWith("ai") ? "Sokoos AI" : ownerNames[activeConversation] ?? "You";
-
-  const getConversationStatusBadge = (source: string, isPersonal: boolean) => {
-    if (isPersonal) {
-      return {
-        label: "Personal",
-        emoji: "👤",
-        bg: "bg-[#E0F2FE]",
-        text: "text-[#075985]",
-      };
-    }
-
-    const normalizedSource = source ?? "owner";
-    if (normalizedSource === "ai_handling" || normalizedSource === "ai_handled") {
+  const getConversationStatusBadge = (conversation?: Conversation) => {
+    if (conversation?.handling_mode === "ai") {
       return {
         label: "AI Active",
         emoji: "✨",
@@ -132,7 +79,7 @@ export function InboxWorkspace({
       };
     }
 
-    if (normalizedSource === "needs_attention") {
+    if (conversation?.status === "needs_reply") {
       return {
         label: "Needs Reply",
         emoji: "⚠️",
@@ -149,12 +96,25 @@ export function InboxWorkspace({
     };
   };
 
-  const toggleAiForActive = () => {
-    if (isPersonalActive) return;
+  const loadConversations = async () => {
+    setListLoading(true); setInboxError(null);
+    try {
+      const result = await getConversations({ search: searchQuery, handling_mode: activeTab === "AI Active" ? "ai" : activeTab === "Human" ? "human" : undefined, status: activeTab === "Needs Reply" ? "needs_reply" : undefined, ordering: "-last_message_at" });
+      const next = result.data ?? [];
+      setConversations(next);
+      setActiveConversation((current) => next.some((conversation) => conversation.id === current) ? current : next[0]?.id ?? null);
+    } catch (error) { setInboxError(errorMessage(error)); }
+    finally { setListLoading(false); }
+  };
 
-    const currentSource = getEffectiveSource(activeConversation, activeConversationData?.source);
-    const nextSource = currentSource === "ai_handling" ? "owner" : "ai_handling";
-    setSourceOverrides((s) => ({ ...s, [activeConversation]: nextSource }));
+  const toggleAiForActive = async () => {
+    if (!activeConversationData || modeLoading) return;
+    setModeLoading(true); setInboxError(null);
+    try {
+      const result = await updateConversation(activeConversationData.id, { handling_mode: activeConversationData.handling_mode === "ai" ? "human" : "ai" });
+      setConversations((items) => items.map((item) => item.id === result.data!.conversation.id ? result.data!.conversation : item));
+    } catch (error) { setInboxError(errorMessage(error)); }
+    finally { setModeLoading(false); }
   };
 
   useEffect(() => {
@@ -168,41 +128,44 @@ export function InboxWorkspace({
   }, [messageInput]);
 
   useEffect(() => {
+    const timer = window.setTimeout(() => { void loadConversations(); }, searchQuery ? 250 : 0);
+    return () => window.clearTimeout(timer);
+  }, [activeTab, searchQuery]);
+
+  useEffect(() => {
+    if (!activeConversation) { setMessages([]); return; }
+    let active = true;
+    void (async () => {
+      setMessagesLoading(true); setInboxError(null);
+      try {
+        const [messageResult, readResult] = await Promise.all([getConversationMessages(activeConversation), markConversationRead(activeConversation)]);
+        if (!active) return;
+        setMessages(messageResult.data ?? []);
+        if (readResult.data) setConversations((items) => items.map((item) => item.id === activeConversation ? readResult.data!.conversation : item));
+      } catch (error) { if (active) setInboxError(errorMessage(error)); }
+      finally { if (active) setMessagesLoading(false); }
+    })();
+    return () => { active = false; };
+  }, [activeConversation]);
+
+  useEffect(() => {
     setCustomerPanelFading(true);
     const timer = window.setTimeout(() => setCustomerPanelFading(false), 10);
     return () => window.clearTimeout(timer);
   }, [activeConversation]);
 
-  useEffect(() => {
-    const summary = {
-      customerIntent: "Looking for pricing and comparing internet plans before making a purchase.",
-      buyingProbability: 92,
-      sentiment: {
-        label: "Positive",
-        icon: "😊",
-        badgeClassName: "border-[#A7F3D0] bg-[#ECFDF5] text-[#166534]",
-      },
-      buyingSignals: [
-        "Asked for pricing",
-        "Asked about the free trial",
-        "Replied quickly",
-        "Comparing plans",
-      ],
-      recommendedNextAction:
-        "Recommend the Business Package and mention the free trial to encourage conversion.",
-      suggestedReply: [
-        "Hi Aisha 👋",
-        "Thanks for your interest.",
-        "Our Business Package includes priority support, flexible upgrades, and a free trial so you can explore the plan with confidence.",
-      ],
-      knowledgeSources: ["Pricing Catalog", "FAQ", "Business Policies", "Product Database"],
-    };
-
-    setAiSummary(summary);
-    setSummaryGenerated(true);
-    const timer = window.setTimeout(() => setSummaryVisible(true), 150);
-    return () => window.clearTimeout(timer);
-  }, [activeConversation]);
+  const sendMessage = async () => {
+    const body = messageInput.trim();
+    if (!body || !activeConversation || sending) return;
+    setSending(true); setInboxError(null);
+    try {
+      const result = await sendConversationMessage(activeConversation, body);
+      setMessages((items) => [...items, result.data!.message]);
+      setMessageInput("");
+      await loadConversations();
+    } catch (error) { setInboxError(errorMessage(error)); }
+    finally { setSending(false); }
+  };
 
   return (
     <div className={`grid gap-6 px-6 py-6 transition-all duration-300 ease-out items-stretch h-full grid-cols-1 ${customerCollapsed ? "md:grid-cols-[320px_1fr]" : "md:grid-cols-[320px_1fr_minmax(330px,360px)]"}`}>
@@ -253,25 +216,12 @@ export function InboxWorkspace({
           </div>
 
           <div className="flex-1 min-h-0 space-y-1.5 overflow-y-auto pr-2 scroll-smooth custom-scrollbar">
-            {conversations
-              .filter((conversation) => {
-                const src = sourceOverrides[conversation.id] ?? conversation.source;
-                if (activeTab === "Needs Reply") return src === "needs_attention";
-                if (activeTab === "AI Active") return src === "ai_handling";
-                if (activeTab === "Human") return src === "owner";
-                return true;
-              })
-              .filter(
-                (conversation) =>
-                  (conversation.name ?? "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-                  (conversation.phone ?? "").toLowerCase().includes(searchQuery.toLowerCase()) ||
-                  conversation.message.toLowerCase().includes(searchQuery.toLowerCase()),
-              )
-              .map((conversation) => {
+            {inboxError ? <p role="alert" className="rounded-xl border border-[#FECACA] bg-[#FEF2F2] p-3 text-sm text-[#B91C1C]">{inboxError}</p> : null}
+            {listLoading ? <p className="p-4 text-center text-sm text-[#64748B]">Loading conversations…</p> : conversations.length === 0 ? <p className="p-4 text-center text-sm text-[#64748B]">{searchQuery || activeTab !== "All" ? "No conversations found." : "No conversations yet."}</p> : conversations.map((conversation) => {
                 const active = conversation.id === activeConversation;
-                const effectiveSourceRaw = sourceOverrides[conversation.id] ?? conversation.source;
-                const isPersonal = personalContacts.some((pc) => pc.phone === conversation.phone);
-                const effectiveSource = isPersonal ? "personal" : effectiveSourceRaw;
+                const customerName = conversation.customer?.name || conversation.participant_address || "Unknown contact";
+                const avatar = customerName.split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join("").toUpperCase() || "?";
+                const preview = conversation.latest_message?.body || "No messages yet";
 
                 return (
                   <button
@@ -287,34 +237,28 @@ export function InboxWorkspace({
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3 min-w-0 flex-1">
                         <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#E5E7EB] to-[#D1D5DB] text-sm font-semibold text-[#64748B]">
-                          {conversation.avatar}
+                          {avatar}
                         </div>
                         <div className="min-w-0 flex-1 space-y-1">
-                          {conversation.isSaved && conversation.name ? (
-                            <p className="text-[16px] font-semibold truncate" title={conversation.name}>{conversation.name}</p>
-                          ) : (
-                            <p className="text-[16px] font-semibold truncate" title={conversation.phone ?? "Unknown Customer"}>
-                              {conversation.phone ?? "Unknown Customer"}
-                            </p>
-                          )}
+                          <p className="text-[16px] font-semibold truncate" title={customerName}>{customerName}</p>
                         </div>
                       </div>
 
                       <div className="flex items-start gap-2 flex-shrink-0">
-                        {conversation.badge > 0 ? (
+                        {conversation.unread_count > 0 ? (
                           <span className="inline-flex min-w-[18px] h-4 items-center justify-center rounded-full bg-[#22C55E] text-white text-[10px] font-semibold transform-gpu transition duration-200 ease-out px-2">
-                            {conversation.badge}
+                            {conversation.unread_count}
                           </span>
                         ) : null}
                         <span className={`${TIME_LABEL} whitespace-nowrap text-[11px] text-[#94A3B8]`}>
-                          {formatConversationTime(conversation.time)}
+                          {formatConversationTime(conversation.last_message_at)}
                         </span>
                       </div>
                     </div>
 
                     <div className="min-w-0">
                       {(() => {
-                        const badge = getConversationStatusBadge(effectiveSource, isPersonal);
+                        const badge = getConversationStatusBadge(conversation);
                         return (
                           <span className={`${STATUS_CHIP} ${badge.bg} ${badge.text} text-xs px-2 py-1`}>
                             {badge.emoji} {badge.label}
@@ -323,8 +267,8 @@ export function InboxWorkspace({
                       })()}
                     </div>
 
-                    <p className={`${SECONDARY} text-[14px] leading-5 min-w-0 truncate`} title={conversation.message}>
-                      {conversation.message}
+                    <p className={`${SECONDARY} text-[14px] leading-5 min-w-0 truncate`} title={preview}>
+                      {preview}
                     </p>
                   </button>
                 );
@@ -339,13 +283,13 @@ export function InboxWorkspace({
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0 flex-1">
                 <h2 className={`${CUSTOMER_NAME} truncate`}>
-                  {conversations.find((item) => item.id === activeConversation)?.name}
+                  {activeCustomerProfile?.name || activeConversationData?.participant_address || "Unknown contact"}
                 </h2>
                 <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-[#64748B]">
-                  <span className="truncate">{activeConversationData?.phone ?? "Unknown phone"}</span>
+                  <span className="truncate">{activeCustomerProfile?.phone || activeConversationData?.participant_address || "Unknown contact"}</span>
                   <span className="text-[#94A3B8]">•</span>
                   {(() => {
-                    const badge = getConversationStatusBadge(effectiveActiveSource, isPersonalActive);
+                    const badge = getConversationStatusBadge(activeConversationData);
                     return (
                       <span className={`${badge.bg} ${badge.text} rounded-full px-2 py-0.5 text-[11px] font-semibold inline-flex items-center gap-1`}>
                         {badge.emoji} {badge.label}
@@ -353,31 +297,22 @@ export function InboxWorkspace({
                     );
                   })()}
                 </div>
-                <div className="mt-2 flex flex-col gap-2 text-sm text-[#475569]">
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="font-medium text-[#111827]">AI Confidence</span>
-                    <span className="text-[#16A34A] font-semibold">94%</span>
-                  </div>
-                  <div className="h-2 w-full overflow-hidden rounded-full bg-[#DCFCE7]">
-                    <div className="h-full w-[94%] rounded-full bg-[#22C55E]" />
-                  </div>
-                </div>
               </div>
 
               <div className="flex items-center gap-2 flex-shrink-0">
                 <button
                   type="button"
                   onClick={toggleAiForActive}
-                  disabled={isPersonalActive}
+                  disabled={!activeConversationData || modeLoading}
                   aria-label="AI Assist"
                   className={`inline-flex h-9 rounded-full border px-3.5 text-[10px] font-semibold items-center justify-center transition-all duration-150 ease-out active:scale-[0.98] ${
-                    isPersonalActive
+                    !activeConversationData || modeLoading
                       ? "border-[#E5E7EB] bg-white text-[#9CA3AF] cursor-not-allowed"
                       : "border-[#22C55E] bg-white text-[#166534] hover:bg-[#ECFDF5]"
                   }`}
-                  title={isPersonalActive ? "Cannot toggle mode for personal contacts" : "AI Assist"}
+                  title="Toggle AI Assist"
                 >
-                  ✨ AI Assist
+                  {modeLoading ? "Updating…" : `✨ AI Assist${activeConversationData?.handling_mode === "ai" ? " On" : ""}`}
                 </button>
                 {customerCollapsed && (
                   <button
@@ -397,19 +332,14 @@ export function InboxWorkspace({
 
         <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar px-6 pt-3 pb-6 flex flex-col justify-end bg-[#F8FCF7]">
           <div className="space-y-5 flex flex-col">
-            {activeMessages.map((message, index) => {
-              const originalWasAi = String(activeConversationData?.source).startsWith("ai");
-              if (message.from === "agent" && originalWasAi && !String(effectiveActiveSource).startsWith("ai")) {
-                return null;
-              }
-
-              const isAgent = message.from === "agent";
-              const isAi = isAgent && String(effectiveActiveSource).startsWith("ai");
-              const senderLabel = isAi ? "Sokoos AI" : activeAgentName;
+            {messagesLoading ? <p className="text-center text-sm text-[#64748B]">Loading messages…</p> : messages.map((message) => {
+              const isCustomer = message.sender_type === "customer";
+              const isAi = message.sender_type === "ai";
+              const senderLabel = isAi ? "Sokoos AI" : "Human operator";
 
               return (
-                <div key={`${message.time}-${index}`} className="transition-all duration-150 ease-out transition-opacity">
-                  {isAgent ? (
+                <div key={message.id} className="transition-all duration-150 ease-out transition-opacity">
+                  {!isCustomer ? (
                     <div className="flex items-center gap-1 text-[10px] font-semibold text-[#94A3B8] mb-0.5">
                       {isAi ? (
                         <>
@@ -423,18 +353,18 @@ export function InboxWorkspace({
                       )}
                     </div>
                   ) : null}
-                  <div className={`flex ${isAgent ? "justify-start" : "justify-end"}`}>
+                  <div className={`flex ${isCustomer ? "justify-end" : "justify-start"}`}>
                     <div
                       className={`rounded-[28px] px-3 py-2 text-sm break-words max-w-[70%] ${
-                        isAgent
+                        !isCustomer
                           ? "bg-[#F0FDF4] text-[#166534] border border-[#DCFCE7]"
                           : "bg-white text-[#111827] border border-[#E5E7EB]"
                       } transition-all duration-150 ease-out transition-shadow transform-gpu`}
                     >
                       <div className="flex flex-col gap-2">
-                        <p className="leading-relaxed text-sm">{message.text}</p>
-                        <div className={`self-end text-[9px] ${isAgent ? "text-[#16A34A]/30" : "text-[#64748B]/30"} font-normal`}>
-                          {message.time}
+                        <p className="leading-relaxed text-sm">{message.body}</p>
+                        <div className={`self-end text-[9px] ${!isCustomer ? "text-[#16A34A]/30" : "text-[#64748B]/30"} font-normal`}>
+                          {formatMessageTime(message.created_at)}
                         </div>
                       </div>
                     </div>
@@ -458,9 +388,11 @@ export function InboxWorkspace({
             />
             <button
               type="button"
-              className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white transition duration-150 ease-out transform hover:bg-[#16A34A] active:scale-95"
+              onClick={() => { void sendMessage(); }}
+              disabled={!activeConversation || !messageInput.trim() || sending}
+              className="inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white transition duration-150 ease-out transform hover:bg-[#16A34A] active:scale-95 disabled:opacity-60"
             >
-              <Send className="h-4 w-4" />
+              {sending ? <span className="text-[10px]">…</span> : <Send className="h-4 w-4" />}
             </button>
           </div>
         </div>
@@ -472,14 +404,14 @@ export function InboxWorkspace({
         >
           <div className="flex items-start justify-between gap-3 shrink-0 px-5 py-4 border-b border-[#ECECEC]">
             <div>
-              <h2 className={`${CUSTOMER_NAME} mt-1`}>{activeCustomerProfile.name}</h2>
-              <p className={`${SECONDARY} mt-2`}>{activeCustomerProfile.company}</p>
-              <div className="mt-3 inline-flex items-center gap-2">
+              <h2 className={`${CUSTOMER_NAME} mt-1`}>{activeCustomerProfile?.name || "Unknown contact"}</h2>
+              <p className={`${SECONDARY} mt-2`}>{activeCustomerProfile?.company || activeConversationData?.participant_address || "No customer profile linked"}</p>
+              {activeCustomerProfile ? <div className="mt-3 inline-flex items-center gap-2">
                 <span className="inline-flex h-3.5 w-3.5 shrink-0 rounded-full bg-[#22C55E]" />
                 <span className={`${STATUS_CHIP} bg-[#ECFDF5] text-[#166534] border border-[#D1FAE5]`}>
-                  {activeCustomerProfile.leadStatus}
+                  {activeCustomerProfile.lead_status}
                 </span>
-              </div>
+              </div> : null}
             </div>
             <button
               type="button"
@@ -492,93 +424,7 @@ export function InboxWorkspace({
             </button>
           </div>
 
-          <div className="flex-1 min-h-0 overflow-hidden px-5 py-4">
-            {summaryGenerated ? (
-              <div
-                className={`h-full overflow-y-auto pr-2 transition-all duration-300 ease-out ${summaryVisible ? "opacity-100" : "opacity-0"} [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-[#F3F4F6] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[#CBD5E1] [&::-webkit-scrollbar-thumb:hover]:bg-[#22C55E]`}
-                style={{ scrollbarWidth: "thin", scrollbarColor: "#CBD5E1 transparent" }}
-              >
-                <div className="space-y-4 pb-2">
-                  <div className="rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <p className={SECTION_HEADING}>✨ AI Summary</p>
-                        <h3 className="mt-2 text-[18px] font-semibold text-[#111827]">AI Employee snapshot</h3>
-                      </div>
-                      <span className="rounded-full bg-[#ECFDF5] px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#16A34A]">
-                        Mock data
-                      </span>
-                    </div>
-                    <div className="mt-4 h-px bg-[#E5E7EB]/80" />
-                  </div>
-
-                  <div className="rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
-                    <p className={SECTION_HEADING}>Customer Intent</p>
-                    <p className="mt-2 text-[15px] leading-6 text-[#475569]">{aiSummary?.customerIntent}</p>
-                  </div>
-
-                  <div className="rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
-                    <p className={SECTION_HEADING}>Buying Probability</p>
-                    <div className="mt-3 flex items-center gap-3">
-                      <p className="text-[24px] font-semibold text-[#111827]">{aiSummary?.buyingProbability}%</p>
-                      <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-[#E5E7EB]">
-                        <div className="h-full rounded-full bg-[#22C55E]" style={{ width: `${aiSummary?.buyingProbability ?? 0}%` }} />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
-                    <p className={SECTION_HEADING}>Customer Sentiment</p>
-                    <div className="mt-3">
-                      <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-[13px] font-semibold ${aiSummary?.sentiment.badgeClassName}`}>
-                        <span>{aiSummary?.sentiment.icon}</span>
-                        {aiSummary?.sentiment.label}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
-                    <p className={SECTION_HEADING}>Buying Signals</p>
-                    <ul className="mt-3 space-y-2 text-[14px] leading-6 text-[#475569]">
-                      {aiSummary?.buyingSignals.map((signal) => (
-                        <li key={signal} className="flex items-start gap-2">
-                          <span className="mt-1 h-2 w-2 rounded-full bg-[#22C55E]" />
-                          <span>{signal}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  <div className="rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
-                    <p className={SECTION_HEADING}>Recommended Next Action</p>
-                    <p className="mt-3 text-[15px] leading-6 text-[#475569]">{aiSummary?.recommendedNextAction}</p>
-                  </div>
-
-                  <div className="rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
-                    <p className={SECTION_HEADING}>Suggested Reply</p>
-                    <div className="mt-3 space-y-2 text-[14px] leading-6 text-[#475569]">
-                      {aiSummary?.suggestedReply.map((line) => (
-                        <p key={line}>{line}</p>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="rounded-[24px] border border-[#EEF2F6] bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)]">
-                    <p className={SECTION_HEADING}>Knowledge Sources</p>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {aiSummary?.knowledgeSources.map((source) => (
-                        <span key={source} className="rounded-full bg-[#F3F4F6] px-2.5 py-1 text-[11px] font-semibold text-[#475569]">
-                          {source}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="flex h-full items-center justify-center text-sm text-[#64748B]">Preparing AI summary…</div>
-            )}
-          </div>
+          <div className="flex-1 min-h-0 overflow-hidden px-5 py-4"><div className="rounded-[24px] border border-[#EEF2F6] bg-white p-5 text-sm leading-6 text-[#64748B] shadow-[0_10px_30px_rgba(15,23,42,0.06)]"><p className={SECTION_HEADING}>AI Summary</p><p className="mt-2">AI insights and suggested replies are not available in this phase.</p></div></div>
         </section>
       )}
     </div>

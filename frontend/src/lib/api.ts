@@ -289,3 +289,77 @@ export function updateCatalogMedia(itemId: number, mediaId: number, data: { alt_
 export function deleteCatalogMedia(itemId: number, mediaId: number) {
   return apiRequest<{ success: boolean; message: string }>(`/api/catalog/${itemId}/media/${mediaId}/`, authenticatedJson("DELETE"));
 }
+
+export type ConversationChannel = "whatsapp" | "website" | "email" | "sms" | "facebook" | "instagram" | "telegram";
+export type ConversationStatus = "active" | "needs_reply" | "resolved";
+export type ConversationHandlingMode = "ai" | "human";
+
+export type ConversationCustomer = {
+  id: number;
+  name: string;
+  phone: string;
+  email: string;
+  company: string;
+  location: string;
+  relationship: string;
+  lead_status: string;
+};
+
+export type ConversationMessage = {
+  id: number;
+  sender_type: "customer" | "human" | "ai";
+  body: string;
+  created_at: string;
+};
+
+export type Conversation = {
+  id: number;
+  customer: ConversationCustomer | null;
+  channel: ConversationChannel;
+  participant_address: string;
+  status: ConversationStatus;
+  handling_mode: ConversationHandlingMode;
+  unread_count: number;
+  last_message_at: string | null;
+  latest_message: ConversationMessage | null;
+  created_at: string;
+  updated_at: string;
+};
+
+type ConversationMutation = { success: boolean; conversation: Conversation };
+type MessageMutation = { success: boolean; message: ConversationMessage };
+
+export function getConversations(params: {
+  search?: string;
+  status?: ConversationStatus;
+  handling_mode?: ConversationHandlingMode;
+  channel?: ConversationChannel;
+  unread?: boolean;
+  ordering?: "last_message_at" | "-last_message_at" | "created_at" | "-created_at";
+} = {}) {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== "") query.set(key, String(value));
+  });
+  return apiRequest<Conversation[]>(`/api/conversations/${query.size ? `?${query}` : ""}`, authenticatedJson("GET"));
+}
+
+export function getConversation(conversationId: number) {
+  return apiRequest<Conversation>(`/api/conversations/${conversationId}/`, authenticatedJson("GET"));
+}
+
+export function getConversationMessages(conversationId: number) {
+  return apiRequest<ConversationMessage[]>(`/api/conversations/${conversationId}/messages/`, authenticatedJson("GET"));
+}
+
+export function sendConversationMessage(conversationId: number, body: string) {
+  return apiRequest<MessageMutation>(`/api/conversations/${conversationId}/messages/`, authenticatedJson("POST", { body }));
+}
+
+export function updateConversation(conversationId: number, data: Partial<Pick<Conversation, "status" | "handling_mode">>) {
+  return apiRequest<ConversationMutation>(`/api/conversations/${conversationId}/`, authenticatedJson("PATCH", data));
+}
+
+export function markConversationRead(conversationId: number) {
+  return apiRequest<ConversationMutation>(`/api/conversations/${conversationId}/read/`, authenticatedJson("POST"));
+}
