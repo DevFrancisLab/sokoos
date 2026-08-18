@@ -1804,7 +1804,6 @@ export default function DashboardLayout() {
     progress?: number;
   };
   type KnowledgeSource = "company" | "faqs" | "documents" | "website";
-  type WebsiteScanSummary = { pages: number; products: number; faqs: number; contact: number; policies: number; blog: number };
   type KnowledgeTrainingState = {
     companyInformation: {
       vision: string;
@@ -1828,7 +1827,7 @@ export default function DashboardLayout() {
     };
     faqs: Array<{ id: string; question: string; answer: string; category?: string }>;
     documents: KnowledgeDocument[];
-    website: { websiteUrl: string; instructions: string; status: "not_connected" | "ready" | "syncing" | "complete"; scanSummary: WebsiteScanSummary | null };
+    website: { websiteUrl: string; instructions: string; status: "not_connected" | "ready" };
     selectedSources: KnowledgeSource[];
     completedLessons: number[];
     currentLesson: number;
@@ -1837,7 +1836,7 @@ export default function DashboardLayout() {
     companyInformation: { vision: "", mission: "", shortTermGoals: "", longTermGoals: "", targetCustomers: "", customerProblems: "", primaryMarket: "", customerSegments: "", differentiators: "", competitiveAdvantages: "", keySellingPoints: "", competitors: "", preferredBrandTones: [], wordsToUse: "", wordsToAvoid: "", brandGuidance: "", importantThingsToKnow: "", additionalNotes: "" },
     faqs: [],
     documents: [],
-    website: { websiteUrl: "", instructions: "", status: "not_connected", scanSummary: null },
+    website: { websiteUrl: "", instructions: "", status: "not_connected" },
     selectedSources: [],
     completedLessons: [],
     currentLesson: 0,
@@ -1850,6 +1849,7 @@ export default function DashboardLayout() {
   const [documentUploading, setDocumentUploading] = useState(false);
   const [websiteSaving, setWebsiteSaving] = useState(false);
   const [deletingSourceId, setDeletingSourceId] = useState<number | null>(null);
+  const knowledgeRequestId = useRef(0);
   const resolveKnowledgeState = <T,>(next: SetStateAction<T>, current: T) => typeof next === "function" ? (next as (value: T) => T)(current) : next;
   const activeKnowledgeStep = knowledgeTraining.currentLesson;
   const setActiveKnowledgeStep = (next: SetStateAction<number>) => setKnowledgeTraining((current) => ({ ...current, currentLesson: resolveKnowledgeState(next, current.currentLesson) }));
@@ -3641,11 +3641,6 @@ export default function DashboardLayout() {
       : previewQuestion?.toLowerCase().includes("hello")
         ? welcomeMessage || previewLanguageCopy.defaultWelcome
         : previewBusinessContext;
-  const [knowledgeProducts, setKnowledgeProducts] = useState([
-    { id: "kp1", name: "10 Mbps Internet", price: "KES 2,500/month" },
-    { id: "kp2", name: "20 Mbps Internet", price: "KES 3,500/month" },
-    { id: "kp3", name: "Business Package", price: "KES 5,000/month" },
-  ]);
   const [personalContacts, setPersonalContacts] = useState([
     {
       id: "pc1",
@@ -3686,14 +3681,15 @@ export default function DashboardLayout() {
       ...current,
       faqs: sources.filter((source) => source.kind === "faq").map((source) => ({ id: String(source.id), question: source.faq_question, answer: source.faq_answer, category: source.faq_category || undefined })),
       documents: sources.filter((source) => source.kind === "document").map((source) => ({ id: String(source.id), name: source.original_name || source.title, size: source.file_size ? `${source.file_size >= 1024 * 1024 ? `${(source.file_size / (1024 * 1024)).toFixed(1)} MB` : `${Math.max(1, Math.round(source.file_size / 1024))} KB`}` : "", uploaded: source.created_at, status: "Uploaded", extracted: "Stored", kind: (source.original_name || source.title).split(".").pop()?.toUpperCase() || "FILE" })),
-      website: website ? { websiteUrl: website.url, instructions: website.instructions, status: "ready", scanSummary: null } : { websiteUrl: "", instructions: "", status: "not_connected", scanSummary: null },
+      website: website ? { websiteUrl: website.url, instructions: website.instructions, status: "ready" } : { websiteUrl: "", instructions: "", status: "not_connected" },
     }));
   };
   const refreshKnowledgeSources = async () => {
+    const requestId = ++knowledgeRequestId.current;
     setKnowledgeLoading(true); setKnowledgeError(null);
-    try { const result = await getKnowledgeSources(); if (result.data) applyKnowledgeSources(result.data); }
-    catch (error) { setKnowledgeError(getApiErrorMessage(error)); }
-    finally { setKnowledgeLoading(false); }
+    try { const result = await getKnowledgeSources(); if (requestId === knowledgeRequestId.current && result.data) applyKnowledgeSources(result.data); }
+    catch (error) { if (requestId === knowledgeRequestId.current) setKnowledgeError(getApiErrorMessage(error)); }
+    finally { if (requestId === knowledgeRequestId.current) setKnowledgeLoading(false); }
   };
   useEffect(() => { void refreshKnowledgeSources(); }, []);
   const handleSaveChanges = async () => {
@@ -3713,16 +3709,7 @@ export default function DashboardLayout() {
   const saveIdentityAndContinue = () => {
     if (identitySaveState === "saving" || !identityFormIsValid) return;
 
-    const progressPayload = {
-      step: activeIdentityStep,
-      completed: completedIdentitySteps.includes(0) ? completedIdentitySteps : [...completedIdentitySteps, 0],
-      launched: aiEmployeeLaunched,
-      scrollY: typeof window !== "undefined" ? window.scrollY : 0,
-      businessInfo: normalizeBusinessInfo(businessInfo),
-      businessIndustry: businessIndustryValue,
-      businessModels: businessModelSelections,
-      businessHours,
-    };
+    const progressPayload = { step: activeIdentityStep, completed: completedIdentitySteps.includes(0) ? completedIdentitySteps : [...completedIdentitySteps, 0], launched: aiEmployeeLaunched, scrollY: typeof window !== "undefined" ? window.scrollY : 0 };
 
     setIdentitySaveState("saving");
     if (typeof window !== "undefined") {
@@ -3875,17 +3862,6 @@ export default function DashboardLayout() {
     privacy: "",
     cancellation: "",
   });
-  const [knowledgeLibraryItems, setKnowledgeLibraryItems] = useState([
-    { id: "knowledge-faq-1", type: "FAQ", title: "Do you offer installation?", summary: "Yes, installation costs KES 2,000.", source: "Customer FAQ", category: "Support", tags: ["installation", "setup"], status: "Ready", detail: "Question · Answer" },
-    { id: "knowledge-product-1", type: "Product", title: "10 Mbps Internet", summary: "Reliable home internet for everyday browsing and streaming.", source: "Product catalogue", category: "Internet plans", tags: ["popular", "home"], status: "Ready", detail: "KES 2,500/month · 2 images" },
-    { id: "knowledge-policy-1", type: "Policy", title: "Cancellation policy", summary: "Customers can cancel with 48 hours notice before the next billing cycle.", source: "Business policy", category: "Account", tags: ["billing"], status: "Ready", detail: "Priority · High" },
-    { id: "knowledge-page-1", type: "Website Page", title: "Home internet plans", summary: "Packages, coverage details, and installation information imported from your website.", source: "sokoos.com/plans", category: "Website", tags: ["website", "pricing"], status: "Synced", detail: "Last synced · Just now" },
-  ]);
-  const [knowledgeSearch, setKnowledgeSearch] = useState("");
-  const [knowledgeFilter, setKnowledgeFilter] = useState("All");
-  const [selectedKnowledgeItems, setSelectedKnowledgeItems] = useState<string[]>([]);
-  const [editingKnowledgeId, setEditingKnowledgeId] = useState<string | null>(null);
-  const [previewKnowledgeId, setPreviewKnowledgeId] = useState<string | null>(null);
   const websiteImportUrl = knowledgeTraining.website.websiteUrl;
   const [websiteUrlDraft, setWebsiteUrlDraft] = useState("");
   const [websiteValidationAttempted, setWebsiteValidationAttempted] = useState(false);
@@ -3898,20 +3874,6 @@ export default function DashboardLayout() {
       return false;
     }
   };
-  const [websiteImportProgress, setWebsiteImportProgress] = useState(100);
-  const websiteImportStatus = knowledgeTraining.website.status === "not_connected" ? "ready" : knowledgeTraining.website.status;
-  const setWebsiteImportStatus = (status: "ready" | "syncing" | "complete") => setKnowledgeTraining((current) => ({ ...current, website: { ...current.website, status } }));
-  const [websiteImportHistory, setWebsiteImportHistory] = useState([
-    { id: "website-sync-1", time: "Today, 10:42 AM", result: "18 pages scanned · 42 knowledge items updated" },
-    { id: "website-sync-2", time: "Jul 24, 2:18 PM", result: "16 pages scanned · 38 knowledge items updated" },
-  ]);
-  const [aiLearningTimeline, setAiLearningTimeline] = useState([
-    { id: "learning-1", day: "Today", title: "Imported website", detail: "42 knowledge items learned from 18 pages", Icon: Globe },
-    { id: "learning-2", day: "Yesterday", title: "Uploaded product catalogue", detail: "37 products and current pricing added", Icon: Package },
-    { id: "learning-3", day: "Yesterday", title: "Added FAQ", detail: "Installation and support answers are ready", Icon: MessageCircle },
-    { id: "learning-4", day: "2 days ago", title: "Updated business hours", detail: "Availability expectations refreshed", Icon: Clock },
-    { id: "learning-5", day: "3 days ago", title: "Added refund policy", detail: "Customer policy guidance added", Icon: Shield },
-  ]);
   const knowledgeDocumentInputRef = useRef<HTMLInputElement>(null);
   const knowledgeDocuments = knowledgeTraining.documents;
   const setKnowledgeDocuments = (next: SetStateAction<KnowledgeDocument[]>) => setKnowledgeTraining((current) => ({ ...current, documents: resolveKnowledgeState(next, current.documents) }));
@@ -3942,9 +3904,6 @@ export default function DashboardLayout() {
     } catch (error) { setKnowledgeError(getApiErrorMessage(error)); }
     finally { setDocumentUploading(false); }
   };
-  const websiteScanSummary = knowledgeTraining.website.scanSummary;
-  const setWebsiteScanSummary = (summary: WebsiteScanSummary | null) => setKnowledgeTraining((current) => ({ ...current, website: { ...current.website, scanSummary: summary } }));
-
   const [testQuery, setTestQuery] = useState("");
   const [testConversations, setTestConversations] = useState<Array<{ id: string; user: string; ai?: string; source?: string }>>([]);
   const handleTestAsk = (question: string) => {
@@ -3957,7 +3916,7 @@ export default function DashboardLayout() {
       const sources = [] as string[];
       if (faqItems.length > 0) sources.push("FAQ");
       if (knowledgeDocuments.length > 0) sources.push("Document");
-      if (websiteScanSummary && websiteScanSummary.pages > 0) sources.push("Website");
+      if (knowledgeTraining.website.websiteUrl) sources.push("Website");
       if (businessInfo.name) sources.push("Company Information");
       const source = sources.length ? sources[Math.floor(Math.random() * sources.length)] : "Company Information";
       const ai = question.toLowerCase().includes("install") || question.toLowerCase().includes("installation") ? `Installation costs KES 2,000 according to your uploaded pricing document.` : `I can help with that — here's a suggested reply based on your ${source.toLowerCase()} knowledge.`;
@@ -4071,37 +4030,6 @@ export default function DashboardLayout() {
   const currentTrainingStepNumber = activeWorkspaceSection === "Knowledge Hub" ? activeKnowledgeStep + 1 : activeIdentityStep + 1;
   const aiReadinessLabel = aiConfigurationReadiness?.is_configured ? "Configured" : "Needs setup";
   const totalProductMediaAssets = catalogProducts.reduce((count, product) => count + (product.mediaAssets?.length ?? 0), 0);
-  const knowledgeSourceSummary = [
-    { label: "Website", value: websiteScanSummary?.pages ? `${websiteScanSummary.pages} pages` : "Not connected", Icon: Globe, ready: Boolean(websiteScanSummary?.pages) },
-    { label: "FAQ", value: `${faqItems.length} items`, Icon: MessageCircle, ready: faqItems.length > 0 },
-    { label: "Products", value: `${knowledgeProducts.length} products`, Icon: Package, ready: knowledgeProducts.length > 0 },
-    { label: "Policies", value: `${Object.values(policies).filter(Boolean).length}`, Icon: Shield, ready: Object.values(policies).some(Boolean) },
-    { label: "Documents", value: `${knowledgeDocuments.length}`, Icon: Paperclip, ready: knowledgeDocuments.length > 0 },
-    { label: "Images", value: `${totalProductMediaAssets} files`, Icon: Image, ready: totalProductMediaAssets > 0 },
-    { label: "Catalogues", value: `${CATALOG_ITEMS.length}`, Icon: BookOpen, ready: CATALOG_ITEMS.length > 0 },
-  ];
-  const knowledgeCoverage = Math.round((knowledgeSourceSummary.filter((source) => source.ready).length / knowledgeSourceSummary.length) * 100);
-  const knowledgeConfidence = Math.min(98, 62 + knowledgeCoverage / 3);
-  const estimatedAnswerAccuracy = Math.min(97, 68 + knowledgeCoverage / 4);
-  const knowledgeHealthChecks = [
-    { label: "Business hours", complete: Boolean(businessHours) },
-    { label: "Refund policy", complete: Boolean(policies.returnPolicy) },
-    { label: "Warranty", complete: false },
-    { label: "Payment methods", complete: Boolean(businessInfo.paymentMethods) },
-    { label: "Service areas", complete: Boolean(businessInfo.serviceAreas) },
-  ];
-  const missingKnowledgeInformation = knowledgeHealthChecks.filter((check) => !check.complete);
-  const knowledgeCompleteness = Math.round((knowledgeHealthChecks.filter((check) => check.complete).length / knowledgeHealthChecks.length) * 100);
-  const filteredKnowledgeLibraryItems = knowledgeLibraryItems.filter((item) => (knowledgeFilter === "All" || item.type === knowledgeFilter) && `${item.title} ${item.summary} ${item.source} ${item.category} ${item.tags.join(" ")}`.toLowerCase().includes(knowledgeSearch.trim().toLowerCase()));
-  const knowledgeEmptyState = knowledgeFilter === "FAQ"
-    ? { title: "No FAQs yet", description: "Teach your AI the questions customers ask most.", action: "Add FAQ" }
-    : knowledgeFilter === "Product"
-      ? { title: "No products yet", description: "Upload your first product catalogue so your AI can recommend the right offer.", action: "Upload catalogue" }
-      : knowledgeFilter === "Policy"
-        ? { title: "No policies yet", description: "Add your customer rules so your AI knows how to handle sensitive requests.", action: "Add policy" }
-        : knowledgeFilter === "Website Page"
-          ? { title: "No website pages yet", description: "Import your website to give your AI a fast, trusted starting point.", action: "Import website" }
-          : { title: "No knowledge items yet", description: "Add a focused FAQ, product, policy, or website page to start teaching your AI.", action: "Add knowledge" };
   const workspacePrerequisites: Record<string, string[]> = {
     Identity: [],
     "Knowledge Hub": ["Identity"],
@@ -4114,7 +4042,7 @@ export default function DashboardLayout() {
   const workspaceProgressBySection = {
     Identity: identityLessonActivityPercent,
     "Knowledge Hub": knowledgeLessonActivityPercent,
-    Catalogue: Math.min(100, Math.round((knowledgeProducts.length > 0 ? 45 : 0) + (CATALOG_ITEMS.length > 0 ? 35 : 0) + (knowledgeProducts.length > 2 ? 20 : 0))),
+    Catalogue: catalogProducts.length > 0 ? 100 : 0,
     "Sales Playbooks": Math.min(100, upsellProducts || recommendAlternatives ? 100 : 0),
     Policies: Math.min(100, Math.round((Object.values(policies).filter(Boolean).length / 3) * 100)),
     Skills: 0,
@@ -4159,42 +4087,24 @@ export default function DashboardLayout() {
         const progress = JSON.parse(saved) as {
           step?: number;
           completed?: number[];
-          knowledgeTraining?: Partial<KnowledgeTrainingState>;
           launched?: boolean;
           scrollY?: number;
-          businessInfo?: typeof businessInfo;
-          businessIndustry?: string;
-          businessModels?: string[];
-          businessHours?: string;
+          selectedKnowledgeSources?: unknown[];
+          completedKnowledge?: number[];
+          activeKnowledgeStep?: number;
         };
         if (isDevMode) {
           window.localStorage.removeItem("sokoos-ai-training-progress-v2");
         } else {
-          if (progress.businessInfo) setBusinessInfo(normalizeBusinessInfo(progress.businessInfo));
-          if (typeof progress.businessIndustry === "string") {
-            const industryValue = progress.businessIndustry.trim();
-            if (industryValue) {
-              if (BUSINESS_INDUSTRY_OPTIONS.includes(industryValue)) {
-                setBusinessInfo((current) => normalizeBusinessInfo({ ...current, type: industryValue }));
-              } else {
-                setBusinessInfo((current) => normalizeBusinessInfo({ ...current, type: "Other" }));
-                setOtherIndustryValue(industryValue);
-              }
-            }
-          }
-          if (Array.isArray(progress.businessModels)) {
-            setBusinessModelSelections(progress.businessModels.filter((value): value is string => typeof value === "string" && value.trim().length > 0));
-          }
-          if (typeof progress.businessHours === "string") setBusinessHours(progress.businessHours);
           if (typeof progress.step === "number") setActiveIdentityStep(progress.step);
           if (Array.isArray(progress.completed)) setCompletedIdentitySteps(sanitizeStepIndices(progress.completed, identityLessons.length));
-          const loadedSelectedKnowledgeSources = Array.isArray((progress as any).selectedKnowledgeSources)
-            ? sanitizeSelectedKnowledgeSources((progress as any).selectedKnowledgeSources)
+          const loadedSelectedKnowledgeSources = Array.isArray(progress.selectedKnowledgeSources)
+            ? sanitizeSelectedKnowledgeSources(progress.selectedKnowledgeSources)
             : [];
           if (loadedSelectedKnowledgeSources.length > 0) setSelectedKnowledgeSources(loadedSelectedKnowledgeSources);
           const loadedKnowledgeSequenceLength = 1 + loadedSelectedKnowledgeSources.length + 1;
-          if (Array.isArray((progress as any).completedKnowledge)) setCompletedKnowledgeSteps(sanitizeStepIndices((progress as any).completedKnowledge, loadedKnowledgeSequenceLength));
-          if (typeof (progress as any).activeKnowledgeStep === "number") setActiveKnowledgeStep(Math.min(Math.max((progress as any).activeKnowledgeStep, 0), loadedKnowledgeSequenceLength - 1));
+          if (Array.isArray(progress.completedKnowledge)) setCompletedKnowledgeSteps(sanitizeStepIndices(progress.completedKnowledge, loadedKnowledgeSequenceLength));
+          if (typeof progress.activeKnowledgeStep === "number") setActiveKnowledgeStep(Math.min(Math.max(progress.activeKnowledgeStep, 0), loadedKnowledgeSequenceLength - 1));
           if (progress.launched) setAiEmployeeLaunched(true);
           if (typeof progress.scrollY === "number") window.requestAnimationFrame(() => window.scrollTo({ top: progress.scrollY, behavior: "auto" }));
         }
@@ -4226,12 +4136,8 @@ export default function DashboardLayout() {
       selectedKnowledgeSources,
       launched: aiEmployeeLaunched,
       scrollY: window.scrollY,
-      businessInfo,
-      businessIndustry: businessIndustryValue,
-      businessModels: businessModelSelections,
-      businessHours,
     }));
-  }, [activeIdentityStep, completedIdentitySteps, activeKnowledgeStep, completedKnowledgeSteps, selectedKnowledgeSources, knowledgeTraining, aiEmployeeLaunched, businessHours, businessInfo, onboardingRestored]);
+  }, [activeIdentityStep, completedIdentitySteps, activeKnowledgeStep, completedKnowledgeSteps, selectedKnowledgeSources, aiEmployeeLaunched, onboardingRestored]);
   const [businessProfile, setBusinessProfile] = useState({
     name: "Sokoos Internet",
     industry: "Telecom & Connectivity",
@@ -6453,7 +6359,7 @@ export default function DashboardLayout() {
 
                   <section className="rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)]" aria-label="AI setup score">
                     <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-center">
-                      <div className="flex gap-3"><span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-lg shadow-sm ${overallTrainingComplete ? "bg-[#22C55E] text-white" : "bg-[#ECFDF5] text-[#166534]"}`}>{overallTrainingComplete ? "🎉" : "🤖"}</span><div className="min-w-0 flex-1"><p className="text-sm font-semibold text-[#111827]">{overallTrainingComplete ? "Your AI Employee is Ready" : "Training Your AI Employee"}</p><p className="mt-1 text-xs text-[#475569]">{overallTrainingComplete ? "Your AI has completed the available training and is ready to represent your business." : `Step ${currentTrainingStepNumber} of ${currentTrainingLessonCount} · ${currentTrainingLessonLabel}`}</p><p className="mt-1 text-xs leading-5 text-[#64748B]">{overallTrainingComplete ? "Keep teaching your AI as your business grows." : activeWorkspaceSection === "Knowledge Hub" ? "Your AI is building knowledge so it can answer with more confidence." : "Your AI is learning about your business so it can represent you confidently in every customer conversation."}</p><div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]"><div className="h-full rounded-full bg-[#22C55E] transition-all duration-300" style={{ width: `${overallTrainingComplete ? 100 : overallTrainingPercent}%` }} /></div><p className="mt-2 text-[11px] font-semibold text-[#166534]">{completedTrainingLessonCount} of {totalTrainingLessonCount} lessons complete · {overallTrainingComplete ? 100 : overallTrainingPercent}% trained</p></div></div>
+                      <div className="flex gap-3"><span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-lg shadow-sm ${overallTrainingComplete ? "bg-[#22C55E] text-white" : "bg-[#ECFDF5] text-[#166534]"}`}>{overallTrainingComplete ? "🎉" : "🤖"}</span><div className="min-w-0 flex-1"><p className="text-sm font-semibold text-[#111827]">{overallTrainingComplete ? "Setup checklist complete" : "Setting up your AI Employee"}</p><p className="mt-1 text-xs text-[#475569]">{overallTrainingComplete ? "The available configuration and knowledge workflow steps are complete." : `Step ${currentTrainingStepNumber} of ${currentTrainingLessonCount} · ${currentTrainingLessonLabel}`}</p><p className="mt-1 text-xs leading-5 text-[#64748B]">{overallTrainingComplete ? "You can update this configuration as your business changes." : activeWorkspaceSection === "Knowledge Hub" ? "Save the knowledge sources you want available for a future AI runtime." : "Configure the business context and communication preferences for a future AI runtime."}</p><div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]"><div className="h-full rounded-full bg-[#22C55E] transition-all duration-300" style={{ width: `${overallTrainingComplete ? 100 : overallTrainingPercent}%` }} /></div><p className="mt-2 text-[11px] font-semibold text-[#166534]">{completedTrainingLessonCount} of {totalTrainingLessonCount} workflow steps complete · {overallTrainingComplete ? 100 : overallTrainingPercent}% complete</p></div></div>
                       <div className="rounded-xl border border-[#BBF7D0] bg-[#F7FEF9] p-3"><p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#166534]">AI Readiness</p><p className="mt-1 text-lg font-semibold text-[#111827]">{aiConfigurationReadiness ? aiReadinessLabel : aiConfigurationLoading ? "Loading…" : "Unavailable"}</p><p role={aiConfigurationError ? "alert" : undefined} className={`mt-1 text-xs ${aiConfigurationError ? "text-[#B91C1C]" : "text-[#64748B]"}`}>{aiConfigurationError ?? (aiConfigurationReadiness?.is_configured ? "Configuration requirements are saved" : aiConfigurationReadiness ? `Missing: ${aiConfigurationReadiness.missing_sections.join(", ")}` : "Checking saved configuration")}</p><button type="button" onClick={() => { if (activeWorkspaceSection === "Knowledge Hub") { setActiveWorkspaceSection("Knowledge Hub"); focusKnowledgeLesson(activeKnowledgeStep); } else { setActiveWorkspaceSection("Identity"); focusIdentityLesson(activeIdentityStep); } }} className="mt-3 text-xs font-semibold text-[#166534] transition hover:text-[#047857]">Continue training <ChevronRight className="inline h-3.5 w-3.5" /></button></div>
                     </div>
                   </section>
