@@ -363,3 +363,34 @@ export function updateConversation(conversationId: number, data: Partial<Pick<Co
 export function markConversationRead(conversationId: number) {
   return apiRequest<ConversationMutation>(`/api/conversations/${conversationId}/read/`, authenticatedJson("POST"));
 }
+
+export type AIEmployeeConfiguration = {
+  id: number | null;
+  is_enabled: boolean; human_takeover_enabled: boolean; primary_language: string; supported_languages: string[];
+  personality: string; communication_style: string; emoji_usage: string; preferred_tone: string;
+  writing_examples: string; writing_style_options: Record<string, boolean>; welcome_message: string;
+  away_message: string; closing_message: string; outside_hours_mode: "continue" | "collect" | "closed";
+  max_ai_messages: number; upsell_products: boolean; recommend_alternatives: boolean;
+  close_sales_automatically: boolean; business_context: Record<string, string | string[]>;
+  readiness: { configured_sections: string[]; missing_sections: string[]; is_configured: boolean };
+  created_at: string | null; updated_at: string | null;
+};
+
+export type KnowledgeSource = {
+  id: number; kind: "faq" | "document" | "website"; title: string; faq_question: string; faq_answer: string;
+  faq_category: string; file: string | null; original_name: string; mime_type: string; file_size: number | null;
+  url: string; instructions: string; created_at: string; updated_at: string;
+};
+
+type AIEmployeeMutation = { success: boolean; ai_employee: AIEmployeeConfiguration };
+type KnowledgeMutation = { success: boolean; knowledge_source: KnowledgeSource };
+
+export function getAIEmployeeConfiguration() { return apiRequest<AIEmployeeConfiguration>("/api/ai-employee/me/", authenticatedJson("GET")); }
+export function updateAIEmployeeConfiguration(data: Partial<Omit<AIEmployeeConfiguration, "id" | "readiness" | "created_at" | "updated_at">>) { return apiRequest<AIEmployeeMutation>("/api/ai-employee/me/", authenticatedJson("PATCH", data)); }
+export function getKnowledgeSources(kind?: KnowledgeSource["kind"]) { return apiRequest<KnowledgeSource[]>(`/api/ai-employee/knowledge/${kind ? `?kind=${kind}` : ""}`, authenticatedJson("GET")); }
+export function createKnowledgeSource(data: Record<string, string | File>) {
+  const body = new FormData(); Object.entries(data).forEach(([key, value]) => body.append(key, value));
+  return apiRequest<KnowledgeMutation>("/api/ai-employee/knowledge/", { method: "POST", headers: getAuthorizationHeader() as HeadersInit, body });
+}
+export function updateKnowledgeSource(sourceId: number, data: Record<string, string>) { return apiRequest<KnowledgeMutation>(`/api/ai-employee/knowledge/${sourceId}/`, authenticatedJson("PATCH", data)); }
+export function deleteKnowledgeSource(sourceId: number) { return apiRequest<{ success: boolean; message: string }>(`/api/ai-employee/knowledge/${sourceId}/`, authenticatedJson("DELETE")); }

@@ -56,7 +56,7 @@ import { PerformanceWorkspace } from "@/components/dashboard/ai-employee/perform
 import { TrainingTemplateCard } from "@/components/dashboard/ai-employee/training/training-template-card";
 import { AccountSettings } from "@/components/dashboard/account-settings";
 import { clearAuthSession, getAuthToken, getAuthorizationHeader, getCurrentUser, getUserDisplayName, saveAuthSession, signOutMock, type AuthUser } from "@/lib/auth";
-import { ApiError, apiRequest, changePassword, createCatalogCategory, createCatalogItem, deleteCatalogCategory, deleteCatalogItem, deleteCatalogMedia, getCatalog, getCatalogCategories, getCatalogMedia, updateCatalogCategory, updateCatalogItem, updateCatalogMedia, uploadCatalogMedia, type CatalogItem, type CatalogItemInput, type CatalogItemType } from "@/lib/api";
+import { ApiError, apiRequest, changePassword, createCatalogCategory, createCatalogItem, createKnowledgeSource, deleteCatalogCategory, deleteCatalogItem, deleteCatalogMedia, deleteKnowledgeSource, getAIEmployeeConfiguration, getCatalog, getCatalogCategories, getCatalogMedia, getKnowledgeSources, updateAIEmployeeConfiguration, updateCatalogCategory, updateCatalogItem, updateCatalogMedia, updateKnowledgeSource, uploadCatalogMedia, type AIEmployeeConfiguration, type CatalogItem, type CatalogItemInput, type CatalogItemType, type KnowledgeSource as APIKnowledgeSource } from "@/lib/api";
 import EditProfileDialog, { type ProfileUpdate } from "@/components/dashboard/edit-profile-dialog";
 import sokoosLogo from "@/assets/sokoos_logo.png";
 
@@ -1842,6 +1842,14 @@ export default function DashboardLayout() {
     completedLessons: [],
     currentLesson: 0,
   });
+  const [websiteSourceId, setWebsiteSourceId] = useState<number | null>(null);
+  const [aiConfigurationReadiness, setAiConfigurationReadiness] = useState<AIEmployeeConfiguration["readiness"] | null>(null);
+  const [knowledgeLoading, setKnowledgeLoading] = useState(true);
+  const [knowledgeError, setKnowledgeError] = useState<string | null>(null);
+  const [faqSaving, setFaqSaving] = useState(false);
+  const [documentUploading, setDocumentUploading] = useState(false);
+  const [websiteSaving, setWebsiteSaving] = useState(false);
+  const [deletingSourceId, setDeletingSourceId] = useState<number | null>(null);
   const resolveKnowledgeState = <T,>(next: SetStateAction<T>, current: T) => typeof next === "function" ? (next as (value: T) => T)(current) : next;
   const activeKnowledgeStep = knowledgeTraining.currentLesson;
   const setActiveKnowledgeStep = (next: SetStateAction<number>) => setKnowledgeTraining((current) => ({ ...current, currentLesson: resolveKnowledgeState(next, current.currentLesson) }));
@@ -3527,6 +3535,8 @@ export default function DashboardLayout() {
   const [upsellProducts, setUpsellProducts] = useState(true);
   const [recommendAlternatives, setRecommendAlternatives] = useState(true);
   const [closeSalesAutomatically, setCloseSalesAutomatically] = useState(false);
+  const [aiConfigurationLoading, setAiConfigurationLoading] = useState(true);
+  const [aiConfigurationError, setAiConfigurationError] = useState<string | null>(null);
   const [businessInfo, setBusinessInfo] = useState(() => normalizeBusinessInfo());
   const [industrySearch, setIndustrySearch] = useState("");
   const [isIndustryDropdownOpen, setIsIndustryDropdownOpen] = useState(false);
@@ -3655,14 +3665,49 @@ export default function DashboardLayout() {
     relationship: "",
     phone: "",
   });
-  const handleSaveChanges = () => {
+  const applyAIConfiguration = (configuration: AIEmployeeConfiguration) => {
+    setAiConfigurationReadiness(configuration.readiness);
+    setAiEnabled(configuration.is_enabled); setHumanTakeover(configuration.human_takeover_enabled);
+    setPrimaryLanguage(configuration.primary_language); setSupportedLanguages(configuration.supported_languages);
+    setPersonality(configuration.personality as typeof personality); setCommunicationStyle(configuration.communication_style as typeof communicationStyle);
+    setEmojiUsage(configuration.emoji_usage as typeof emojiUsage); setPreferredTone(configuration.preferred_tone as typeof preferredTone);
+    setWritingExamples(configuration.writing_examples); setWelcomeMessage(configuration.welcome_message); setAwayMessage(configuration.away_message); setClosingMessage(configuration.closing_message);
+    setOutsideHoursMode(configuration.outside_hours_mode); setMaxAiMessages(configuration.max_ai_messages);
+    setUpsellProducts(configuration.upsell_products); setRecommendAlternatives(configuration.recommend_alternatives); setCloseSalesAutomatically(configuration.close_sales_automatically);
+    setWritingStyleOptions({ "Use emojis": configuration.writing_style_options.use_emojis ?? false, "Keep replies short": configuration.writing_style_options.keep_replies_short ?? false, "Explain simply": configuration.writing_style_options.explain_simply ?? false, "Ask follow-up questions": configuration.writing_style_options.ask_follow_up_questions ?? false, "Personalize responses": configuration.writing_style_options.personalize_responses ?? false });
+    const context = configuration.business_context;
+    setKnowledgeTraining((current) => ({ ...current, companyInformation: { ...current.companyInformation, vision: String(context.vision ?? ""), mission: String(context.mission ?? ""), shortTermGoals: String(context.short_term_goals ?? ""), longTermGoals: String(context.long_term_goals ?? ""), targetCustomers: String(context.target_customers ?? ""), customerProblems: String(context.customer_problems ?? ""), primaryMarket: String(context.primary_market ?? ""), customerSegments: String(context.customer_segments ?? ""), differentiators: String(context.differentiators ?? ""), competitiveAdvantages: String(context.competitive_advantages ?? ""), keySellingPoints: String(context.key_selling_points ?? ""), competitors: String(context.competitors ?? ""), preferredBrandTones: Array.isArray(context.preferred_brand_tones) ? context.preferred_brand_tones.filter((tone): tone is string => typeof tone === "string") : [], wordsToUse: String(context.words_to_use ?? ""), wordsToAvoid: String(context.words_to_avoid ?? ""), brandGuidance: String(context.brand_guidance ?? ""), importantThingsToKnow: String(context.important_things_to_know ?? ""), additionalNotes: String(context.additional_notes ?? "") } }));
+  };
+  useEffect(() => { let active = true; void (async () => { try { const result = await getAIEmployeeConfiguration(); if (active && result.data) applyAIConfiguration(result.data); } catch (error) { if (active) setAiConfigurationError(getApiErrorMessage(error)); } finally { if (active) setAiConfigurationLoading(false); } })(); return () => { active = false; }; }, []);
+  const applyKnowledgeSources = (sources: APIKnowledgeSource[]) => {
+    const website = sources.find((source) => source.kind === "website");
+    setWebsiteSourceId(website?.id ?? null);
+    setKnowledgeTraining((current) => ({
+      ...current,
+      faqs: sources.filter((source) => source.kind === "faq").map((source) => ({ id: String(source.id), question: source.faq_question, answer: source.faq_answer, category: source.faq_category || undefined })),
+      documents: sources.filter((source) => source.kind === "document").map((source) => ({ id: String(source.id), name: source.original_name || source.title, size: source.file_size ? `${source.file_size >= 1024 * 1024 ? `${(source.file_size / (1024 * 1024)).toFixed(1)} MB` : `${Math.max(1, Math.round(source.file_size / 1024))} KB`}` : "", uploaded: source.created_at, status: "Uploaded", extracted: "Stored", kind: (source.original_name || source.title).split(".").pop()?.toUpperCase() || "FILE" })),
+      website: website ? { websiteUrl: website.url, instructions: website.instructions, status: "ready", scanSummary: null } : { websiteUrl: "", instructions: "", status: "not_connected", scanSummary: null },
+    }));
+  };
+  const refreshKnowledgeSources = async () => {
+    setKnowledgeLoading(true); setKnowledgeError(null);
+    try { const result = await getKnowledgeSources(); if (result.data) applyKnowledgeSources(result.data); }
+    catch (error) { setKnowledgeError(getApiErrorMessage(error)); }
+    finally { setKnowledgeLoading(false); }
+  };
+  useEffect(() => { void refreshKnowledgeSources(); }, []);
+  const handleSaveChanges = async () => {
     if (saveState === "saving") return;
     setSaveState("saving");
-    window.setTimeout(() => {
+    setAiConfigurationError(null);
+    try {
+      const company = knowledgeTraining.companyInformation;
+      const result = await updateAIEmployeeConfiguration({ is_enabled: aiEnabled, human_takeover_enabled: humanTakeover, primary_language: primaryLanguage, supported_languages: supportedLanguages, personality, communication_style: communicationStyle, emoji_usage: emojiUsage, preferred_tone: preferredTone, writing_examples: writingExamples, writing_style_options: { use_emojis: writingStyleOptions["Use emojis"] ?? false, keep_replies_short: writingStyleOptions["Keep replies short"] ?? false, explain_simply: writingStyleOptions["Explain simply"] ?? false, ask_follow_up_questions: writingStyleOptions["Ask follow-up questions"] ?? false, personalize_responses: writingStyleOptions["Personalize responses"] ?? false }, welcome_message: welcomeMessage, away_message: awayMessage, closing_message: closingMessage, outside_hours_mode: outsideHoursMode, max_ai_messages: maxAiMessages, upsell_products: upsellProducts, recommend_alternatives: recommendAlternatives, close_sales_automatically: closeSalesAutomatically, business_context: { vision: company.vision, mission: company.mission, short_term_goals: company.shortTermGoals, long_term_goals: company.longTermGoals, target_customers: company.targetCustomers, customer_problems: company.customerProblems, primary_market: company.primaryMarket, customer_segments: company.customerSegments, differentiators: company.differentiators, competitive_advantages: company.competitiveAdvantages, key_selling_points: company.keySellingPoints, competitors: company.competitors, preferred_brand_tones: company.preferredBrandTones, words_to_use: company.wordsToUse, words_to_avoid: company.wordsToAvoid, brand_guidance: company.brandGuidance, important_things_to_know: company.importantThingsToKnow, additional_notes: company.additionalNotes } });
+      if (result.data) applyAIConfiguration(result.data.ai_employee);
       setHasUnsavedChanges(false);
       setSaveState("saved");
       window.setTimeout(() => setSaveState("idle"), 1200);
-    }, 650);
+    } catch (error) { setAiConfigurationError(getApiErrorMessage(error)); setSaveState("idle"); }
   };
 
   const saveIdentityAndContinue = () => {
@@ -3872,65 +3917,34 @@ export default function DashboardLayout() {
   const setKnowledgeDocuments = (next: SetStateAction<KnowledgeDocument[]>) => setKnowledgeTraining((current) => ({ ...current, documents: resolveKnowledgeState(next, current.documents) }));
   const [knowledgeDocumentDragActive, setKnowledgeDocumentDragActive] = useState(false);
   const [knowledgeDocumentErrors, setKnowledgeDocumentErrors] = useState<string[]>([]);
-  const addKnowledgeDocuments = (files: FileList | File[]) => {
+  const addKnowledgeDocuments = async (files: FileList | File[]) => {
     const supportedTypes = new Set(["pdf", "docx", "txt", "csv", "xlsx"]);
     const maxFileSize = 10 * 1024 * 1024;
     const errors: string[] = [];
-    const entries = Array.from(files).flatMap((file, index) => {
+    const validFiles = Array.from(files).filter((file) => {
       const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
       if (!supportedTypes.has(extension)) {
         errors.push(`${file.name}: use a PDF, DOCX, TXT, CSV, or XLSX file.`);
-        return [];
+        return false;
       }
       if (file.size > maxFileSize) {
         errors.push(`${file.name}: files must be 10 MB or smaller.`);
-        return [];
+        return false;
       }
-      return [{
-        id: `knowledge-doc-${Date.now()}-${index}-${file.name}`,
-        name: file.name,
-        size: file.size >= 1024 * 1024 ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` : `${Math.max(1, Math.round(file.size / 1024))} KB`,
-        uploaded: "Just now",
-        status: "Selected",
-        extracted: "Ready to upload",
-        kind: extension.toUpperCase(),
-      }];
+      return true;
     });
     setKnowledgeDocumentErrors(errors);
-    if (entries.length) setKnowledgeDocuments((documents) => [...documents, ...entries]);
-  };
-  const syncWebsiteKnowledge = () => {
-    setWebsiteImportStatus("syncing");
-    setWebsiteImportProgress(18);
-    window.setTimeout(() => setWebsiteImportProgress(58), 450);
-    window.setTimeout(() => {
-      setWebsiteImportProgress(100);
-      setWebsiteImportStatus("complete");
-      setWebsiteImportHistory((history) => [{ id: `website-sync-${Date.now()}`, time: "Just now", result: "18 pages scanned · 42 knowledge items updated" }, ...history]);
-      setAiLearningTimeline((timeline) => [{ id: `learning-${Date.now()}`, day: "Today", title: "Imported website", detail: "42 knowledge items learned from 18 pages", Icon: Globe }, ...timeline]);
-    }, 950);
+    if (!validFiles.length || documentUploading) return;
+    setDocumentUploading(true); setKnowledgeError(null);
+    try {
+      for (const file of validFiles) await createKnowledgeSource({ kind: "document", file });
+      await refreshKnowledgeSources();
+    } catch (error) { setKnowledgeError(getApiErrorMessage(error)); }
+    finally { setDocumentUploading(false); }
   };
   const websiteScanSummary = knowledgeTraining.website.scanSummary;
   const setWebsiteScanSummary = (summary: WebsiteScanSummary | null) => setKnowledgeTraining((current) => ({ ...current, website: { ...current.website, scanSummary: summary } }));
 
-  // Enhanced mock scanning: set a fake summary after scanning completes
-  const scanWebsite = () => {
-    setWebsiteScanSummary(null);
-    setWebsiteImportStatus("syncing");
-    setWebsiteImportProgress(6);
-    // animated progress steps
-    window.setTimeout(() => setWebsiteImportProgress(24), 300);
-    window.setTimeout(() => setWebsiteImportProgress(46), 700);
-    window.setTimeout(() => setWebsiteImportProgress(72), 1200);
-    window.setTimeout(() => {
-      setWebsiteImportProgress(100);
-      setWebsiteImportStatus("complete");
-      const summary = { pages: 34, products: 12, faqs: 8, contact: 1, policies: 3, blog: 6 };
-      setWebsiteScanSummary(summary);
-      setWebsiteImportHistory((history) => [{ id: `website-sync-${Date.now()}`, time: "Just now", result: `${summary.pages} pages discovered · ${summary.products + summary.faqs + summary.policies} knowledge items found` }, ...history]);
-      setAiLearningTimeline((timeline) => [{ id: `learning-${Date.now()}`, day: "Today", title: "Scanned website", detail: `${summary.pages} pages discovered`, Icon: Globe }, ...timeline]);
-    }, 2200);
-  };
   const [testQuery, setTestQuery] = useState("");
   const [testConversations, setTestConversations] = useState<Array<{ id: string; user: string; ai?: string; source?: string }>>([]);
   const handleTestAsk = (question: string) => {
@@ -4055,7 +4069,7 @@ export default function DashboardLayout() {
     : identityLessons[activeIdentityStep] ?? identityLessons[0];
   const currentTrainingLessonCount = activeWorkspaceSection === "Knowledge Hub" ? knowledgeLessonSequence.length : identityLessons.length;
   const currentTrainingStepNumber = activeWorkspaceSection === "Knowledge Hub" ? activeKnowledgeStep + 1 : activeIdentityStep + 1;
-  const aiReadiness = overallTrainingComplete ? 100 : Math.min(100, Math.round(18 + (completedTrainingLessonCount / Math.max(1, totalTrainingLessonCount)) * 82));
+  const aiReadinessLabel = aiConfigurationReadiness?.is_configured ? "Configured" : "Needs setup";
   const totalProductMediaAssets = catalogProducts.reduce((count, product) => count + (product.mediaAssets?.length ?? 0), 0);
   const knowledgeSourceSummary = [
     { label: "Website", value: websiteScanSummary?.pages ? `${websiteScanSummary.pages} pages` : "Not connected", Icon: Globe, ready: Boolean(websiteScanSummary?.pages) },
@@ -4174,20 +4188,6 @@ export default function DashboardLayout() {
           if (typeof progress.businessHours === "string") setBusinessHours(progress.businessHours);
           if (typeof progress.step === "number") setActiveIdentityStep(progress.step);
           if (Array.isArray(progress.completed)) setCompletedIdentitySteps(sanitizeStepIndices(progress.completed, identityLessons.length));
-          const savedKnowledgeTraining = progress.knowledgeTraining;
-          if (savedKnowledgeTraining) {
-            setKnowledgeTraining((current) => ({
-              ...current,
-              ...savedKnowledgeTraining,
-              companyInformation: { ...current.companyInformation, ...savedKnowledgeTraining.companyInformation },
-              website: { ...current.website, ...savedKnowledgeTraining.website },
-              faqs: Array.isArray(savedKnowledgeTraining.faqs) ? savedKnowledgeTraining.faqs : current.faqs,
-              documents: Array.isArray(savedKnowledgeTraining.documents) ? savedKnowledgeTraining.documents : current.documents,
-              selectedSources: Array.isArray(savedKnowledgeTraining.selectedSources) ? sanitizeSelectedKnowledgeSources(savedKnowledgeTraining.selectedSources) : current.selectedSources,
-              completedLessons: Array.isArray(savedKnowledgeTraining.completedLessons) ? savedKnowledgeTraining.completedLessons : current.completedLessons,
-              currentLesson: typeof savedKnowledgeTraining.currentLesson === "number" ? savedKnowledgeTraining.currentLesson : current.currentLesson,
-            }));
-          }
           const loadedSelectedKnowledgeSources = Array.isArray((progress as any).selectedKnowledgeSources)
             ? sanitizeSelectedKnowledgeSources((progress as any).selectedKnowledgeSources)
             : [];
@@ -4224,7 +4224,6 @@ export default function DashboardLayout() {
       activeKnowledgeStep,
       completedKnowledge: completedKnowledgeSteps,
       selectedKnowledgeSources,
-      knowledgeTraining,
       launched: aiEmployeeLaunched,
       scrollY: window.scrollY,
       businessInfo,
@@ -5883,23 +5882,20 @@ export default function DashboardLayout() {
       setEditingFaqId(null);
       setFaqValidationAttempted(false);
     };
-    const saveFaq = () => {
+    const saveFaq = async () => {
       if (!faqDraft.question.trim() || !faqDraft.answer.trim()) {
         setFaqValidationAttempted(true);
         return;
       }
-
-      const nextFaq = {
-        question: faqDraft.question.trim(),
-        answer: faqDraft.answer.trim(),
-        ...(faqDraft.category ? { category: faqDraft.category } : {}),
-      };
-      if (editingFaqId) {
-        setFaqItems((items) => items.map((faq) => faq.id === editingFaqId ? { ...faq, ...nextFaq } : faq));
-      } else {
-        setFaqItems((items) => [...items, { id: `faq-${Date.now()}`, ...nextFaq }]);
-      }
-      resetDraft();
+      if (faqSaving) return;
+      setFaqSaving(true); setKnowledgeError(null);
+      try {
+        const payload = { kind: "faq", faq_question: faqDraft.question.trim(), faq_answer: faqDraft.answer.trim(), faq_category: faqDraft.category.trim() };
+        if (editingFaqId) await updateKnowledgeSource(Number(editingFaqId), payload);
+        else await createKnowledgeSource(payload);
+        await refreshKnowledgeSources(); resetDraft();
+      } catch (error) { setKnowledgeError(getApiErrorMessage(error)); }
+      finally { setFaqSaving(false); }
     };
     const editFaq = (faq: typeof faqItems[number]) => {
       setEditingFaqId(faq.id);
@@ -5926,7 +5922,7 @@ export default function DashboardLayout() {
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
                     <button type="button" onClick={() => editFaq(faq)} className="rounded-lg px-2.5 py-2 text-sm font-semibold text-[#334155] transition hover:bg-[#F1F5F9] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]">Edit</button>
-                    <button type="button" onClick={() => { setFaqItems((items) => items.filter((item) => item.id !== faq.id)); if (editingFaqId === faq.id) resetDraft(); }} className="rounded-lg px-2.5 py-2 text-sm font-semibold text-[#B91C1C] transition hover:bg-[#FEF2F2] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EF4444]">Delete</button>
+                    <button type="button" disabled={deletingSourceId === Number(faq.id)} onClick={() => { void (async () => { setDeletingSourceId(Number(faq.id)); setKnowledgeError(null); try { await deleteKnowledgeSource(Number(faq.id)); await refreshKnowledgeSources(); if (editingFaqId === faq.id) resetDraft(); } catch (error) { setKnowledgeError(getApiErrorMessage(error)); } finally { setDeletingSourceId(null); } })(); }} className="rounded-lg px-2.5 py-2 text-sm font-semibold text-[#B91C1C] transition hover:bg-[#FEF2F2] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EF4444] disabled:opacity-50">{deletingSourceId === Number(faq.id) ? "Deleting…" : "Delete"}</button>
                   </div>
                 </div>
               </article>
@@ -5961,7 +5957,7 @@ export default function DashboardLayout() {
             </label>
           </div>
           <div className="mt-5 flex flex-wrap items-center gap-3">
-            <button type="button" onClick={saveFaq} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">{isEditing ? "Save changes" : <><Plus className="h-4 w-4" />Add FAQ</>}</button>
+            <button type="button" disabled={faqSaving} onClick={() => void saveFaq()} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:opacity-50">{faqSaving ? "Saving…" : isEditing ? "Save changes" : <><Plus className="h-4 w-4" />Add FAQ</>}</button>
             {isEditing && <button type="button" onClick={resetDraft} className="rounded-lg px-3 py-2.5 text-sm font-semibold text-[#64748B] transition hover:bg-white hover:text-[#111827]">Cancel</button>}
           </div>
         </section>
@@ -5973,25 +5969,32 @@ export default function DashboardLayout() {
     const configured = isValidWebsiteUrl(websiteImportUrl) && knowledgeTraining.website.status !== "not_connected";
     const showForm = websiteEditorOpen || !configured;
     const urlError = websiteValidationAttempted && !isValidWebsiteUrl(websiteUrlDraft);
-    const addWebsite = () => {
+    const addWebsite = async () => {
       if (!isValidWebsiteUrl(websiteUrlDraft)) {
         setWebsiteValidationAttempted(true);
         return;
       }
-      setKnowledgeTraining((current) => ({ ...current, website: { ...current.website, websiteUrl: websiteUrlDraft.trim(), status: "ready", scanSummary: null } }));
-      setWebsiteValidationAttempted(false);
-      setWebsiteEditorOpen(false);
+      if (websiteSaving) return;
+      setWebsiteSaving(true); setKnowledgeError(null);
+      try {
+        const payload = { kind: "website", url: websiteUrlDraft.trim(), instructions: knowledgeTraining.website.instructions };
+        if (websiteSourceId) await updateKnowledgeSource(websiteSourceId, payload);
+        else await createKnowledgeSource(payload);
+        await refreshKnowledgeSources(); setWebsiteValidationAttempted(false); setWebsiteEditorOpen(false);
+      } catch (error) { setKnowledgeError(getApiErrorMessage(error)); }
+      finally { setWebsiteSaving(false); }
     };
     const editWebsite = () => {
       setWebsiteUrlDraft(websiteImportUrl);
       setWebsiteValidationAttempted(false);
       setWebsiteEditorOpen(true);
     };
-    const removeWebsite = () => {
-      setKnowledgeTraining((current) => ({ ...current, website: { ...current.website, websiteUrl: "", instructions: "", status: "not_connected", scanSummary: null } }));
-      setWebsiteUrlDraft("");
-      setWebsiteValidationAttempted(false);
-      setWebsiteEditorOpen(true);
+    const removeWebsite = async () => {
+      if (!websiteSourceId || deletingSourceId === websiteSourceId) return;
+      setDeletingSourceId(websiteSourceId); setKnowledgeError(null);
+      try { await deleteKnowledgeSource(websiteSourceId); await refreshKnowledgeSources(); setWebsiteUrlDraft(""); setWebsiteValidationAttempted(false); setWebsiteEditorOpen(true); }
+      catch (error) { setKnowledgeError(getApiErrorMessage(error)); }
+      finally { setDeletingSourceId(null); }
     };
 
     return (
@@ -6004,8 +6007,9 @@ export default function DashboardLayout() {
               <span className="font-normal leading-5 text-[#64748B]">Give Sokoos your business website so it can use the information published there when answering customers.</span>
               {urlError && <span className="font-normal text-[#B91C1C]">Enter a valid website URL that starts with http:// or https://.</span>}
             </label>
+            <label className="mt-4 grid gap-1.5 text-sm font-medium text-[#334155]">Instructions (optional)<Textarea value={knowledgeTraining.website.instructions} onChange={(event) => setKnowledgeTraining((current) => ({ ...current, website: { ...current.website, instructions: event.target.value } }))} placeholder="Add any context for this saved website source" className="min-h-20 resize-y bg-white text-sm focus-visible:ring-[#22C55E]" /></label>
             <div className="mt-5 flex flex-wrap items-center gap-3">
-              <button type="button" onClick={addWebsite} className="rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Add website</button>
+              <button type="button" disabled={websiteSaving} onClick={() => void addWebsite()} className="rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:opacity-50">{websiteSaving ? "Saving…" : "Add website"}</button>
               {configured && <button type="button" onClick={() => { setWebsiteEditorOpen(false); setWebsiteValidationAttempted(false); }} className="rounded-lg px-3 py-2.5 text-sm font-semibold text-[#64748B] transition hover:bg-white hover:text-[#111827]">Cancel</button>}
             </div>
           </section>
@@ -6021,7 +6025,7 @@ export default function DashboardLayout() {
               </div>
               <div className="flex shrink-0 items-center gap-2">
                 <button type="button" onClick={editWebsite} className="rounded-lg px-2.5 py-2 text-sm font-semibold text-[#334155] transition hover:bg-white">Edit</button>
-                <button type="button" onClick={removeWebsite} className="rounded-lg px-2.5 py-2 text-sm font-semibold text-[#B91C1C] transition hover:bg-[#FEF2F2]">Remove</button>
+                <button type="button" disabled={deletingSourceId === websiteSourceId} onClick={() => void removeWebsite()} className="rounded-lg px-2.5 py-2 text-sm font-semibold text-[#B91C1C] transition hover:bg-[#FEF2F2] disabled:opacity-50">{deletingSourceId === websiteSourceId ? "Removing…" : "Remove"}</button>
               </div>
             </div>
           </section>
@@ -6166,6 +6170,10 @@ export default function DashboardLayout() {
                     <h3 className={sectionTitleClass}>Additional Business Context</h3>
                     <p className={helperClass}>Use this space for context that does not fit into the structured fields above.</p>
                     <div className="mt-4 grid gap-4">
+                      <label className="grid gap-1.5 text-sm font-medium text-[#334155]">Preferred brand tones <input value={companyInformation.preferredBrandTones.join(", ")} onChange={(event) => updateCompanyInformation("preferredBrandTones", event.target.value.split(",").map((value) => value.trim()).filter(Boolean))} placeholder="e.g. Friendly, clear, professional" className={fieldClass} /></label>
+                      <label className="grid gap-1.5 text-sm font-medium text-[#334155]">Words to use<Textarea value={companyInformation.wordsToUse} onChange={(event) => updateCompanyInformation("wordsToUse", event.target.value)} placeholder="Words or phrases to prefer" className="min-h-20 resize-y border-[#DCE3EA] bg-white text-sm focus-visible:ring-[#22C55E]" /></label>
+                      <label className="grid gap-1.5 text-sm font-medium text-[#334155]">Words to avoid<Textarea value={companyInformation.wordsToAvoid} onChange={(event) => updateCompanyInformation("wordsToAvoid", event.target.value)} placeholder="Words or phrases to avoid" className="min-h-20 resize-y border-[#DCE3EA] bg-white text-sm focus-visible:ring-[#22C55E]" /></label>
+                      <label className="grid gap-1.5 text-sm font-medium text-[#334155]">Brand guidance<Textarea value={companyInformation.brandGuidance} onChange={(event) => updateCompanyInformation("brandGuidance", event.target.value)} placeholder="Any additional guidance for your brand voice" className="min-h-20 resize-y border-[#DCE3EA] bg-white text-sm focus-visible:ring-[#22C55E]" /></label>
                       <label className="grid gap-1.5 text-sm font-medium text-[#334155]">Important things the AI should know<Textarea value={companyInformation.importantThingsToKnow} onChange={(event) => updateCompanyInformation("importantThingsToKnow", event.target.value)} placeholder="Share important context that helps Sokoos make better decisions." className="min-h-28 resize-y border-[#DCE3EA] bg-white text-sm focus-visible:ring-[#22C55E]" /></label>
                       <label className="grid gap-1.5 text-sm font-medium text-[#334155]">Additional notes<Textarea value={companyInformation.additionalNotes} onChange={(event) => updateCompanyInformation("additionalNotes", event.target.value)} placeholder="Anything else Sokoos should know about your business." className="min-h-28 resize-y border-[#DCE3EA] bg-white text-sm focus-visible:ring-[#22C55E]" /></label>
                     </div>
@@ -6190,15 +6198,17 @@ export default function DashboardLayout() {
                 >
                   <span className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><Upload className="h-5 w-5" /></span>
                   <p className="mt-3 text-sm font-semibold text-[#111827]">Upload documents</p>
-                  <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-[#64748B]">Add documents your AI can learn from, such as price lists, policies, brochures, manuals, menus, or business guides.</p>
+                  <p className="mx-auto mt-2 max-w-lg text-sm leading-6 text-[#64748B]">Upload documents to save as knowledge sources, such as price lists, policies, brochures, manuals, menus, or business guides.</p>
                   <p className="mt-3 text-sm font-semibold text-[#166534]">Drag and drop files here or <span className="underline">browse files</span></p>
                   <p className="mt-2 text-xs text-[#64748B]">PDF, DOCX, TXT, CSV, or XLSX · up to 10 MB each</p>
                 </div>
                 {knowledgeDocumentErrors.length > 0 && <div role="alert" className="rounded-xl border border-[#FECACA] bg-[#FEF2F2] px-4 py-3 text-sm text-[#B91C1C]"><p className="font-semibold">Some files could not be selected.</p><ul className="mt-1 list-disc space-y-1 pl-5">{knowledgeDocumentErrors.map((error) => <li key={error}>{error}</li>)}</ul></div>}
-                {knowledgeDocuments.length > 0 && <div className="space-y-2"><p className="text-sm font-semibold text-[#334155]">Selected documents</p>{knowledgeDocuments.map((document) => <div key={document.id} className="flex items-center justify-between gap-3 rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm"><div className="flex min-w-0 items-center gap-3"><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#EFF6FF] text-xs font-bold text-[#1D4ED8]">{document.kind}</span><div className="min-w-0"><p className="truncate font-semibold text-[#111827]">{document.name}</p><p className="mt-0.5 text-xs text-[#64748B]">{document.kind} · {document.size} · <span className="font-semibold text-[#475569]">{document.status}</span></p></div></div><button type="button" onClick={() => setKnowledgeDocuments((documents) => documents.filter((item) => item.id !== document.id))} className="shrink-0 rounded-lg px-2.5 py-2 text-sm font-semibold text-[#B91C1C] transition hover:bg-[#FEF2F2] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EF4444]">Remove</button></div>)}</div>}
+                {documentUploading && <p className="text-sm font-medium text-[#475569]">Uploading documents…</p>}
+                {knowledgeDocuments.length > 0 && <div className="space-y-2"><p className="text-sm font-semibold text-[#334155]">Uploaded documents</p>{knowledgeDocuments.map((document) => <div key={document.id} className="flex items-center justify-between gap-3 rounded-xl border border-[#E5E7EB] bg-white px-4 py-3 text-sm"><div className="flex min-w-0 items-center gap-3"><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#EFF6FF] text-xs font-bold text-[#1D4ED8]">{document.kind}</span><div className="min-w-0"><p className="truncate font-semibold text-[#111827]">{document.name}</p><p className="mt-0.5 text-xs text-[#64748B]">{document.kind} · {document.size} · <span className="font-semibold text-[#475569]">Uploaded</span></p></div></div><button type="button" disabled={deletingSourceId === Number(document.id)} onClick={() => { void (async () => { setDeletingSourceId(Number(document.id)); setKnowledgeError(null); try { await deleteKnowledgeSource(Number(document.id)); await refreshKnowledgeSources(); } catch (error) { setKnowledgeError(getApiErrorMessage(error)); } finally { setDeletingSourceId(null); } })(); }} className="shrink-0 rounded-lg px-2.5 py-2 text-sm font-semibold text-[#B91C1C] transition hover:bg-[#FEF2F2] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EF4444] disabled:opacity-50">{deletingSourceId === Number(document.id) ? "Removing…" : "Remove"}</button></div>)}</div>}
               </div>
             )}
             {sourceKey === "website" && <WebsiteEditor />}
+            {(knowledgeLoading || knowledgeError) && <div role={knowledgeError ? "alert" : undefined} className={`rounded-xl px-4 py-3 text-sm ${knowledgeError ? "border border-[#FECACA] bg-[#FEF2F2] text-[#B91C1C]" : "bg-[#F8FAFC] text-[#64748B]"}`}>{knowledgeError ?? "Loading saved knowledge sources…"}</div>}
             <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
               <button type="button" onClick={() => focusKnowledgeLesson(activeKnowledgeStep - 1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
               <button type="button" disabled={sourceKey !== "company" && !canContinueKnowledgeLesson(activeKnowledgeStep)} onClick={() => { if (sourceKey === "company") setBusinessInformationValidationAttempted(true); if (!canContinueKnowledgeLesson(activeKnowledgeStep)) return; completeKnowledgeLesson(activeKnowledgeStep); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Save & Continue <ChevronRight className="h-4 w-4" /></button>
@@ -6444,7 +6454,7 @@ export default function DashboardLayout() {
                   <section className="rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)]" aria-label="AI setup score">
                     <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-center">
                       <div className="flex gap-3"><span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-lg shadow-sm ${overallTrainingComplete ? "bg-[#22C55E] text-white" : "bg-[#ECFDF5] text-[#166534]"}`}>{overallTrainingComplete ? "🎉" : "🤖"}</span><div className="min-w-0 flex-1"><p className="text-sm font-semibold text-[#111827]">{overallTrainingComplete ? "Your AI Employee is Ready" : "Training Your AI Employee"}</p><p className="mt-1 text-xs text-[#475569]">{overallTrainingComplete ? "Your AI has completed the available training and is ready to represent your business." : `Step ${currentTrainingStepNumber} of ${currentTrainingLessonCount} · ${currentTrainingLessonLabel}`}</p><p className="mt-1 text-xs leading-5 text-[#64748B]">{overallTrainingComplete ? "Keep teaching your AI as your business grows." : activeWorkspaceSection === "Knowledge Hub" ? "Your AI is building knowledge so it can answer with more confidence." : "Your AI is learning about your business so it can represent you confidently in every customer conversation."}</p><div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]"><div className="h-full rounded-full bg-[#22C55E] transition-all duration-300" style={{ width: `${overallTrainingComplete ? 100 : overallTrainingPercent}%` }} /></div><p className="mt-2 text-[11px] font-semibold text-[#166534]">{completedTrainingLessonCount} of {totalTrainingLessonCount} lessons complete · {overallTrainingComplete ? 100 : overallTrainingPercent}% trained</p></div></div>
-                      <div className="rounded-xl border border-[#BBF7D0] bg-[#F7FEF9] p-3"><p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#166534]">AI Readiness</p><p className="mt-1 text-lg font-semibold text-[#111827]">{overallTrainingComplete ? 100 : aiReadiness}% ready</p><p className="mt-1 text-xs text-[#64748B]">{overallTrainingComplete ? "Ready for customer conversations" : `About ${Math.max(1, 6 - completedTrainingLessonCount)} min left`}</p><button type="button" onClick={() => { if (activeWorkspaceSection === "Knowledge Hub") { setActiveWorkspaceSection("Knowledge Hub"); focusKnowledgeLesson(activeKnowledgeStep); } else { setActiveWorkspaceSection("Identity"); focusIdentityLesson(activeIdentityStep); } }} className="mt-3 text-xs font-semibold text-[#166534] transition hover:text-[#047857]">Continue training <ChevronRight className="inline h-3.5 w-3.5" /></button></div>
+                      <div className="rounded-xl border border-[#BBF7D0] bg-[#F7FEF9] p-3"><p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#166534]">AI Readiness</p><p className="mt-1 text-lg font-semibold text-[#111827]">{aiConfigurationReadiness ? aiReadinessLabel : aiConfigurationLoading ? "Loading…" : "Unavailable"}</p><p role={aiConfigurationError ? "alert" : undefined} className={`mt-1 text-xs ${aiConfigurationError ? "text-[#B91C1C]" : "text-[#64748B]"}`}>{aiConfigurationError ?? (aiConfigurationReadiness?.is_configured ? "Configuration requirements are saved" : aiConfigurationReadiness ? `Missing: ${aiConfigurationReadiness.missing_sections.join(", ")}` : "Checking saved configuration")}</p><button type="button" onClick={() => { if (activeWorkspaceSection === "Knowledge Hub") { setActiveWorkspaceSection("Knowledge Hub"); focusKnowledgeLesson(activeKnowledgeStep); } else { setActiveWorkspaceSection("Identity"); focusIdentityLesson(activeIdentityStep); } }} className="mt-3 text-xs font-semibold text-[#166534] transition hover:text-[#047857]">Continue training <ChevronRight className="inline h-3.5 w-3.5" /></button></div>
                     </div>
                   </section>
 
