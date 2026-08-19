@@ -134,6 +134,65 @@ export function changePassword(
   });
 }
 
+export type CustomerRelationship = "contact" | "lead" | "customer";
+export type CustomerLeadStatus = "" | "new" | "cold" | "warm" | "hot";
+export type CustomerSource = "whatsapp" | "website" | "email" | "sms" | "manual" | "import" | "google_contacts" | "other";
+
+export type Customer = {
+  id: number;
+  name: string;
+  phone: string;
+  email: string;
+  company: string;
+  location: string;
+  notes: string;
+  relationship: CustomerRelationship;
+  lead_status: CustomerLeadStatus;
+  source: CustomerSource;
+  created_at: string;
+  updated_at: string;
+};
+
+export type CustomerInput = {
+  name: string;
+  phone?: string;
+  email?: string;
+  company?: string;
+  location?: string;
+  notes?: string;
+  relationship?: CustomerRelationship;
+  lead_status?: CustomerLeadStatus;
+  source?: CustomerSource;
+};
+
+type CustomerMutation = { success: boolean; customer: Customer };
+
+export function getCustomers(params: {
+  search?: string;
+  relationship?: CustomerRelationship;
+  lead_status?: Exclude<CustomerLeadStatus, "">;
+  source?: CustomerSource;
+  ordering?: "name" | "-name" | "relationship" | "-relationship" | "created_at" | "-created_at" | "updated_at" | "-updated_at";
+} = {}) {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined && value !== "") query.set(key, String(value));
+  });
+  return apiRequest<Customer[]>(`/api/customers/${query.size ? `?${query}` : ""}`, authenticatedJson("GET"));
+}
+
+export function createCustomer(customer: CustomerInput) {
+  return apiRequest<CustomerMutation>("/api/customers/", authenticatedJson("POST", customer));
+}
+
+export function updateCustomer(customerId: number, customer: Partial<CustomerInput>) {
+  return apiRequest<CustomerMutation>(`/api/customers/${customerId}/`, authenticatedJson("PATCH", customer));
+}
+
+export function deleteCustomer(customerId: number) {
+  return apiRequest<{ success: boolean; message: string }>(`/api/customers/${customerId}/`, authenticatedJson("DELETE"));
+}
+
 export type CatalogItemType =
   | "product"
   | "service"
@@ -364,10 +423,17 @@ export function markConversationRead(conversationId: number) {
   return apiRequest<ConversationMutation>(`/api/conversations/${conversationId}/read/`, authenticatedJson("POST"));
 }
 
+export type AIEmployeePersonality = "Friendly" | "Professional" | "Warm" | "Playful" | "Luxury" | "Technical" | "Casual" | "Formal";
+export type AIEmployeeCommunicationStyle = "Short & Direct" | "Balanced" | "Detailed";
+export type AIEmployeeEmojiUsage = "Never" | "Sometimes" | "Often";
+export type AIEmployeePreferredTone = "Helpful" | "Confident" | "Educational" | "Sales-focused" | "Conversational";
+export type AIEmployeeLanguage = "English" | "Kiswahili" | "French" | "Arabic" | "German" | "Spanish" | "Portuguese" | "Somali" | "Amharic" | "Hindi" | "Chinese" | "Italian";
+export type KnowledgeSourceFAQCategory = "" | "General" | "Pricing" | "Delivery" | "Support" | "Other";
+
 export type AIEmployeeConfiguration = {
   id: number | null;
-  is_enabled: boolean; human_takeover_enabled: boolean; primary_language: string; supported_languages: string[];
-  personality: string; communication_style: string; emoji_usage: string; preferred_tone: string;
+  is_enabled: boolean; human_takeover_enabled: boolean; primary_language: AIEmployeeLanguage; supported_languages: AIEmployeeLanguage[];
+  personality: AIEmployeePersonality; communication_style: AIEmployeeCommunicationStyle; emoji_usage: AIEmployeeEmojiUsage; preferred_tone: AIEmployeePreferredTone;
   writing_examples: string; writing_style_options: Record<string, boolean>; welcome_message: string;
   away_message: string; closing_message: string; outside_hours_mode: "continue" | "collect" | "closed";
   max_ai_messages: number; upsell_products: boolean; recommend_alternatives: boolean;
@@ -378,7 +444,7 @@ export type AIEmployeeConfiguration = {
 
 export type KnowledgeSource = {
   id: number; kind: "faq" | "document" | "website"; title: string; faq_question: string; faq_answer: string;
-  faq_category: string; file: string | null; original_name: string; mime_type: string; file_size: number | null;
+  faq_category: KnowledgeSourceFAQCategory; file: string | null; original_name: string; mime_type: string; file_size: number | null;
   url: string; instructions: string; created_at: string; updated_at: string;
 };
 

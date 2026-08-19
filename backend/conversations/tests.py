@@ -12,6 +12,9 @@ from customers.models import Customer
 from .models import Conversation, Message
 
 
+DEFAULT_CUSTOMER = object()
+
+
 class ConversationAPITests(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user("owner@example.com", "SecurePassword123!")
@@ -40,10 +43,10 @@ class ConversationAPITests(APITestCase):
             **overrides,
         )
 
-    def create_conversation(self, business=None, customer=None, **overrides):
+    def create_conversation(self, business=None, customer=DEFAULT_CUSTOMER, **overrides):
         return Conversation.objects.create(
             business=business or self.business,
-            customer=customer if customer is not None else self.customer,
+            customer=self.customer if customer is DEFAULT_CUSTOMER else customer,
             channel=overrides.pop("channel", Conversation.Channel.WHATSAPP),
             participant_address=overrides.pop("participant_address", "+254 712 345 678"),
             **overrides,

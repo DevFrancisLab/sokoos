@@ -190,12 +190,12 @@ class CatalogAPITests(APITestCase):
     def test_search_filters_readiness_and_business_scope(self):
         named = self.create_item(name="Hair Care", sku="HAIR", description="Nairobi styling", tags=["salon"], current_stock=1, low_stock_threshold=2)
         incomplete = self.create_item(name="Incomplete", sku="INCOMPLETE", description="Complete")
-        self.create_item(name="Ready", sku="READY", description="Complete", current_stock=5, low_stock_threshold=1, faq_items=["FAQ"])
+        ready = self.create_item(name="Ready", sku="READY", description="Complete", current_stock=5, low_stock_threshold=1, faq_items=["FAQ"])
         self.create_item(business=self.other_business, category=self.other_category, name="Private Search", sku="SECRET", description="Secret", tags=["hidden"])
         self.authenticate()
-        for term, expected in (("Hair", named.pk), ("Products", named.pk), ("HAIR", named.pk), ("Nairobi", named.pk), ("salon", named.pk)):
+        for term, expected in (("Hair", [named.pk]), ("Products", [ready.pk, incomplete.pk, named.pk]), ("HAIR", [named.pk]), ("Nairobi", [named.pk]), ("salon", [named.pk])):
             with self.subTest(term=term):
-                self.assertEqual([row["id"] for row in self.client.get(self.list_url, {"search": term}).data], [named.pk])
+                self.assertEqual([row["id"] for row in self.client.get(self.list_url, {"search": term}).data], expected)
         self.assertEqual([row["id"] for row in self.client.get(self.list_url, {"item_type": "product", "low_stock": "true"}).data], [named.pk])
         readiness = self.client.get(self.list_url, {"readiness": "needs_information"})
         self.assertIn(incomplete.pk, [row["id"] for row in readiness.data])

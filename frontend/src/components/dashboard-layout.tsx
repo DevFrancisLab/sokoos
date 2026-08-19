@@ -612,54 +612,6 @@ const SCHEDULED_POSTS = [
   },
 ];
 
-const CUSTOMERS = [
-  {
-    id: "u1",
-    avatar: "AM",
-    name: "Aisha Mwangi",
-    phone: "+254 712 345 678",
-    leadStatus: "Hot lead",
-    interestedProduct: "20 Mbps",
-    lastInteraction: "Today, 11:20 AM",
-  },
-  {
-    id: "u2",
-    avatar: "JN",
-    name: "James Njoroge",
-    phone: "+254 700 123 456",
-    leadStatus: "Warm lead",
-    interestedProduct: "Business Package",
-    lastInteraction: "Yesterday, 04:15 PM",
-  },
-  {
-    id: "u3",
-    avatar: "GR",
-    name: "Grace Wanjiru",
-    phone: "+254 733 987 654",
-    leadStatus: "New lead",
-    interestedProduct: "10 Mbps",
-    lastInteraction: "Jul 02, 2026",
-  },
-  {
-    id: "u4",
-    avatar: "MK",
-    name: "Moses Kimani",
-    phone: "+254 711 222 333",
-    leadStatus: "Hot lead",
-    interestedProduct: "Business Package",
-    lastInteraction: "Jul 03, 2026",
-  },
-  {
-    id: "u5",
-    avatar: "SR",
-    name: "Susan Rono",
-    phone: "+254 714 555 777",
-    leadStatus: "Cold lead",
-    interestedProduct: "10 Mbps",
-    lastInteraction: "Jul 01, 2026",
-  },
-];
-
 const PRODUCTS = [
   { id: "prod1", name: "10 Mbps", price: "KSh 1500", active: true },
   { id: "prod2", name: "20 Mbps", price: "KSh 2500", active: true },
@@ -1799,7 +1751,6 @@ export default function DashboardLayout() {
     size: string;
     uploaded: string;
     status: string;
-    extracted: string;
     kind: string;
     progress?: number;
   };
@@ -1962,9 +1913,6 @@ export default function DashboardLayout() {
     });
   }, [activeWorkspaceSection]);
   const [businessModelSelections, setBusinessModelSelections] = useState<string[]>([]);
-  // This count is still consumed by the unrelated Knowledge Hub progress UI.
-  // Catalog itself is sourced exclusively from the API below.
-  const CATALOG_ITEMS = new Array(7).fill(null);
   const toggleBusinessModelSelection = (option: string) => {
     setBusinessModelSelections((current) =>
       current.includes(option) ? current.filter((item) => item !== option) : [...current, option],
@@ -2140,9 +2088,6 @@ export default function DashboardLayout() {
   };
   const previewCatalogProduct = (id: number) => {
     console.log(`Preview catalogue item ${id} - placeholder`);
-  };
-  const trainCatalogProductAI = (id: number) => {
-    console.log(`Train AI for catalogue item ${id} - placeholder`);
   };
   const getCatalogueItemReadiness = (item: CatalogProduct) => {
     if (item.readiness) return { label: item.readiness.label, isReady: item.readiness.is_ready, needsInformation: item.readiness.needs_information, missingImage: item.readiness.missing_image, missingFaq: item.readiness.missing_faq };
@@ -2374,7 +2319,7 @@ export default function DashboardLayout() {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-lg font-semibold text-[#111827]">Services editor</p>
-          <p className="mt-2 text-sm text-[#64748B]">Manage service details, booking options, and media for your AI recommendations.</p>
+          <p className="mt-2 text-sm text-[#64748B]">Manage service details, booking options, and media in your business catalog.</p>
         </div>
         <button type="button" onClick={addService} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Add Service</button>
       </div>
@@ -2535,9 +2480,9 @@ export default function DashboardLayout() {
   const getProductCompletionMessage = (id: string) => {
     switch (id) {
       case "product-types":
-        return "Product Types complete — your AI can now distinguish between your catalog formats.";
+        return "Product Types complete — your catalog formats are configured.";
       case "products":
-        return "Products complete — your catalogue has been added and is ready to be managed.";
+        return "Products complete — your catalogue has been added and is ready to manage.";
       case "pricing":
         return "Pricing complete — your product prices are saved and ready to publish.";
       case "product-media":
@@ -2555,20 +2500,8 @@ export default function DashboardLayout() {
     [catalogProducts.length, pricingSectionComplete],
   );
 
-  const catalogueReadinessSummary = catalogProducts.reduce(
-    (summary, product) => {
-      const readiness = getCatalogueItemReadiness(product);
-      summary.ready += Number(readiness.isReady);
-      summary.needsInformation += Number(readiness.needsInformation);
-      summary.missingImage += Number(readiness.missingImage);
-      summary.missingFaq += Number(readiness.missingFaq);
-      return summary;
-    },
-    { ready: 0, needsInformation: 0, missingImage: 0, missingFaq: 0 },
-  );
-  const catalogueReadinessPercentage = catalogProducts.length > 0
-    ? Math.round((catalogueReadinessSummary.ready / catalogProducts.length) * 100)
-    : 0;
+  const catalogProductCount = catalogProducts.filter((item) => item.type === "Product").length;
+  const catalogServiceCount = catalogProducts.filter((item) => item.type === "Service").length;
 
   const productLessonCompleted = productSteps.filter((step) => step.done).length;
   const productLessonProgress = Math.round((productLessonCompleted / productSteps.length) * 100);
@@ -3680,7 +3613,7 @@ export default function DashboardLayout() {
     setKnowledgeTraining((current) => ({
       ...current,
       faqs: sources.filter((source) => source.kind === "faq").map((source) => ({ id: String(source.id), question: source.faq_question, answer: source.faq_answer, category: source.faq_category || undefined })),
-      documents: sources.filter((source) => source.kind === "document").map((source) => ({ id: String(source.id), name: source.original_name || source.title, size: source.file_size ? `${source.file_size >= 1024 * 1024 ? `${(source.file_size / (1024 * 1024)).toFixed(1)} MB` : `${Math.max(1, Math.round(source.file_size / 1024))} KB`}` : "", uploaded: source.created_at, status: "Uploaded", extracted: "Stored", kind: (source.original_name || source.title).split(".").pop()?.toUpperCase() || "FILE" })),
+      documents: sources.filter((source) => source.kind === "document").map((source) => ({ id: String(source.id), name: source.original_name || source.title, size: source.file_size ? `${source.file_size >= 1024 * 1024 ? `${(source.file_size / (1024 * 1024)).toFixed(1)} MB` : `${Math.max(1, Math.round(source.file_size / 1024))} KB`}` : "", uploaded: source.created_at, status: "Uploaded", kind: (source.original_name || source.title).split(".").pop()?.toUpperCase() || "FILE" })),
       website: website ? { websiteUrl: website.url, instructions: website.instructions, status: "ready" } : { websiteUrl: "", instructions: "", status: "not_connected" },
     }));
   };
@@ -5927,7 +5860,7 @@ export default function DashboardLayout() {
                 <p className="text-sm font-semibold text-[#111827]">Website URL</p>
                 <p className="mt-1 break-all text-sm text-[#475569]">{websiteImportUrl}</p>
                 <p className="mt-4 text-sm font-semibold text-[#166534]">Connection status</p>
-                <p className="mt-1 text-sm text-[#475569]"><span className="font-semibold text-[#166534]">Website added</span> · This source is configured and waiting for processing.</p>
+                <p className="mt-1 text-sm text-[#475569]"><span className="font-semibold text-[#166534]">Website source saved</span> · No website processing or synchronization is configured yet.</p>
               </div>
               <div className="flex shrink-0 items-center gap-2">
                 <button type="button" onClick={editWebsite} className="rounded-lg px-2.5 py-2 text-sm font-semibold text-[#334155] transition hover:bg-white">Edit</button>
@@ -6334,10 +6267,7 @@ export default function DashboardLayout() {
           )}
           {selected === "Customers" && (
             <CustomersWorkspace
-              customers={CUSTOMERS}
-              inboxConversations={INBOX_CONVERSATIONS}
               setSelected={setSelected}
-              setActiveConversation={setActiveConversation}
             />
           )}
 
@@ -7425,42 +7355,17 @@ export default function DashboardLayout() {
                           <div className="flex flex-col gap-3 xl:flex-row xl:items-start xl:justify-between">
                             <div className="min-w-0">
                               <h1 className="text-2xl font-semibold tracking-[-0.02em] text-[#111827]">Catalogue</h1>
-                              <p className="mt-1 max-w-3xl text-sm text-[#475569]">Teach your AI what your business sells.</p>
+                              <p className="mt-1 max-w-3xl text-sm text-[#475569]">Manage the products and services in your business catalog. This remains separate from AI Employee configuration and standalone knowledge sources.</p>
                             </div>
 
                             <div className="w-full xl:w-[420px]">
                               <div className="rounded-[18px] border border-[#E5E7EB] bg-[#F8FBFF] p-3">
                                 <div className="flex items-center justify-between gap-4">
                                   <div className="min-w-0">
-                                    <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Catalogue readiness</p>
-                                    <p className="mt-0.5 text-xs text-[#64748B]">{catalogueReadinessSummary.ready} of {catalogProducts.length} items ready</p>
+                                    <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Catalogue summary</p>
+                                    <p className="mt-0.5 text-xs text-[#64748B]">{catalogProducts.length} items in your business catalog</p>
                                   </div>
-                                  <div className="text-2xl font-semibold tracking-[-0.04em] text-[#111827]">{catalogueReadinessPercentage}%</div>
-                                </div>
-
-                                <div className="mt-2 h-1.5 rounded-full bg-[#E5E7EB]">
-                                  <div className="h-full rounded-full bg-[#22C55E] transition-[width] duration-300" style={{ width: `${catalogueReadinessPercentage}%` }} />
-                                </div>
-
-                                <div className="mt-3 flex flex-wrap gap-2 text-xs">
-                                  <div className="inline-flex items-center gap-1.5 rounded-full bg-[#ECFDF5] px-2.5 py-1 font-medium text-[#166534]">
-                                    <Check className="h-3.5 w-3.5" aria-hidden="true" />Ready {catalogueReadinessSummary.ready}
-                                  </div>
-                                  {catalogueReadinessSummary.needsInformation > 0 ? (
-                                    <div className="inline-flex items-center gap-1.5 rounded-full bg-[#FFFBEB] px-2.5 py-1 font-medium text-[#B45309]">
-                                      <CircleAlert className="h-3.5 w-3.5" aria-hidden="true" />Needs information {catalogueReadinessSummary.needsInformation}
-                                    </div>
-                                  ) : null}
-                                  {catalogueReadinessSummary.missingImage > 0 ? (
-                                    <div className="inline-flex items-center gap-1.5 rounded-full bg-[#FFFBEB] px-2.5 py-1 font-medium text-[#B45309]">
-                                      <CircleAlert className="h-3.5 w-3.5" aria-hidden="true" />Missing image {catalogueReadinessSummary.missingImage}
-                                    </div>
-                                  ) : null}
-                                  {catalogueReadinessSummary.missingFaq > 0 ? (
-                                    <div className="inline-flex items-center gap-1.5 rounded-full bg-[#FFFBEB] px-2.5 py-1 font-medium text-[#B45309]">
-                                      <CircleAlert className="h-3.5 w-3.5" aria-hidden="true" />Missing FAQ {catalogueReadinessSummary.missingFaq}
-                                    </div>
-                                  ) : null}
+                                  <div className="text-right text-xs font-semibold text-[#475569]">{catalogProductCount} products<br />{catalogServiceCount} services</div>
                                 </div>
                               </div>
                             </div>
@@ -7509,7 +7414,7 @@ export default function DashboardLayout() {
                                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                     <div className="min-w-0">
                                       <p className="text-sm font-semibold text-[#111827]">Catalogue items</p>
-                                      <p className="mt-1 text-sm text-[#64748B]">Browse, update, and prepare items for AI recommendations.</p>
+                                      <p className="mt-1 text-sm text-[#64748B]">Browse and update product and service information from your catalog.</p>
                                     </div>
                                     <div className="inline-flex items-center gap-2 rounded-full border border-[#E5E7EB] bg-[#F8FAFB] px-3 py-1.5 text-sm font-semibold text-[#111827]">
                                       <span>{catalogProducts.length}</span>
@@ -7658,7 +7563,6 @@ export default function DashboardLayout() {
                                                         <DropdownMenuItem onSelect={() => openProductDrawer(item.id)}>Edit</DropdownMenuItem>
                                                         <DropdownMenuItem onSelect={() => duplicateCatalogProduct(item.id)}>Duplicate</DropdownMenuItem>
                                                         <DropdownMenuItem onSelect={() => previewCatalogProduct(item.id)}>Preview</DropdownMenuItem>
-                                                        <DropdownMenuItem onSelect={() => trainCatalogProductAI(item.id)}>Train AI</DropdownMenuItem>
                                                         <DropdownMenuItem onSelect={() => deleteCatalogProduct(item.id)}>Delete</DropdownMenuItem>
                                                       </DropdownMenuContent>
                                                     </DropdownMenu>
@@ -7678,7 +7582,7 @@ export default function DashboardLayout() {
                                                 <th className="px-4 py-3 text-left font-semibold text-[#475569]">Category</th>
                                                 <th className="px-4 py-3 text-left font-semibold text-[#475569]">Price</th>
                                                 <th className="px-4 py-3 text-left font-semibold text-[#475569]">Inventory</th>
-                                                <th className="px-4 py-3 text-left font-semibold text-[#475569]">AI Ready</th>
+                                                <th className="px-4 py-3 text-left font-semibold text-[#475569]">Completeness</th>
                                                 <th className="px-4 py-3 text-left font-semibold text-[#475569]">Status</th>
                                                 <th className="px-4 py-3 text-right font-semibold text-[#475569]">Actions</th>
                                               </tr>
@@ -7712,7 +7616,6 @@ export default function DashboardLayout() {
                                                           <DropdownMenuItem onSelect={() => openProductDrawer(item.id)}>Edit</DropdownMenuItem>
                                                           <DropdownMenuItem onSelect={() => duplicateCatalogProduct(item.id)}>Duplicate</DropdownMenuItem>
                                                           <DropdownMenuItem onSelect={() => previewCatalogProduct(item.id)}>Preview</DropdownMenuItem>
-                                                          <DropdownMenuItem onSelect={() => trainCatalogProductAI(item.id)}>Train AI</DropdownMenuItem>
                                                           <DropdownMenuItem onSelect={() => deleteCatalogProduct(item.id)}>Delete</DropdownMenuItem>
                                                         </DropdownMenuContent>
                                                       </DropdownMenu>
@@ -8876,7 +8779,6 @@ export default function DashboardLayout() {
               setSelected={setSelected}
               setActiveWorkspaceSection={setActiveWorkspaceSection}
               INBOX_CONVERSATIONS={INBOX_CONVERSATIONS}
-              CUSTOMERS={CUSTOMERS}
               PRODUCTS={PRODUCTS}
               playbooks={playbooks}
               getAllIntegrationItems={getAllIntegrationItems}

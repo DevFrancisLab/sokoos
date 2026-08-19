@@ -242,6 +242,8 @@ class KnowledgeSourceSerializer(serializers.ModelSerializer):
 
 
 class KnowledgeSourceWriteSerializer(serializers.ModelSerializer):
+    faq_category = serializers.CharField(required=False, allow_blank=True)
+
     class Meta:
         model = KnowledgeSource
         fields = ["kind", "title", "faq_question", "faq_answer", "faq_category", "file", "url", "instructions"]
@@ -265,7 +267,11 @@ class KnowledgeSourceWriteSerializer(serializers.ModelSerializer):
         return trim(value)
 
     def validate_faq_category(self, value):
-        return trim(value)
+        value = trim(value)
+        allowed_categories = {choice for choice, _ in KnowledgeSource.FAQCategory.choices}
+        if value and value not in allowed_categories:
+            raise serializers.ValidationError("Unsupported FAQ category.")
+        return value
 
     def validate_instructions(self, value):
         return trim(value)
@@ -309,6 +315,7 @@ class KnowledgeSourceWriteSerializer(serializers.ModelSerializer):
             url = attrs.get("url", self.instance.url if self.instance else "")
             if not url:
                 raise serializers.ValidationError({"url": "A website URL is required."})
+            self._validate_website_uniqueness(self.context["business"], url)
         return attrs
 
     def _validate_website_uniqueness(self, business, url):
@@ -321,8 +328,6 @@ class KnowledgeSourceWriteSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         business = self.context["business"]
         kind = validated_data["kind"]
-        if kind == KnowledgeSource.Kind.WEBSITE:
-            self._validate_website_uniqueness(business, validated_data["url"])
         upload = validated_data.pop("file", None)
         if kind == KnowledgeSource.Kind.FAQ and not validated_data.get("title"):
             validated_data["title"] = validated_data["faq_question"]
@@ -341,8 +346,6 @@ class KnowledgeSourceWriteSerializer(serializers.ModelSerializer):
         return source
 
     def update(self, instance, validated_data):
-        if instance.kind == KnowledgeSource.Kind.WEBSITE and "url" in validated_data:
-            self._validate_website_uniqueness(instance.business, validated_data["url"])
         if "file" in validated_data:
             raise serializers.ValidationError({"file": "Replace a document by deleting it and uploading a new source."})
         return super().update(instance, validated_data)
