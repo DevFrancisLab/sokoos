@@ -271,7 +271,7 @@ function FloatingSokoosAI() {
         }
       `}</style>
 
-      <div className="fixed bottom-8 right-8 z-[100] flex flex-col items-end">
+      <div className="fixed bottom-4 right-4 z-[100] flex flex-col items-end sm:bottom-8 sm:right-8">
         {!isChatOpen && (
           <div
             className={`mb-3 w-[240px] rounded-[24px] border border-[#E5E7EB] bg-white p-4 text-left shadow-[0_20px_50px_rgba(15,23,42,0.16)] transition-all duration-300 ease-out ${
@@ -309,7 +309,7 @@ function FloatingSokoosAI() {
         <button
           type="button"
           onClick={openChat}
-          className="relative flex h-[72px] w-[72px] items-center justify-center rounded-full border border-[#EEF2F6] bg-white shadow-[0_20px_50px_rgba(15,23,42,0.16)] transition-transform duration-200 hover:scale-105"
+          className="relative flex h-[60px] w-[60px] items-center justify-center rounded-full border border-[#EEF2F6] bg-white shadow-[0_20px_50px_rgba(15,23,42,0.16)] transition-transform duration-200 hover:scale-105 sm:h-[72px] sm:w-[72px]"
           style={{ animation: "assistantPulse 2.4s ease-in-out infinite" }}
           aria-label="Open Sokoos AI"
         >
@@ -464,12 +464,12 @@ function Hero() {
       <div className="container-page relative pt-16 pb-10 sm:pt-24 sm:pb-16">
         <Reveal>
           <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
-            <div className="inline-flex items-center rounded-full bg-[#ECFDF5] px-4 py-2 text-sm font-semibold text-[#166534] shadow-sm shadow-[#ECFDF5]/60">
+            <div className="inline-flex max-w-full items-center rounded-full bg-[#ECFDF5] px-3 py-1.5 text-center text-[11px] font-medium leading-5 text-[#166534] shadow-sm shadow-[#ECFDF5]/60 sm:px-3.5 sm:text-xs sm:whitespace-nowrap">
               ✨ Get More Customers • Make More Sales • Keep Them Coming Back
             </div>
             <h1 className="mt-6 text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl">
-              Your Business With a <span className="text-[#16A34A]">Bot</span>{" "}
-              That Sells
+              Your Business With a <br className="hidden sm:block" />
+              <span className="text-[#16A34A]">Bot</span> That Sells
             </h1>
             <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
               Sokoos gives your business a bot that attracts customers, answers
@@ -488,16 +488,11 @@ function Hero() {
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
               </Link>
             </div>
-            <div className="mt-4 flex flex-col items-center gap-2 text-sm text-muted-foreground sm:flex-row">
-              <span className="text-[#166534]">
-                Attract → Engage → Sell → Retain
-              </span>
-            </div>
           </div>
         </Reveal>
 
         <Reveal delay={150}>
-          <div className="relative mx-auto mt-14 max-w-6xl">
+          <div className="relative mx-auto mt-10 max-w-6xl sm:mt-12">
             <div className="absolute inset-x-8 top-8 -z-10 h-full rounded-3xl bg-primary/10 blur-3xl" />
             <div className="overflow-hidden rounded-2xl border border-border bg-white shadow-[var(--shadow-elevated)]">
               <img
