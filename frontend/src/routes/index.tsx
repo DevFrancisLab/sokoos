@@ -155,11 +155,16 @@ function FloatingSokoosAI() {
       window.clearTimeout(timer);
       timer = window.setTimeout(showGreeting, 15000);
     };
-    const idleEvents = ["pointerdown", "keydown", "scroll", "touchstart"];
+    const dismissOnScroll = () => {
+      window.clearTimeout(timer);
+      sessionStorage.setItem(STORAGE_KEY, "true");
+    };
+    const idleEvents = ["pointerdown", "keydown", "touchstart"];
 
     idleEvents.forEach((eventName) => {
       window.addEventListener(eventName, resetIdleTimer);
     });
+    window.addEventListener("scroll", dismissOnScroll, { passive: true });
     resetIdleTimer();
 
     return () => {
@@ -167,6 +172,7 @@ function FloatingSokoosAI() {
       idleEvents.forEach((eventName) => {
         window.removeEventListener(eventName, resetIdleTimer);
       });
+      window.removeEventListener("scroll", dismissOnScroll);
     };
   }, []);
 
