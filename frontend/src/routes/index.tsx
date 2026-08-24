@@ -140,20 +140,34 @@ function FloatingSokoosAI() {
   ];
 
   useEffect(() => {
-    const shouldHideGreeting =
-      typeof window !== "undefined" &&
-      sessionStorage.getItem(STORAGE_KEY) === "true";
+    const shouldHideGreeting = sessionStorage.getItem(STORAGE_KEY) === "true";
 
     if (shouldHideGreeting) {
       return;
     }
 
-    const timer = window.setTimeout(() => {
+    let timer: number;
+    const showGreeting = () => {
       setIsGreetingVisible(true);
       sessionStorage.setItem(STORAGE_KEY, "true");
-    }, 2500);
+    };
+    const resetIdleTimer = () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(showGreeting, 15000);
+    };
+    const idleEvents = ["pointerdown", "keydown", "scroll", "touchstart"];
 
-    return () => window.clearTimeout(timer);
+    idleEvents.forEach((eventName) => {
+      window.addEventListener(eventName, resetIdleTimer);
+    });
+    resetIdleTimer();
+
+    return () => {
+      window.clearTimeout(timer);
+      idleEvents.forEach((eventName) => {
+        window.removeEventListener(eventName, resetIdleTimer);
+      });
+    };
   }, []);
 
   useEffect(() => {
