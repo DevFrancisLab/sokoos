@@ -458,10 +458,10 @@ function Hero() {
   return (
     <section
       id="hero"
-      className="relative overflow-hidden"
+      className="relative flex min-h-[calc(100svh-4rem)] items-center overflow-hidden"
       style={{ backgroundImage: "var(--gradient-hero)" }}
     >
-      <div className="container-page relative py-16 sm:py-24">
+      <div className="container-page relative py-16 sm:py-20">
         <Reveal>
           <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
             <h1 className="mt-6 text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl">
