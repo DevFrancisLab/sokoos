@@ -471,9 +471,9 @@ function Hero() {
             <p className="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
               Sokoos gives your business a bot that attracts customers, answers
               questions, follows up, helps close sales, and keeps customers
-              coming back —{" "}
+              coming back across{" "}
               <span className="relative isolate font-semibold text-[#166534] after:absolute after:bottom-[-0.16em] after:left-0 after:-z-10 after:h-[0.42em] after:w-full after:-rotate-[1.5deg] after:rounded-[55%_45%_50%_45%] after:bg-[#86EFAC]/70">
-                across your channels.
+                all your channels.
               </span>
             </p>
             <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row">
