@@ -23,7 +23,6 @@ import {
   Linkedin,
   MessageCircle,
 } from "lucide-react";
-import heroDashboard from "@/assets/hero-dashboard.png";
 import sokoosLogo from "@/assets/sokoos_logo.png";
 
 export const Route = createFileRoute("/")({
@@ -461,12 +460,9 @@ function Hero() {
       className="relative overflow-hidden"
       style={{ backgroundImage: "var(--gradient-hero)" }}
     >
-      <div className="container-page relative pt-16 pb-10 sm:pt-24 sm:pb-16">
+      <div className="container-page relative py-16 sm:py-24">
         <Reveal>
           <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
-            <div className="inline-flex max-w-full items-center rounded-full bg-[#ECFDF5] px-3 py-1.5 text-center text-[11px] font-medium leading-5 text-[#166534] shadow-sm shadow-[#ECFDF5]/60 sm:px-3.5 sm:text-xs sm:whitespace-nowrap">
-              ✨ Get More Customers • Make More Sales • Keep Them Coming Back
-            </div>
             <h1 className="mt-6 text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl">
               Your Business With a <br className="hidden sm:block" />
               <span className="text-[#16A34A]">Bot</span> That Sells
@@ -491,20 +487,6 @@ function Hero() {
           </div>
         </Reveal>
 
-        <Reveal delay={150}>
-          <div className="relative mx-auto mt-10 max-w-6xl sm:mt-12">
-            <div className="absolute inset-x-8 top-8 -z-10 h-full rounded-3xl bg-primary/10 blur-3xl" />
-            <div className="overflow-hidden rounded-2xl border border-border bg-white shadow-[var(--shadow-elevated)]">
-              <img
-                src={heroDashboard}
-                alt="Sokoos dashboard showing conversations, customer responses, scheduled status posts and performance"
-                width={1600}
-                height={1120}
-                className="h-auto w-full"
-              />
-            </div>
-          </div>
-        </Reveal>
       </div>
     </section>
   );
@@ -535,15 +517,18 @@ function Industries() {
             title="Built for Businesses That Sell"
             subtitle="Whether you sell products, services, subscriptions, appointments, or expertise, Sokoos helps you turn customer conversations into sales."
           />
-          <div className="mx-auto mt-8 flex max-w-5xl flex-wrap items-center justify-center gap-x-5 gap-y-3 text-sm font-medium text-muted-foreground">
-            {industries.map((industry, index) => (
-              <span key={industry} className="flex items-center gap-x-5">
-                {index > 0 && (
-                  <span className="h-1 w-1 rounded-full bg-border" />
-                )}
-                {industry}
-              </span>
-            ))}
+          <div className="relative mt-10 overflow-hidden py-2 [mask-image:linear-gradient(to_right,transparent,black_8%,black_92%,transparent)]">
+            <div className="flex w-max animate-marquee-right motion-reduce:animate-none hover:[animation-play-state:paused]">
+              {[...industries, ...industries].map((industry, index) => (
+                <span
+                  key={`${industry}-${index}`}
+                  className="mx-2 inline-flex items-center whitespace-nowrap rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-muted-foreground shadow-sm sm:mx-3"
+                  aria-hidden={index >= industries.length}
+                >
+                  {industry}
+                </span>
+              ))}
+            </div>
           </div>
         </Reveal>
       </div>
