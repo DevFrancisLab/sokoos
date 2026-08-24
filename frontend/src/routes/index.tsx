@@ -63,14 +63,14 @@ function Reveal({
 
 function Logo() {
   return (
-    <div className="flex items-center gap-2">
+    <a href="/#hero" aria-label="Sokoos home" className="flex items-center gap-2">
       <img
         src={sokoosLogo}
-        alt="Sokoos"
+        alt=""
         className="h-8 w-8 rounded-lg object-cover"
       />
       <span className="text-lg font-bold tracking-tight">Sokoos</span>
-    </div>
+    </a>
   );
 }
 
@@ -457,6 +457,7 @@ function FloatingSokoosAI() {
 function Hero() {
   return (
     <section
+      id="hero"
       className="relative overflow-hidden"
       style={{ backgroundImage: "var(--gradient-hero)" }}
     >
