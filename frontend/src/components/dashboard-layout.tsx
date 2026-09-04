@@ -8779,6 +8779,7 @@ export default function DashboardLayout() {
               setSelected={setSelected}
               setActiveWorkspaceSection={setActiveWorkspaceSection}
               INBOX_CONVERSATIONS={INBOX_CONVERSATIONS}
+              CUSTOMERS={Object.values(CUSTOMER_PROFILES)}
               PRODUCTS={PRODUCTS}
               playbooks={playbooks}
               getAllIntegrationItems={getAllIntegrationItems}
