@@ -17,6 +17,14 @@ const todayMetrics = [
   { label: "Sales", Icon: CheckCircle2 },
 ];
 
+const getTimeBasedGreeting = () => {
+  const hour = new Date().getHours();
+
+  if (hour < 12) return "Good morning";
+  if (hour < 18) return "Good afternoon";
+  return "Good evening";
+};
+
 type AiEmployeeStatus = "Active" | "Needs attention" | "Not set up" | "Paused";
 
 const aiStatusStyles: Record<AiEmployeeStatus, { badge: string; dot: string; description: string }> = {
@@ -44,6 +52,7 @@ const aiStatusStyles: Record<AiEmployeeStatus, { badge: string; dot: string; des
 
 export function HomeWorkspace({ userName, aiEmployeeLaunched, aiEnabled, attentionConversations, CARD, SECTION_HEADING, CARD_TITLE }: HomeWorkspaceProps) {
   const firstName = userName.trim().split(/\s+/)[0] || "there";
+  const greeting = getTimeBasedGreeting();
   const actionableItems = attentionConversations.filter((conversation) => conversation.source === "needs_attention" || conversation.needsAttention);
   const aiStatus: AiEmployeeStatus = !aiEmployeeLaunched ? "Not set up" : !aiEnabled ? "Paused" : actionableItems.length > 0 ? "Needs attention" : "Active";
   const statusDetails = aiStatusStyles[aiStatus];
@@ -52,7 +61,7 @@ export function HomeWorkspace({ userName, aiEmployeeLaunched, aiEnabled, attenti
     <div className="h-full overflow-y-auto space-y-6 pr-2">
       <header className="px-1 pt-2">
         <p className={SECTION_HEADING}>Home</p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-[-0.02em] text-[#111827] sm:text-4xl">Good morning, {firstName} 👋</h1>
+        <h1 className="mt-2 text-3xl font-semibold tracking-[-0.02em] text-[#111827] sm:text-4xl">{greeting}, {firstName} 👋</h1>
         <p className="mt-2 text-sm leading-6 text-[#64748B] sm:text-base">Here&apos;s what&apos;s happening with your business.</p>
       </header>
 
