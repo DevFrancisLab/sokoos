@@ -6,7 +6,9 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from businesses.models import Business
+from businesses.models import Business, WhatsAppIntegration
+from businesses.whatsapp_outbound import WhatsAppOutboundError, send_whatsapp_text
+from customers.phone import InvalidWhatsAppPhoneNumber, normalize_whatsapp_phone_number
 
 from .models import Conversation, Message
 from .serializers import (
@@ -142,7 +144,13 @@ class ConversationListCreateView(ConversationBusinessMixin, APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        conversation = serializer.save(business=business)
+        try:
+            conversation = serializer.save(business=business)
+        except IntegrityError:
+            return self.validation_error(
+                "participant_address",
+                "A WhatsApp conversation already exists for this participant and business.",
+            )
         return Response(
             {"success": True, "conversation": ConversationSerializer(conversation).data},
             status=status.HTTP_201_CREATED,
@@ -212,6 +220,72 @@ class ConversationMessagesView(ConversationBusinessMixin, APIView):
                 conversation=conversation,
                 sender_type=Message.SenderType.HUMAN,
                 body=serializer.validated_data["body"],
+                direction=Message.Direction.OUTBOUND,
+                processing_status=Message.ProcessingStatus.PROCESSED,
+                delivery_status=Message.DeliveryStatus.NOT_APPLICABLE,
+            )
+            conversation.last_message_at = message.created_at
+            conversation.save(update_fields=["last_message_at", "updated_at"])
+
+        return Response(
+            {"success": True, "message": MessageSerializer(message).data},
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class WhatsAppReplyView(ConversationBusinessMixin, APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, conversation_id):
+        business, conversation = self.get_conversation(request, conversation_id)
+        if conversation.channel != Conversation.Channel.WHATSAPP:
+            return self.validation_error("conversation", "Only WhatsApp conversations support this endpoint.")
+
+        serializer = HumanMessageCreateSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(
+                {"success": False, "errors": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        customer = conversation.customer
+        recipient = (customer.phone_e164 if customer else "") or conversation.participant_address
+        try:
+            recipient = normalize_whatsapp_phone_number(recipient)
+        except InvalidWhatsAppPhoneNumber:
+            return self.validation_error("conversation", "WhatsApp recipient is not valid.")
+
+        try:
+            integration = business.whatsapp_integration
+        except WhatsAppIntegration.DoesNotExist:
+            return Response(
+                {"success": False, "message": "WhatsApp integration is not configured."},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
+
+        try:
+            external_message_id = send_whatsapp_text(
+                integration=integration,
+                recipient=recipient,
+                body=serializer.validated_data["body"],
+            )
+        except WhatsAppOutboundError:
+            return Response(
+                {"success": False, "message": "WhatsApp message could not be sent."},
+                status=status.HTTP_502_BAD_GATEWAY,
+            )
+
+        with transaction.atomic():
+            message = Message.objects.create(
+                conversation=conversation,
+                sender_type=Message.SenderType.HUMAN,
+                body=serializer.validated_data["body"],
+                external_message_id=external_message_id,
+                direction=Message.Direction.OUTBOUND,
+                message_type="text",
+                processing_status=Message.ProcessingStatus.PROCESSED,
+                delivery_status=Message.DeliveryStatus.SENT,
+                provider_metadata={"provider": "meta_whatsapp_cloud_api"},
             )
             conversation.last_message_at = message.created_at
             conversation.save(update_fields=["last_message_at", "updated_at"])

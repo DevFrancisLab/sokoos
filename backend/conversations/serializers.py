@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from customers.models import Customer
+from customers.phone import InvalidWhatsAppPhoneNumber, normalize_whatsapp_phone_number
 
 from .models import Conversation, Message
 
@@ -23,7 +24,20 @@ class ConversationCustomerSerializer(serializers.ModelSerializer):
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
-        fields = ["id", "sender_type", "body", "created_at"]
+        fields = [
+            "id",
+            "sender_type",
+            "body",
+            "external_message_id",
+            "direction",
+            "provider_timestamp",
+            "message_type",
+            "processing_status",
+            "delivery_status",
+            "provider_metadata",
+            "error_message",
+            "created_at",
+        ]
         read_only_fields = fields
 
 
@@ -79,6 +93,17 @@ class ConversationCreateSerializer(serializers.ModelSerializer):
         return customer
 
     def validate(self, attrs):
+        if attrs.get("channel") == Conversation.Channel.WHATSAPP:
+            participant_address = attrs.get("participant_address", "")
+            if not participant_address and attrs.get("customer") is not None:
+                customer = attrs["customer"]
+                participant_address = customer.phone_e164 or customer.phone
+            if participant_address:
+                try:
+                    attrs["participant_address"] = normalize_whatsapp_phone_number(participant_address)
+                except InvalidWhatsAppPhoneNumber as error:
+                    raise serializers.ValidationError({"participant_address": str(error)}) from error
+
         if attrs.get("customer") is None and not attrs.get("participant_address"):
             raise serializers.ValidationError(
                 {"participant_address": "Provide a customer_id or participant_address."}

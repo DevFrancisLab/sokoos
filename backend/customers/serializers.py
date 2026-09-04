@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from .models import Customer
+from .phone import InvalidWhatsAppPhoneNumber, normalize_whatsapp_phone_number
 
 
 class CustomerSerializer(serializers.ModelSerializer):
@@ -10,6 +11,7 @@ class CustomerSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "phone",
+            "phone_e164",
             "email",
             "company",
             "location",
@@ -20,7 +22,7 @@ class CustomerSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         ]
-        read_only_fields = ["id", "created_at", "updated_at"]
+        read_only_fields = ["id", "phone_e164", "created_at", "updated_at"]
 
     def _trim(self, value):
         return value.strip()
@@ -71,6 +73,14 @@ class CustomerSerializer(serializers.ModelSerializer):
         if business is None:
             return attrs
 
+        source = attrs.get("source", self.instance.source if self.instance else Customer.Source.MANUAL)
+        phone = attrs.get("phone", self.instance.phone if self.instance else "")
+        if source == Customer.Source.WHATSAPP and phone:
+            try:
+                attrs["phone_e164"] = normalize_whatsapp_phone_number(phone)
+            except InvalidWhatsAppPhoneNumber as error:
+                raise serializers.ValidationError({"phone": str(error)}) from error
+
         for field in ("phone", "email"):
             value = attrs.get(field)
             if value is None:
@@ -87,3 +97,19 @@ class CustomerSerializer(serializers.ModelSerializer):
                 )
 
         return attrs
+
+    def create(self, validated_data):
+        source = validated_data.get("source", Customer.Source.MANUAL)
+        phone = validated_data.get("phone", "")
+        if source == Customer.Source.WHATSAPP and phone:
+            validated_data["phone_e164"] = normalize_whatsapp_phone_number(phone)
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        source = validated_data.get("source", instance.source)
+        phone = validated_data.get("phone", instance.phone)
+        if source == Customer.Source.WHATSAPP and phone:
+            validated_data["phone_e164"] = normalize_whatsapp_phone_number(phone)
+        elif source != Customer.Source.WHATSAPP:
+            validated_data["phone_e164"] = ""
+        return super().update(instance, validated_data)

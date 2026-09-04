@@ -134,6 +134,32 @@ export function changePassword(
   });
 }
 
+export type WhatsAppIntegration = {
+  id: number;
+  meta_business_account_id: string;
+  phone_number_id: string;
+  is_enabled: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+type WhatsAppIntegrationMutation = {
+  success: boolean;
+  whatsapp_integration: WhatsAppIntegration;
+};
+
+export function getWhatsAppIntegration() {
+  return apiRequest<WhatsAppIntegration>("/api/business/whatsapp/", authenticatedJson("GET"));
+}
+
+export function saveWhatsAppIntegration(data: Pick<WhatsAppIntegration, "meta_business_account_id" | "phone_number_id">) {
+  return apiRequest<WhatsAppIntegrationMutation>("/api/business/whatsapp/", authenticatedJson("POST", data));
+}
+
+export function updateWhatsAppIntegration(data: Partial<Pick<WhatsAppIntegration, "meta_business_account_id" | "phone_number_id" | "is_enabled">>) {
+  return apiRequest<WhatsAppIntegrationMutation>("/api/business/whatsapp/", authenticatedJson("PATCH", data));
+}
+
 export type CustomerRelationship = "contact" | "lead" | "customer";
 export type CustomerLeadStatus = "" | "new" | "cold" | "warm" | "hot";
 export type CustomerSource = "whatsapp" | "website" | "email" | "sms" | "manual" | "import" | "google_contacts" | "other";
@@ -413,6 +439,10 @@ export function getConversationMessages(conversationId: number) {
 
 export function sendConversationMessage(conversationId: number, body: string) {
   return apiRequest<MessageMutation>(`/api/conversations/${conversationId}/messages/`, authenticatedJson("POST", { body }));
+}
+
+export function sendWhatsAppReply(conversationId: number, body: string) {
+  return apiRequest<MessageMutation>(`/api/conversations/${conversationId}/whatsapp-reply/`, authenticatedJson("POST", { body }));
 }
 
 export function updateConversation(conversationId: number, data: Partial<Pick<Conversation, "status" | "handling_mode">>) {

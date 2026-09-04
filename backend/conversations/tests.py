@@ -1,12 +1,17 @@
 from datetime import timedelta
+import json
+from unittest.mock import patch
 
+from django.db import IntegrityError, transaction
 from django.urls import reverse
+from django.test import override_settings
 from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from accounts.models import User
 from businesses.models import Business
+from businesses.models import WhatsAppIntegration
 from customers.models import Customer
 
 from .models import Conversation, Message
@@ -211,3 +216,185 @@ class ConversationAPITests(APITestCase):
         self.assertEqual(response.data[0]["latest_message"]["body"], "Newest")
         self.assertNotIn("latest_message", [field.name for field in Conversation._meta.fields])
         self.assertNotEqual(first.pk, latest.pk)
+
+    def test_whatsapp_participant_is_unique_per_business_but_other_channels_can_repeat(self):
+        self.create_conversation()
+        with self.assertRaises(IntegrityError):
+            with transaction.atomic():
+                self.create_conversation()
+
+        Conversation.objects.create(
+            business=self.business,
+            customer=self.customer,
+            channel=Conversation.Channel.EMAIL,
+            participant_address="+254 712 345 678",
+        )
+        Conversation.objects.create(
+            business=self.business,
+            customer=self.customer,
+            channel=Conversation.Channel.EMAIL,
+            participant_address="+254 712 345 678",
+        )
+
+    def test_external_message_id_is_unique_and_existing_messages_remain_supported(self):
+        conversation = self.create_conversation()
+        message = Message.objects.create(
+            conversation=conversation,
+            sender_type=Message.SenderType.CUSTOMER,
+            body="Inbound enquiry",
+            external_message_id="wamid.test-1",
+            direction=Message.Direction.INBOUND,
+            message_type="text",
+            processing_status=Message.ProcessingStatus.PROCESSED,
+        )
+        self.assertEqual(message.external_message_id, "wamid.test-1")
+
+        with self.assertRaises(IntegrityError):
+            with transaction.atomic():
+                Message.objects.create(
+                    conversation=conversation,
+                    sender_type=Message.SenderType.CUSTOMER,
+                    body="Duplicate inbound enquiry",
+                    external_message_id="wamid.test-1",
+                )
+
+        email_conversation = self.create_conversation(
+            channel=Conversation.Channel.EMAIL,
+            participant_address="visitor@example.com",
+        )
+        legacy_message = Message.objects.create(
+            conversation=email_conversation,
+            sender_type=Message.SenderType.HUMAN,
+            body="Existing email message",
+        )
+        self.assertIsNone(legacy_message.external_message_id)
+
+
+@override_settings(
+    META_WHATSAPP_GRAPH_API_BASE_URL="https://graph.facebook.test",
+    META_WHATSAPP_GRAPH_API_VERSION="v23.0",
+    META_WHATSAPP_HTTP_TIMEOUT_SECONDS=7,
+)
+class WhatsAppReplyTests(APITestCase):
+    def setUp(self):
+        self.user = User.objects.create_user("reply-owner@example.com", "SecurePassword123!")
+        self.other_user = User.objects.create_user("reply-other@example.com", "SecurePassword123!")
+        self.business = Business.objects.create(owner=self.user, name="Reply Business")
+        self.other_business = Business.objects.create(owner=self.other_user, name="Other Business")
+        self.customer = Customer.objects.create(
+            business=self.business,
+            name="Aisha",
+            phone="+254700000000",
+            phone_e164="+254700000000",
+            source=Customer.Source.WHATSAPP,
+        )
+        self.conversation = Conversation.objects.create(
+            business=self.business,
+            customer=self.customer,
+            channel=Conversation.Channel.WHATSAPP,
+            participant_address="+254700000000",
+        )
+        self.other_conversation = Conversation.objects.create(
+            business=self.other_business,
+            channel=Conversation.Channel.EMAIL,
+            participant_address="other@example.com",
+        )
+        self.integration = WhatsAppIntegration.objects.create(
+            business=self.business,
+            meta_business_account_id="meta-business-reply",
+            phone_number_id="phone-number-reply",
+            access_token_env_var="TEST_META_ACCESS_TOKEN",
+            webhook_verify_token_env_var="TEST_META_VERIFY_TOKEN",
+            is_enabled=True,
+        )
+        self.url = reverse("whatsapp-reply", args=[self.conversation.pk])
+
+    def authenticate(self, user=None):
+        self.client.force_authenticate(user=user or self.user)
+
+    def meta_response(self, message_id="wamid.outbound-1"):
+        return type(
+            "MetaResponse",
+            (),
+            {"read": lambda self: json.dumps({"messages": [{"id": message_id}]}).encode(),
+             "__enter__": lambda self: self,
+             "__exit__": lambda self, *args: None},
+        )()
+
+    @patch.dict("os.environ", {"TEST_META_ACCESS_TOKEN": "server-token"}, clear=False)
+    @patch("businesses.whatsapp_outbound.urlopen")
+    def test_authenticated_business_user_sends_and_persists_outbound_reply(self, mock_urlopen):
+        mock_urlopen.return_value = self.meta_response()
+        self.authenticate()
+
+        response = self.client.post(self.url, {"body": "  Hello from Sokoos  "}, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        mock_urlopen.assert_called_once()
+        request = mock_urlopen.call_args.args[0]
+        timeout = mock_urlopen.call_args.kwargs["timeout"]
+        self.assertEqual(request.full_url, "https://graph.facebook.test/v23.0/phone-number-reply/messages")
+        self.assertEqual(timeout, 7)
+        self.assertEqual(request.get_header("Authorization"), "Bearer server-token")
+        payload = json.loads(request.data)
+        self.assertEqual(payload["to"], "+254700000000")
+        self.assertEqual(payload["messaging_product"], "whatsapp")
+        self.assertEqual(payload["text"]["body"], "Hello from Sokoos")
+
+        message = Message.objects.get()
+        self.assertEqual(message.external_message_id, "wamid.outbound-1")
+        self.assertEqual(message.sender_type, Message.SenderType.HUMAN)
+        self.assertEqual(message.direction, Message.Direction.OUTBOUND)
+        self.assertEqual(message.delivery_status, Message.DeliveryStatus.SENT)
+        self.assertNotIn("server-token", str(response.data))
+
+    @patch.dict("os.environ", {"TEST_META_ACCESS_TOKEN": "secret-token"}, clear=False)
+    @patch("businesses.whatsapp_outbound.urlopen", side_effect=OSError("provider unavailable"))
+    def test_meta_failure_does_not_persist_outbound_message_or_expose_credentials(self, mock_urlopen):
+        self.authenticate()
+
+        response = self.client.post(self.url, {"body": "Hello"}, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_502_BAD_GATEWAY)
+        self.assertEqual(Message.objects.count(), 0)
+        self.assertNotIn("secret-token", str(response.data))
+        mock_urlopen.assert_called_once()
+
+    def test_other_business_conversation_is_not_accessible(self):
+        self.authenticate()
+
+        response = self.client.post(
+            reverse("whatsapp-reply", args=[self.other_conversation.pk]),
+            {"body": "No access"},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(Message.objects.count(), 0)
+
+    def test_non_whatsapp_conversation_is_rejected(self):
+        email_conversation = Conversation.objects.create(
+            business=self.business,
+            customer=None,
+            channel=Conversation.Channel.EMAIL,
+            participant_address="email@example.com",
+        )
+        self.authenticate()
+
+        response = self.client.post(
+            reverse("whatsapp-reply", args=[email_conversation.pk]),
+            {"body": "Not WhatsApp"},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Message.objects.count(), 0)
+
+    def test_empty_message_is_rejected_without_calling_meta(self):
+        self.authenticate()
+        with patch("businesses.whatsapp_outbound.urlopen") as mock_urlopen:
+            response = self.client.post(self.url, {"body": "   "}, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Message.objects.count(), 0)
+        mock_urlopen.assert_not_called()

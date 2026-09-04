@@ -9,6 +9,7 @@ from accounts.models import User
 from businesses.models import Business
 
 from .models import Customer
+from .phone import InvalidWhatsAppPhoneNumber, normalize_whatsapp_phone_number
 
 
 class CustomerAPITests(APITestCase):
@@ -251,3 +252,34 @@ class CustomerAPITests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(response.data["success"])
         self.assertIn("non_field_errors", response.data["errors"])
+
+    def test_whatsapp_phone_formats_normalize_to_one_e164_identity(self):
+        expected = "+254700000000"
+        for value in ("+254700000000", "254700000000", "0700000000"):
+            with self.subTest(value=value):
+                self.assertEqual(normalize_whatsapp_phone_number(value), expected)
+
+    def test_invalid_whatsapp_phone_formats_are_rejected(self):
+        for value in ("0700", "hello", "+14155550123"):
+            with self.subTest(value=value):
+                with self.assertRaises(InvalidWhatsAppPhoneNumber):
+                    normalize_whatsapp_phone_number(value)
+
+    def test_normalized_whatsapp_phone_is_unique_per_business(self):
+        normalized = normalize_whatsapp_phone_number("0700000000")
+        Customer.objects.create(
+            business=self.business,
+            name="WhatsApp Lead",
+            phone="0700000000",
+            phone_e164=normalized,
+            source=Customer.Source.WHATSAPP,
+        )
+        with self.assertRaises(IntegrityError):
+            with transaction.atomic():
+                Customer.objects.create(
+                    business=self.business,
+                    name="Duplicate WhatsApp Lead",
+                    phone="254700000000",
+                    phone_e164=normalized,
+                    source=Customer.Source.WHATSAPP,
+                )

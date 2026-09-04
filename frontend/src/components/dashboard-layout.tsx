@@ -56,7 +56,7 @@ import { PerformanceWorkspace } from "@/components/dashboard/ai-employee/perform
 import { TrainingTemplateCard } from "@/components/dashboard/ai-employee/training/training-template-card";
 import { AccountSettings } from "@/components/dashboard/account-settings";
 import { clearAuthSession, getAuthToken, getAuthorizationHeader, getCurrentUser, getUserDisplayName, saveAuthSession, signOutMock, type AuthUser } from "@/lib/auth";
-import { ApiError, apiRequest, changePassword, createCatalogCategory, createCatalogItem, createKnowledgeSource, deleteCatalogCategory, deleteCatalogItem, deleteCatalogMedia, deleteKnowledgeSource, getAIEmployeeConfiguration, getCatalog, getCatalogCategories, getCatalogMedia, getKnowledgeSources, updateAIEmployeeConfiguration, updateCatalogCategory, updateCatalogItem, updateCatalogMedia, updateKnowledgeSource, uploadCatalogMedia, type AIEmployeeConfiguration, type CatalogItem, type CatalogItemInput, type CatalogItemType, type KnowledgeSource as APIKnowledgeSource } from "@/lib/api";
+import { ApiError, apiRequest, changePassword, createCatalogCategory, createCatalogItem, createKnowledgeSource, deleteCatalogCategory, deleteCatalogItem, deleteCatalogMedia, deleteKnowledgeSource, getAIEmployeeConfiguration, getCatalog, getCatalogCategories, getCatalogMedia, getKnowledgeSources, getWhatsAppIntegration, saveWhatsAppIntegration, updateAIEmployeeConfiguration, updateCatalogCategory, updateCatalogItem, updateCatalogMedia, updateKnowledgeSource, updateWhatsAppIntegration, uploadCatalogMedia, type AIEmployeeConfiguration, type CatalogItem, type CatalogItemInput, type CatalogItemType, type KnowledgeSource as APIKnowledgeSource } from "@/lib/api";
 import EditProfileDialog, { type ProfileUpdate } from "@/components/dashboard/edit-profile-dialog";
 import sokoosLogo from "@/assets/sokoos_logo.png";
 
@@ -654,7 +654,7 @@ const INTEGRATION_SECTIONS = [
         name: "WhatsApp Business",
         Icon: MessageCircle,
         description: "Allow Sokoos AI to reply to customers directly inside WhatsApp.",
-        status: "connected",
+        status: "available",
       },
       {
         id: "facebook",
@@ -1401,6 +1401,7 @@ export default function DashboardLayout() {
         const parsed = JSON.parse(raw) as Record<string, { status: string; accountName?: string; lastSynced?: string }>;
         const normalizedStates: Record<string, { status: IntegrationStatus; accountName?: string; lastSynced?: string }> = {};
         for (const [id, value] of Object.entries(parsed)) {
+          if (id === "whatsapp") continue;
           normalizedStates[id] = {
             ...value,
             status: normalizeIntegrationStatus(value.status),
@@ -1423,7 +1424,9 @@ export default function DashboardLayout() {
   });
   const [connectModalOpen, setConnectModalOpen] = useState(false);
   const [connectModalId, setConnectModalId] = useState<string | null>(null);
-  const [connectForm, setConnectForm] = useState({ email: "", businessName: "", phone: "" });
+  const [connectForm, setConnectForm] = useState({ email: "", businessName: "", phone: "", metaBusinessAccountId: "", phoneNumberId: "" });
+  const [connectError, setConnectError] = useState<string | null>(null);
+  const [connectSaving, setConnectSaving] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerIntegrationId, setDrawerIntegrationId] = useState<string | null>(null);
 
@@ -1438,6 +1441,14 @@ export default function DashboardLayout() {
   };
 
   const handleDisconnect = (id: string) => {
+    if (id === "whatsapp") {
+      setConnectError(null);
+      void updateWhatsAppIntegration({ is_enabled: false }).then(() => {
+        setIntegrationStates((s) => ({ ...s, whatsapp: { ...(s.whatsapp || {}), status: "available" } }));
+        closeDrawer();
+      }).catch(() => setConnectError("WhatsApp could not be disconnected."));
+      return;
+    }
     setIntegrationStates((s) => ({
       ...s,
       [id]: { status: "available" },
@@ -1458,9 +1469,29 @@ export default function DashboardLayout() {
 
   const handleReconnect = (id: string) => {
     setConnectModalId(id);
-    setConnectForm({ email: "", businessName: "", phone: "" });
+    setConnectError(null);
+    setConnectForm({ email: "", businessName: "", phone: "", metaBusinessAccountId: "", phoneNumberId: "" });
     setConnectModalOpen(true);
   };
+
+  useEffect(() => {
+    void getWhatsAppIntegration().then((result) => {
+      if (!result.data) return;
+      setIntegrationStates((s) => ({
+        ...s,
+        whatsapp: {
+          ...(s.whatsapp || {}),
+          status: result.data!.is_enabled ? "connected" : "available",
+          accountName: result.data!.meta_business_account_id,
+        },
+      }));
+    }).catch((error) => {
+      if (!(error instanceof ApiError) || error.status !== 404) {
+        setConnectError("WhatsApp connection status could not be loaded.");
+      }
+      setIntegrationStates((s) => ({ ...s, whatsapp: { ...(s.whatsapp || {}), status: "available" } }));
+    });
+  }, []);
 
   useEffect(() => {
     try {
@@ -1615,7 +1646,8 @@ export default function DashboardLayout() {
           ? undefined
           : () => {
               setConnectModalId(id);
-              setConnectForm({ email: "", businessName: "", phone: "" });
+              setConnectError(null);
+              setConnectForm({ email: "", businessName: "", phone: "", metaBusinessAccountId: "", phoneNumberId: "" });
               setConnectModalOpen(true);
             },
         disabled: isSpecialChannel,
@@ -1705,8 +1737,34 @@ export default function DashboardLayout() {
     return formatIntegrationStatusLabel(status);
   };
 
-  const handleModalConnect = () => {
+  const handleModalConnect = async () => {
     if (!connectModalId) return;
+    if (connectModalId === "whatsapp") {
+      if (!connectForm.metaBusinessAccountId.trim() || !connectForm.phoneNumberId.trim()) {
+        setConnectError("Enter the Meta Business Account ID and Phone Number ID.");
+        return;
+      }
+      setConnectSaving(true);
+      setConnectError(null);
+      try {
+        const result = await saveWhatsAppIntegration({
+          meta_business_account_id: connectForm.metaBusinessAccountId.trim(),
+          phone_number_id: connectForm.phoneNumberId.trim(),
+        });
+        const integration = result.data?.whatsapp_integration;
+        if (!integration) throw new Error("Missing WhatsApp integration response.");
+        setIntegrationStates((s) => ({ ...s, whatsapp: { status: integration.is_enabled ? "connected" : "available", accountName: integration.meta_business_account_id } }));
+        setConnectModalOpen(false);
+        setConnectModalId(null);
+      } catch (error) {
+        const apiError = error instanceof ApiError ? error : null;
+        const fieldErrors = (apiError?.data as { errors?: Record<string, string[] | string> } | null)?.errors;
+        setConnectError(fieldErrors ? Object.values(fieldErrors).flat().join(" ") : "WhatsApp could not be connected.");
+      } finally {
+        setConnectSaving(false);
+      }
+      return;
+    }
     const name = getIntegrationName(connectModalId);
     setIntegrationStates((s) => ({
       ...s,
@@ -8804,6 +8862,16 @@ export default function DashboardLayout() {
                 <h3 className="text-lg font-semibold mb-1">Connect {getIntegrationName(connectModalId)}</h3>
                 <p className="text-sm text-[#6B7280] mb-4">Connect your {getIntegrationName(connectModalId)} account.</p>
 
+                {connectModalId === "whatsapp" ? (
+                  <>
+                    <label className="text-sm font-medium">Meta Business Account ID</label>
+                    <input type="text" value={connectForm.metaBusinessAccountId} onChange={(e) => setConnectForm((s) => ({ ...s, metaBusinessAccountId: e.target.value }))} className={INPUT_FIELD_WHITE} placeholder="Meta Business Account ID" />
+                    <label className="mt-3 text-sm font-medium">Meta Phone Number ID</label>
+                    <input type="text" value={connectForm.phoneNumberId} onChange={(e) => setConnectForm((s) => ({ ...s, phoneNumberId: e.target.value }))} className={INPUT_FIELD_WHITE} placeholder="Meta Phone Number ID" />
+                  </>
+                ) : (
+                  <>
+
                 <label className="text-sm font-medium">Account Email</label>
                 <input
                   type="email"
@@ -8830,13 +8898,17 @@ export default function DashboardLayout() {
                   className={INPUT_FIELD_WHITE}
                   placeholder="+254 7xx xxx xxx"
                 />
+                </>
+              )}
+
+              {connectError ? <p role="alert" className="mt-3 rounded-lg bg-[#FEF2F2] px-3 py-2 text-sm text-[#B91C1C]">{connectError}</p> : null}
 
                 <div className="mt-4 flex justify-end gap-3">
                   <button onClick={() => setConnectModalOpen(false)} className={BUTTON_TERTIARY}>
                     Cancel
                   </button>
-                  <button onClick={handleModalConnect} className={BUTTON_PRIMARY}>
-                    Connect
+                  <button onClick={() => void handleModalConnect()} className={BUTTON_PRIMARY} disabled={connectSaving}>
+                    {connectSaving ? "Connecting…" : "Connect"}
                   </button>
                 </div>
               </div>
@@ -8883,6 +8955,7 @@ export default function DashboardLayout() {
                       <button onClick={() => handleDisconnect(drawerIntegrationId as string)} className={BUTTON_SECONDARY}>Disconnect</button>
                       <button onClick={() => handleSyncNow(drawerIntegrationId as string)} className={BUTTON_PRIMARY}>Sync Now</button>
                     </div>
+                    {connectError ? <p role="alert" className="mt-3 rounded-lg bg-[#FEF2F2] px-3 py-2 text-sm text-[#B91C1C]">{connectError}</p> : null}
                   </div>
 
                   <div className="mt-6 flex-1 overflow-y-auto">

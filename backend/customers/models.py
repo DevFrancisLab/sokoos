@@ -31,6 +31,7 @@ class Customer(models.Model):
     )
     name = models.CharField(max_length=255)
     phone = models.CharField(max_length=50, blank=True)
+    phone_e164 = models.CharField(max_length=16, blank=True)
     email = models.EmailField(blank=True)
     company = models.CharField(max_length=255, blank=True)
     location = models.CharField(max_length=255, blank=True)
@@ -59,6 +60,11 @@ class Customer(models.Model):
                 fields=["business", "phone"],
                 condition=~Q(phone=""),
                 name="unique_customer_phone_per_business",
+            ),
+            models.UniqueConstraint(
+                fields=["business", "phone_e164"],
+                condition=~Q(phone_e164=""),
+                name="unique_customer_phone_e164_per_business",
             ),
             models.UniqueConstraint(
                 fields=["business", "email"],

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Bot, Calendar, ChevronRight, MessageCircle, Search, Send, User, X } from "lucide-react";
-import { ApiError, getConversationMessages, getConversations, markConversationRead, sendConversationMessage, updateConversation, type Conversation, type ConversationMessage } from "@/lib/api";
+import { ApiError, getConversationMessages, getConversations, markConversationRead, sendConversationMessage, sendWhatsAppReply, updateConversation, type Conversation, type ConversationMessage } from "@/lib/api";
 
 type InboxWorkspaceProps = {
   CARD: string;
@@ -159,7 +159,9 @@ export function InboxWorkspace({
     if (!body || !activeConversation || sending) return;
     setSending(true); setInboxError(null);
     try {
-      const result = await sendConversationMessage(activeConversation, body);
+      const result = activeConversationData?.channel === "whatsapp"
+        ? await sendWhatsAppReply(activeConversation, body)
+        : await sendConversationMessage(activeConversation, body);
       setMessages((items) => [...items, result.data!.message]);
       setMessageInput("");
       await loadConversations();
