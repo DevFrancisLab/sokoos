@@ -1,9 +1,14 @@
-asgiref==3.12.1
+# Django framework and direct integrations
 Django==6.1
-Pillow==12.3.0
 django-cors-headers==4.9.0
 djangorestframework==3.18.0
+python-dotenv==1.2.2
+
+# Database and image handling
+Pillow==12.3.0
 psycopg==3.3.4
 psycopg-binary==3.3.4
-python-dotenv==1.2.2
+
+# Django runtime dependencies pinned for reproducible installs
+asgiref==3.12.1
 sqlparse==0.6.0
