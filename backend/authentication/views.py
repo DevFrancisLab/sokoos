@@ -98,18 +98,6 @@ class SignupView(APIView):
         with transaction.atomic():
             user = serializer.save()
             token, _ = Token.objects.get_or_create(user=user)
-            transaction.on_commit(
-                lambda: send_mail(
-                    subject="Welcome to Sokoos",
-                    message=(
-                        f"Hi {user.first_name or user.email},\n\n"
-                        "Welcome to Sokoos. Your account has been created successfully."
-                    ),
-                    from_email=None,
-                    recipient_list=[user.email],
-                    fail_silently=True,
-                )
-            )
 
         return Response(
             {

@@ -53,54 +53,43 @@ class UserProfileSerializerTests(SimpleTestCase):
 
 
 class SignupEmailTests(TestCase):
-    def test_successful_signup_sends_a_welcome_email(self):
+    def test_successful_signup_does_not_send_welcome_email(self):
         client = APIClient()
 
         with patch("authentication.views.send_mail") as send_mail:
-            with self.captureOnCommitCallbacks(execute=True):
-                response = client.post(
-                    reverse("signup"),
-                    {
-                        "email": "new.user@example.com",
-                        "password": "SecurePassword123!",
-                        "first_name": "New",
-                        "last_name": "User",
-                    },
-                    format="json",
-                )
+            response = client.post(
+                reverse("signup"),
+                {
+                    "email": "new.user@example.com",
+                    "password": "SecurePassword123!",
+                    "first_name": "New",
+                    "last_name": "User",
+                },
+                format="json",
+            )
 
         self.assertEqual(response.status_code, 201)
-        send_mail.assert_called_once_with(
-            subject="Welcome to Sokoos",
-            message=(
-                "Hi New,\n\n"
-                "Welcome to Sokoos. Your account has been created successfully."
-            ),
-            from_email=None,
-            recipient_list=["new.user@example.com"],
-            fail_silently=True,
-        )
+        self.assertTrue(response.data["success"])
+        self.assertTrue(response.data["token"])
+        send_mail.assert_not_called()
 
-    def test_signup_returns_token_when_welcome_email_fails(self):
+    def test_signup_returns_token_when_welcome_email_would_hang(self):
         client = APIClient()
 
-        def failing_send_mail(*args, **kwargs):
-            if kwargs.get("fail_silently"):
-                return 0
-            raise RuntimeError("SMTP unavailable")
+        def hanging_send_mail(*args, **kwargs):
+            raise AssertionError("Signup must not attempt welcome-email delivery")
 
-        with patch("authentication.views.send_mail", side_effect=failing_send_mail):
-            with self.captureOnCommitCallbacks(execute=True):
-                response = client.post(
-                    reverse("signup"),
-                    {
-                        "email": "mail.failure@example.com",
-                        "password": "SecurePassword123!",
-                        "first_name": "Mail",
-                        "last_name": "Failure",
-                    },
-                    format="json",
-                )
+        with patch("authentication.views.send_mail", side_effect=hanging_send_mail):
+            response = client.post(
+                reverse("signup"),
+                {
+                    "email": "mail.failure@example.com",
+                    "password": "SecurePassword123!",
+                    "first_name": "Mail",
+                    "last_name": "Failure",
+                },
+                format="json",
+            )
 
         self.assertEqual(response.status_code, 201)
         self.assertTrue(response.data["success"])
