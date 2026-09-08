@@ -6,6 +6,7 @@ interface HomeWorkspaceProps {
   userName: string;
   aiEmployeeLaunched: boolean;
   aiEnabled: boolean;
+  hasMeaningfulData: boolean;
   attentionConversations: Array<{ id: string; name: string | null; source: string; needsAttention?: boolean }>;
   CARD: string;
   SECTION_HEADING: string;
@@ -51,7 +52,7 @@ const aiStatusStyles: Record<AiEmployeeStatus, { badge: string; dot: string; des
   },
 };
 
-export function HomeWorkspace({ userName, aiEmployeeLaunched, aiEnabled, attentionConversations, CARD, SECTION_HEADING, CARD_TITLE }: HomeWorkspaceProps) {
+export function HomeWorkspace({ userName, aiEmployeeLaunched, aiEnabled, hasMeaningfulData, attentionConversations, CARD, SECTION_HEADING, CARD_TITLE }: HomeWorkspaceProps) {
   const firstName = userName.trim().split(/\s+/)[0] || "there";
   const [greeting, setGreeting] = useState("Good morning");
   const actionableItems = attentionConversations.filter((conversation) => conversation.source === "needs_attention" || conversation.needsAttention);
@@ -66,11 +67,38 @@ export function HomeWorkspace({ userName, aiEmployeeLaunched, aiEnabled, attenti
     <div className="h-full overflow-y-auto space-y-6 pr-2">
       <header className="px-1 pt-2">
         <p className={SECTION_HEADING}>Home</p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-[-0.02em] text-[#111827] sm:text-4xl">{greeting}, {firstName} 👋</h1>
-        <p className="mt-2 text-sm leading-6 text-[#64748B] sm:text-base">Here&apos;s what&apos;s happening with your business.</p>
+        <h1 className="mt-2 text-3xl font-semibold tracking-[-0.02em] text-[#111827] sm:text-4xl">{greeting}, {firstName}</h1>
+        <p className="mt-2 text-sm leading-6 text-[#64748B] sm:text-base">
+          {hasMeaningfulData ? "Here's what's happening with your business." : "Welcome. Let's get your business ready to work with Sokoos."}
+        </p>
       </header>
 
-      <section className={CARD} aria-labelledby="ai-employee-heading">
+      {!hasMeaningfulData ? (
+        <section className={`${CARD} space-y-6`} aria-labelledby="onboarding-heading">
+          <div className="max-w-2xl">
+            <p className={SECTION_HEADING}>Start here</p>
+            <h2 id="onboarding-heading" className="mt-2 text-2xl font-semibold tracking-[-0.02em] text-[#111827] sm:text-3xl">Your business isn&apos;t set up yet</h2>
+            <p className="mt-2 text-sm leading-6 text-[#64748B] sm:text-base">Complete the setup steps so Sokoos can start working for you.</p>
+          </div>
+          <div className="rounded-[20px] border border-[#DCFCE7] bg-[#F0FDF4] p-5">
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-start gap-4">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-[#15803D] shadow-sm">
+                  <Bot className="h-5 w-5" aria-hidden="true" />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="text-base font-semibold text-[#111827]">AI Employee setup</h3>
+                  <p className="mt-1 text-sm leading-6 text-[#64748B]">Give your AI Employee the business details it needs to help customers and grow your sales.</p>
+                </div>
+              </div>
+              <Link to="/dashboard/ai" className="inline-flex shrink-0 items-center gap-1 rounded-md text-sm font-semibold text-[#047857] transition hover:text-[#065F46] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2">
+                Continue setup <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            </div>
+          </div>
+        </section>
+      ) : (
+        <section className={CARD} aria-labelledby="ai-employee-heading">
         {!aiEmployeeLaunched ? (
           <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-start gap-4">
@@ -107,9 +135,10 @@ export function HomeWorkspace({ userName, aiEmployeeLaunched, aiEnabled, attenti
             </Link>
           </>
         )}
-      </section>
+        </section>
+      )}
 
-      <section className={CARD} aria-labelledby="attention-heading">
+      {hasMeaningfulData ? <section className={CARD} aria-labelledby="attention-heading">
         <div className="flex items-start justify-between gap-4">
           <div>
             <h2 id="attention-heading" className={CARD_TITLE}>Needs your attention</h2>
@@ -145,9 +174,9 @@ export function HomeWorkspace({ userName, aiEmployeeLaunched, aiEnabled, attenti
             </div>
           </div>
         )}
-      </section>
+      </section> : null}
 
-      <section aria-labelledby="today-heading">
+      {hasMeaningfulData ? <section aria-labelledby="today-heading">
         <div className="mb-4 px-1">
           <h2 id="today-heading" className={CARD_TITLE}>Today</h2>
         </div>
@@ -162,9 +191,9 @@ export function HomeWorkspace({ userName, aiEmployeeLaunched, aiEnabled, attenti
             </article>
           ))}
         </div>
-      </section>
+      </section> : null}
 
-      <section className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFC] px-4 py-4 sm:px-5" aria-labelledby="performance-heading">
+      {hasMeaningfulData ? <section className="rounded-[20px] border border-[#E5E7EB] bg-[#F8FAFC] px-4 py-4 sm:px-5" aria-labelledby="performance-heading">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 id="performance-heading" className="text-base font-semibold text-[#111827]">Performance</h2>
@@ -174,7 +203,7 @@ export function HomeWorkspace({ userName, aiEmployeeLaunched, aiEnabled, attenti
             View Performance <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>
-      </section>
+      </section> : null}
     </div>
   );
 }

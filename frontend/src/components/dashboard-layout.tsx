@@ -3528,6 +3528,7 @@ export default function DashboardLayout() {
   const [closeSalesAutomatically, setCloseSalesAutomatically] = useState(false);
   const [aiConfigurationLoading, setAiConfigurationLoading] = useState(true);
   const [aiConfigurationError, setAiConfigurationError] = useState<string | null>(null);
+  const [hasPersistedAiConfiguration, setHasPersistedAiConfiguration] = useState(false);
   const [businessInfo, setBusinessInfo] = useState(() => normalizeBusinessInfo());
   const [industrySearch, setIndustrySearch] = useState("");
   const [isIndustryDropdownOpen, setIsIndustryDropdownOpen] = useState(false);
@@ -3652,6 +3653,7 @@ export default function DashboardLayout() {
     phone: "",
   });
   const applyAIConfiguration = (configuration: AIEmployeeConfiguration) => {
+    setHasPersistedAiConfiguration(configuration.id !== null);
     setAiConfigurationReadiness(configuration.readiness);
     setAiEnabled(configuration.is_enabled); setHumanTakeover(configuration.human_takeover_enabled);
     setPrimaryLanguage(configuration.primary_language); setSupportedLanguages(configuration.supported_languages);
@@ -6306,7 +6308,8 @@ export default function DashboardLayout() {
               userName={user?.name || "there"}
               aiEmployeeLaunched={aiEmployeeLaunched}
               aiEnabled={aiEnabled}
-              attentionConversations={INBOX_CONVERSATIONS}
+              hasMeaningfulData={hasPersistedAiConfiguration || catalogProducts.length > 0 || knowledgeTraining.faqs.length > 0 || knowledgeTraining.documents.length > 0 || knowledgeTraining.website.status === "ready"}
+              attentionConversations={[]}
               CARD={CARD}
               SECTION_HEADING={SECTION_HEADING}
               CARD_TITLE={CARD_TITLE}
