@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { ArrowRight, Bot, CheckCircle2, CircleAlert, MessageCircle, UsersRound } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 
@@ -21,7 +22,7 @@ const getTimeBasedGreeting = () => {
   const hour = new Date().getHours();
 
   if (hour < 12) return "Good morning";
-  if (hour < 18) return "Good afternoon";
+  if (hour < 17) return "Good afternoon";
   return "Good evening";
 };
 
@@ -52,10 +53,14 @@ const aiStatusStyles: Record<AiEmployeeStatus, { badge: string; dot: string; des
 
 export function HomeWorkspace({ userName, aiEmployeeLaunched, aiEnabled, attentionConversations, CARD, SECTION_HEADING, CARD_TITLE }: HomeWorkspaceProps) {
   const firstName = userName.trim().split(/\s+/)[0] || "there";
-  const greeting = getTimeBasedGreeting();
+  const [greeting, setGreeting] = useState("Good morning");
   const actionableItems = attentionConversations.filter((conversation) => conversation.source === "needs_attention" || conversation.needsAttention);
   const aiStatus: AiEmployeeStatus = !aiEmployeeLaunched ? "Not set up" : !aiEnabled ? "Paused" : actionableItems.length > 0 ? "Needs attention" : "Active";
   const statusDetails = aiStatusStyles[aiStatus];
+
+  useEffect(() => {
+    setGreeting(getTimeBasedGreeting());
+  }, []);
 
   return (
     <div className="h-full overflow-y-auto space-y-6 pr-2">
