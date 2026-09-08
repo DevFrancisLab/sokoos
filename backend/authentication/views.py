@@ -107,7 +107,7 @@ class SignupView(APIView):
                     ),
                     from_email=None,
                     recipient_list=[user.email],
-                    fail_silently=False,
+                    fail_silently=True,
                 )
             )
 

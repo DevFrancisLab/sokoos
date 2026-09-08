@@ -78,8 +78,33 @@ class SignupEmailTests(TestCase):
             ),
             from_email=None,
             recipient_list=["new.user@example.com"],
-            fail_silently=False,
+            fail_silently=True,
         )
+
+    def test_signup_returns_token_when_welcome_email_fails(self):
+        client = APIClient()
+
+        def failing_send_mail(*args, **kwargs):
+            if kwargs.get("fail_silently"):
+                return 0
+            raise RuntimeError("SMTP unavailable")
+
+        with patch("authentication.views.send_mail", side_effect=failing_send_mail):
+            with self.captureOnCommitCallbacks(execute=True):
+                response = client.post(
+                    reverse("signup"),
+                    {
+                        "email": "mail.failure@example.com",
+                        "password": "SecurePassword123!",
+                        "first_name": "Mail",
+                        "last_name": "Failure",
+                    },
+                    format="json",
+                )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(response.data["success"])
+        self.assertTrue(response.data["token"])
 
 
 class DeleteAccountEmailTests(TestCase):
