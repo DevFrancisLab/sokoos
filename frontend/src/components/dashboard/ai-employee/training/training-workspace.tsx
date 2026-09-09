@@ -139,7 +139,7 @@ export default function TrainingWorkspace({
                 <p className="mt-4 text-base font-semibold text-[#111827]">{item.title}</p>
                 <p className="mt-1 text-sm leading-6 text-[#64748B]">{item.description}</p>
                 <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]">
-                  <div className={`h-full rounded-full transition-all duration-500 ${item.complete ? "bg-[#22C55E]" : "bg-[#86EFAC]"}`} style={{ width: `${Math.max(item.percent > 0 ? item.percent : 4, 4)}%` }} />
+                  <div className={`h-full rounded-full transition-all duration-500 ${item.complete ? "bg-[#22C55E]" : "bg-[#86EFAC]"}`} style={{ width: `${Math.max(0, Math.min(100, item.percent))}%` }} />
                 </div>
                 <div className="mt-2 flex items-center justify-between text-xs font-semibold text-[#64748B]">
                   <span>{item.percent}%</span>
@@ -178,7 +178,7 @@ export default function TrainingWorkspace({
                   <span className="text-[#166534]">{activeItem.percent}%</span>
                 </div>
                 <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]">
-                  <div className={`h-full rounded-full ${activeItem.complete ? "bg-[#22C55E]" : "bg-[#86EFAC]"}`} style={{ width: `${Math.max(activeItem.percent > 0 ? activeItem.percent : 4, 4)}%` }} />
+                  <div className={`h-full rounded-full ${activeItem.complete ? "bg-[#22C55E]" : "bg-[#86EFAC]"}`} style={{ width: `${Math.max(0, Math.min(100, activeItem.percent))}%` }} />
                 </div>
               </div>
             ) : null}

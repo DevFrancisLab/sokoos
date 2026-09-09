@@ -683,7 +683,7 @@ const INTEGRATION_SECTIONS = [
         name: "Email",
         Icon: Send,
         description: "Allow Sokoos AI to read and send business emails.",
-        status: "connected",
+        status: "available",
       },
     ],
   },
@@ -728,7 +728,7 @@ const INTEGRATION_SECTIONS = [
         name: "Shopify",
         Icon: Box,
         description: "Allow the AI to answer product questions using your store catalog.",
-        status: "connected",
+        status: "available",
       },
       {
         id: "woocommerce",
@@ -756,7 +756,7 @@ const INTEGRATION_SECTIONS = [
         name: "Google Calendar",
         Icon: Calendar,
         description: "Allow the AI to schedule appointments.",
-        status: "connected",
+        status: "available",
       },
       {
         id: "outlook",
@@ -796,7 +796,7 @@ const INTEGRATION_SECTIONS = [
         name: "Mailchimp",
         Icon: Send,
         description: "Allow the AI to sync contact lists and send marketing campaigns.",
-        status: "connected",
+        status: "available",
       },
       {
         id: "brevo",
@@ -815,7 +815,7 @@ const INTEGRATION_SECTIONS = [
         name: "Google Drive",
         Icon: Paperclip,
         description: "Allow the AI to access business documents and knowledge files.",
-        status: "connected",
+        status: "available",
       },
       {
         id: "dropbox",
@@ -1397,7 +1397,7 @@ export default function DashboardLayout() {
   const [selected, setSelected] = useState<string>("Home");
   const [integrationStates, setIntegrationStates] = useState<Record<string, { status: IntegrationStatus; accountName?: string; lastSynced?: string }>>(() => {
     try {
-      const raw = typeof window !== "undefined" ? window.localStorage.getItem("sokoos.integrationStates") : null;
+      const raw = typeof window !== "undefined" ? window.localStorage.getItem("sokoos.integrationStates.v2") : null;
       if (raw) {
         const parsed = JSON.parse(raw) as Record<string, { status: string; accountName?: string; lastSynced?: string }>;
         const normalizedStates: Record<string, { status: IntegrationStatus; accountName?: string; lastSynced?: string }> = {};
@@ -1497,7 +1497,7 @@ export default function DashboardLayout() {
   useEffect(() => {
     try {
       if (typeof window !== "undefined") {
-        window.localStorage.setItem("sokoos.integrationStates", JSON.stringify(integrationStates));
+        window.localStorage.setItem("sokoos.integrationStates.v2", JSON.stringify(integrationStates));
       }
     } catch (e) {
       // ignore
@@ -1895,6 +1895,7 @@ export default function DashboardLayout() {
   const previewMessagesRef = useRef<HTMLDivElement>(null);
   const identityLessons = ["Business Identity", "Brand Voice", "Greetings", "Languages", "Business Hours", "Locations", "Complete Identity"];
   const identityLessonCompletionNames = ["Business Identity", "Brand Voice", "Greetings", "Languages", "Business Hours", "Locations", "Complete Identity"];
+  const integrationLessonSequence = ["Channels", "Payments", "Business Tools", "Communication", "Data & Sync", "Review"] as const;
   const knowledgeLessons = ["Knowledge Sources", "Review"];
   const knowledgeSourceLessonTitles = {
     company: "Business Information",
@@ -3016,12 +3017,7 @@ export default function DashboardLayout() {
     'Membership cancellation',
   ];
 
-  const [customerPolicies, setCustomerPolicies] = useState<CustomerPolicyItem[]>([
-    { id: 'cust-1', name: 'Returns', description: 'Customers can return items within 30 days when products are unused and returned in original condition.', enabled: true },
-    { id: 'cust-2', name: 'Refunds', description: 'Refunds are issued after approval when returned items meet policy requirements.', enabled: true },
-    { id: 'cust-3', name: 'Exchanges', description: 'Exchanges are accepted for items returned in original condition, subject to stock availability.', enabled: false },
-    { id: 'cust-4', name: 'Cancellations', description: 'Orders may be cancelled within two hours unless already shipped or fulfilled.', enabled: true },
-  ]);
+  const [customerPolicies, setCustomerPolicies] = useState<CustomerPolicyItem[]>([]);
 
   const toggleCustomerPolicyEnabled = (id: string) => setCustomerPolicies((s) => s.map((policy) => policy.id === id ? { ...policy, enabled: !policy.enabled } : policy));
 
@@ -3408,9 +3404,7 @@ export default function DashboardLayout() {
     useState<(typeof EMOJI_USAGE_OPTIONS)[number]>("Sometimes");
   const [preferredTone, setPreferredTone] =
     useState<(typeof PREFERRED_TONE_OPTIONS)[number]>("Helpful");
-  const [writingExamples, setWritingExamples] = useState(
-    "Hi James 👋\nThanks for reaching out.\nInstallation takes less than 24 hours.",
-  );
+  const [writingExamples, setWritingExamples] = useState("");
   const [testAiInput, setTestAiInput] = useState(
     "How much is the Business Package?",
   );
@@ -3488,19 +3482,13 @@ export default function DashboardLayout() {
   const [allowCloseSales, setAllowCloseSales] = useState(true);
   const [allowScheduleAppointments, setAllowScheduleAppointments] =
     useState(true);
-  const [welcomeMessage, setWelcomeMessage] = useState(
-    "Hello 👋 How can we help?",
-  );
-  const [awayMessage, setAwayMessage] = useState(
-    "Thanks for your message. We’re away right now, but we’ll get back to you during working hours.",
-  );
-  const [closingMessage, setClosingMessage] = useState(
-    "Thanks for reaching out. We’re here whenever you need us.",
-  );
+  const [welcomeMessage, setWelcomeMessage] = useState("");
+  const [awayMessage, setAwayMessage] = useState("");
+  const [closingMessage, setClosingMessage] = useState("");
   const [aiEmployeeLaunched, setAiEmployeeLaunched] = useState(false);
   const [communicationChannels, setCommunicationChannels] = useState({
-    whatsapp: true,
-    websiteChat: true,
+    whatsapp: false,
+    websiteChat: false,
     instagram: false,
     facebookMessenger: false,
     googleBusinessMessages: false,
@@ -3509,10 +3497,9 @@ export default function DashboardLayout() {
     email: false,
   });
   const [primaryLanguage, setPrimaryLanguage] = useState("English");
-  const [secondaryLanguage, setSecondaryLanguage] = useState("Kiswahili");
+  const [secondaryLanguage, setSecondaryLanguage] = useState("");
   const [supportedLanguages, setSupportedLanguages] = useState<string[]>([
     "English",
-    "Kiswahili",
   ]);
   const [languageSearch, setLanguageSearch] = useState("");
   const filteredLanguageOptions = LANGUAGE_OPTIONS.filter((language) =>
@@ -3644,20 +3631,7 @@ export default function DashboardLayout() {
       : previewQuestion?.toLowerCase().includes("hello")
         ? welcomeMessage || previewLanguageCopy.defaultWelcome
         : previewBusinessContext;
-  const [personalContacts, setPersonalContacts] = useState([
-    {
-      id: "pc1",
-      name: "Mary Wanjiku",
-      relationship: "Wife",
-      phone: "+254712345678",
-    },
-    {
-      id: "pc2",
-      name: "Peter Mwangi",
-      relationship: "Supplier",
-      phone: "+254733222222",
-    },
-  ]);
+  const [personalContacts, setPersonalContacts] = useState<Array<{ id: string; name: string; relationship: string; phone: string }>>([]);
   const [newContact, setNewContact] = useState({
     name: "",
     relationship: "",
@@ -3757,13 +3731,14 @@ export default function DashboardLayout() {
   };
 
   const handleResetChanges = () => {
-    setWelcomeMessage("Hello 👋 How can we help?");
-    setAwayMessage("Thanks for your message. We’re away right now, but we’ll get back to you during working hours.");
-    setClosingMessage("Thanks for reaching out. We’re here whenever you need us.");
+    setWelcomeMessage("");
+    setAwayMessage("");
+    setClosingMessage("");
+    setWritingExamples("");
     setAiEmployeeLaunched(false);
     setCommunicationChannels({
-      whatsapp: true,
-      websiteChat: true,
+      whatsapp: false,
+      websiteChat: false,
       instagram: false,
       facebookMessenger: false,
       googleBusinessMessages: false,
@@ -3771,27 +3746,14 @@ export default function DashboardLayout() {
       slack: false,
       email: false,
     });
-    setBusinessInfo(normalizeBusinessInfo({
-      name: "Sokoos Internet",
-      type: "Telecom & Connectivity",
-      country: "Kenya",
-      about: "We help local businesses stay online with reliable internet plans, fast support, and easy onboarding.",
-      website: "https://sokoos.com",
-      email: "support@sokoos.com",
-      address: "Nairobi, Kenya",
-      phone: "+254 700 000 000",
-      whatsapp: "+254 700 000 000",
-      hours: "Mon–Fri, 8:00 AM - 6:00 PM",
-      serviceAreas: "Nairobi, Kiambu, Thika",
-      paymentMethods: "Mobile Money, Bank Transfer, Cash",
-    }));
+    setBusinessInfo(normalizeBusinessInfo());
     setBusinessModelSelections([]);
     setOtherIndustryValue("");
     setIndustrySearch("");
     setIsIndustryDropdownOpen(false);
     setPrimaryLanguage("English");
-    setSecondaryLanguage("Kiswahili");
-    setSupportedLanguages(["English", "Kiswahili"]);
+    setSecondaryLanguage("");
+    setSupportedLanguages(["English"]);
     setPersonality("Friendly");
     setWritingStyleOptions({
       "Use emojis": false,
@@ -3801,7 +3763,7 @@ export default function DashboardLayout() {
       "Personalize responses": true,
     });
     setTone("Friendly");
-    setBusinessHours("Mon–Fri, 8:00 AM - 6:00 PM");
+    setBusinessHours("");
     setTimezone("East Africa Time (EAT)");
     setAvatarFileName("");
     setLogoPreview(null);
@@ -3858,15 +3820,6 @@ export default function DashboardLayout() {
   const [editingFaqId, setEditingFaqId] = useState<string | null>(null);
   const [faqDraft, setFaqDraft] = useState({ question: "", answer: "", category: "" });
   const [faqValidationAttempted, setFaqValidationAttempted] = useState(false);
-  const [expandedPolicy, setExpandedPolicy] = useState<string | null>(null);
-  const [policiesText, setPoliciesText] = useState<Record<string, string>>({
-    refund: "",
-    return: "",
-    warranty: "",
-    support: "",
-    privacy: "",
-    cancellation: "",
-  });
   const websiteImportUrl = knowledgeTraining.website.websiteUrl;
   const [websiteUrlDraft, setWebsiteUrlDraft] = useState("");
   const [websiteValidationAttempted, setWebsiteValidationAttempted] = useState(false);
@@ -3928,14 +3881,6 @@ export default function DashboardLayout() {
       setTestConversations((c) => c.map((entry) => entry.id === id ? { ...entry, ai, source } : entry));
     }, 700 + Math.random() * 800);
   };
-  const [policies, setPolicies] = useState({
-    returnPolicy:
-      "Customers may return services within 7 days if there is a technical issue requiring a fix.",
-    deliveryPolicy:
-      "We deliver service activation details via WhatsApp within 24 hours of payment.",
-    cancellationPolicy:
-      "Cancel anytime with 48 hours notice before the next billing cycle.",
-  });
   const identityWorkspaceComplete = Boolean(
     (businessInfo.name || "").trim() &&
     (businessInfo.type || "").trim() &&
@@ -3954,72 +3899,36 @@ export default function DashboardLayout() {
     (businessInfo.whatsapp || "").replace(/\D/g, "").length >= 7,
   );
 
-  const identityLessonProgress = [
-    Math.round(([
-      businessInfo.name,
-      businessInfo.type,
-      businessInfo.country,
-      businessInfo.about,
-    ].filter(Boolean).length / 4) * 100),
-    Math.round(([
-      personality,
-      communicationStyle,
-      emojiUsage,
-      preferredTone,
-      writingExamples,
-    ].filter(Boolean).length / 5) * 100),
-    Math.round(([
-      welcomeMessage,
-      awayMessage,
-      closingMessage,
-    ].filter(Boolean).length / 3) * 100),
-    Math.round(([
-      primaryLanguage,
-      supportedLanguages.length ? "x" : "",
-    ].filter(Boolean).length / 2) * 100),
-    businessHours.trim() ? 100 : 0,
-    Math.round(([
-      businessInfo.address,
-      businessInfo.serviceAreas,
-    ].filter(Boolean).length / 2) * 100),
-    identityWorkspaceComplete ? 100 : 0,
-  ];
-  const identityLessonActivityPercent = Math.min(100, Math.round(
-    identityLessonProgress.reduce((sum, value) => sum + value, 0) / identityLessonProgress.length,
+  const identityWorkspacePercent = Math.min(100, Math.round(
+    (completedIdentitySteps.filter((step) => step >= 0 && step < identityLessons.length).length / Math.max(1, identityLessons.length)) * 100,
   ));
-
-  const knowledgeSourceLessonProgress = selectedKnowledgeSources.map((source) => {
-    if (source === "company") {
-      return Math.round(([
-        knowledgeTraining.companyInformation.vision,
-        knowledgeTraining.companyInformation.mission,
-        knowledgeTraining.companyInformation.importantThingsToKnow || knowledgeTraining.companyInformation.additionalNotes,
-      ].filter(Boolean).length / 3) * 100);
-    }
-    if (source === "faqs") {
-      return faqItems.length > 0 ? 100 : 0;
-    }
-    if (source === "documents") {
-      return knowledgeDocuments.length > 0 ? 100 : 0;
-    }
-    if (source === "website") {
-      return isValidWebsiteUrl(knowledgeTraining.website.websiteUrl) && knowledgeTraining.website.status !== "not_connected" ? 100 : 0;
-    }
-    return 0;
-  });
-
-  const knowledgeLessonProgress = [
-    selectedKnowledgeSources.length > 0 ? 100 : 0,
-    ...knowledgeSourceLessonProgress,
-    completedKnowledgeSteps.includes(knowledgeLessonSequence.length - 1) ? 100 : 0,
-  ];
-  const knowledgeLessonActivityPercent = Math.min(100, Math.round(
-    knowledgeLessonProgress.reduce((sum, value) => sum + value, 0) / Math.max(1, knowledgeLessonProgress.length),
+  const knowledgeLessonPercent = Math.min(100, Math.round(
+    (completedKnowledgeSteps.filter((step) => step >= 0 && step < knowledgeLessonSequence.length).length / Math.max(1, knowledgeLessonSequence.length)) * 100,
   ));
+  const knowledgeDataSignals = [
+    Boolean(knowledgeTraining.companyInformation.vision.trim() && knowledgeTraining.companyInformation.mission.trim()),
+    faqItems.some((faq) => faq.question.trim() && faq.answer.trim()),
+    knowledgeDocuments.length > 0,
+    isValidWebsiteUrl(knowledgeTraining.website.websiteUrl) && knowledgeTraining.website.status !== "not_connected",
+  ];
+  const knowledgeDataPercent = Math.min(100, Math.round(
+    (knowledgeDataSignals.filter(Boolean).length / Math.max(1, knowledgeDataSignals.length)) * 100,
+  ));
+  const knowledgeWorkspacePercent = Math.max(knowledgeLessonPercent, knowledgeDataPercent);
+  const connectedIntegrationCount = getAllIntegrationItems().filter((item) => getIntegrationStatus(item.id) === "connected").length;
+  const integrationConnectionPercent = Math.min(100, Math.round(
+    (connectedIntegrationCount / Math.max(1, getAllIntegrationItems().length)) * 100,
+  ));
+  const integrationLessonPercent = Math.min(100, Math.round(
+    (completedIntegrationSteps.filter((step) => step >= 0 && step < integrationLessonSequence.length).length / Math.max(1, integrationLessonSequence.length)) * 100,
+  ));
+  const configuredCustomerPolicies = customerPolicies.filter((policy) => policy.name.trim() && policy.description.trim());
+  const policiesWorkspacePercent = customerPolicies.length === 0
+    ? 0
+    : Math.min(100, Math.round((configuredCustomerPolicies.length / customerPolicies.length) * 100));
 
   const trainingCompletedSteps = [...new Set(
-    (identityWorkspaceComplete ? [...completedIdentitySteps, 0] : completedIdentitySteps)
-      .filter((step) => step >= 0 && step < identityLessons.length),
+    completedIdentitySteps.filter((step) => step >= 0 && step < identityLessons.length),
   )];
   const onboardingComplete = aiEmployeeLaunched || trainingCompletedSteps.length >= identityLessons.length;
   const minutesRemaining = Math.max(0, 6 - trainingCompletedSteps.length);
@@ -4060,13 +3969,13 @@ export default function DashboardLayout() {
     Integrations: ["Knowledge Hub"],
   };
   const workspaceProgressBySection = {
-    Identity: identityLessonActivityPercent,
-    "Knowledge Hub": knowledgeLessonActivityPercent,
-    Catalogue: catalogProducts.length > 0 ? 100 : 0,
-    "Sales Playbooks": Math.min(100, upsellProducts || recommendAlternatives ? 100 : 0),
-    Policies: Math.min(100, Math.round((Object.values(policies).filter(Boolean).length / 3) * 100)),
+    Identity: identityWorkspacePercent,
+    "Knowledge Hub": knowledgeWorkspacePercent,
+    Catalogue: productLessonProgress,
+    "Sales Playbooks": playbooks.length > 0 ? 100 : 0,
+    Policies: policiesWorkspacePercent,
     Skills: 0,
-    Integrations: Math.min(100, Math.round((Object.values(communicationChannels).filter(Boolean).length / Math.max(1, Object.keys(communicationChannels).length)) * 100)),
+    Integrations: Math.max(integrationLessonPercent, integrationConnectionPercent),
   };
   const workspaceNavigatorItems = [
     { title: "Identity", description: "Who your AI represents", section: "Identity" as const, Icon: User, complete: workspaceProgressBySection.Identity >= 100, percent: workspaceProgressBySection.Identity, unlocked: true },
@@ -4136,18 +4045,6 @@ export default function DashboardLayout() {
     setOnboardingRestored(true);
   }, []);
   useEffect(() => {
-    setCompletedIdentitySteps((current) => {
-      if (identityWorkspaceComplete && !current.includes(0)) {
-        return [...current, 0];
-      }
-      if (!identityWorkspaceComplete && current.includes(0)) {
-        return current.filter((step) => step !== 0);
-      }
-      return current;
-    });
-  }, [identityWorkspaceComplete]);
-
-  useEffect(() => {
     if (!onboardingRestored) return;
     window.localStorage.setItem("sokoos-ai-training-progress-v2", JSON.stringify({
       step: activeIdentityStep,
@@ -4160,16 +4057,15 @@ export default function DashboardLayout() {
     }));
   }, [activeIdentityStep, completedIdentitySteps, activeKnowledgeStep, completedKnowledgeSteps, selectedKnowledgeSources, aiEmployeeLaunched, onboardingRestored]);
   const [businessProfile, setBusinessProfile] = useState({
-    name: "Sokoos Internet",
-    industry: "Telecom & Connectivity",
-    description:
-      "We help local businesses stay online with reliable internet plans, fast support, and easy onboarding.",
-    phone: "+254 20 3949 0101",
-    email: "support@sokoos.co.ke",
-    location: "Nairobi, Kenya",
-    businessHours: "Mon–Fri, 8:00 AM - 6:00 PM",
-    serviceAreas: "Nairobi, Kiambu, Thika",
-    paymentMethods: { mPesa: true, cash: true, bankTransfer: true },
+    name: "",
+    industry: "",
+    description: "",
+    phone: "",
+    email: "",
+    location: "",
+    businessHours: "",
+    serviceAreas: "",
+    paymentMethods: { mPesa: false, cash: false, bankTransfer: false },
   });
   const [imageLabel, setImageLabel] = useState("No file selected");
 
@@ -4429,7 +4325,6 @@ export default function DashboardLayout() {
   );
 
   const integrationLessonSlugs = ["channels", "payments", "business-tools", "communication", "data-sync", "review"] as const;
-  const integrationLessonSequence = ["Channels", "Payments", "Business Tools", "Communication", "Data & Sync", "Review"] as const;
   const integrationLessonCompletionNames = integrationLessonSequence;
   const integrationLessonSlugToStep = Object.fromEntries(
     integrationLessonSlugs.map((slug, index) => [slug, index]),
@@ -7880,6 +7775,9 @@ export default function DashboardLayout() {
                                       </div>
 
                                       <div className="space-y-4">
+                                        {customerPolicies.length === 0 ? (
+                                          <p className="text-sm text-[#64748B]">No customer policies have been added yet.</p>
+                                        ) : null}
                                         {customerPolicies.map((policy) => (
                                           <div key={policy.id} className="rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFC] p-4">
                                             <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
