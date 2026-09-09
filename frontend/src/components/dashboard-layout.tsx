@@ -54,6 +54,7 @@ import { InboxWorkspace } from "@/components/dashboard/inbox/inbox-workspace";
 import { CustomersWorkspace } from "@/components/dashboard/customers/customers-workspace";
 import { PerformanceWorkspace } from "@/components/dashboard/ai-employee/performance/performance-workspace";
 import { TrainingTemplateCard } from "@/components/dashboard/ai-employee/training/training-template-card";
+import TrainingWorkspace from "@/components/dashboard/ai-employee/training/training-workspace";
 import { AccountSettings } from "@/components/dashboard/account-settings";
 import { clearAuthSession, getAuthToken, getAuthorizationHeader, getCurrentUser, getUserDisplayName, saveAuthSession, signOutMock, type AuthUser } from "@/lib/auth";
 import { ApiError, apiRequest, changePassword, createCatalogCategory, createCatalogItem, createKnowledgeSource, deleteCatalogCategory, deleteCatalogItem, deleteCatalogMedia, deleteKnowledgeSource, getAIEmployeeConfiguration, getCatalog, getCatalogCategories, getCatalogMedia, getKnowledgeSources, getWhatsAppIntegration, saveWhatsAppIntegration, updateAIEmployeeConfiguration, updateCatalogCategory, updateCatalogItem, updateCatalogMedia, updateKnowledgeSource, updateWhatsAppIntegration, uploadCatalogMedia, type AIEmployeeConfiguration, type CatalogItem, type CatalogItemInput, type CatalogItemType, type KnowledgeSource as APIKnowledgeSource } from "@/lib/api";
@@ -1789,6 +1790,7 @@ export default function DashboardLayout() {
       | "Test AI"
       | "Performance"
     >("Identity");
+  const [workspaceDialogOpen, setWorkspaceDialogOpen] = useState(false);
   const [activeIdentityStep, setActiveIdentityStep] = useState(0);
   const integrationsPageRef = useRef<HTMLDivElement | null>(null);
 
@@ -1965,11 +1967,12 @@ export default function DashboardLayout() {
   const knowledgeLessonCardClass = (step: number) => `rounded-[28px] border bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-300 sm:p-6 ${completedKnowledgeSteps.includes(step) ? "border-[#86EFAC] shadow-[0_14px_34px_rgba(34,197,94,0.14)]" : "border-[#E5E7EB]"}`;
 
   useEffect(() => {
+    if (!workspaceDialogOpen) return;
     document.getElementById("ai-workspace-content")?.scrollIntoView({
       behavior: "smooth",
       block: "start",
     });
-  }, [activeWorkspaceSection]);
+  }, [activeWorkspaceSection, workspaceDialogOpen]);
   const [businessModelSelections, setBusinessModelSelections] = useState<string[]>([]);
   const toggleBusinessModelSelection = (option: string) => {
     setBusinessModelSelections((current) =>
@@ -2047,11 +2050,13 @@ export default function DashboardLayout() {
     serviceDurationMinutes: item.service_duration_minutes ?? undefined, faqs: item.faq_items, customerInformation: item.customer_information,
     readiness: item.readiness,
   });
-  const getApiErrorMessage = (error: unknown) => {
-    if (!(error instanceof ApiError)) return "Unable to complete the catalog request.";
-    const errors = (error.data as { errors?: Record<string, string[] | string> } | null)?.errors;
-    if (errors) return Object.values(errors).flat().join(" ");
-    return error.isNetworkError ? error.message : "The catalog request could not be completed.";
+  const getApiErrorMessage = (error: unknown, fallback = "The catalog request could not be completed.") => {
+    if (!(error instanceof ApiError)) return fallback;
+    const payload = error.data as { errors?: Record<string, string[] | string>; detail?: string } | null;
+    if (payload?.errors) return Object.values(payload.errors).flat().join(" ");
+    if (error.isNetworkError) return error.message;
+    if (typeof payload?.detail === "string" && payload.detail.trim()) return payload.detail;
+    return fallback;
   };
   const toCatalogItemInput = (product: CatalogProduct, categoryId = product.categoryId): CatalogItemInput => {
     if (!categoryId) throw new Error("Choose or create a category before saving this item.");
@@ -2260,7 +2265,13 @@ export default function DashboardLayout() {
       try {
         const itemType = selectedCatalogueTab === "All" ? undefined : typeToApi[CATALOG_TAB_TO_PRODUCT_TYPE[selectedCatalogueTab as Exclude<CatalogueTab, "All">]];
         const result = await getCatalog({ search: productSearch, item_type: itemType, low_stock: catalogueAttentionFilter === "low-stock" ? true : undefined, readiness: catalogueAttentionFilter === "needs-information" ? "needs_information" : undefined });
-        if (active) setCatalogProducts((result.data ?? []).map(toCatalogProduct));
+        if (active) {
+          if (result.data == null || Array.isArray(result.data)) {
+            setCatalogProducts((result.data ?? []).map(toCatalogProduct));
+          } else {
+            setCatalogError("The catalog request could not be completed.");
+          }
+        }
       } catch (error) { if (active) setCatalogError(getApiErrorMessage(error)); }
       finally { if (active) setCatalogLoading(false); }
     };
@@ -3662,11 +3673,12 @@ export default function DashboardLayout() {
     setWritingExamples(configuration.writing_examples); setWelcomeMessage(configuration.welcome_message); setAwayMessage(configuration.away_message); setClosingMessage(configuration.closing_message);
     setOutsideHoursMode(configuration.outside_hours_mode); setMaxAiMessages(configuration.max_ai_messages);
     setUpsellProducts(configuration.upsell_products); setRecommendAlternatives(configuration.recommend_alternatives); setCloseSalesAutomatically(configuration.close_sales_automatically);
-    setWritingStyleOptions({ "Use emojis": configuration.writing_style_options.use_emojis ?? false, "Keep replies short": configuration.writing_style_options.keep_replies_short ?? false, "Explain simply": configuration.writing_style_options.explain_simply ?? false, "Ask follow-up questions": configuration.writing_style_options.ask_follow_up_questions ?? false, "Personalize responses": configuration.writing_style_options.personalize_responses ?? false });
-    const context = configuration.business_context;
+    const writingStyle = configuration.writing_style_options ?? {};
+    const context = configuration.business_context ?? {};
+    setWritingStyleOptions({ "Use emojis": writingStyle.use_emojis ?? false, "Keep replies short": writingStyle.keep_replies_short ?? false, "Explain simply": writingStyle.explain_simply ?? false, "Ask follow-up questions": writingStyle.ask_follow_up_questions ?? false, "Personalize responses": writingStyle.personalize_responses ?? false });
     setKnowledgeTraining((current) => ({ ...current, companyInformation: { ...current.companyInformation, vision: String(context.vision ?? ""), mission: String(context.mission ?? ""), shortTermGoals: String(context.short_term_goals ?? ""), longTermGoals: String(context.long_term_goals ?? ""), targetCustomers: String(context.target_customers ?? ""), customerProblems: String(context.customer_problems ?? ""), primaryMarket: String(context.primary_market ?? ""), customerSegments: String(context.customer_segments ?? ""), differentiators: String(context.differentiators ?? ""), competitiveAdvantages: String(context.competitive_advantages ?? ""), keySellingPoints: String(context.key_selling_points ?? ""), competitors: String(context.competitors ?? ""), preferredBrandTones: Array.isArray(context.preferred_brand_tones) ? context.preferred_brand_tones.filter((tone): tone is string => typeof tone === "string") : [], wordsToUse: String(context.words_to_use ?? ""), wordsToAvoid: String(context.words_to_avoid ?? ""), brandGuidance: String(context.brand_guidance ?? ""), importantThingsToKnow: String(context.important_things_to_know ?? ""), additionalNotes: String(context.additional_notes ?? "") } }));
   };
-  useEffect(() => { let active = true; void (async () => { try { const result = await getAIEmployeeConfiguration(); if (active && result.data) applyAIConfiguration(result.data); } catch (error) { if (active) setAiConfigurationError(getApiErrorMessage(error)); } finally { if (active) setAiConfigurationLoading(false); } })(); return () => { active = false; }; }, []);
+  useEffect(() => { let active = true; void (async () => { try { const result = await getAIEmployeeConfiguration(); if (!active) return; if (result.data) applyAIConfiguration(result.data); else { setAiConfigurationReadiness({ configured_sections: [], missing_sections: [], is_configured: false }); setHasPersistedAiConfiguration(false); } } catch (error) { if (active) setAiConfigurationError(getApiErrorMessage(error, "The AI configuration could not be loaded.")); } finally { if (active) setAiConfigurationLoading(false); } })(); return () => { active = false; }; }, []);
   const applyKnowledgeSources = (sources: APIKnowledgeSource[]) => {
     const website = sources.find((source) => source.kind === "website");
     setWebsiteSourceId(website?.id ?? null);
@@ -3696,7 +3708,7 @@ export default function DashboardLayout() {
       setHasUnsavedChanges(false);
       setSaveState("saved");
       window.setTimeout(() => setSaveState("idle"), 1200);
-    } catch (error) { setAiConfigurationError(getApiErrorMessage(error)); setSaveState("idle"); }
+    } catch (error) { setAiConfigurationError(getApiErrorMessage(error, "The AI configuration could not be loaded.")); setSaveState("idle"); }
   };
 
   const saveIdentityAndContinue = () => {
@@ -4022,6 +4034,21 @@ export default function DashboardLayout() {
   const currentTrainingLessonCount = activeWorkspaceSection === "Knowledge Hub" ? knowledgeLessonSequence.length : identityLessons.length;
   const currentTrainingStepNumber = activeWorkspaceSection === "Knowledge Hub" ? activeKnowledgeStep + 1 : activeIdentityStep + 1;
   const aiReadinessLabel = aiConfigurationReadiness?.is_configured ? "Configured" : "Needs setup";
+  const catalogNotSetUp = !catalogLoading && !catalogError && catalogProducts.length === 0;
+  const aiReadinessStatus = aiConfigurationLoading
+    ? "Loading…"
+    : aiConfigurationError && !aiConfigurationReadiness
+      ? "Unavailable"
+      : aiReadinessLabel;
+  const aiReadinessDetail = aiConfigurationError
+    ? aiConfigurationError
+    : aiConfigurationReadiness?.is_configured && !catalogNotSetUp
+      ? "Configuration requirements are saved"
+      : [
+          aiConfigurationReadiness?.missing_sections.length ? `Missing: ${aiConfigurationReadiness.missing_sections.join(", ")}` : null,
+          catalogNotSetUp ? "Catalogue has not been added yet." : null,
+        ].filter(Boolean).join(" ")
+        || (aiConfigurationLoading ? "Checking saved configuration" : "Setup has not been completed yet.");
   const totalProductMediaAssets = catalogProducts.reduce((count, product) => count + (product.mediaAssets?.length ?? 0), 0);
   const workspacePrerequisites: Record<string, string[]> = {
     Identity: [],
@@ -4050,8 +4077,9 @@ export default function DashboardLayout() {
     { title: "Skills", description: "Work it can do", section: "Skills" as const, Icon: Sparkles, complete: workspaceProgressBySection.Skills >= 100, percent: workspaceProgressBySection.Skills, unlocked: true },
     { title: "Integrations", description: "Where it connects", section: "Integrations" as const, Icon: Plug, complete: workspaceProgressBySection.Integrations >= 100, percent: workspaceProgressBySection.Integrations, unlocked: true },
   ];
-  const handleWorkspaceSectionSelection = (section: (typeof workspaceNavigatorItems)[number]["section"]) => {
+  const openWorkspaceDialog = (section: typeof activeWorkspaceSection) => {
     setActiveWorkspaceSection(section);
+    setWorkspaceDialogOpen(true);
   };
 
   const TrainingTemplateOption = ({
@@ -6333,96 +6361,39 @@ export default function DashboardLayout() {
           )}
 
           {(selected === "AI Employee" || selected === "Training") && (
-            <div className="mx-auto w-full max-w-[1280px] space-y-6 px-4 pb-10 lg:px-6">
-              <div className="border-b border-[#E5E7EB] pb-5">
-                <div className="flex flex-col gap-5">
-                  <div className="max-w-3xl">
-                    <p className="text-[12px] font-semibold uppercase tracking-[0.24em] text-[#6B7280]">
-                      Your new teammate
-                    </p>
-                    <h2 className="mt-2 text-[24px] font-semibold tracking-[-0.02em] text-[#111827] lg:text-[26px]">
-                      Hire and train your AI Employee.
-                    </h2>
-                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">
-                      Give your new teammate the context, voice, and tools it needs to do great work from day one.
-                    </p>
-                  </div>
-
-                  <section className="rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)]" aria-label="AI setup score">
-                    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-center">
-                      <div className="flex gap-3"><span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-lg shadow-sm ${overallTrainingComplete ? "bg-[#22C55E] text-white" : "bg-[#ECFDF5] text-[#166534]"}`}>{overallTrainingComplete ? "🎉" : "🤖"}</span><div className="min-w-0 flex-1"><p className="text-sm font-semibold text-[#111827]">{overallTrainingComplete ? "Setup checklist complete" : "Setting up your AI Employee"}</p><p className="mt-1 text-xs text-[#475569]">{overallTrainingComplete ? "The available configuration and knowledge workflow steps are complete." : `Step ${currentTrainingStepNumber} of ${currentTrainingLessonCount} · ${currentTrainingLessonLabel}`}</p><p className="mt-1 text-xs leading-5 text-[#64748B]">{overallTrainingComplete ? "You can update this configuration as your business changes." : activeWorkspaceSection === "Knowledge Hub" ? "Save the knowledge sources you want available for a future AI runtime." : "Configure the business context and communication preferences for a future AI runtime."}</p><div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]"><div className="h-full rounded-full bg-[#22C55E] transition-all duration-300" style={{ width: `${overallTrainingComplete ? 100 : overallTrainingPercent}%` }} /></div><p className="mt-2 text-[11px] font-semibold text-[#166534]">{completedTrainingLessonCount} of {totalTrainingLessonCount} workflow steps complete · {overallTrainingComplete ? 100 : overallTrainingPercent}% complete</p></div></div>
-                      <div className="rounded-xl border border-[#BBF7D0] bg-[#F7FEF9] p-3"><p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#166534]">AI Readiness</p><p className="mt-1 text-lg font-semibold text-[#111827]">{aiConfigurationReadiness ? aiReadinessLabel : aiConfigurationLoading ? "Loading…" : "Unavailable"}</p><p role={aiConfigurationError ? "alert" : undefined} className={`mt-1 text-xs ${aiConfigurationError ? "text-[#B91C1C]" : "text-[#64748B]"}`}>{aiConfigurationError ?? (aiConfigurationReadiness?.is_configured ? "Configuration requirements are saved" : aiConfigurationReadiness ? `Missing: ${aiConfigurationReadiness.missing_sections.join(", ")}` : "Checking saved configuration")}</p><button type="button" onClick={() => { if (activeWorkspaceSection === "Knowledge Hub") { setActiveWorkspaceSection("Knowledge Hub"); focusKnowledgeLesson(activeKnowledgeStep); } else { setActiveWorkspaceSection("Identity"); focusIdentityLesson(activeIdentityStep); } }} className="mt-3 text-xs font-semibold text-[#166534] transition hover:text-[#047857]">Continue training <ChevronRight className="inline h-3.5 w-3.5" /></button></div>
-                    </div>
-                  </section>
-
-                  <nav aria-label="AI employee workspace sections" className="sticky top-0 z-30 -mx-4 border-y border-[#E5E7EB] bg-white/95 px-4 py-3 shadow-[0_8px_24px_rgba(15,23,42,0.06)] backdrop-blur lg:hidden">
-                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                    {workspaceNavigatorItems.map((tab) => {
-                      const active = activeWorkspaceSection === tab.section;
-                      return (
-                        <button
-                          key={tab.title}
-                          type="button"
-                          onClick={() => handleWorkspaceSectionSelection(tab.section)}
-                          aria-current={active ? "page" : undefined}
-                          className={`relative flex min-w-0 flex-col gap-2 rounded-xl border px-2.5 py-2.5 text-left text-xs font-semibold transition-all duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 ${
-                            active
-                              ? "border-[#86EFAC] bg-[#ECFDF5] text-[#166534] shadow-sm"
-                              : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#D1FAE5] hover:bg-[#F9FCFA]"
-                          }`}
-                        >
-                          <div className="flex items-center justify-between gap-2">
-                            <div className="flex items-center gap-1.5">
-                              <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-lg ${active ? "bg-[#22C55E] text-white" : tab.complete ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#F1F5F9] text-[#64748B]"}`}>
-                                {tab.complete ? <Check className="h-3.5 w-3.5" /> : <tab.Icon className="h-3.5 w-3.5" />}
-                              </span>
-                              <span className="truncate">{tab.title}</span>
-                            </div>
-                            {tab.complete ? <Check className="h-3.5 w-3.5 shrink-0 text-[#16A34A]" /> : null}
-                          </div>
-                          <div className="h-1.5 overflow-hidden rounded-full bg-[#E5E7EB]">
-                            <div className={`h-full rounded-full transition-all duration-500 ${tab.complete ? "bg-[#22C55E]" : "bg-[#CBD5E1]"}`} style={{ width: `${Math.max(4, tab.percent)}%` }} />
-                          </div>
-                          <span className="text-[10px] font-medium text-[#64748B]">{tab.percent}%</span>
-                        </button>
-                      );
-                    })}
-                    </div>
-                  </nav>
-                </div>
-              </div>
-
-              <main className="relative space-y-5 pb-28 lg:pl-[252px]">
-                <aside className="hidden w-[228px] lg:sticky lg:top-5 lg:float-left lg:-ml-[252px] lg:block" aria-label="AI employee workspaces">
-                  <div className="rounded-xl border border-[#E5E7EB] bg-white p-2.5 shadow-[0_8px_24px_rgba(15,23,42,0.05)]">
-                    <div className="px-2.5 pb-2 pt-1.5"><p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">AI training</p><p className="mt-1 text-xs text-[#64748B]">Watch your AI grow one workspace at a time.</p></div>
-                    <nav className="space-y-2" aria-label="AI Employee workspace navigator">
-                      {workspaceNavigatorItems.map((item) => {
-                        const active = activeWorkspaceSection === item.section;
-                        return <button key={item.title} type="button" onClick={() => handleWorkspaceSectionSelection(item.section)} aria-current={active ? "page" : undefined} className={`w-full rounded-xl border px-2.5 py-2.5 text-left transition-all duration-200 ease-out ${active ? "border-[#86EFAC] bg-[#ECFDF5] shadow-sm" : "border-[#E5E7EB] bg-white hover:border-[#D1FAE5] hover:bg-[#F9FCFA]"}`}>
-                          <div className="flex items-center gap-2.5">
-                            <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${active ? "bg-[#22C55E] text-white" : item.complete ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#F1F5F9] text-[#64748B]"}`}>
-                              {item.complete ? <Check className="h-3.5 w-3.5" /> : <item.Icon className="h-3.5 w-3.5" />}
-                            </span>
-                            <span className="min-w-0 flex-1">
-                              <span className={`block truncate text-xs font-semibold ${active ? "text-[#166534]" : "text-[#111827]"}`}>{item.title}</span>
-                              <span className="mt-0.5 block truncate text-[10px] text-[#64748B]">{item.description}</span>
-                            </span>
-                            {item.complete && <Check className="h-3.5 w-3.5 shrink-0 text-[#16A34A]" />}
-                          </div>
-                          <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[#E5E7EB]">
-                            <div className={`h-full rounded-full transition-all duration-500 ${item.complete ? "bg-[#22C55E]" : "bg-[#CBD5E1]"}`} style={{ width: `${Math.max(4, item.percent)}%` }} />
-                          </div>
-                          <div className="mt-1 flex items-center justify-between text-[10px] font-medium text-[#64748B]">
-                            <span>{active ? "In progress" : "Ready"}</span>
-                            <span>{item.percent}%</span>
-                          </div>
-                        </button>;
-                      })}
-                    </nav>
-                  </div>
-                </aside>
-                <div className="border-b border-[#E5E7EB] pb-4">
+            <TrainingWorkspace
+              workspaceNavigatorItems={workspaceNavigatorItems}
+              activeWorkspaceSection={activeWorkspaceSection}
+              dialogOpen={workspaceDialogOpen}
+              onDialogOpenChange={setWorkspaceDialogOpen}
+              onOpenWorkspace={(section) => openWorkspaceDialog(section as typeof activeWorkspaceSection)}
+              overallTrainingComplete={overallTrainingComplete}
+              currentTrainingStepNumber={currentTrainingStepNumber}
+              currentTrainingLessonCount={currentTrainingLessonCount}
+              currentTrainingLessonLabel={currentTrainingLessonLabel}
+              completedTrainingLessonCount={completedTrainingLessonCount}
+              totalTrainingLessonCount={totalTrainingLessonCount}
+              overallTrainingPercent={overallTrainingPercent}
+              aiReadinessStatus={aiReadinessStatus}
+              aiReadinessDetail={aiReadinessDetail}
+              aiConfigurationError={aiConfigurationError}
+              onContinueTraining={() => {
+                if (activeWorkspaceSection === "Knowledge Hub") {
+                  openWorkspaceDialog("Knowledge Hub");
+                  focusKnowledgeLesson(activeKnowledgeStep);
+                } else {
+                  openWorkspaceDialog("Identity");
+                  focusIdentityLesson(activeIdentityStep);
+                }
+              }}
+              onContinueLessons={() => {
+                if (activeWorkspaceSection === "Knowledge Hub") focusKnowledgeLesson(activeKnowledgeStep);
+                else if (activeWorkspaceSection === "Identity") focusIdentityLesson(activeIdentityStep);
+                else document.getElementById("ai-workspace-content")?.scrollIntoView({ behavior: "smooth", block: "start" });
+              }}
+            >
+                <div className="space-y-5">
+                  <div className="border-b border-[#E5E7EB] pb-4">
                   <div className="max-w-3xl">
                     <p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]">
                       {activeWorkspaceSection === "Identity"
@@ -8667,8 +8638,8 @@ export default function DashboardLayout() {
                       </div>
                     )}
 
-                </main>
-              </div>
+                </div>
+            </TrainingWorkspace>
           )}
           {selected === "Marketing" && (
             <div className={`space-y-6 ${CARD}`}>
