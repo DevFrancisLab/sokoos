@@ -1,5 +1,5 @@
 import { type ChangeEvent, type ReactNode, type SetStateAction, useEffect, useMemo, useRef, useState } from "react";
-import { useRouter } from "@tanstack/react-router";
+import { useRouter, useRouterState } from "@tanstack/react-router";
 import {
   Home,
   Inbox,
@@ -4146,6 +4146,7 @@ export default function DashboardLayout() {
   const [imageLabel, setImageLabel] = useState("No file selected");
 
   const router = useRouter();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
 
   const getSelectionFromPath = (pathname: string) => {
     if (pathname === "/dashboard/ai" || pathname === "/dashboard/ai/") return "Training";
@@ -4160,13 +4161,12 @@ export default function DashboardLayout() {
   };
 
   useEffect(() => {
-    const pathname = router.state.location.pathname;
     const nextSelection = getSelectionFromPath(pathname);
     setSelected(nextSelection);
     if (nextSelection === "Training") {
       setActiveWorkspaceSection("Identity");
     }
-  }, [router.state.location.pathname]);
+  }, [pathname]);
 
   const handleNavSelection = (label: string, href?: string) => {
     if (label === "Training") {
