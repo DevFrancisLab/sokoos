@@ -5291,10 +5291,74 @@ export default function DashboardLayout() {
       'Increase order value (Upsell)',
       'Retain existing customers',
     ];
+    const initialQualificationQuestions = [
+      { id: 'q-1', text: 'Budget', required: false },
+      { id: 'q-2', text: 'Preferred location', required: false },
+      { id: 'q-3', text: 'Timeline', required: false },
+      { id: 'q-4', text: 'Company size', required: false },
+      { id: 'q-5', text: 'Industry', required: false },
+    ];
+    const initialStrategyOptions = [
+      'Recommend the best match',
+      'Recommend best sellers',
+      'Recommend premium options',
+      'Recommend budget alternatives',
+      'Recommend complementary items',
+      'Recommend promotional items',
+      'Recommend newest items',
+    ];
+    const initialPricingPermissions = [
+      { id: 'p-share', label: 'Share prices', enabled: false },
+      { id: 'p-quote', label: 'Generate quotations', enabled: false },
+      { id: 'p-discount', label: 'Offer discounts', enabled: false },
+      { id: 'p-coupons', label: 'Apply coupons', enabled: false },
+      { id: 'p-reserve', label: 'Reserve inventory', enabled: false },
+    ];
+    const handoffTriggers = [
+      'Customer requests a human',
+      'Complaint',
+      'Refund request',
+      'Payment issue',
+      'Large order',
+      'Custom quotation',
+      'Technical issue',
+      'VIP customer',
+    ];
+    const closingActionOptions = [
+      'Share checkout link',
+      'Book appointment',
+      'Send quotation',
+      'Collect phone number',
+      'Collect email',
+      'Connect to staff',
+    ];
+    const followUpOptions = ['Never', 'After 2 hours', 'After 24 hours', 'After 3 days'];
 
     const [objectives, setObjectives] = useState(
       initialObjectives.map((label, i) => ({ id: `obj-${i + 1}`, label, selected: false })),
     );
+    const [qualificationQuestions, setQualificationQuestions] = useState<Array<{ id: string; text: string; required: boolean; editing?: boolean }>>(initialQualificationQuestions);
+    const [strategyOptions, setStrategyOptions] = useState(initialStrategyOptions.map((label, i) => ({ id: `s-${i + 1}`, label, enabled: false })));
+    const [pricingPermissions, setPricingPermissions] = useState(initialPricingPermissions);
+    const [maxDiscount, setMaxDiscount] = useState(10);
+    const [pricingApproval, setPricingApproval] = useState<'always' | 'above' | 'never'>('above');
+    const [handoffSelected, setHandoffSelected] = useState<string[]>([]);
+    const [selectedClosingActions, setSelectedClosingActions] = useState<string[]>([]);
+    const [followUpTiming, setFollowUpTiming] = useState(followUpOptions[2]);
+
+    const qualificationConfigured = qualificationQuestions.length !== initialQualificationQuestions.length
+      || qualificationQuestions.some((question, index) => {
+        const initial = initialQualificationQuestions[index];
+        return !initial || question.id !== initial.id || question.text !== initial.text || question.required !== initial.required;
+      });
+    const reviewSections = [
+      { key: 'objectives', label: 'Sales Objectives', configured: objectives.some((objective) => objective.selected) },
+      { key: 'qualification', label: 'Customer Qualification', configured: qualificationConfigured },
+      { key: 'strategy', label: 'Sales Strategy', configured: strategyOptions.some((option) => option.enabled) },
+      { key: 'pricing', label: 'Pricing & Negotiation', configured: pricingPermissions.some((permission) => permission.enabled) },
+      { key: 'handoff', label: 'Human Handoff', configured: handoffSelected.length > 0 },
+      { key: 'closing', label: 'Closing & Follow-up', configured: selectedClosingActions.length > 0 },
+    ];
 
     const dragId = useRef<string | null>(null);
 
@@ -5371,7 +5435,36 @@ export default function DashboardLayout() {
               <p className="mt-1 text-sm text-[#6B7280]">Teach your AI what information to collect before making recommendations.</p>
             </div>
 
-            <QuestionsList />
+            <div>
+              <div className="space-y-3">
+                {qualificationQuestions.map((question, idx) => (
+                  <div key={question.id} className="flex items-center gap-3 rounded-[12px] border border-[#E5E7EB] bg-white p-3 shadow-sm">
+                    <div className="select-none text-sm font-semibold text-[#64748B]">{idx + 1}</div>
+                    <div className="flex-1">
+                      {question.editing ? (
+                        <div className="flex gap-2">
+                          <input defaultValue={question.text} className="w-full rounded-md border border-[#E5E7EB] px-2 py-1 text-sm" onBlur={(event) => setQualificationQuestions((current) => current.map((item) => item.id === question.id ? { ...item, text: event.target.value, editing: false } : item))} />
+                          <button type="button" onClick={() => setQualificationQuestions((current) => current.map((item) => item.id === question.id ? { ...item, editing: false } : item))} className="rounded-md border border-[#E5E7EB] px-2 py-1 text-sm">Save</button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-between">
+                          <div className="text-sm text-[#111827]">{question.text}</div>
+                          <div className="ml-4 flex items-center gap-2">
+                            <label className="inline-flex items-center gap-2 text-sm text-[#475569]"><input type="checkbox" checked={question.required} onChange={() => setQualificationQuestions((current) => current.map((item) => item.id === question.id ? { ...item, required: !item.required } : item))} /> Required</label>
+                            <button type="button" onClick={() => setQualificationQuestions((current) => current.map((item) => item.id === question.id ? { ...item, editing: true } : item))} className="rounded-[8px] border border-[#E5E7EB] px-2 py-1 text-xs">Edit</button>
+                            <button type="button" onClick={() => setQualificationQuestions((current) => current.filter((item) => item.id !== question.id))} className="rounded-[8px] border border-[#FECACA] px-2 py-1 text-xs text-[#B91C1C]">Delete</button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-3 flex items-center justify-between">
+                <p className="text-sm text-[#64748B]">The AI should later use these questions during conversations.</p>
+                <button type="button" onClick={() => setQualificationQuestions((current) => [...current, { id: `q-${Date.now()}`, text: 'New question', required: false, editing: true }])} className="inline-flex items-center gap-2 rounded-[10px] bg-[#111827] px-3 py-2 text-sm font-semibold text-white">Add Question</button>
+              </div>
+            </div>
           </section>
         )}
  
@@ -5382,7 +5475,16 @@ export default function DashboardLayout() {
               <p className="mt-1 text-sm text-[#6B7280]">Decide how your AI recommends products and services during conversations.</p>
             </div>
 
-            <StrategyOptions />
+            <div className="grid gap-3">
+              {strategyOptions.map((option) => (
+                <div key={option.id} className="flex items-center gap-3 rounded-[12px] border border-[#E5E7EB] bg-white p-3 shadow-sm">
+                  <label className="flex w-full cursor-pointer items-center gap-3">
+                    <input type="checkbox" checked={option.enabled} onChange={() => setStrategyOptions((current) => current.map((item) => item.id === option.id ? { ...item, enabled: !item.enabled } : item))} className="h-4 w-4 rounded border border-[#E5E7EB] text-[#111827]" />
+                    <span className="text-sm text-[#111827]">{option.label}</span>
+                  </label>
+                </div>
+              ))}
+            </div>
 
             <p className="mt-3 text-sm text-[#64748B]">Your AI will use these strategies together with your catalogue.</p>
           </section>
@@ -5395,7 +5497,38 @@ export default function DashboardLayout() {
               <p className="mt-1 text-sm text-[#6B7280]">Define what pricing information and negotiation authority your AI is allowed to use.</p>
             </div>
 
-            <PricingNegotiation />
+            <div className="space-y-4">
+              <div className="grid gap-3">
+                {pricingPermissions.map((permission) => (
+                  <label key={permission.id} className="flex cursor-pointer items-center gap-3 rounded-[12px] border border-[#E5E7EB] bg-white p-3 shadow-sm">
+                    <input type="checkbox" checked={permission.enabled} onChange={() => setPricingPermissions((current) => current.map((item) => item.id === permission.id ? { ...item, enabled: !item.enabled } : item))} className="h-4 w-4 rounded border border-[#E5E7EB] text-[#111827]" />
+                    <span className="text-sm text-[#111827]">{permission.label}</span>
+                  </label>
+                ))}
+              </div>
+              <div className="rounded-[12px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
+                <p className="text-sm font-semibold text-[#111827]">Maximum discount</p>
+                <div className="mt-3 flex items-center gap-4">
+                  <input type="range" min={0} max={20} value={maxDiscount} onChange={(event) => setMaxDiscount(Number(event.target.value))} className="w-full" />
+                  <div className="w-20 text-right text-sm font-semibold text-[#111827]">{maxDiscount}%</div>
+                </div>
+                <div className="mt-4">
+                  <p className="text-sm font-semibold text-[#111827]">Human approval</p>
+                  <div className="mt-2 flex gap-3">
+                    {([
+                      ['always', 'Always'],
+                      ['above', 'Above maximum discount'],
+                      ['never', 'Never'],
+                    ] as const).map(([value, label]) => (
+                      <label key={value} className={`inline-flex items-center gap-2 rounded-md border px-3 py-2 ${pricingApproval === value ? 'border-[#111827] bg-[#111827] text-white' : 'border-[#E5E7EB] bg-white text-[#475569]'}`}>
+                        <input type="radio" name="sales-pricing-approval" checked={pricingApproval === value} onChange={() => setPricingApproval(value)} className="sr-only" />
+                        {label}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
           </section>
         )}
 
@@ -5406,7 +5539,16 @@ export default function DashboardLayout() {
               <p className="mt-1 text-sm text-[#6B7280]">Choose when your AI should stop the conversation and involve a human.</p>
             </div>
 
-            <HumanHandoffOptions />
+            <div className="grid gap-3">
+              {handoffTriggers.map((trigger) => (
+                <button key={trigger} type="button" onClick={() => setHandoffSelected((current) => current.includes(trigger) ? current.filter((item) => item !== trigger) : [...current, trigger])} className={`rounded-[12px] border p-3 text-left transition ${handoffSelected.includes(trigger) ? 'border-[#22C55E] bg-[#F7FEF9]' : 'border-[#E5E7EB] bg-white hover:shadow-sm'}`}>
+                  <div className="flex items-center justify-between">
+                    <div className="text-sm text-[#111827]">{trigger}</div>
+                    <div className="text-sm text-[#64748B]">{handoffSelected.includes(trigger) ? 'Selected' : 'Tap to select'}</div>
+                  </div>
+                </button>
+              ))}
+            </div>
 
             <p className="mt-3 text-sm text-[#64748B]">The AI will immediately notify the assigned team member when these situations occur.</p>
           </section>
@@ -5419,7 +5561,27 @@ export default function DashboardLayout() {
               <p className="mt-1 text-sm text-[#6B7280]">Teach your AI how to end successful conversations and follow up with potential customers.</p>
             </div>
 
-            <ClosingFollowUp />
+            <div className="space-y-4">
+              <div className="grid gap-3">
+                {closingActionOptions.map((action) => (
+                  <label key={action} className={`flex items-center gap-3 rounded-[12px] border p-3 ${selectedClosingActions.includes(action) ? 'border-[#22C55E] bg-[#F7FEF9]' : 'border-[#E5E7EB] bg-white'}`}>
+                    <input type="checkbox" checked={selectedClosingActions.includes(action)} onChange={() => setSelectedClosingActions((current) => current.includes(action) ? current.filter((item) => item !== action) : [...current, action])} className="h-4 w-4 rounded border border-[#E5E7EB] text-[#111827]" />
+                    <span className="text-sm text-[#111827]">{action}</span>
+                  </label>
+                ))}
+              </div>
+              <div className="rounded-[12px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
+                <p className="text-sm font-semibold text-[#111827]">Follow-up timing</p>
+                <div className="mt-3 flex items-center gap-3">
+                  <select value={followUpTiming} onChange={(event) => setFollowUpTiming(event.target.value)} className="rounded-md border border-[#E5E7EB] px-3 py-2 text-sm">
+                    {followUpOptions.map((option) => (
+                      <option key={option} value={option}>{option}</option>
+                    ))}
+                  </select>
+                  <div className="text-sm text-[#64748B]">Selected: {followUpTiming}</div>
+                </div>
+              </div>
+            </div>
 
             <p className="mt-3 text-sm text-[#64748B]">Follow-ups should only be sent if the customer has not completed the intended action.</p>
           </section>
@@ -5433,14 +5595,7 @@ export default function DashboardLayout() {
             </div>
 
             <div className="grid gap-3">
-              {[
-                { key: 'objectives', label: 'Sales Objectives', configured: objectives.some((o) => o.selected) || activeSalesStep > 0 },
-                { key: 'qualification', label: 'Customer Qualification', configured: activeSalesStep > 1 },
-                { key: 'strategy', label: 'Sales Strategy', configured: activeSalesStep > 2 },
-                { key: 'pricing', label: 'Pricing & Negotiation', configured: activeSalesStep > 3 },
-                { key: 'handoff', label: 'Human Handoff', configured: activeSalesStep > 4 },
-                { key: 'closing', label: 'Closing & Follow-up', configured: activeSalesStep > 5 },
-              ].map((sec) => (
+              {reviewSections.map((sec) => (
                 <div key={sec.key} className="flex items-center justify-between rounded-[12px] border border-[#E5E7EB] bg-white p-3">
                   <div className="text-sm text-[#111827]">{sec.label}</div>
                   <div className="flex items-center gap-3">
@@ -5491,216 +5646,6 @@ export default function DashboardLayout() {
     };
   }
   const SalesLessonTabs = salesLessonTabsComponentRef.current!;
-
-  // QuestionsList: UI-only component for Lesson 2 (Customer Qualification)
-  const QuestionsList = () => {
-    type Q = { id: string; text: string; required: boolean; editing?: boolean };
-    const [questions, setQuestions] = useState<Q[]>([
-      { id: 'q-1', text: 'Budget', required: false },
-      { id: 'q-2', text: 'Preferred location', required: false },
-      { id: 'q-3', text: 'Timeline', required: false },
-      { id: 'q-4', text: 'Company size', required: false },
-      { id: 'q-5', text: 'Industry', required: false },
-    ]);
-
-    const addQuestion = () => {
-      const id = `q-${Date.now()}`;
-      setQuestions((s) => [...s, { id, text: 'New question', required: false, editing: true }]);
-    };
-
-    const toggleRequired = (id: string) => setQuestions((s) => s.map((q) => (q.id === id ? { ...q, required: !q.required } : q)));
-    const deleteQuestion = (id: string) => setQuestions((s) => s.filter((q) => q.id !== id));
-    const startEdit = (id: string) => setQuestions((s) => s.map((q) => (q.id === id ? { ...q, editing: true } : q)));
-    const saveEdit = (id: string, text: string) => setQuestions((s) => s.map((q) => (q.id === id ? { ...q, text, editing: false } : q)));
-
-    return (
-      <div>
-        <div className="space-y-3">
-          {questions.map((q, idx) => (
-            <div key={q.id} className="flex items-center gap-3 rounded-[12px] border border-[#E5E7EB] bg-white p-3 shadow-sm">
-              <div className="select-none text-sm font-semibold text-[#64748B]">{idx + 1}</div>
-
-              <div className="flex-1">
-                {q.editing ? (
-                  <div className="flex gap-2">
-                    <input defaultValue={q.text} className="w-full rounded-md border border-[#E5E7EB] px-2 py-1 text-sm" onBlur={(e) => saveEdit(q.id, e.target.value)} />
-                    <button onClick={() => saveEdit(q.id, q.text)} className="rounded-md border border-[#E5E7EB] px-2 py-1 text-sm">Save</button>
-                  </div>
-                ) : (
-                  <div className="flex items-center justify-between">
-                    <div className="text-sm text-[#111827]">{q.text}</div>
-                    <div className="ml-4 flex items-center gap-2">
-                      <label className="inline-flex items-center gap-2 text-sm text-[#475569]"><input type="checkbox" checked={q.required} onChange={() => toggleRequired(q.id)} /> Required</label>
-                      <button onClick={() => startEdit(q.id)} className="rounded-[8px] border border-[#E5E7EB] px-2 py-1 text-xs">Edit</button>
-                      <button onClick={() => deleteQuestion(q.id)} className="rounded-[8px] border border-[#FECACA] px-2 py-1 text-xs text-[#B91C1C]">Delete</button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-3 flex items-center justify-between">
-          <p className="text-sm text-[#64748B]">The AI should later use these questions during conversations.</p>
-          <button type="button" onClick={addQuestion} className="inline-flex items-center gap-2 rounded-[10px] bg-[#111827] px-3 py-2 text-sm font-semibold text-white">Add Question</button>
-        </div>
-      </div>
-    );
-  };
-
-  // StrategyOptions: UI-only component for Lesson 3 (Sales Strategy)
-  const StrategyOptions = () => {
-    const initial = [
-      'Recommend the best match',
-      'Recommend best sellers',
-      'Recommend premium options',
-      'Recommend budget alternatives',
-      'Recommend complementary items',
-      'Recommend promotional items',
-      'Recommend newest items',
-    ];
-    const [options, setOptions] = useState(initial.map((label, i) => ({ id: `s-${i + 1}`, label, enabled: false })));
-
-    const toggle = (id: string) => setOptions((s) => s.map((o) => (o.id === id ? { ...o, enabled: !o.enabled } : o)));
-
-    return (
-      <div className="grid gap-3">
-        {options.map((opt) => (
-          <div key={opt.id} className="flex items-center gap-3 rounded-[12px] border border-[#E5E7EB] bg-white p-3 shadow-sm">
-            <label className="flex items-center gap-3 w-full cursor-pointer">
-              <input type="checkbox" checked={opt.enabled} onChange={() => toggle(opt.id)} className="h-4 w-4 rounded border border-[#E5E7EB] text-[#111827]" />
-              <span className="text-sm text-[#111827]">{opt.label}</span>
-            </label>
-          </div>
-        ))}
-      </div>
-    );
-  };
-
-  // PricingNegotiation: UI-only component for Lesson 4 (Pricing & Negotiation)
-  const PricingNegotiation = () => {
-    const [permissions, setPermissions] = useState([
-      { id: 'p-share', label: 'Share prices', enabled: false },
-      { id: 'p-quote', label: 'Generate quotations', enabled: false },
-      { id: 'p-discount', label: 'Offer discounts', enabled: false },
-      { id: 'p-coupons', label: 'Apply coupons', enabled: false },
-      { id: 'p-reserve', label: 'Reserve inventory', enabled: false },
-    ]);
-
-    const togglePerm = (id: string) => setPermissions((s) => s.map((x) => (x.id === id ? { ...x, enabled: !x.enabled } : x)));
-
-    const [maxDiscount, setMaxDiscount] = useState(10);
-    const [approval, setApproval] = useState<'always' | 'above' | 'never'>('above');
-
-    return (
-      <div className="space-y-4">
-        <div className="grid gap-3">
-          {permissions.map((perm) => (
-            <label key={perm.id} className="flex items-center gap-3 rounded-[12px] border border-[#E5E7EB] bg-white p-3 shadow-sm cursor-pointer">
-              <input type="checkbox" checked={perm.enabled} onChange={() => togglePerm(perm.id)} className="h-4 w-4 rounded border border-[#E5E7EB] text-[#111827]" />
-              <span className="text-sm text-[#111827]">{perm.label}</span>
-            </label>
-          ))}
-        </div>
-
-        <div className="rounded-[12px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
-          <p className="text-sm font-semibold text-[#111827]">Maximum discount</p>
-          <div className="mt-3 flex items-center gap-4">
-            <input type="range" min={0} max={20} value={maxDiscount} onChange={(e) => setMaxDiscount(Number(e.target.value))} className="w-full" />
-            <div className="w-20 text-right text-sm font-semibold text-[#111827]">{maxDiscount}%</div>
-          </div>
-
-          <div className="mt-4">
-            <p className="text-sm font-semibold text-[#111827]">Human approval</p>
-            <div className="mt-2 flex gap-3">
-              <label className={`inline-flex items-center gap-2 rounded-md border px-3 py-2 ${approval === 'always' ? 'border-[#111827] bg-[#111827] text-white' : 'border-[#E5E7EB] bg-white text-[#475569]'}`}>
-                <input type="radio" name="approval" checked={approval === 'always'} onChange={() => setApproval('always')} className="sr-only" />
-                Always
-              </label>
-              <label className={`inline-flex items-center gap-2 rounded-md border px-3 py-2 ${approval === 'above' ? 'border-[#111827] bg-[#111827] text-white' : 'border-[#E5E7EB] bg-white text-[#475569]'}`}>
-                <input type="radio" name="approval" checked={approval === 'above'} onChange={() => setApproval('above')} className="sr-only" />
-                Above maximum discount
-              </label>
-              <label className={`inline-flex items-center gap-2 rounded-md border px-3 py-2 ${approval === 'never' ? 'border-[#111827] bg-[#111827] text-white' : 'border-[#E5E7EB] bg-white text-[#475569]'}`}>
-                <input type="radio" name="approval" checked={approval === 'never'} onChange={() => setApproval('never')} className="sr-only" />
-                Never
-              </label>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  const HumanHandoffOptions = () => {
-    const triggers = [
-      'Customer requests a human',
-      'Complaint',
-      'Refund request',
-      'Payment issue',
-      'Large order',
-      'Custom quotation',
-      'Technical issue',
-      'VIP customer',
-    ];
-    const [selected, setSelected] = useState<string[]>([]);
-    const toggle = (label: string) => setSelected((s) => (s.includes(label) ? s.filter((x) => x !== label) : [...s, label]));
-
-    return (
-      <div className="grid gap-3">
-        {triggers.map((t, i) => (
-          <button key={t} type="button" onClick={() => toggle(t)} className={`text-left rounded-[12px] border p-3 transition ${selected.includes(t) ? 'border-[#22C55E] bg-[#F7FEF9]' : 'border-[#E5E7EB] bg-white hover:shadow-sm'}`}>
-            <div className="flex items-center justify-between">
-              <div className="text-sm text-[#111827]">{t}</div>
-              <div className="text-sm text-[#64748B]">{selected.includes(t) ? 'Selected' : 'Tap to select'}</div>
-            </div>
-          </button>
-        ))}
-      </div>
-    );
-  };
-
-  const ClosingFollowUp = () => {
-    const actions = [
-      'Share checkout link',
-      'Book appointment',
-      'Send quotation',
-      'Collect phone number',
-      'Collect email',
-      'Connect to staff',
-    ];
-    const [selectedActions, setSelectedActions] = useState<string[]>([]);
-    const toggleAction = (label: string) => setSelectedActions((s) => (s.includes(label) ? s.filter((x) => x !== label) : [...s, label]));
-
-    const followUpOptions = ['Never', 'After 2 hours', 'After 24 hours', 'After 3 days'];
-    const [followUpTiming, setFollowUpTiming] = useState<string>(followUpOptions[2]);
-
-    return (
-      <div className="space-y-4">
-        <div className="grid gap-3">
-          {actions.map((a) => (
-            <label key={a} className={`flex items-center gap-3 rounded-[12px] border p-3 ${selectedActions.includes(a) ? 'border-[#22C55E] bg-[#F7FEF9]' : 'border-[#E5E7EB] bg-white'}`}>
-              <input type="checkbox" checked={selectedActions.includes(a)} onChange={() => toggleAction(a)} className="h-4 w-4 rounded border border-[#E5E7EB] text-[#111827]" />
-              <span className="text-sm text-[#111827]">{a}</span>
-            </label>
-          ))}
-        </div>
-
-        <div className="rounded-[12px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
-          <p className="text-sm font-semibold text-[#111827]">Follow-up timing</p>
-          <div className="mt-3 flex items-center gap-3">
-            <select value={followUpTiming} onChange={(e) => setFollowUpTiming(e.target.value)} className="rounded-md border border-[#E5E7EB] px-3 py-2 text-sm">
-              {followUpOptions.map((o) => (
-                <option key={o} value={o}>{o}</option>
-              ))}
-            </select>
-            <div className="text-sm text-[#64748B]">Selected: {followUpTiming}</div>
-          </div>
-        </div>
-      </div>
-    );
-  };
 
   const FaqEditor = () => {
     const isEditing = editingFaqId !== null;
