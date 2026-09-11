@@ -1,7 +1,8 @@
 import { type ChangeEvent, useId, useRef, useState } from "react";
-import { CheckCircle2, CircleAlert, Download, FileText, Upload } from "lucide-react";
+import { CheckCircle2, CircleAlert, FileText, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { TemplateDownloadMenu } from "./template-download-menu";
 import type { TemplateProcessingState } from "./template-processing";
 
 const MAX_TEMPLATE_FILE_SIZE_BYTES = 10 * 1024 * 1024;
@@ -155,16 +156,10 @@ export function TrainingTemplateCard({
         <p className="text-sm leading-6 text-[#475569]">Prefer to work offline? Download the template, fill it in, and upload it to Sokoos.</p>
         {!selectedFile ? (
           <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            {templateHref && !disabled ? (
-              <Button asChild variant="outline" className="border-[#BBF7D0] bg-white text-[#047857] hover:bg-[#ECFDF5] hover:text-[#065F46]">
-                <a href={templateHref} download>
-                  <Download aria-hidden="true" />
-                  Download template
-                </a>
-              </Button>
+            {templateHref ? (
+              <TemplateDownloadMenu templateHref={templateHref} disabled={disabled} onDownload={onDownload} />
             ) : (
               <Button type="button" variant="outline" disabled={disabled || !hasDownloadAction} onClick={onDownload} className="border-[#BBF7D0] bg-white text-[#047857] hover:bg-[#ECFDF5] hover:text-[#065F46]">
-                <Download aria-hidden="true" />
                 Download template
               </Button>
             )}

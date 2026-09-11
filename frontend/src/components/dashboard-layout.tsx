@@ -53,6 +53,7 @@ import { HomeWorkspace } from "@/components/dashboard/home/home-workspace";
 import { InboxWorkspace } from "@/components/dashboard/inbox/inbox-workspace";
 import { CustomersWorkspace } from "@/components/dashboard/customers/customers-workspace";
 import { PerformanceWorkspace } from "@/components/dashboard/ai-employee/performance/performance-workspace";
+import { TemplateDownloadMenu } from "@/components/dashboard/ai-employee/training/template-download-menu";
 import { TrainingTemplateCard } from "@/components/dashboard/ai-employee/training/training-template-card";
 import TrainingWorkspace from "@/components/dashboard/ai-employee/training/training-workspace";
 import { AccountSettings } from "@/components/dashboard/account-settings";
@@ -6716,8 +6717,7 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
 
-                                  <div className="grid gap-5 lg:grid-cols-[1.45fr_0.9fr]">
-                                    <div className="space-y-4">
+                                  <div className="space-y-4">
                                       <div className="space-y-2">
                                         <label className="block text-sm font-semibold text-[#111827]" htmlFor="welcome-message">
                                           Welcome Message
@@ -6788,23 +6788,6 @@ export default function DashboardLayout() {
                                           className={`${AI_TRAINING_TEXTAREA} mt-0 w-full resize-none`}
                                         />
                                       </div>
-                                    </div>
-
-                                    <div className="rounded-2xl border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] to-white p-5 shadow-sm">
-                                      <div className="flex items-center gap-2">
-                                        <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#22C55E] text-white"><Check className="h-3.5 w-3.5" /></span>
-                                        <p className="text-sm font-semibold text-[#166534]">Default conversation starters</p>
-                                      </div>
-                                      <p className="mt-2 text-sm leading-6 text-[#475569]">
-                                        Teach your AI where your business operates so it can confirm service areas and coverage.
-                                      </p>
-                                      <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm">
-                                        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#64748B]">Example</p>
-                                        <p className="mt-2 text-sm leading-6 text-[#111827]">
-                                          Hi 👋 Welcome to Sokoos Internet. How can I help you today?
-                                        </p>
-                                      </div>
-                                    </div>
                                   </div>
 
                                   <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
@@ -6897,7 +6880,7 @@ export default function DashboardLayout() {
                                   </div>
                                   <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
                                     <button type="button" onClick={() => focusIdentityLesson(2)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" onClick={() => completeIdentityLesson(3)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to business hours <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" onClick={() => completeIdentityLesson(3)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
                                   </div>
                                 </div>
                               </section>
@@ -7285,7 +7268,7 @@ export default function DashboardLayout() {
                             {catalogueImportOpen ? (
                               <section aria-labelledby="catalogue-import-title" className="mt-5 rounded-[24px] border border-[#E5E7EB] bg-[#F8FAFB] p-5 sm:p-6">
                                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div><h2 id="catalogue-import-title" className="text-lg font-semibold text-[#111827]">Import catalogue</h2><p className="mt-1 text-sm text-[#64748B]">Add multiple products or services at once.</p></div><button type="button" onClick={() => setCatalogueImportOpen(false)} className="inline-flex h-9 w-9 items-center justify-center self-end rounded-lg text-[#64748B] hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] sm:self-auto" aria-label="Close catalogue import"><X className="h-4 w-4" aria-hidden="true" /></button></div>
-                                <div className="mt-5 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:items-center"><a href="/templates/sokoos-catalogue-template.csv" download className="inline-flex h-11 items-center justify-center rounded-xl border border-[#E5E7EB] bg-white px-4 text-sm font-semibold text-[#111827] transition hover:bg-[#F8FAFB] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]"><Upload className="mr-2 h-4 w-4" aria-hidden="true" />Download template</a><span className="text-center text-xs font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">or</span><label className="inline-flex h-11 cursor-pointer items-center justify-center rounded-xl bg-[#111827] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937] focus-within:ring-2 focus-within:ring-[#22C55E] focus-within:ring-offset-2"><Upload className="mr-2 h-4 w-4" aria-hidden="true" />Upload completed template<input type="file" accept=".csv,.xlsx,.xls" className="sr-only" onChange={(event) => { void handleCatalogueImportFile(event.target.files?.[0]); event.currentTarget.value = ""; }} /></label></div>
+                                <div className="mt-5 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:items-center"><TemplateDownloadMenu templateHref="/templates/sokoos-catalogue-template.csv" className="w-full" triggerClassName="h-11 w-full rounded-xl border-[#E5E7EB] bg-white px-4 text-sm font-semibold text-[#111827] hover:bg-[#F8FAFB] hover:text-[#111827] focus-visible:ring-[#22C55E]" /><span className="text-center text-xs font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">or</span><label className="inline-flex h-11 cursor-pointer items-center justify-center rounded-xl bg-[#111827] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937] focus-within:ring-2 focus-within:ring-[#22C55E] focus-within:ring-offset-2"><Upload className="mr-2 h-4 w-4" aria-hidden="true" />Upload completed template<input type="file" accept=".csv,.xlsx,.xls" className="sr-only" onChange={(event) => { void handleCatalogueImportFile(event.target.files?.[0]); event.currentTarget.value = ""; }} /></label></div>
                                 <p className="mt-3 text-center text-xs text-[#64748B]">Supported formats: CSV / Excel</p>
 
                                 {catalogueImport.file ? <div className="mt-5 rounded-xl border border-[#E5E7EB] bg-white p-4"><div className="flex items-start justify-between gap-3"><div><p className="text-sm font-semibold text-[#111827]">File selected</p><p className="mt-1 text-sm text-[#64748B]">{catalogueImport.file.name} · {(catalogueImport.file.size / 1024).toFixed(1)} KB</p></div><button type="button" onClick={() => setCatalogueImport({ status: "idle", errors: [] })} className="text-sm font-semibold text-[#475569] underline underline-offset-4 hover:text-[#111827]">Remove</button></div></div> : null}
