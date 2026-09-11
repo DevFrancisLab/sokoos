@@ -1818,6 +1818,7 @@ export default function DashboardLayout() {
   const [activeIdentityStep, setActiveIdentityStep] = useState(0);
   const [activeSkillsStep, setActiveSkillsStep] = useState(0);
   const [activeSalesStep, setActiveSalesStep] = useState(0);
+  const [activePolicyStep, setActivePolicyStep] = useState(0);
   const trainingLessonTabsApiRef = useRef<TrainingLessonTabsApi | null>(null);
   const skillsLessonTabsComponentRef = useRef<(() => JSX.Element) | null>(null);
   const salesLessonTabsComponentRef = useRef<(() => JSX.Element) | null>(null);
@@ -1922,8 +1923,8 @@ export default function DashboardLayout() {
   const knowledgeLessonRef = useRef<HTMLDivElement>(null);
   const integrationLessonRef = useRef<HTMLDivElement>(null);
   const previewMessagesRef = useRef<HTMLDivElement>(null);
-  const identityLessons = ["Business Identity", "Brand Voice", "Greetings", "Languages", "Business Hours", "Locations", "Complete Identity"];
-  const identityLessonCompletionNames = ["Business Identity", "Brand Voice", "Greetings", "Languages", "Business Hours", "Locations", "Complete Identity"];
+  const identityLessons = ["Business Identity", "Brand Voice", "Greetings", "Languages", "Business Hours", "Locations", "Review"];
+  const identityLessonCompletionNames = ["Business Identity", "Brand Voice", "Greetings", "Languages", "Business Hours", "Locations", "Review"];
   const integrationLessonSequence = ["Channels", "Payments", "Business Tools", "Communication", "Data & Sync", "Review"] as const;
   const knowledgeLessons = ["Knowledge Sources", "Review"];
   const knowledgeSourceLessonTitles = {
@@ -3960,9 +3961,7 @@ export default function DashboardLayout() {
   const trainingCompletedSteps = [...new Set(
     completedIdentitySteps.filter((step) => step >= 0 && step < identityLessons.length),
   )];
-  const onboardingComplete = aiEmployeeLaunched || trainingCompletedSteps.length >= identityLessons.length;
   const minutesRemaining = Math.max(0, 6 - trainingCompletedSteps.length);
-  const trainingPercent = Math.round((trainingCompletedSteps.length / identityLessons.length) * 100);
   const completedTrainingLessonCount = completedIdentitySteps.length + completedKnowledgeSteps.length;
   const totalTrainingLessonCount = identityLessons.length + knowledgeLessonSequence.length;
   const overallTrainingPercent = Math.round((completedTrainingLessonCount / Math.max(1, totalTrainingLessonCount)) * 100);
@@ -4662,6 +4661,13 @@ export default function DashboardLayout() {
 
   const focusSkillsLesson = (step: number) => {
     setActiveSkillsStep(step);
+    window.setTimeout(() => {
+      document.querySelector<HTMLElement>("[data-training-lesson-scroll]")?.scrollTo({ top: 0, behavior: "smooth" });
+    }, 0);
+  };
+
+  const focusPolicyLesson = (step: number) => {
+    setActivePolicyStep(step);
     window.setTimeout(() => {
       document.querySelector<HTMLElement>("[data-training-lesson-scroll]")?.scrollTo({ top: 0, behavior: "smooth" });
     }, 0);
@@ -6262,7 +6268,7 @@ export default function DashboardLayout() {
                 }
               }}
               lessons={
-                activeWorkspaceSection === "Identity" && !onboardingComplete
+                activeWorkspaceSection === "Identity"
                   ? identityLessons.map((title, index) => ({
                       title,
                       completed: completedIdentitySteps.includes(index),
@@ -6293,7 +6299,13 @@ export default function DashboardLayout() {
                               completed: false,
                               current: activeSkillsStep === index,
                             }))
-                          : []
+                          : activeWorkspaceSection === "Policies"
+                            ? policySections.map((section, index) => ({
+                                title: section.title,
+                                completed: false,
+                                current: activePolicyStep === index,
+                              }))
+                            : []
               }
               onSelectLesson={(index) => {
                 if (activeWorkspaceSection === "Knowledge Hub") {
@@ -6312,11 +6324,15 @@ export default function DashboardLayout() {
                   focusSkillsLesson(index);
                   return;
                 }
+                if (activeWorkspaceSection === "Policies") {
+                  focusPolicyLesson(index);
+                  return;
+                }
                 focusIdentityLesson(index);
               }}
             >
                 <div className="space-y-5">
-                  {activeWorkspaceSection !== "Identity" && activeWorkspaceSection !== "Knowledge Hub" && activeWorkspaceSection !== "Integrations" && activeWorkspaceSection !== "Sales Playbooks" && activeWorkspaceSection !== "Skills" ? (
+                  {activeWorkspaceSection !== "Identity" && activeWorkspaceSection !== "Knowledge Hub" && activeWorkspaceSection !== "Integrations" && activeWorkspaceSection !== "Sales Playbooks" && activeWorkspaceSection !== "Skills" && activeWorkspaceSection !== "Policies" ? (
                   <div className="max-w-3xl">
                     <p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]">
                       {activeWorkspaceSection === "Catalogue"
@@ -6343,23 +6359,6 @@ export default function DashboardLayout() {
                   </div>
                   ) : null}
 
-                {activeWorkspaceSection === "Identity" && onboardingComplete && (
-                  <section className="rounded-xl bg-[#F8FAFC] px-4 py-4" aria-label="Identity training complete">
-                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between animate-in fade-in-0 zoom-in-95 duration-300">
-                      <div className="flex items-start gap-3">
-                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#22C55E] text-lg text-white shadow-sm">✓</span>
-                        <div><p className="text-base font-semibold text-[#111827]">Your AI Employee is Ready</p><p className="mt-1 text-sm text-[#64748B]">Your AI has successfully completed the identity curriculum and is ready to represent your business.</p><div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs font-semibold text-[#166534]">{identityLessons.map((lesson) => <span key={lesson}>✓ {lesson}</span>)}</div></div>
-                      </div>
-                      <div className="flex flex-wrap gap-2">
-                        <button type="button" onClick={() => { setSelected("Performance"); window.history.pushState({}, "", "/dashboard/performance"); }} className="rounded-lg bg-[#111827] px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#334155]">View AI Profile</button>
-                        <button type="button" onClick={() => { setSelected("Inbox"); window.history.pushState({}, "", "/dashboard/inbox"); }} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition hover:bg-[#F8FAFC] hover:text-[#111827]">Start Conversations</button>
-                        <button type="button" onClick={() => setActiveWorkspaceSection("Test AI")} className="rounded-lg border border-[#BBF7D0] bg-[#ECFDF5] px-3 py-2 text-xs font-semibold text-[#166534] transition hover:bg-[#DCFCE7]">Test AI</button>
-                        <button type="button" onClick={() => { setAiEmployeeLaunched(false); setCompletedIdentitySteps([]); focusIdentityLesson(0); }} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition hover:bg-[#F8FAFC] hover:text-[#111827]">Teach More</button>
-                      </div>
-                    </div>
-                  </section>
-                )}
-
                 {completionToast && (
                   <div role="status" className="fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-xl border border-[#BBF7D0] bg-white px-4 py-3 text-sm font-semibold text-[#166534] shadow-[0_14px_32px_rgba(15,23,42,0.14)] animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
                     <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#22C55E] text-white"><Check className="h-3.5 w-3.5" /></span>
@@ -6368,7 +6367,7 @@ export default function DashboardLayout() {
                 )}
 
                 <div id="ai-workspace-content" className="w-full scroll-mt-28">
-                    {activeWorkspaceSection === "Identity" && !onboardingComplete && (
+                    {activeWorkspaceSection === "Identity" && (
                       <div className="space-y-5">
                         <div onChangeCapture={() => setHasUnsavedChanges(true)}>
                           <div>
@@ -7028,83 +7027,42 @@ export default function DashboardLayout() {
                                   </div>
                                 </div>
                               </section>
-                              <section data-lesson-index="6" className={activeIdentityStep === 6 ? "relative overflow-hidden rounded-[28px] border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] via-white to-[#F8FAFC] p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-6" : "hidden"}>
-                                <div className="pointer-events-none absolute inset-0 overflow-hidden">
-                                  <div className="absolute -right-10 -top-8 h-24 w-24 rounded-full bg-[#22C55E]/10 blur-3xl" />
-                                  <div className="absolute -left-8 bottom-0 h-24 w-24 rounded-full bg-[#3B82F6]/10 blur-3xl" />
-                                  <span className="absolute left-8 top-8 h-3 w-3 rounded-full bg-[#22C55E] animate-bounce" />
-                                  <span className="absolute right-12 top-12 h-2.5 w-2.5 rounded-full bg-[#F59E0B] animate-bounce" style={{ animationDelay: "180ms" }} />
-                                  <span className="absolute bottom-14 left-12 h-2 w-2 rounded-full bg-[#6366F1] animate-bounce" style={{ animationDelay: "320ms" }} />
-                                </div>
-                                <div className="relative space-y-6">
-                                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-                                    <div className="max-w-2xl">
-                                      <div className="inline-flex items-center gap-2 rounded-full border border-[#BBF7D0] bg-white/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[#166534]">
-                                        <Sparkles className="h-3.5 w-3.5" />
-                                        Identity training complete
-                                      </div>
-                                      <p className="mt-3 text-[24px] font-semibold tracking-[-0.02em] text-[#111827]">You’ve finished the Identity curriculum</p>
-                                      <p className="mt-2 text-sm leading-6 text-[#475569]">Your AI now has the voice, greetings, languages, hours, and location details you chose, so it can represent your business with confidence.</p>
-                                    </div>
-                                    <div className="flex items-center gap-4 rounded-2xl border border-[#D1FAE5] bg-white/80 p-4 shadow-sm">
-                                      <div className="relative flex h-24 w-24 items-center justify-center rounded-full border border-[#D1FAE5] p-1" style={{ background: `conic-gradient(#22C55E ${trainingPercent}%, #E5E7EB 0)` }}>
-                                        <div className="flex h-full w-full items-center justify-center rounded-full bg-white">
-                                          <div className="text-center">
-                                            <p className="text-[20px] font-semibold text-[#111827]">{trainingPercent}%</p>
-                                            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#64748B]">ready</p>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div>
-                                        <p className="text-sm font-semibold text-[#111827]">Training progress</p>
-                                        <p className="mt-1 text-sm text-[#64748B]">All key identity lessons are now locked in and ready for use.</p>
-                                      </div>
+                              <section data-lesson-index="6" className={activeIdentityStep === 6 ? identityLessonCardClass(6) : "hidden"}>
+                                <div className="space-y-5">
+                                  <div className="flex gap-3">
+                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><Check className="h-5 w-5" /></div>
+                                    <div>
+                                      <p className="text-[20px] font-semibold text-[#111827]">Review</p>
+                                      <p className="mt-2 text-sm leading-6 text-[#6B7280]">Review your AI employee's identity before continuing.</p>
                                     </div>
                                   </div>
 
-                                  <div className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-                                    <div className="rounded-2xl border border-[#E5E7EB] bg-white p-4 shadow-sm">
-                                      <p className="text-sm font-semibold text-[#111827]">What’s ready now</p>
-                                      <div className="mt-4 space-y-3">
-                                        {[
-                                          { label: "Business identity", value: businessInfo.name || "Not added", complete: Boolean(businessInfo.name) },
-                                          { label: "Brand voice", value: personality, complete: Boolean(personality) },
-                                          { label: "Greetings", value: welcomeMessage || "Default welcome set", complete: Boolean(welcomeMessage) },
-                                          { label: "Languages", value: supportedLanguages.length ? supportedLanguages.join(" · ") : primaryLanguage, complete: Boolean(primaryLanguage) },
-                                          { label: "Business hours", value: businessHours || "Schedule captured", complete: Boolean(businessHours) },
-                                          { label: "Locations", value: businessInfo.address || businessInfo.serviceAreas || "Service area added", complete: Boolean(businessInfo.address || businessInfo.serviceAreas) },
-                                        ].map((item) => (
-                                          <div key={item.label} className="flex items-start justify-between gap-3 rounded-xl border border-[#EEF2F6] bg-[#F8FAFC] px-3 py-3">
-                                            <div>
-                                              <p className="text-sm font-semibold text-[#111827]">{item.label}</p>
-                                              <p className="mt-1 text-sm text-[#64748B]">{item.value}</p>
-                                            </div>
-                                            <span className={`inline-flex h-6 w-6 items-center justify-center rounded-full ${item.complete ? "bg-[#22C55E] text-white" : "bg-[#F1F5F9] text-[#64748B]"}`}>
-                                              <Check className="h-3.5 w-3.5" />
-                                            </span>
-                                          </div>
-                                        ))}
-                                      </div>
-                                    </div>
-
-                                    <div className="rounded-2xl border border-[#BBF7D0] bg-gradient-to-br from-[#F0FDF4] to-white p-5 shadow-sm">
-                                      <div className="flex items-center gap-2">
-                                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#22C55E] text-white"><Sparkles className="h-4 w-4" /></span>
+                                  <div className="grid gap-3">
+                                    {[
+                                      { label: "Business Identity", value: businessInfo.name || "Not added", configured: Boolean(businessInfo.name) },
+                                      { label: "Brand Voice", value: personality || "Not added", configured: Boolean(personality) },
+                                      { label: "Greetings", value: welcomeMessage || "Not added", configured: Boolean(welcomeMessage) },
+                                      { label: "Languages", value: supportedLanguages.length ? supportedLanguages.join(" · ") : primaryLanguage || "Not added", configured: Boolean(primaryLanguage) },
+                                      { label: "Business Hours", value: businessHours || "Not added", configured: Boolean(businessHours) },
+                                      { label: "Locations", value: businessInfo.address || businessInfo.serviceAreas || "Not added", configured: Boolean(businessInfo.address || businessInfo.serviceAreas) },
+                                    ].map((item) => (
+                                      <div key={item.label} className="flex items-center justify-between gap-3 rounded-[12px] border border-[#E5E7EB] bg-white p-3">
                                         <div>
-                                          <p className="text-sm font-semibold text-[#166534]">Next step</p>
-                                          <p className="text-[11px] uppercase tracking-[0.24em] text-[#64748B]">Train the knowledge layer</p>
+                                          <p className="text-sm font-semibold text-[#111827]">{item.label}</p>
+                                          <p className="mt-1 text-sm text-[#64748B]">{item.value}</p>
                                         </div>
+                                        {item.configured ? (
+                                          <span className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF5] px-3 py-1 text-sm font-semibold text-[#166534]"><Check className="h-4 w-4" />Configured</span>
+                                        ) : (
+                                          <span className="text-sm text-[#94A3B8]">Not configured</span>
+                                        )}
                                       </div>
-                                      <p className="mt-3 text-sm leading-6 text-[#475569]">You’ve completed the identity training. Continue into Knowledge so your AI can answer frequently asked questions, policies, and offer details with confidence.</p>
-                                      <div className="mt-5 flex flex-wrap gap-2">
-                                        <button type="button" onClick={() => { setActiveWorkspaceSection("Knowledge Hub"); setAiEmployeeLaunched(true); handleSaveChanges(); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to Knowledge <ChevronRight className="h-4 w-4" /></button>
-                                      </div>
-                                    </div>
+                                    ))}
                                   </div>
 
                                   <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
                                     <button type="button" onClick={() => focusIdentityLesson(5)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" onClick={() => { completeIdentityLesson(6); setAiEmployeeLaunched(true); handleSaveChanges(); }} className="inline-flex items-center gap-2 rounded-lg bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"><Sparkles className="h-4 w-4" />{aiEmployeeLaunched ? "Completed" : "Finish Identity"}</button>
+                                    <button type="button" onClick={() => { completeIdentityLesson(6); setAiEmployeeLaunched(true); handleSaveChanges(); setActiveWorkspaceSection("Knowledge Hub"); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
                                   </div>
                                 </div>
                               </section>
@@ -7245,7 +7203,7 @@ export default function DashboardLayout() {
                         </div>
                       </div>
                     )}
-                    {activeWorkspaceSection === "Identity" && !onboardingComplete && (
+                    {activeWorkspaceSection === "Identity" && (
                       <TrainingTemplateOption
                         workspaceName="Identity"
                         description="Use a worksheet to gather your business identity and brand voice details before entering them here."
@@ -7740,32 +7698,25 @@ export default function DashboardLayout() {
 
                     {activeWorkspaceSection === "Policies" && (
                       <div className="space-y-6">
-                        <div className="space-y-4">
-                          {policySections.map((sec) => (
-                            <div key={sec.id} className="overflow-hidden rounded-[16px] border border-[#E5E7EB] bg-white">
-                              <button onClick={() => togglePolicy(sec.id)} className="group flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors duration-200 hover:bg-[#F8FAFC]">
-                                <div>
-                                  <p className="text-base font-semibold text-[#111827]">{sec.title}</p>
-                                  <p className="mt-1 text-sm text-[#64748B]">Click to expand and edit</p>
+                          {policySections.map((sec, index) => (
+                            <section key={sec.id} className={activePolicyStep === index ? "flex min-h-full flex-col space-y-5" : "hidden"}>
+                              <div className="flex items-start justify-between gap-4">
+                                <div className="flex gap-3">
+                                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF5] text-[#166534]"><Shield className="h-5 w-5" /></div>
+                                  <div>
+                                    <p className="text-[20px] font-semibold text-[#111827]">{sec.title}</p>
+                                    <p className="mt-2 text-sm leading-6 text-[#6B7280]">{sec.content}</p>
+                                  </div>
                                 </div>
-                                <div className="text-sm font-medium text-[#475569]">{sec.expanded ? 'Collapse' : 'Expand'}</div>
-                              </button>
-                              {sec.expanded && (
-                                <div className="px-4 pb-4 pt-2 space-y-4">
+                                {sec.id !== "pol-7" ? (
+                                  <button type="button" onClick={() => toggleNotApplicable(sec.id)} className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold transition-colors duration-200 ${isNotApplicable(sec.id) ? "bg-[#F3F4F6] text-[#64748B]" : "border border-[#E5E7EB] bg-white hover:bg-[#F8FAFC]"}`}>
+                                    {isNotApplicable(sec.id) ? "Not applicable" : "Mark not applicable"}
+                                  </button>
+                                ) : null}
+                              </div>
+                              <div className="space-y-4">
                                   {sec.id === 'pol-1' ? (
                                     <>
-                                      <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
-                                        <div className="flex items-start justify-between">
-                                          <div>
-                                            <p className="text-sm font-semibold text-[#111827]">Customer Policies</p>
-                                            <p className="mt-2 text-sm text-[#475569]">Define the policies your AI should explain when customers ask about returns, refunds, cancellations, warranties, or other customer-facing rules.</p>
-                                          </div>
-                                          <div>
-                                            <button type="button" onClick={() => toggleNotApplicable('pol-1')} className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors duration-200 ${isNotApplicable('pol-1') ? 'bg-[#F3F4F6] text-[#64748B]' : 'bg-white border border-[#E5E7EB] hover:bg-[#F8FAFC]'}`}>{isNotApplicable('pol-1') ? 'Not applicable' : 'Mark not applicable'}</button>
-                                          </div>
-                                        </div>
-                                      </div>
-
                                       <div className="space-y-4">
                                         {customerPolicies.length === 0 ? (
                                           <p className="text-sm text-[#64748B]">No customer policies have been added yet.</p>
@@ -7820,18 +7771,6 @@ export default function DashboardLayout() {
                                     </>
                                   ) : sec.id === 'pol-2' ? (
                                     <>
-                                      <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
-                                        <div className="flex items-start justify-between">
-                                          <div>
-                                            <p className="text-sm font-semibold text-[#111827]">Pricing & Payment</p>
-                                            <p className="mt-2 text-sm text-[#475569]">Define the payment and pricing rules your AI should communicate accurately to customers.</p>
-                                          </div>
-                                          <div>
-                                            <button type="button" onClick={() => toggleNotApplicable('pol-2')} className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors duration-200 ${isNotApplicable('pol-2') ? 'bg-[#F3F4F6] text-[#64748B]' : 'bg-white border border-[#E5E7EB] hover:bg-[#F8FAFC]'}`}>{isNotApplicable('pol-2') ? 'Not applicable' : 'Mark not applicable'}</button>
-                                          </div>
-                                        </div>
-                                      </div>
-
                                       <div className="space-y-4">
                                         <div className="rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFC] p-4">
                                           <div className="flex items-center justify-between gap-4">
@@ -7951,18 +7890,6 @@ export default function DashboardLayout() {
                                     </>
                                   ) : sec.id === 'pol-3' ? (
                                     <>
-                                      <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
-                                        <div className="flex items-start justify-between">
-                                          <div>
-                                            <p className="text-sm font-semibold text-[#111827]">Orders & Fulfillment</p>
-                                            <p className="mt-2 text-sm text-[#475569]">Teach your AI what customers should expect after placing an order, booking a service, or requesting fulfillment.</p>
-                                          </div>
-                                          <div>
-                                            <button type="button" onClick={() => toggleNotApplicable('pol-3')} className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors duration-200 ${isNotApplicable('pol-3') ? 'bg-[#F3F4F6] text-[#64748B]' : 'bg-white border border-[#E5E7EB] hover:bg-[#F8FAFC]'}`}>{isNotApplicable('pol-3') ? 'Not applicable' : 'Mark not applicable'}</button>
-                                          </div>
-                                        </div>
-                                      </div>
-
                                       <div className="space-y-5">
                                         <div className="rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFC] p-4">
                                           <div className="flex items-center justify-between gap-4">
@@ -8147,18 +8074,6 @@ export default function DashboardLayout() {
                                     </>
                                   ) : sec.id === 'pol-4' ? (
                                     <>
-                                      <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
-                                        <div className="flex items-start justify-between">
-                                          <div>
-                                            <p className="text-sm font-semibold text-[#111827]">Privacy & Customer Data</p>
-                                            <p className="mt-2 text-sm text-[#475569]">Define what customer information your AI may collect, use, and share during conversations.</p>
-                                          </div>
-                                          <div>
-                                            <button type="button" onClick={() => toggleNotApplicable('pol-4')} className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors duration-200 ${isNotApplicable('pol-4') ? 'bg-[#F3F4F6] text-[#64748B]' : 'bg-white border border-[#E5E7EB] hover:bg-[#F8FAFC]'}`}>{isNotApplicable('pol-4') ? 'Not applicable' : 'Mark not applicable'}</button>
-                                          </div>
-                                        </div>
-                                      </div>
-
                                       <div className="space-y-5">
                                         <div className="rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFC] p-4">
                                           <p className="text-sm font-semibold text-[#111827]">Information the AI may collect</p>
@@ -8267,18 +8182,6 @@ export default function DashboardLayout() {
                                     </>
                                   ) : sec.id === 'pol-5' ? (
                                     <>
-                                      <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
-                                        <div className="flex items-start justify-between">
-                                          <div>
-                                            <p className="text-sm font-semibold text-[#111827]">AI Boundaries</p>
-                                            <p className="mt-2 text-sm text-[#475569]">Define what your AI employee must never do or claim during a customer conversation.</p>
-                                          </div>
-                                          <div>
-                                            <button type="button" onClick={() => toggleNotApplicable('pol-5')} className={`rounded-full px-3 py-1.5 text-xs font-semibold transition-colors duration-200 ${isNotApplicable('pol-5') ? 'bg-[#F3F4F6] text-[#64748B]' : 'bg-white border border-[#E5E7EB] hover:bg-[#F8FAFC]'}`}>{isNotApplicable('pol-5') ? 'Not applicable' : 'Mark not applicable'}</button>
-                                          </div>
-                                        </div>
-                                      </div>
-
                                       <div className="space-y-4">
                                         <div className="rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFC] p-4">
                                           <p className="text-sm font-semibold text-[#111827]">Boundary Rules</p>
@@ -8314,18 +8217,6 @@ export default function DashboardLayout() {
                                     </>
                                   ) : sec.id === 'pol-6' ? (
                                     <>
-                                      <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
-                                        <div className="flex items-start justify-between">
-                                          <div>
-                                            <p className="text-sm font-semibold text-[#111827]">Escalation Rules</p>
-                                            <p className="mt-2 text-sm text-[#475569]">Tell your AI when a conversation should be handed to a human.</p>
-                                          </div>
-                                          <div>
-                                            <button type="button" onClick={() => toggleNotApplicable('pol-6')} className={`rounded-full px-3 py-1.5 text-xs font-semibold ${isNotApplicable('pol-6') ? 'bg-[#F3F4F6] text-[#64748B]' : 'bg-white border border-[#E5E7EB]'}`}>{isNotApplicable('pol-6') ? 'Not applicable' : 'Mark not applicable'}</button>
-                                          </div>
-                                        </div>
-                                      </div>
-
                                       <div className="space-y-4">
                                         <div className="rounded-[16px] border border-[#E5E7EB] bg-[#F8FAFC] p-4">
                                           <p className="text-sm font-semibold text-[#111827]">Escalation triggers</p>
@@ -8361,14 +8252,7 @@ export default function DashboardLayout() {
                                     </>
                                   ) : sec.id === 'pol-7' ? (
                                     <>
-                                      <div className="rounded-[16px] border border-[#E5E7EB] bg-white p-4">
-                                        <p className="text-sm font-semibold text-[#111827]">Review</p>
-                                        <p className="mt-2 text-sm text-[#475569]">Review the rules your AI employee will follow before continuing.</p>
-                                      </div>
-
-                                      <div className="space-y-4">
-                                        <div className="rounded-[12px] border border-[#E5E7EB] bg-white p-4">
-                                          <div className="grid gap-3">
+                                      <div className="grid gap-3">
                                             {[
                                               { id: 'pol-1', key: 'Customer Policies', configured: customerPolicies.length > 0 },
                                               { id: 'pol-2', key: 'Pricing & Payment', configured: paymentMethods.length > 0 || pricingRules.length > 0 || paymentTiming.some((t) => t.selected) || (paymentNotes || '').trim() !== '' },
@@ -8379,24 +8263,16 @@ export default function DashboardLayout() {
                                             ].map((item) => {
                                               const finalConfigured = item.configured || isNotApplicable(item.id);
                                               return (
-                                                <div key={item.key} className="flex items-center justify-between">
-                                                  <div>
-                                                    <p className="text-sm font-semibold text-[#111827]">{item.key}</p>
-                                                  </div>
-                                                  <div>
-                                                    <span className={`inline-flex h-7 items-center gap-2 rounded-full px-3 text-[12px] font-medium ${finalConfigured ? 'bg-[#DCFCE7] text-[#166534]' : 'bg-[#F3F4F6] text-[#64748B]'}`}>
-                                                      {finalConfigured ? 'Configured' : 'Not configured'}
-                                                    </span>
-                                                  </div>
+                                                <div key={item.key} className="flex items-center justify-between gap-3 rounded-[12px] border border-[#E5E7EB] bg-white p-3">
+                                                  <p className="text-sm font-semibold text-[#111827]">{item.key}</p>
+                                                  {finalConfigured ? (
+                                                    <span className="inline-flex items-center gap-2 rounded-full bg-[#ECFDF5] px-3 py-1 text-sm font-semibold text-[#166534]"><Check className="h-4 w-4" />Configured</span>
+                                                  ) : (
+                                                    <span className="text-sm text-[#94A3B8]">Not configured</span>
+                                                  )}
                                                 </div>
                                               );
                                             })}
-                                          </div>
-                                        </div>
-
-                                        <div className="flex justify-end">
-                                          <button type="button" onClick={() => { handleSaveChanges(); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
-                                        </div>
                                       </div>
                                     </>
                                   ) : (
@@ -8408,10 +8284,12 @@ export default function DashboardLayout() {
                                     </>
                                   )}
                                 </div>
-                              )}
-                            </div>
+                              <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
+                                <button type="button" onClick={() => focusPolicyLesson(index - 1)} disabled={index === 0} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827] disabled:cursor-not-allowed disabled:opacity-45">Back</button>
+                                <button type="button" onClick={() => { if (index < policySections.length - 1) focusPolicyLesson(index + 1); else { handleSaveChanges(); setActiveWorkspaceSection("Skills"); } }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                              </div>
+                            </section>
                           ))}
-                        </div>
                         <TrainingTemplateOption
                           workspaceName="Policies"
                           description="Document customer rules and AI boundaries offline before configuring the policies above."
