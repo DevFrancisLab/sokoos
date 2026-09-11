@@ -1,6 +1,7 @@
-import { type ReactNode } from "react";
-import { Check, ChevronRight, type LucideIcon } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
+import { Check, ChevronDown, type LucideIcon } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
 export type TrainingWorkspaceItem = {
   title: string;
@@ -10,6 +11,13 @@ export type TrainingWorkspaceItem = {
   complete: boolean;
   percent: number;
   unlocked: boolean;
+};
+
+export type TrainingLessonNavItem = {
+  title: string;
+  completed: boolean;
+  current: boolean;
+  disabled?: boolean;
 };
 
 type Props = {
@@ -29,7 +37,8 @@ type Props = {
   aiReadinessDetail: string;
   aiConfigurationError: string | null;
   onContinueTraining: () => void;
-  onContinueLessons?: () => void;
+  lessons?: TrainingLessonNavItem[];
+  onSelectLesson?: (index: number) => void;
   children?: ReactNode;
 };
 
@@ -38,6 +47,79 @@ const workspaceStatus = (item: TrainingWorkspaceItem) => {
   if (item.percent > 0) return "In progress";
   return "Not started";
 };
+
+function LessonStatusMark({ lesson, index }: { lesson: TrainingLessonNavItem; index: number }) {
+  if (lesson.completed) {
+    return (
+      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white">
+        <Check className="h-3 w-3" aria-hidden="true" />
+        <span className="sr-only">Completed</span>
+      </span>
+    );
+  }
+
+  if (lesson.current) {
+    return (
+      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#111827] text-[10px] font-semibold text-white" aria-hidden="true">
+        {index + 1}
+      </span>
+    );
+  }
+
+  return (
+    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#D1D5DB] bg-white" aria-hidden="true">
+      <span className="h-1.5 w-1.5 rounded-full bg-[#D1D5DB]" />
+    </span>
+  );
+}
+
+function LessonNavList({
+  workspaceTitle,
+  lessons,
+  onSelectLesson,
+  onLessonChosen,
+}: {
+  workspaceTitle: string;
+  lessons: TrainingLessonNavItem[];
+  onSelectLesson?: (index: number) => void;
+  onLessonChosen?: () => void;
+}) {
+  return (
+    <nav aria-label={`${workspaceTitle} lessons`}>
+      <p className="px-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#94A3B8]">
+        {workspaceTitle}
+      </p>
+      <ol className="mt-3 space-y-0.5">
+        {lessons.map((lesson, index) => (
+          <li key={`${lesson.title}-${index}`}>
+            <button
+              type="button"
+              disabled={lesson.disabled}
+              aria-current={lesson.current ? "step" : undefined}
+              aria-label={`${lesson.title}${lesson.completed ? ", completed" : lesson.current ? ", current lesson" : ""}`}
+              onClick={() => {
+                if (lesson.disabled) return;
+                onSelectLesson?.(index);
+                onLessonChosen?.();
+              }}
+              className={cn(
+                "flex w-full items-center gap-2.5 rounded-lg px-2 py-2 text-left text-sm leading-5 transition",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2",
+                lesson.current && "bg-[#ECFDF5] font-semibold text-[#14532D]",
+                !lesson.current && lesson.completed && "font-medium text-[#166534] hover:bg-[#F8FAFC]",
+                !lesson.current && !lesson.completed && "text-[#64748B] hover:bg-[#F8FAFC] hover:text-[#111827]",
+                lesson.disabled && "cursor-not-allowed opacity-45 hover:bg-transparent",
+              )}
+            >
+              <LessonStatusMark lesson={lesson} index={index} />
+              <span className="min-w-0">{lesson.title}</span>
+            </button>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  );
+}
 
 export default function TrainingWorkspace({
   workspaceNavigatorItems,
@@ -56,11 +138,24 @@ export default function TrainingWorkspace({
   aiReadinessDetail,
   aiConfigurationError,
   onContinueTraining,
-  onContinueLessons,
+  lessons = [],
+  onSelectLesson,
   children,
 }: Props) {
   const activeItem = workspaceNavigatorItems.find((item) => item.section === activeWorkspaceSection);
   const ActiveIcon = activeItem?.Icon;
+  const currentLessonIndex = lessons.findIndex((lesson) => lesson.current);
+  const currentLesson = currentLessonIndex >= 0 ? lessons[currentLessonIndex] : undefined;
+  const lessonCount = lessons.length;
+  const lessonNumber = currentLessonIndex >= 0 ? currentLessonIndex + 1 : currentTrainingStepNumber;
+  const totalLessons = lessonCount || currentTrainingLessonCount;
+  const completedLessonCount = lessons.filter((lesson) => lesson.completed).length;
+  const lessonPercent = totalLessons > 0 ? Math.round((completedLessonCount / totalLessons) * 100) : activeItem?.percent ?? 0;
+  const [mobileLessonNavOpen, setMobileLessonNavOpen] = useState(false);
+
+  useEffect(() => {
+    if (!dialogOpen) setMobileLessonNavOpen(false);
+  }, [dialogOpen, activeWorkspaceSection, currentLessonIndex]);
 
   return (
     <div className="mx-auto w-full max-w-[1280px] space-y-6 px-4 pb-10 lg:px-6">
@@ -70,7 +165,7 @@ export default function TrainingWorkspace({
           Your AI Employee&apos;s training workspaces
         </h2>
         <p className="mt-2 text-sm leading-6 text-[#6B7280]">
-          Choose a workspace to train your AI. Lessons open in a focused view so you can work through one area at a time.
+          Train your AI Employee one workspace at a time.
         </p>
       </header>
 
@@ -111,7 +206,7 @@ export default function TrainingWorkspace({
               onClick={onContinueTraining}
               className="mt-3 text-xs font-semibold text-[#166534] transition hover:text-[#047857] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2"
             >
-              Continue training <ChevronRight className="inline h-3.5 w-3.5" />
+              Continue training
             </button>
           </div>
         </div>
@@ -143,9 +238,7 @@ export default function TrainingWorkspace({
                 </div>
                 <div className="mt-2 flex items-center justify-between text-xs font-semibold text-[#64748B]">
                   <span>{item.percent}%</span>
-                  <span className="inline-flex items-center gap-0.5 text-[#166534]">
-                    Open <ChevronRight className="h-3.5 w-3.5" />
-                  </span>
+                  <span className="text-[#166534]">Open</span>
                 </div>
               </button>
             );
@@ -154,16 +247,19 @@ export default function TrainingWorkspace({
       </section>
 
       <Dialog open={dialogOpen} onOpenChange={onDialogOpenChange}>
-        <DialogContent className="flex h-[100dvh] max-h-[100dvh] w-full max-w-none left-0 top-0 translate-x-0 translate-y-0 flex-col gap-0 overflow-y-auto rounded-none border-[#E5E7EB] p-0 sm:left-[50%] sm:top-[50%] sm:h-auto sm:max-h-[90vh] sm:w-[calc(100%-2rem)] sm:max-w-[850px] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-[24px]">
-          <DialogHeader className="sticky top-0 z-10 shrink-0 space-y-3 border-b border-[#E5E7EB] bg-white px-5 py-5 pr-14 text-left sm:px-6">
+        <DialogContent
+          overlayClassName="bg-slate-950/40"
+          className="flex !flex h-[100dvh] max-h-[100dvh] min-h-0 w-full max-w-none left-0 top-0 translate-x-0 translate-y-0 flex-col !flex-col gap-0 overflow-clip rounded-none border-[#E5E7EB] bg-white p-0 shadow-[0_24px_80px_rgba(15,23,42,0.18)] duration-200 md:left-[50%] md:top-[50%] md:h-[min(88vh,860px)] md:max-h-[calc(100vh-2.5rem)] md:w-[92vw] md:max-w-[1160px] md:translate-x-[-50%] md:translate-y-[-50%] md:rounded-2xl"
+        >
+          <DialogHeader className="shrink-0 space-y-3 border-b border-[#EEF2F6] px-5 py-4 pr-14 text-left md:px-6">
             <div className="flex items-start gap-3">
               {ActiveIcon ? (
-                <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${activeItem?.complete ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#ECFDF5] text-[#166534]"}`}>
+                <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${activeItem?.complete ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#ECFDF5] text-[#166534]"}`}>
                   {activeItem?.complete ? <Check className="h-5 w-5" /> : <ActiveIcon className="h-5 w-5" />}
                 </span>
               ) : null}
               <div className="min-w-0">
-                <DialogTitle className="text-[20px] font-semibold tracking-[-0.02em] text-[#111827]">
+                <DialogTitle className="text-[18px] font-semibold tracking-[-0.02em] text-[#111827] md:text-[20px]">
                   {activeItem?.title ?? activeWorkspaceSection}
                 </DialogTitle>
                 <DialogDescription className="mt-1 text-sm leading-6 text-[#64748B]">
@@ -171,7 +267,24 @@ export default function TrainingWorkspace({
                 </DialogDescription>
               </div>
             </div>
-            {activeItem ? (
+            {totalLessons > 0 ? (
+              <div>
+                <div className="flex items-center justify-between gap-3 text-xs font-medium text-[#64748B]">
+                  <p>
+                    <span className="font-semibold text-[#111827]">{activeItem?.title ?? activeWorkspaceSection}</span>
+                    <span className="mx-1.5 text-[#D1D5DB]">·</span>
+                    {lessonNumber} of {totalLessons} lessons
+                  </p>
+                  <span className="tabular-nums text-[#166534]">{Math.max(0, Math.min(100, lessonPercent))}%</span>
+                </div>
+                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]" aria-hidden="true">
+                  <div
+                    className={`h-full rounded-full transition-all duration-300 ${lessonPercent >= 100 ? "bg-[#22C55E]" : "bg-[#86EFAC]"}`}
+                    style={{ width: `${Math.max(0, Math.min(100, lessonPercent))}%` }}
+                  />
+                </div>
+              </div>
+            ) : activeItem ? (
               <div>
                 <div className="flex items-center justify-between text-xs font-semibold text-[#64748B]">
                   <span>{workspaceStatus(activeItem)}</span>
@@ -183,22 +296,62 @@ export default function TrainingWorkspace({
               </div>
             ) : null}
           </DialogHeader>
-          <div className="px-4 py-5 sm:px-6">
-            {children}
-          </div>
-          {onContinueLessons ? (
-            <div className="sticky bottom-0 shrink-0 border-t border-[#E5E7EB] bg-white px-5 py-4 sm:px-6">
-              <div className="flex justify-end">
-                <button
-                  type="button"
-                  onClick={onContinueLessons}
-                  className="inline-flex items-center gap-1 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2"
-                >
-                  Continue <ChevronRight className="h-4 w-4" />
-                </button>
-              </div>
+
+          {lessonCount > 0 ? (
+            <div className="shrink-0 border-b border-[#EEF2F6] px-5 py-3 md:hidden">
+              <button
+                type="button"
+                aria-expanded={mobileLessonNavOpen}
+                aria-controls="training-mobile-lesson-nav"
+                onClick={() => setMobileLessonNavOpen((open) => !open)}
+                className="flex w-full items-center justify-between gap-3 rounded-xl border border-[#E5E7EB] bg-[#F8FAFC] px-3 py-2.5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2"
+              >
+                <span className="min-w-0">
+                  <span className="block text-[11px] font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">
+                    {lessonNumber} of {totalLessons}
+                  </span>
+                  <span className="mt-0.5 block truncate text-sm font-semibold text-[#111827]">
+                    {currentLesson?.title ?? currentTrainingLessonLabel}
+                  </span>
+                </span>
+                <ChevronDown className={cn("h-4 w-4 shrink-0 text-[#64748B] transition", mobileLessonNavOpen && "rotate-180")} />
+              </button>
+              {mobileLessonNavOpen ? (
+                <div id="training-mobile-lesson-nav" className="mt-3 max-h-[40vh] overflow-y-auto rounded-xl border border-[#EEF2F6] bg-white p-2">
+                  <LessonNavList
+                    workspaceTitle={activeItem?.title ?? activeWorkspaceSection}
+                    lessons={lessons}
+                    onSelectLesson={onSelectLesson}
+                    onLessonChosen={() => setMobileLessonNavOpen(false)}
+                  />
+                </div>
+              ) : null}
             </div>
           ) : null}
+
+          <div className="flex min-h-0 min-w-0 flex-1 overflow-hidden">
+            {lessonCount > 0 ? (
+              <aside className="hidden w-[240px] shrink-0 overflow-y-auto border-r border-[#EEF2F6] px-4 py-5 md:block">
+                <LessonNavList
+                  workspaceTitle={activeItem?.title ?? activeWorkspaceSection}
+                  lessons={lessons}
+                  onSelectLesson={onSelectLesson}
+                />
+              </aside>
+            ) : null}
+            <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+              <div data-training-lesson-scroll className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-5 py-5 sm:px-7 sm:py-6">
+                <div className="flex min-h-full flex-col">
+                {currentLesson ? (
+                  <p className="mb-4 text-xs font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">
+                    Lesson {lessonNumber} of {totalLessons}
+                  </p>
+                ) : null}
+                {children}
+                </div>
+              </div>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

@@ -535,6 +535,10 @@ const AI_TRAINING_FIELD =
   "mt-2 h-12 w-full rounded-xl border border-[#E2E8F0] bg-white px-3.5 pr-10 text-sm text-[#111827] shadow-sm outline-none transition placeholder:text-[#94A3B8] focus:border-[#22C55E] focus:ring-4 focus:ring-[#DCFCE7]/70";
 const AI_TRAINING_TEXTAREA =
   "mt-2 min-h-[96px] w-full rounded-xl border border-[#E2E8F0] bg-white px-3.5 py-3 text-sm text-[#111827] shadow-sm outline-none transition placeholder:text-[#94A3B8] focus:border-[#22C55E] focus:ring-4 focus:ring-[#DCFCE7]/70";
+const AI_TRAINING_LESSON_ACTIONS =
+  "mt-auto flex items-center justify-end gap-3 border-t border-[#EEF2F6] bg-white pt-5";
+const AI_TRAINING_LESSON_ACTIONS_BETWEEN =
+  "mt-auto flex items-center justify-between gap-3 border-t border-[#EEF2F6] bg-white pt-5";
 // Typography tokens for consistent hierarchy
 const PANEL_TITLE = "text-[24px] font-semibold text-[#111827]";
 const SECTION_HEADING =
@@ -1386,6 +1390,26 @@ const MOCK_TEAM_MEMBERS: TeamMember[] = [
   },
 ];
 
+type TrainingWorkspaceSection =
+  | "Identity"
+  | "Knowledge Hub"
+  | "Catalogue"
+  | "Sales Playbooks"
+  | "Skills"
+  | "Policies"
+  | "Integrations"
+  | "Test AI"
+  | "Performance";
+
+type TrainingLessonTabsApi = {
+  activeSkillsStep: number;
+  activeSalesStep: number;
+  isIntegrationConnected: (id: string) => boolean;
+  getIntegrationName: (id: string | null) => string;
+  handleSaveChanges: () => void | Promise<void>;
+  setActiveWorkspaceSection: (section: TrainingWorkspaceSection) => void;
+};
+
 export default function DashboardLayout() {
   // Team context: In future, use React Context or state management library for team data
   // For now: Single owner (hasTeam = false)
@@ -1792,6 +1816,11 @@ export default function DashboardLayout() {
     >("Identity");
   const [workspaceDialogOpen, setWorkspaceDialogOpen] = useState(false);
   const [activeIdentityStep, setActiveIdentityStep] = useState(0);
+  const [activeSkillsStep, setActiveSkillsStep] = useState(0);
+  const [activeSalesStep, setActiveSalesStep] = useState(0);
+  const trainingLessonTabsApiRef = useRef<TrainingLessonTabsApi | null>(null);
+  const skillsLessonTabsComponentRef = useRef<(() => JSX.Element) | null>(null);
+  const salesLessonTabsComponentRef = useRef<(() => JSX.Element) | null>(null);
   const integrationsPageRef = useRef<HTMLDivElement | null>(null);
 
   const goToIntegrationsSection = () => {
@@ -1927,7 +1956,9 @@ export default function DashboardLayout() {
     window.setTimeout(() => {
       const target = identityLessonRef.current?.querySelector<HTMLElement>(`[data-lesson-index="${step}"]`);
       if (!target) return;
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      const pane = target.closest<HTMLElement>("[data-training-lesson-scroll]");
+      if (pane) pane.scrollTo({ top: 0, behavior: "smooth" });
+      else target.scrollIntoView({ behavior: "smooth", block: "nearest" });
       const firstField = target.querySelector<HTMLElement>("input, select, textarea, button");
       firstField?.focus({ preventScroll: true });
     }, 0);
@@ -1946,7 +1977,9 @@ export default function DashboardLayout() {
     window.setTimeout(() => {
       const target = knowledgeLessonRef.current?.querySelector<HTMLElement>(`[data-lesson-index="${step}"]`);
       if (!target) return;
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      const pane = target.closest<HTMLElement>("[data-training-lesson-scroll]");
+      if (pane) pane.scrollTo({ top: 0, behavior: "smooth" });
+      else target.scrollIntoView({ behavior: "smooth", block: "nearest" });
       const firstField = target.querySelector<HTMLElement>("input, select, textarea, button");
       firstField?.focus({ preventScroll: true });
     }, 0);
@@ -1964,15 +1997,12 @@ export default function DashboardLayout() {
       window.setTimeout(() => focusKnowledgeLesson(nextStep === reviewStep && !sourceLessonsWillBeComplete && firstIncompleteSource >= 0 ? firstIncompleteSource + 1 : nextStep), 500);
     }
   };
-  const identityLessonCardClass = (step: number) => `rounded-[28px] border bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-300 sm:p-6 ${completedIdentitySteps.includes(step) ? "border-[#86EFAC] shadow-[0_14px_34px_rgba(34,197,94,0.14)]" : "border-[#E5E7EB]"}`;
-  const knowledgeLessonCardClass = (step: number) => `rounded-[28px] border bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-300 sm:p-6 ${completedKnowledgeSteps.includes(step) ? "border-[#86EFAC] shadow-[0_14px_34px_rgba(34,197,94,0.14)]" : "border-[#E5E7EB]"}`;
+  const identityLessonCardClass = (_step: number) => "flex min-h-full flex-col [&>div]:flex [&>div]:min-h-full [&>div]:flex-1 [&>div]:flex-col";
+  const knowledgeLessonCardClass = (_step: number) => "flex min-h-full flex-col [&>div]:flex [&>div]:min-h-full [&>div]:flex-1 [&>div]:flex-col";
 
   useEffect(() => {
     if (!workspaceDialogOpen) return;
-    document.getElementById("ai-workspace-content")?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
+    document.querySelector<HTMLElement>("[data-training-lesson-scroll]")?.scrollTo({ top: 0 });
   }, [activeWorkspaceSection, workspaceDialogOpen]);
   const [businessModelSelections, setBusinessModelSelections] = useState<string[]>([]);
   const toggleBusinessModelSelection = (option: string) => {
@@ -4391,7 +4421,9 @@ export default function DashboardLayout() {
     window.setTimeout(() => {
       const target = integrationLessonRef.current?.querySelector<HTMLElement>(`[data-lesson-index="${step}"]`);
       if (!target) return;
-      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      const pane = target.closest<HTMLElement>("[data-training-lesson-scroll]");
+      if (pane) pane.scrollTo({ top: 0, behavior: "smooth" });
+      else target.scrollIntoView({ behavior: "smooth", block: "nearest" });
       const firstField = target.querySelector<HTMLElement>("input, select, textarea, button");
       firstField?.focus({ preventScroll: true });
     }, 0);
@@ -4406,7 +4438,7 @@ export default function DashboardLayout() {
     }
   };
 
-  const integrationLessonCardClass = (step: number) => `rounded-[28px] border bg-white p-5 shadow-[0_10px_30px_rgba(15,23,42,0.06)] transition-all duration-300 sm:p-6 ${completedIntegrationSteps.includes(step) ? "border-[#86EFAC] shadow-[0_14px_34px_rgba(34,197,94,0.14)]" : "border-[#E5E7EB]"}`;
+  const integrationLessonCardClass = (_step: number) => "flex min-h-full flex-col [&>div]:flex [&>div]:min-h-full [&>div]:flex-1 [&>div]:flex-col";
 
   const canContinueIntegrationLesson = (_step: number) => true;
 
@@ -4456,49 +4488,16 @@ export default function DashboardLayout() {
   }, [activeKnowledgeStep, completedKnowledgeSteps, knowledgeLessonSequence.length, selectedKnowledgeSources]);
 
   const KnowledgeLessonTabs = () => (
-    <section className="relative z-20 rounded-[24px] border border-[#E5E7EB] bg-white px-3 py-3 shadow-[0_6px_18px_rgba(15,23,42,0.04)]" aria-label="Knowledge onboarding progress">
-      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#166534]">Knowledge onboarding curriculum</p>
-          <p className="mt-1 text-base font-semibold text-[#111827]">Teach your AI in a few focused lessons so it can answer with confidence.</p>
-          {selectedKnowledgeSources.length > 0 ? (
-            <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-[#475569]">
-              <span className="font-semibold text-[#111827]">Selected sources:</span>
-              {selectedKnowledgeSources.map((source) => (
-                <span key={source} className="rounded-full bg-[#F3F4F6] px-2.5 py-1 text-xs font-semibold text-[#475569]">
-                  {source === "company" ? "Company Information" : source === "faqs" ? "FAQs" : source === "documents" ? "Documents" : source === "website" ? "Website" : source}
-                </span>
-              ))}
-            </div>
-          ) : null}
-        </div>
-        <div className="rounded-full bg-[#ECFDF5] px-3 py-1 text-sm font-semibold text-[#166534]">
-          {completedKnowledgeSteps.length}/{knowledgeLessonSequence.length} lessons complete
-        </div>
+    selectedKnowledgeSources.length > 0 ? (
+      <div className="flex flex-wrap items-center gap-2 text-sm text-[#475569]">
+        <span className="font-semibold text-[#111827]">Selected sources:</span>
+        {selectedKnowledgeSources.map((source) => (
+          <span key={source} className="rounded-full bg-[#F3F4F6] px-2.5 py-1 text-xs font-semibold text-[#475569]">
+            {source === "company" ? "Company Information" : source === "faqs" ? "FAQs" : source === "documents" ? "Documents" : source === "website" ? "Website" : source}
+          </span>
+        ))}
       </div>
-      <div className="mt-3 flex flex-wrap gap-2">
-        {knowledgeLessonSequence.map((lesson, index) => {
-          const active = activeKnowledgeStep === index;
-          const completed = completedKnowledgeSteps.includes(index);
-          return (
-            <button
-              key={lesson}
-              type="button"
-              disabled={!canOpenKnowledgeLesson(index)}
-              onClick={() => { if (canOpenKnowledgeLesson(index)) focusKnowledgeLesson(index); }}
-              aria-current={active ? "step" : undefined}
-              className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-45 ${active ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534] shadow-sm" : completed ? "border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#86EFAC] hover:text-[#111827]"}`}
-            >
-              <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${completed ? "bg-[#22C55E] text-white" : active ? "bg-[#111827] text-white" : "bg-[#F8FAFC] text-[#64748B]"}`}>
-                {completed ? <Check className="h-3.5 w-3.5" /> : <span className="text-[11px]">{index + 1}</span>}
-              </span>
-              <span>{lesson}</span>
-              {completed && <span className="text-[10px] uppercase tracking-[0.12em]">Done</span>}
-            </button>
-          );
-        })}
-      </div>
-    </section>
+    ) : null
   );
 
   const IntegrationLessonTabs = () => (
@@ -4611,7 +4610,7 @@ export default function DashboardLayout() {
             </div>
           )}
 
-          <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
+          <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
             <button
               type="button"
               onClick={() => focusIntegrationLesson(activeIntegrationStep - 1)}
@@ -4644,8 +4643,48 @@ export default function DashboardLayout() {
     'Closing & Follow-up',
     'Review',
   ];
+  const skillsLessons = [
+    'Communication',
+    'Leads & Sales',
+    'Bookings',
+    'Orders & Payments',
+    'Customer Support',
+    'Follow-up',
+    'Review',
+  ];
 
-  const SkillsLessonTabs = () => {
+  const focusSalesLesson = (step: number) => {
+    setActiveSalesStep(step);
+    window.setTimeout(() => {
+      document.querySelector<HTMLElement>("[data-training-lesson-scroll]")?.scrollTo({ top: 0, behavior: "smooth" });
+    }, 0);
+  };
+
+  const focusSkillsLesson = (step: number) => {
+    setActiveSkillsStep(step);
+    window.setTimeout(() => {
+      document.querySelector<HTMLElement>("[data-training-lesson-scroll]")?.scrollTo({ top: 0, behavior: "smooth" });
+    }, 0);
+  };
+
+  trainingLessonTabsApiRef.current = {
+    activeSkillsStep,
+    activeSalesStep,
+    isIntegrationConnected,
+    getIntegrationName,
+    handleSaveChanges,
+    setActiveWorkspaceSection,
+  };
+
+  if (!skillsLessonTabsComponentRef.current) {
+    skillsLessonTabsComponentRef.current = function SkillsLessonTabs() {
+      const {
+        activeSkillsStep,
+        isIntegrationConnected,
+        getIntegrationName,
+        handleSaveChanges,
+        setActiveWorkspaceSection,
+      } = trainingLessonTabsApiRef.current!;
     type SkillCapability = {
       id: string;
       name: string;
@@ -4654,7 +4693,6 @@ export default function DashboardLayout() {
       requires?: string[];
     };
 
-    const [activeSkillsStep, setActiveSkillsStep] = useState(0);
     const [communicationCapabilities, setCommunicationCapabilities] = useState<SkillCapability[]>([
       {
         id: 'comm-1',
@@ -4732,16 +4770,6 @@ export default function DashboardLayout() {
         enabled: false,
       },
     ]);
-
-    const skillsLessons = [
-      'Communication',
-      'Leads & Sales',
-      'Bookings',
-      'Orders & Payments',
-      'Customer Support',
-      'Follow-up',
-      'Review',
-    ];
 
     const toggleCommunicationCapability = (id: string) => {
       setCommunicationCapabilities((items) =>
@@ -4978,33 +5006,9 @@ export default function DashboardLayout() {
     };
 
     return (
-      <section className="rounded-[24px] border border-[#E5E7EB] bg-white p-5">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-sm font-semibold text-[#111827]">Skills lessons</p>
-            <p className="mt-1 text-sm text-[#6B7280]">Select the Skills lesson you want to focus on.</p>
-          </div>
-        </div>
-
-        <div className="mt-4 flex flex-wrap items-center gap-3">
-          {skillsLessons.map((lesson, index) => {
-            const active = index === activeSkillsStep;
-            return (
-              <button
-                key={lesson}
-                type="button"
-                onClick={() => setActiveSkillsStep(index)}
-                aria-current={active ? 'step' : undefined}
-                className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition-colors duration-200 ${active ? 'border-[#22C55E] bg-[#ECFDF5] text-[#166534] shadow-sm' : 'border-[#E5E7EB] bg-white text-[#475569] hover:border-[#86EFAC] hover:text-[#111827]'}`}
-              >
-                <span>{lesson}</span>
-              </button>
-            );
-          })}
-        </div>
-
+      <section className="space-y-6">
         {activeSkillsStep === 0 && (
-          <div className="mt-6 space-y-4">
+          <div className="space-y-4">
             <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-5">
               <p className="text-sm font-semibold text-[#111827]">Communication</p>
               <p className="mt-2 text-sm text-[#6B7280]">Choose the communication tasks your AI employee can handle for customers.</p>
@@ -5271,11 +5275,13 @@ export default function DashboardLayout() {
         )}
       </section>
     );
-  };
+    };
+  }
+  const SkillsLessonTabs = skillsLessonTabsComponentRef.current!;
 
-  const SalesLessonTabs = () => {
-    const [activeSalesStep, setActiveSalesStep] = useState(0);
-
+  if (!salesLessonTabsComponentRef.current) {
+    salesLessonTabsComponentRef.current = function SalesLessonTabs() {
+      const { activeSalesStep, handleSaveChanges, setActiveWorkspaceSection } = trainingLessonTabsApiRef.current!;
     const initialObjectives = [
       'Sell products or services',
       'Generate qualified leads',
@@ -5284,16 +5290,6 @@ export default function DashboardLayout() {
       'Answer pre-sales questions',
       'Increase order value (Upsell)',
       'Retain existing customers',
-    ];
-
-    const salesLessons = [
-      'Sales Objectives',
-      'Customer Qualification',
-      'Sales Strategy',
-      'Pricing & Negotiation',
-      'Human Handoff',
-      'Closing & Follow-up',
-      'Review',
     ];
 
     const [objectives, setObjectives] = useState(
@@ -5333,25 +5329,7 @@ export default function DashboardLayout() {
     };
 
     return (
-      <div className="mt-4">
-        <p className="mt-1 text-base font-semibold text-[#111827]">Teach your AI how to sell with focused lessons.</p>
-        <div className="mt-3 flex flex-wrap items-center gap-3">
-          {salesLessons.map((lesson, index) => {
-            const active = index === activeSalesStep;
-            return (
-              <button
-                key={lesson}
-                type="button"
-                onClick={() => setActiveSalesStep(index)}
-                aria-current={active ? 'step' : undefined}
-                className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition-colors duration-200 ${active ? 'border-[#22C55E] bg-[#ECFDF5] text-[#166534] shadow-sm' : 'border-[#E5E7EB] bg-white text-[#475569] hover:border-[#86EFAC] hover:text-[#111827]'}`}
-              >
-                <span>{lesson}</span>
-              </button>
-            );
-          })}
-        </div>
-
+      <div className="space-y-6">
         {/* Lesson content: implement Sales Objectives (step 0) and Customer Qualification (step 1) per request */}
         {activeSalesStep === 0 && (
           <section className="mt-4 rounded-[20px] border border-[#E5E7EB] bg-white p-4 shadow-sm">
@@ -5483,7 +5461,9 @@ export default function DashboardLayout() {
         )}
       </div>
     );
-  };
+    };
+  }
+  const SalesLessonTabs = salesLessonTabsComponentRef.current!;
 
   // QuestionsList: UI-only component for Lesson 2 (Customer Qualification)
   const QuestionsList = () => {
@@ -5752,7 +5732,7 @@ export default function DashboardLayout() {
           </div>
         )}
 
-        <section className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+        <section className="space-y-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <h3 className="text-base font-semibold text-[#111827]">{isEditing ? "Edit FAQ" : "Add an FAQ"}</h3>
@@ -5822,7 +5802,7 @@ export default function DashboardLayout() {
     return (
       <div className="space-y-4">
         {showForm && (
-          <section className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+          <section className="space-y-6">
             <label className="grid gap-1.5 text-sm font-medium text-[#334155]">
               Website URL
               <input type="url" aria-invalid={urlError} value={websiteUrlDraft} onChange={(event) => setWebsiteUrlDraft(event.target.value)} placeholder="https://example.com" className={`h-10 rounded-lg border bg-white px-3 text-sm text-[#111827] outline-none focus:ring-2 ${urlError ? "border-[#DC2626] focus:border-[#DC2626] focus:ring-[#FECACA]" : "border-[#DCE3EA] focus:border-[#22C55E] focus:ring-[#22C55E]/20"}`} />
@@ -5900,7 +5880,7 @@ export default function DashboardLayout() {
               );
             })}
           </div>
-          <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
+          <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
             <button type="button" onClick={() => setActiveWorkspaceSection("Identity")} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
             <button type="button" onClick={() => completeKnowledgeLesson(0)} disabled={!canContinueKnowledgeLesson(0)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Save & Continue <ChevronRight className="h-4 w-4" /></button>
           </div>
@@ -5941,7 +5921,7 @@ export default function DashboardLayout() {
 
               return (
                 <div className="space-y-5">
-                  <section className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                  <section className="space-y-6">
                     <h3 className={sectionTitleClass}>Business Direction</h3>
                     <p className={helperClass}>Help Sokoos understand why your business exists and where you want it to go.</p>
                     <div className="mt-4 grid gap-4 md:grid-cols-2">
@@ -5966,7 +5946,7 @@ export default function DashboardLayout() {
                     </div>
                   </section>
 
-                  <section className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                  <section className="space-y-6">
                     <h3 className={sectionTitleClass}>Customers &amp; Market</h3>
                     <p className={helperClass}>Clarify who you serve, what they need, and where your business focuses.</p>
                     <div className="mt-4 grid gap-4 md:grid-cols-2">
@@ -5977,7 +5957,7 @@ export default function DashboardLayout() {
                     </div>
                   </section>
 
-                  <section className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                  <section className="space-y-6">
                     <h3 className={sectionTitleClass}>Positioning</h3>
                     <p className={helperClass}>This guides how Sokoos presents your business in conversations and marketing.</p>
                     <div className="mt-4 grid gap-4 md:grid-cols-2">
@@ -5988,7 +5968,7 @@ export default function DashboardLayout() {
                     </div>
                   </section>
 
-                  <section className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                  <section className="space-y-6">
                     <h3 className={sectionTitleClass}>Additional Business Context</h3>
                     <p className={helperClass}>Use this space for context that does not fit into the structured fields above.</p>
                     <div className="mt-4 grid gap-4">
@@ -6005,7 +5985,7 @@ export default function DashboardLayout() {
             })()}
             {sourceKey === "faqs" && <FaqEditor />}
             {sourceKey === "documents" && (
-              <div className="space-y-4 rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+              <div className="space-y-6">
                 <input ref={knowledgeDocumentInputRef} type="file" accept=".pdf,.docx,.txt,.csv,.xlsx" multiple className="hidden" onChange={(event) => { if (event.target.files?.length) addKnowledgeDocuments(event.target.files); event.target.value = ""; }} />
                 <div
                   role="button"
@@ -6031,7 +6011,7 @@ export default function DashboardLayout() {
             )}
             {sourceKey === "website" && <WebsiteEditor />}
             {(knowledgeLoading || knowledgeError) && <div role={knowledgeError ? "alert" : undefined} className={`rounded-xl px-4 py-3 text-sm ${knowledgeError ? "border border-[#FECACA] bg-[#FEF2F2] text-[#B91C1C]" : "bg-[#F8FAFC] text-[#64748B]"}`}>{knowledgeError ?? "Loading saved knowledge sources…"}</div>}
-            <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
+            <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
               <button type="button" onClick={() => focusKnowledgeLesson(activeKnowledgeStep - 1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
               <button type="button" disabled={sourceKey !== "company" && !canContinueKnowledgeLesson(activeKnowledgeStep)} onClick={() => { if (sourceKey === "company") setBusinessInformationValidationAttempted(true); if (!canContinueKnowledgeLesson(activeKnowledgeStep)) return; completeKnowledgeLesson(activeKnowledgeStep); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Save & Continue <ChevronRight className="h-4 w-4" /></button>
             </div>
@@ -6078,7 +6058,7 @@ export default function DashboardLayout() {
               );
             })}
           </div>
-          <div className="flex items-center justify-between border-t border-[#D1FAE5] pt-4">
+          <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
             <button type="button" onClick={() => focusKnowledgeLesson(activeKnowledgeStep - 1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
             <button type="button" disabled={!canContinueKnowledgeLesson(activeKnowledgeStep)} onClick={() => { if (!canContinueKnowledgeLesson(activeKnowledgeStep)) return; completeKnowledgeLesson(activeKnowledgeStep); }} className="inline-flex items-center gap-2 rounded-lg bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A] disabled:cursor-not-allowed disabled:opacity-45"><Sparkles className="h-4 w-4" />Complete Knowledge Training</button>
           </div>
@@ -6281,19 +6261,65 @@ export default function DashboardLayout() {
                   focusIdentityLesson(activeIdentityStep);
                 }
               }}
-              onContinueLessons={() => {
-                if (activeWorkspaceSection === "Knowledge Hub") focusKnowledgeLesson(activeKnowledgeStep);
-                else if (activeWorkspaceSection === "Identity") focusIdentityLesson(activeIdentityStep);
-                else document.getElementById("ai-workspace-content")?.scrollIntoView({ behavior: "smooth", block: "start" });
+              lessons={
+                activeWorkspaceSection === "Identity" && !onboardingComplete
+                  ? identityLessons.map((title, index) => ({
+                      title,
+                      completed: completedIdentitySteps.includes(index),
+                      current: activeIdentityStep === index,
+                    }))
+                  : activeWorkspaceSection === "Knowledge Hub"
+                    ? knowledgeLessonSequence.map((title, index) => ({
+                        title,
+                        completed: completedKnowledgeSteps.includes(index),
+                        current: activeKnowledgeStep === index,
+                        disabled: !canOpenKnowledgeLesson(index),
+                      }))
+                    : activeWorkspaceSection === "Integrations"
+                      ? integrationLessonSequence.map((title, index) => ({
+                          title,
+                          completed: completedIntegrationSteps.includes(index),
+                          current: activeIntegrationStep === index,
+                        }))
+                      : activeWorkspaceSection === "Sales Playbooks"
+                        ? salesLessons.map((title, index) => ({
+                            title,
+                            completed: false,
+                            current: activeSalesStep === index,
+                          }))
+                        : activeWorkspaceSection === "Skills"
+                          ? skillsLessons.map((title, index) => ({
+                              title,
+                              completed: false,
+                              current: activeSkillsStep === index,
+                            }))
+                          : []
+              }
+              onSelectLesson={(index) => {
+                if (activeWorkspaceSection === "Knowledge Hub") {
+                  if (canOpenKnowledgeLesson(index)) focusKnowledgeLesson(index);
+                  return;
+                }
+                if (activeWorkspaceSection === "Integrations") {
+                  focusIntegrationLesson(index);
+                  return;
+                }
+                if (activeWorkspaceSection === "Sales Playbooks") {
+                  focusSalesLesson(index);
+                  return;
+                }
+                if (activeWorkspaceSection === "Skills") {
+                  focusSkillsLesson(index);
+                  return;
+                }
+                focusIdentityLesson(index);
               }}
             >
                 <div className="space-y-5">
-                  <div className="border-b border-[#E5E7EB] pb-4">
+                  {activeWorkspaceSection !== "Identity" && activeWorkspaceSection !== "Knowledge Hub" && activeWorkspaceSection !== "Integrations" && activeWorkspaceSection !== "Sales Playbooks" && activeWorkspaceSection !== "Skills" ? (
                   <div className="max-w-3xl">
                     <p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]">
-                      {activeWorkspaceSection === "Identity"
-                        ? "Identity training"
-                        : activeWorkspaceSection === "Catalogue"
+                      {activeWorkspaceSection === "Catalogue"
                         ? "Catalogue workspace"
                         : activeWorkspaceSection === "Skills"
                         ? "Skills"
@@ -6301,14 +6327,10 @@ export default function DashboardLayout() {
                         ? "Policies"
                         : activeWorkspaceSection === "Sales Playbooks"
                         ? "Sales Playbook"
-                        : activeWorkspaceSection === "Integrations"
-                        ? "Integrations"
-                        : "KNOWLEDGE TRAINING"}
+                        : "Training"}
                     </p>
                     <p className="mt-1 text-sm text-[#475569]">
-                      {activeWorkspaceSection === "Identity"
-                        ? "Onboard your AI employee one focused decision at a time."
-                        : activeWorkspaceSection === "Catalogue"
+                      {activeWorkspaceSection === "Catalogue"
                         ? "Manage your AI catalogue so it can recommend products and services with confidence."
                         : activeWorkspaceSection === "Skills"
                         ? "Choose what your AI employee can do for your customers and your business."
@@ -6316,56 +6338,26 @@ export default function DashboardLayout() {
                         ? "Teach your AI employee the rules, boundaries, and customer policies it must follow."
                         : activeWorkspaceSection === "Sales Playbooks"
                         ? "Train your AI employee to qualify customers, recommend the right solutions, negotiate within your rules, know when to involve a human, and confidently close conversations."
-                        : activeWorkspaceSection === "Integrations"
-                        ? "Connect your AI employee to the channels and business tools it needs to serve customers and get work done."
-                        : "Build and refine your knowledge base so your AI responds with relevant, trusted answers."}
+                        : "Continue training this workspace."}
                     </p>
                   </div>
-                </div>
+                  ) : null}
 
-                {activeWorkspaceSection === "Identity" && (
-                  <>
-                  <section className="relative z-20 rounded-[24px] border border-[#E5E7EB] bg-white px-3 py-3 shadow-[0_6px_18px_rgba(15,23,42,0.04)]" aria-label="AI employee onboarding progress">
-                    {onboardingComplete ? (
-                      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between animate-in fade-in-0 zoom-in-95 duration-300">
-                        <div className="flex items-start gap-3">
-                          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#22C55E] text-lg text-white shadow-sm">✓</span>
-                          <div><p className="text-base font-semibold text-[#111827]">Your AI Employee is Ready</p><p className="mt-1 text-sm text-[#64748B]">Your AI has successfully completed the identity curriculum and is ready to represent your business.</p><div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs font-semibold text-[#166534]">{identityLessons.map((lesson) => <span key={lesson}>✓ {lesson}</span>)}</div></div>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          <button type="button" onClick={() => { setSelected("Performance"); window.history.pushState({}, "", "/dashboard/performance"); }} className="rounded-lg bg-[#111827] px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#334155]">View AI Profile</button>
-                          <button type="button" onClick={() => { setSelected("Inbox"); window.history.pushState({}, "", "/dashboard/inbox"); }} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition hover:bg-[#F8FAFC] hover:text-[#111827]">Start Conversations</button>
-                          <button type="button" onClick={() => setActiveWorkspaceSection("Test AI")} className="rounded-lg border border-[#BBF7D0] bg-[#ECFDF5] px-3 py-2 text-xs font-semibold text-[#166534] transition hover:bg-[#DCFCE7]">Test AI</button>
-                          <button type="button" onClick={() => { setAiEmployeeLaunched(false); setCompletedIdentitySteps([]); focusIdentityLesson(0); }} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition hover:bg-[#F8FAFC] hover:text-[#111827]">Teach More</button>
-                        </div>
+                {activeWorkspaceSection === "Identity" && onboardingComplete && (
+                  <section className="rounded-xl bg-[#F8FAFC] px-4 py-4" aria-label="Identity training complete">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between animate-in fade-in-0 zoom-in-95 duration-300">
+                      <div className="flex items-start gap-3">
+                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#22C55E] text-lg text-white shadow-sm">✓</span>
+                        <div><p className="text-base font-semibold text-[#111827]">Your AI Employee is Ready</p><p className="mt-1 text-sm text-[#64748B]">Your AI has successfully completed the identity curriculum and is ready to represent your business.</p><div className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs font-semibold text-[#166534]">{identityLessons.map((lesson) => <span key={lesson}>✓ {lesson}</span>)}</div></div>
                       </div>
-                    ) : <>
-                    <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                      <div>
-                        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#166534]">Identity Training</p>
-                        <p className="mt-1 text-base font-semibold text-[#111827]">Help your AI understand who your business is, what it stands for, and how it should represent your brand in every customer conversation.</p>
-                      </div>
-                      <div className="rounded-full bg-[#ECFDF5] px-3 py-1 text-sm font-semibold text-[#166534]">
-                        {trainingCompletedSteps.length}/{identityLessons.length} lessons complete
+                      <div className="flex flex-wrap gap-2">
+                        <button type="button" onClick={() => { setSelected("Performance"); window.history.pushState({}, "", "/dashboard/performance"); }} className="rounded-lg bg-[#111827] px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#334155]">View AI Profile</button>
+                        <button type="button" onClick={() => { setSelected("Inbox"); window.history.pushState({}, "", "/dashboard/inbox"); }} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition hover:bg-[#F8FAFC] hover:text-[#111827]">Start Conversations</button>
+                        <button type="button" onClick={() => setActiveWorkspaceSection("Test AI")} className="rounded-lg border border-[#BBF7D0] bg-[#ECFDF5] px-3 py-2 text-xs font-semibold text-[#166534] transition hover:bg-[#DCFCE7]">Test AI</button>
+                        <button type="button" onClick={() => { setAiEmployeeLaunched(false); setCompletedIdentitySteps([]); focusIdentityLesson(0); }} className="rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-xs font-semibold text-[#475569] transition hover:bg-[#F8FAFC] hover:text-[#111827]">Teach More</button>
                       </div>
                     </div>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {identityLessons.map((lesson, index) => {
-                        const active = activeIdentityStep === index;
-                        const completed = completedIdentitySteps.includes(index);
-                        return (
-                          <button key={lesson} type="button" onClick={() => focusIdentityLesson(index)} aria-current={active ? "step" : undefined} className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition ${active ? "border-[#22C55E] bg-[#ECFDF5] text-[#166534] shadow-sm" : completed ? "border-[#BBF7D0] bg-[#F0FDF4] text-[#166534]" : "border-[#E5E7EB] bg-white text-[#475569] hover:border-[#86EFAC] hover:text-[#111827]"}`}>
-                            <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${completed ? "bg-[#22C55E] text-white" : active ? "bg-[#111827] text-white" : "bg-[#F8FAFC] text-[#64748B]"}`}>
-                              {completed ? <Check className="h-3.5 w-3.5" /> : <span className="text-[11px]">{index + 1}</span>}
-                            </span>
-                            <span>{lesson}</span>
-                          </button>
-                        );
-                      })}
-                    </div>
-                    </>}
                   </section>
-                  </>
                 )}
 
                 {completionToast && (
@@ -6393,7 +6385,7 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
 
-                                  <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                                  <div className="space-y-6">
                                     <div className="space-y-2">
                                       <p className="text-[15px] font-semibold tracking-[-0.01em] text-[#111827]">Who is this AI representing?</p>
                                       <p className="text-sm leading-6 text-[#6B7280]">Start with the basics so your AI can introduce the business clearly.</p>
@@ -6401,7 +6393,7 @@ export default function DashboardLayout() {
                                     <div className="mt-6 grid gap-4 md:grid-cols-2">
                                       <div className="relative w-full space-y-2 md:col-span-2">
                                         <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-name">
-                                          Business Name
+                                          Business Name <span className="text-[#DC2626]" aria-hidden="true">*</span>
                                         </label>
                                         <input
                                           id="business-name"
@@ -6417,7 +6409,7 @@ export default function DashboardLayout() {
 
                                       <div className="relative w-full space-y-2">
                                         <label className="block text-sm font-semibold text-[#111827]" htmlFor="industry">
-                                          Business Industry
+                                          Business Industry <span className="text-[#DC2626]" aria-hidden="true">*</span>
                                         </label>
                                         <div className="relative">
                                           <button
@@ -6484,7 +6476,7 @@ export default function DashboardLayout() {
 
                                       <div className="relative w-full space-y-3 md:col-span-2">
                                         <label className="block text-sm font-semibold text-[#111827]">
-                                          Business Model
+                                          Business Model <span className="font-medium text-[#94A3B8]">(optional)</span>
                                         </label>
                                         <div className="grid gap-2 sm:grid-cols-2">
                                           {[
@@ -6516,7 +6508,7 @@ export default function DashboardLayout() {
 
                                       <div className="relative w-full space-y-2">
                                         <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-country">
-                                          Country
+                                          Country <span className="text-[#DC2626]" aria-hidden="true">*</span>
                                         </label>
                                         <input
                                           id="business-country"
@@ -6531,7 +6523,7 @@ export default function DashboardLayout() {
                                     </div>
                                     <div className="mt-6 space-y-2">
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="business-description">
-                                        Business Description
+                                        Business Description <span className="text-[#DC2626]" aria-hidden="true">*</span>
                                       </label>
                                       <textarea
                                         id="business-description"
@@ -6545,7 +6537,7 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
 
-                                  <div className="flex items-center justify-end border-t border-[#EEF2F6] pt-5">
+                                  <div className={AI_TRAINING_LESSON_ACTIONS}>
                                     <button
                                       type="button"
                                       disabled={!businessInfo.name.trim() || !businessIndustryValue || !businessInfo.country.trim() || !businessInfo.about.trim()}
@@ -6571,7 +6563,7 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
 
-                                  <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                                  <div className="space-y-6">
                                     <div className="space-y-2">
                                       <p className="text-[15px] font-semibold tracking-[-0.01em] text-[#111827]">Brand Personality</p>
                                       <p className="text-sm leading-6 text-[#6B7280]">Pick the character your AI should reflect in conversations.</p>
@@ -6683,7 +6675,7 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
 
-                                  <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
+                                  <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
                                     <button type="button" onClick={() => focusIdentityLesson(0)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
                                     <button type="button" onClick={() => completeIdentityLesson(1)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
                                   </div>
@@ -6703,7 +6695,7 @@ export default function DashboardLayout() {
                                   </div>
 
                                   <div className="grid gap-5 lg:grid-cols-[1.45fr_0.9fr]">
-                                    <div className="space-y-4 rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                                    <div className="space-y-4">
                                       <div className="space-y-2">
                                         <label className="block text-sm font-semibold text-[#111827]" htmlFor="welcome-message">
                                           Welcome Message
@@ -6793,7 +6785,7 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
 
-                                  <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
+                                  <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
                                     <button type="button" onClick={() => focusIdentityLesson(1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
                                     <button type="button" onClick={() => completeIdentityLesson(2)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
                                   </div>
@@ -6812,7 +6804,7 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
 
-                                  <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                                  <div className="space-y-6">
                                     <div className="space-y-2">
                                       <label className="block text-sm font-semibold text-[#111827]" htmlFor="primary-language">
                                         Primary Language
@@ -6881,7 +6873,7 @@ export default function DashboardLayout() {
                                       </div>
                                     </div>
                                   </div>
-                                  <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
+                                  <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
                                     <button type="button" onClick={() => focusIdentityLesson(2)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
                                     <button type="button" onClick={() => completeIdentityLesson(3)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Continue to business hours <ChevronRight className="h-4 w-4" /></button>
                                   </div>
@@ -6900,7 +6892,7 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
 
-                                  <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                                  <div className="space-y-6">
                                     <div className="grid gap-4 md:grid-cols-2">
                                       <div className="space-y-2">
                                         <label className="block text-sm font-semibold text-[#111827]" htmlFor="timezone">Timezone</label>
@@ -6978,7 +6970,7 @@ export default function DashboardLayout() {
                                     </p>
                                   </div>
 
-                                  <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
+                                  <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
                                     <button type="button" onClick={() => focusIdentityLesson(3)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
                                     <button type="button" disabled={!businessHours.trim()} onClick={() => completeIdentityLesson(4)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Save & Continue <ChevronRight className="h-4 w-4" /></button>
                                   </div>
@@ -6994,7 +6986,7 @@ export default function DashboardLayout() {
                                       <p className="mt-2 text-sm leading-6 text-[#6B7280]">Tell your AI where your business operates so it can answer area coverage questions confidently.</p>
                                     </div>
                                   </div>
-                                  <div className="rounded-2xl border border-[#EEF2F6] bg-[#F8FAFC] p-5 sm:p-6">
+                                  <div className="space-y-6">
                                     <div className="grid gap-4 md:grid-cols-2">
                                       <div className="w-full space-y-2">
                                         <label className="block text-sm font-semibold text-[#111827]" htmlFor="identity-address">Head Office</label>
@@ -7030,7 +7022,7 @@ export default function DashboardLayout() {
                                     </p>
                                   </div>
 
-                                  <div className="flex items-center justify-between border-t border-[#EEF2F6] pt-4">
+                                  <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
                                     <button type="button" onClick={() => focusIdentityLesson(4)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
                                     <button type="button" onClick={() => completeIdentityLesson(5)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
                                   </div>
@@ -7110,7 +7102,7 @@ export default function DashboardLayout() {
                                     </div>
                                   </div>
 
-                                  <div className="flex items-center justify-between border-t border-[#D1FAE5] pt-4">
+                                  <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
                                     <button type="button" onClick={() => focusIdentityLesson(5)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
                                     <button type="button" onClick={() => { completeIdentityLesson(6); setAiEmployeeLaunched(true); handleSaveChanges(); }} className="inline-flex items-center gap-2 rounded-lg bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A]"><Sparkles className="h-4 w-4" />{aiEmployeeLaunched ? "Completed" : "Finish Identity"}</button>
                                   </div>
@@ -8431,7 +8423,6 @@ export default function DashboardLayout() {
 
                     {activeWorkspaceSection === "Integrations" && (
                       <div ref={integrationsPageRef} tabIndex={-1} className="space-y-5">
-                        <IntegrationLessonTabs />
                         <CurrentIntegrationLesson />
                         <TrainingTemplateOption
                           workspaceName="Integrations"
