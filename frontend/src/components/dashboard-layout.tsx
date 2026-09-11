@@ -539,6 +539,8 @@ const AI_TRAINING_LESSON_ACTIONS =
   "mt-auto flex items-center justify-end gap-3 border-t border-[#EEF2F6] bg-white pt-5";
 const AI_TRAINING_LESSON_ACTIONS_BETWEEN =
   "mt-auto flex items-center justify-between gap-3 border-t border-[#EEF2F6] bg-white pt-5";
+const AI_TRAINING_SAVE_BUTTON =
+  "inline-flex items-center justify-center rounded-lg border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm font-semibold text-[#111827] transition hover:bg-[#F8FAFB] disabled:cursor-not-allowed disabled:opacity-45";
 // Typography tokens for consistent hierarchy
 const PANEL_TITLE = "text-[24px] font-semibold text-[#111827]";
 const SECTION_HEADING =
@@ -1408,6 +1410,7 @@ type TrainingLessonTabsApi = {
   getIntegrationName: (id: string | null) => string;
   handleSaveChanges: () => void | Promise<void>;
   setActiveWorkspaceSection: (section: TrainingWorkspaceSection) => void;
+  focusSalesLesson: (step: number) => void;
 };
 
 export default function DashboardLayout() {
@@ -4105,7 +4108,7 @@ export default function DashboardLayout() {
     if (pathname === "/dashboard/ai" || pathname === "/dashboard/ai/") return "Training";
     if (pathname === "/dashboard/performance" || pathname === "/dashboard/performance/") return "Performance";
     if (pathname === "/dashboard/inbox" || pathname === "/dashboard/inbox/") return "Inbox";
-    if (pathname === "/dashboard/integrations" || pathname === "/dashboard/integrations/") return "Integrations";
+    if (pathname === "/dashboard/integrations" || pathname.startsWith("/dashboard/integrations/")) return "Integrations";
     if (pathname === "/dashboard/settings" || pathname === "/dashboard/settings/") return "Settings";
     if (pathname === "/dashboard/customers" || pathname === "/dashboard/customers/") return "Customers";
     if (pathname === "/dashboard/catalog" || pathname === "/dashboard/catalog/") return "Catalog";
@@ -4367,38 +4370,17 @@ export default function DashboardLayout() {
     return integrationLessonSlugToStep[slug] ?? 0;
   };
 
-  const getIntegrationLessonUrl = (step: number) => {
-    const slug = integrationLessonSlugs[Math.min(Math.max(step, 0), integrationLessonSlugs.length - 1)] ?? "channels";
-    return `/dashboard/integrations/${slug}`;
-  };
-
-  const pushIntegrationLessonUrl = (step: number) => {
-    if (typeof window === "undefined") return;
-    const url = getIntegrationLessonUrl(step);
-    if (window.location.pathname !== url) {
-      window.history.pushState({}, "", url);
-    }
-  };
-
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const normalizeIntegrationPath = () => {
-      const pathname = window.location.pathname;
-      if (!pathname.startsWith("/dashboard/integrations")) return;
-
-      const nextStep = getIntegrationLessonStepFromPath(pathname);
-      const nextUrl = getIntegrationLessonUrl(nextStep);
-
+    const syncIntegrationLessonFromPath = () => {
+      const nextPath = window.location.pathname;
+      if (!nextPath.startsWith("/dashboard/integrations")) return;
       setSelected("Integrations");
-      setActiveIntegrationStep(nextStep);
-
-      if (pathname !== nextUrl) {
-        window.history.replaceState({}, "", nextUrl);
-      }
+      setActiveIntegrationStep(getIntegrationLessonStepFromPath(nextPath));
     };
 
-    normalizeIntegrationPath();
+    syncIntegrationLessonFromPath();
 
     const handlePopState = () => {
       const nextPath = window.location.pathname;
@@ -4412,11 +4394,8 @@ export default function DashboardLayout() {
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
-  const focusIntegrationLesson = (step: number, pushUrl = true) => {
+  const focusIntegrationLesson = (step: number) => {
     setActiveIntegrationStep(step);
-    if (pushUrl) {
-      pushIntegrationLessonUrl(step);
-    }
     window.setTimeout(() => {
       const target = integrationLessonRef.current?.querySelector<HTMLElement>(`[data-lesson-index="${step}"]`);
       if (!target) return;
@@ -4618,15 +4597,27 @@ export default function DashboardLayout() {
             >
               Back
             </button>
-            <button
-              type="button"
-              onClick={() => completeIntegrationLesson(activeIntegrationStep)}
-              disabled={!canContinueIntegrationLesson(activeIntegrationStep)}
-              className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45"
-            >
-              {activeIntegrationStep === integrationLessonSequence.length - 1 ? "Finish training" : "Save & Continue"}
-              <ChevronRight className="h-4 w-4" />
-            </button>
+            <div className="flex items-center gap-3">
+              {activeIntegrationStep === integrationLessonSequence.length - 1 ? (
+                <button
+                  type="button"
+                  onClick={() => { void handleSaveChanges(); }}
+                  disabled={saveState === "saving"}
+                  className={AI_TRAINING_SAVE_BUTTON}
+                >
+                  Save
+                </button>
+              ) : null}
+              <button
+                type="button"
+                onClick={() => completeIntegrationLesson(activeIntegrationStep)}
+                disabled={!canContinueIntegrationLesson(activeIntegrationStep)}
+                className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45"
+              >
+                {activeIntegrationStep === integrationLessonSequence.length - 1 ? "Finish training" : "Save & Continue"}
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -4680,6 +4671,7 @@ export default function DashboardLayout() {
     getIntegrationName,
     handleSaveChanges,
     setActiveWorkspaceSection,
+    focusSalesLesson,
   };
 
   if (!skillsLessonTabsComponentRef.current) {
@@ -5274,7 +5266,8 @@ export default function DashboardLayout() {
               );
             })}
 
-            <div className="mt-4 flex justify-end">
+            <div className="mt-4 flex justify-end gap-3">
+              <button type="button" onClick={() => { void handleSaveChanges(); }} className={AI_TRAINING_SAVE_BUTTON}>Save</button>
               <button type="button" onClick={() => { handleSaveChanges(); setActiveWorkspaceSection('Policies'); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue</button>
             </div>
           </div>
@@ -5287,7 +5280,7 @@ export default function DashboardLayout() {
 
   if (!salesLessonTabsComponentRef.current) {
     salesLessonTabsComponentRef.current = function SalesLessonTabs() {
-      const { activeSalesStep, handleSaveChanges, setActiveWorkspaceSection } = trainingLessonTabsApiRef.current!;
+      const { activeSalesStep, handleSaveChanges, setActiveWorkspaceSection, focusSalesLesson } = trainingLessonTabsApiRef.current!;
     const initialObjectives = [
       'Sell products or services',
       'Generate qualified leads',
@@ -5460,11 +5453,38 @@ export default function DashboardLayout() {
               ))}
             </div>
 
-            <div className="mt-4 flex items-center justify-end gap-3">
-              <button type="button" onClick={() => { handleSaveChanges(); setActiveWorkspaceSection('Policies'); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue to Policies</button>
-            </div>
           </section>
         )}
+
+        <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
+          <button
+            type="button"
+            onClick={() => focusSalesLesson(activeSalesStep - 1)}
+            disabled={activeSalesStep === 0}
+            className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827] disabled:cursor-not-allowed disabled:opacity-45"
+          >
+            Back
+          </button>
+          <div className="flex items-center gap-3">
+            {activeSalesStep === 6 ? (
+              <button type="button" onClick={() => { void handleSaveChanges(); }} className={AI_TRAINING_SAVE_BUTTON}>Save</button>
+            ) : null}
+            <button
+              type="button"
+              onClick={() => {
+                if (activeSalesStep < 6) {
+                  focusSalesLesson(activeSalesStep + 1);
+                  return;
+                }
+                handleSaveChanges();
+                setActiveWorkspaceSection("Policies");
+              }}
+              className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]"
+            >
+              Save & Continue <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
       </div>
     );
     };
@@ -6066,7 +6086,10 @@ export default function DashboardLayout() {
           </div>
           <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
             <button type="button" onClick={() => focusKnowledgeLesson(activeKnowledgeStep - 1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-            <button type="button" disabled={!canContinueKnowledgeLesson(activeKnowledgeStep)} onClick={() => { if (!canContinueKnowledgeLesson(activeKnowledgeStep)) return; completeKnowledgeLesson(activeKnowledgeStep); }} className="inline-flex items-center gap-2 rounded-lg bg-[#22C55E] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-[#16A34A] disabled:cursor-not-allowed disabled:opacity-45"><Sparkles className="h-4 w-4" />Complete Knowledge Training</button>
+            <div className="flex items-center gap-3">
+              <button type="button" onClick={() => { void handleSaveChanges(); }} disabled={saveState === "saving"} className={AI_TRAINING_SAVE_BUTTON}>Save</button>
+              <button type="button" disabled={!canContinueKnowledgeLesson(activeKnowledgeStep)} onClick={() => { if (!canContinueKnowledgeLesson(activeKnowledgeStep)) return; completeKnowledgeLesson(activeKnowledgeStep); handleSaveChanges(); setActiveWorkspaceSection("Catalogue"); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+            </div>
           </div>
         </div>
       </section>
@@ -7062,7 +7085,10 @@ export default function DashboardLayout() {
 
                                   <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
                                     <button type="button" onClick={() => focusIdentityLesson(5)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" onClick={() => { completeIdentityLesson(6); setAiEmployeeLaunched(true); handleSaveChanges(); setActiveWorkspaceSection("Knowledge Hub"); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                                    <div className="flex items-center gap-3">
+                                      <button type="button" onClick={() => { void handleSaveChanges(); }} disabled={saveState === "saving"} className={AI_TRAINING_SAVE_BUTTON}>Save</button>
+                                      <button type="button" onClick={() => { completeIdentityLesson(6); setAiEmployeeLaunched(true); handleSaveChanges(); setActiveWorkspaceSection("Knowledge Hub"); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                                    </div>
                                   </div>
                                 </div>
                               </section>
@@ -7592,10 +7618,6 @@ export default function DashboardLayout() {
 
                     {activeWorkspaceSection === "Sales Playbooks" && (
                       <div className="space-y-6">
-                        <div className="flex justify-end">
-                          <button type="button" onClick={addPlaybook} className="rounded-[10px] bg-[#22C55E] px-3 py-2 text-sm font-semibold text-white">Create Playbook</button>
-                        </div>
-
                         <SalesLessonTabs />
 
                         <div className="grid gap-5 lg:grid-cols-[320px_minmax(0,1fr)]">
@@ -8286,7 +8308,12 @@ export default function DashboardLayout() {
                                 </div>
                               <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
                                 <button type="button" onClick={() => focusPolicyLesson(index - 1)} disabled={index === 0} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827] disabled:cursor-not-allowed disabled:opacity-45">Back</button>
-                                <button type="button" onClick={() => { if (index < policySections.length - 1) focusPolicyLesson(index + 1); else { handleSaveChanges(); setActiveWorkspaceSection("Skills"); } }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                                <div className="flex items-center gap-3">
+                                  {index === policySections.length - 1 ? (
+                                    <button type="button" onClick={() => { void handleSaveChanges(); }} disabled={saveState === "saving"} className={AI_TRAINING_SAVE_BUTTON}>Save</button>
+                                  ) : null}
+                                  <button type="button" onClick={() => { if (index < policySections.length - 1) focusPolicyLesson(index + 1); else { handleSaveChanges(); setActiveWorkspaceSection("Skills"); } }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                                </div>
                               </div>
                             </section>
                           ))}
