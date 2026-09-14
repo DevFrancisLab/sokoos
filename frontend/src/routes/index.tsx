@@ -708,12 +708,43 @@ function HowItWorks() {
   );
 }
 
+type PricingCurrency = "KSh" | "USD";
+
+const pricingCurrencyKey = "sokoos-pricing-currency";
+
+function isPricingCurrency(value: string | null): value is PricingCurrency {
+  return value === "KSh" || value === "USD";
+}
+
+function detectDefaultPricingCurrency(): PricingCurrency {
+  try {
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const languages = [
+      ...(typeof navigator !== "undefined" ? (navigator.languages ?? []) : []),
+      typeof navigator !== "undefined" ? navigator.language : "",
+    ].filter(Boolean);
+    const inKenya =
+      timeZone === "Africa/Nairobi" ||
+      languages.some((language) => /-(KE)$/i.test(language));
+
+    if (inKenya) return "KSh";
+    if (timeZone || languages.length > 0) return "USD";
+  } catch {
+    // Fall through to the KSh default when locale APIs are unavailable.
+  }
+
+  return "KSh";
+}
+
 function Pricing() {
+  const [currency, setCurrency] = useState<PricingCurrency>("KSh");
   const tiers = [
     {
       name: "Starter",
-      price: "KSh 3,500",
-      period: "/month",
+      prices: {
+        KSh: { amount: "KSh 3,500", period: "/month" },
+        USD: { amount: "$30", period: "/month" },
+      },
       desc: "For businesses ready to automate customer conversations.",
       features: [
         { text: "Up to 1,000 AI replies/month", emphasis: true },
@@ -732,8 +763,10 @@ function Pricing() {
     },
     {
       name: "Growth",
-      price: "KSh 7,500",
-      period: "/month",
+      prices: {
+        KSh: { amount: "KSh 7,500", period: "/month" },
+        USD: { amount: "$60", period: "/month" },
+      },
       desc: "For growing businesses that need more automation and team collaboration.",
       features: [
         { text: "Up to 3,500 AI replies/month", emphasis: true },
@@ -748,8 +781,10 @@ function Pricing() {
     },
     {
       name: "Professional",
-      price: "KSh 15,000",
-      period: "/month",
+      prices: {
+        KSh: { amount: "KSh 15,000", period: "/month" },
+        USD: { amount: "$120", period: "/month" },
+      },
       desc: "For businesses handling high customer and sales volumes.",
       features: [
         { text: "Up to 12,000 AI replies/month", emphasis: true },
@@ -766,8 +801,10 @@ function Pricing() {
     },
     {
       name: "Custom",
-      price: "Flexible pricing",
-      period: "",
+      prices: {
+        KSh: { amount: "Flexible pricing", period: "" },
+        USD: { amount: "Custom pricing", period: "" },
+      },
       desc: "For businesses with unique needs or changing volumes.",
       features: [
         { text: "Seasonal businesses" },
@@ -786,6 +823,27 @@ function Pricing() {
       highlight: false,
     },
   ];
+
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem(pricingCurrencyKey);
+      setCurrency(
+        isPricingCurrency(stored) ? stored : detectDefaultPricingCurrency(),
+      );
+    } catch {
+      setCurrency(detectDefaultPricingCurrency());
+    }
+  }, []);
+
+  const selectCurrency = (next: PricingCurrency) => {
+    setCurrency(next);
+    try {
+      localStorage.setItem(pricingCurrencyKey, next);
+    } catch {
+      // Ignore storage failures; the switcher still updates for this visit.
+    }
+  };
+
   return (
     <section id="pricing" className="py-20 sm:py-28 xl:py-32">
       <div className="container-page">
@@ -794,96 +852,125 @@ function Pricing() {
             eyebrow="Pricing"
             title="Plans that grow with your business"
           />
-        </Reveal>
-        <div className="mt-14 mx-auto grid w-full max-w-[72rem] grid-cols-1 gap-5 md:grid-cols-2">
-          {tiers.map((t, i) => (
-            <Reveal key={t.name} delay={i * 100}>
-              <div
-                className={`relative flex h-full min-w-0 flex-col rounded-2xl border p-7 transition-all hover:-translate-y-1 ${
-                  t.highlight
-                    ? "border-primary bg-foreground text-background shadow-[var(--shadow-glow)]"
-                    : "border-border bg-card shadow-[var(--shadow-soft)]"
-                }`}
-              >
-                {t.highlight && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary-foreground">
-                    Most Popular
-                  </span>
-                )}
-                <div>
-                  <h3 className="text-lg font-semibold">{t.name}</h3>
-                  <p
-                    className={`mt-1 text-sm ${
-                      t.highlight
-                        ? "text-background/70"
-                        : "text-muted-foreground"
+          <div
+            className="mt-8 flex justify-center"
+            role="group"
+            aria-label="Pricing currency"
+          >
+            <div className="inline-flex rounded-full border border-border bg-card p-1 shadow-[var(--shadow-soft)]">
+              {(["KSh", "USD"] as const).map((option) => {
+                const active = currency === option;
+                return (
+                  <button
+                    key={option}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => selectCurrency(option)}
+                    className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${
+                      active
+                        ? "bg-foreground text-background"
+                        : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
-                    {t.desc}
-                  </p>
-                </div>
-                <div className="mt-6 flex items-baseline gap-1">
-                  <span className="text-4xl font-extrabold tracking-tight break-words leading-none">
-                    {t.price}
-                  </span>
-                  {t.period ? (
-                    <span
-                      className={`text-sm ${
+                    {option}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </Reveal>
+        <div className="mx-auto mt-10 grid w-full max-w-[72rem] grid-cols-1 gap-5 md:grid-cols-2">
+          {tiers.map((t, i) => {
+            const price = t.prices[currency];
+            return (
+              <Reveal key={t.name} delay={i * 100}>
+                <div
+                  className={`relative flex h-full min-w-0 flex-col rounded-2xl border p-7 transition-all hover:-translate-y-1 ${
+                    t.highlight
+                      ? "border-primary bg-foreground text-background shadow-[var(--shadow-glow)]"
+                      : "border-border bg-card shadow-[var(--shadow-soft)]"
+                  }`}
+                >
+                  {t.highlight && (
+                    <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary-foreground">
+                      Most Popular
+                    </span>
+                  )}
+                  <div>
+                    <h3 className="text-lg font-semibold">{t.name}</h3>
+                    <p
+                      className={`mt-1 text-sm ${
                         t.highlight
                           ? "text-background/70"
                           : "text-muted-foreground"
                       }`}
                     >
-                      {t.period}
+                      {t.desc}
+                    </p>
+                  </div>
+                  <div className="mt-6 flex items-baseline gap-1">
+                    <span className="text-4xl font-extrabold tracking-tight break-words leading-none">
+                      {price.amount}
                     </span>
-                  ) : null}
-                </div>
-                <ul className="mt-6 flex-1 space-y-3">
-                  {t.features.map((f) => (
-                    <li
-                      key={f.text}
-                      className="flex items-start gap-2.5 text-sm"
-                    >
-                      <Check
-                        className="mt-0.5 h-4 w-4 shrink-0 text-primary"
-                        strokeWidth={3}
-                      />
+                    {price.period ? (
                       <span
-                        className={f.emphasis ? "font-semibold" : undefined}
+                        className={`text-sm ${
+                          t.highlight
+                            ? "text-background/70"
+                            : "text-muted-foreground"
+                        }`}
                       >
-                        {f.text}
+                        {price.period}
                       </span>
-                    </li>
-                  ))}
-                </ul>
-                {t.cta === "Get Started" ? (
-                  <Link
-                    to="/sign-up"
-                    className={`mt-8 inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${
-                      t.highlight
-                        ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                        : "bg-foreground text-background hover:bg-foreground/90"
-                    }`}
-                  >
-                    {t.cta}
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                ) : (
-                  <a
-                    href="#"
-                    className={`mt-8 inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${
-                      t.highlight
-                        ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                        : "bg-foreground text-background hover:bg-foreground/90"
-                    }`}
-                  >
-                    {t.cta}
-                    <ArrowRight className="h-4 w-4" />
-                  </a>
-                )}
-              </div>
-            </Reveal>
-          ))}
+                    ) : null}
+                  </div>
+                  <ul className="mt-6 flex-1 space-y-3">
+                    {t.features.map((f) => (
+                      <li
+                        key={f.text}
+                        className="flex items-start gap-2.5 text-sm"
+                      >
+                        <Check
+                          className="mt-0.5 h-4 w-4 shrink-0 text-primary"
+                          strokeWidth={3}
+                        />
+                        <span
+                          className={f.emphasis ? "font-semibold" : undefined}
+                        >
+                          {f.text}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                  {t.cta === "Get Started" ? (
+                    <Link
+                      to="/sign-up"
+                      className={`mt-8 inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${
+                        t.highlight
+                          ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                          : "bg-foreground text-background hover:bg-foreground/90"
+                      }`}
+                    >
+                      {t.cta}
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  ) : (
+                    <a
+                      href="#"
+                      className={`mt-8 inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-3 text-sm font-semibold transition-colors ${
+                        t.highlight
+                          ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                          : "bg-foreground text-background hover:bg-foreground/90"
+                      }`}
+                    >
+                      {t.cta}
+                      <ArrowRight className="h-4 w-4" />
+                    </a>
+                  )}
+                </div>
+              </Reveal>
+            );
+          })}
         </div>
       </div>
     </section>
