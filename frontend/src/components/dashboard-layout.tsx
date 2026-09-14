@@ -6179,7 +6179,7 @@ export default function DashboardLayout() {
 
       {/* Main content area. On desktop, add left padding to allow for fixed sidebar. On mobile, add top padding to account for the header. */}
       <main className="h-full overflow-x-hidden pt-14 md:pt-0 md:pl-[72px]">
-        <div className={`${selected === "Integrations" ? "max-w-[1600px]" : "max-w-7xl"} mx-auto h-full p-4 overflow-x-hidden`}>
+        <div className="container-dashboard h-full overflow-x-hidden p-4 lg:p-6 2xl:px-8">
           {/* Render placeholder pages based on selected state */}
           {selected === "Home" && (
             <HomeWorkspace
@@ -7181,7 +7181,7 @@ export default function DashboardLayout() {
                     )}
 
                     {activeWorkspaceSection === "Catalogue" && (
-                      <div className="w-full max-w-[1600px] min-w-0 space-y-4 overflow-x-hidden">
+                      <div className="w-full min-w-0 space-y-4 overflow-x-hidden">
                         <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-5">
                           <div className="flex flex-col gap-3 xl:flex-row xl:items-start xl:justify-between">
                             <div className="min-w-0">

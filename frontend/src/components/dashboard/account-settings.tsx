@@ -543,7 +543,7 @@ export function AccountSettings({ user, onEditProfile, onDeleteAccount, onChange
 
   return (
     <>
-    <div className="mx-auto w-full max-w-6xl space-y-6 pb-4">
+    <div className="mx-auto w-full space-y-6 pb-4">
       <header>
         <p className="text-sm font-medium uppercase tracking-[0.2em] text-[#64748B]">Account settings</p>
         <h1 className="mt-2 text-2xl font-semibold tracking-[-0.02em] text-[#111827] sm:text-3xl">Account Settings</h1>

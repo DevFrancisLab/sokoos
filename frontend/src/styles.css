@@ -87,8 +87,14 @@
 @utility container-page {
   width: 100%;
   margin-inline: auto;
-  padding-inline: 1.25rem;
-  max-width: 1200px;
+  padding-inline: clamp(1.25rem, 4vw, 2.5rem);
+  max-width: 87.5rem;
+}
+
+@utility container-dashboard {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 100rem;
 }
 
 @utility fade-in-up {

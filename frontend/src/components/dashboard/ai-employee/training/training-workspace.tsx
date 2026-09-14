@@ -158,7 +158,7 @@ export default function TrainingWorkspace({
   }, [dialogOpen, activeWorkspaceSection, currentLessonIndex]);
 
   return (
-    <div className="mx-auto w-full max-w-[1280px] space-y-6 px-4 pb-10 lg:px-6">
+    <div className="w-full space-y-6 pb-10">
       <header className="max-w-3xl">
         <p className="text-[12px] font-semibold uppercase tracking-[0.24em] text-[#6B7280]">AI Employee Setup</p>
         <h2 className="mt-2 text-[24px] font-semibold tracking-[-0.02em] text-[#111827] lg:text-[26px]">
@@ -213,7 +213,7 @@ export default function TrainingWorkspace({
       </section>
 
       <section aria-label="AI employee training workspaces">
-        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {workspaceNavigatorItems.map((item) => {
             const status = workspaceStatus(item);
             return (
@@ -249,7 +249,7 @@ export default function TrainingWorkspace({
       <Dialog open={dialogOpen} onOpenChange={onDialogOpenChange}>
         <DialogContent
           overlayClassName="bg-slate-950/40"
-          className="flex !flex h-[100dvh] max-h-[100dvh] min-h-0 w-full max-w-none left-0 top-0 translate-x-0 translate-y-0 flex-col !flex-col gap-0 overflow-clip rounded-none border-[#E5E7EB] bg-white p-0 shadow-[0_24px_80px_rgba(15,23,42,0.18)] duration-200 md:left-[50%] md:top-[50%] md:h-[min(88vh,860px)] md:max-h-[calc(100vh-2.5rem)] md:w-[92vw] md:max-w-[1160px] md:translate-x-[-50%] md:translate-y-[-50%] md:rounded-2xl"
+          className="flex !flex h-[100dvh] max-h-[100dvh] min-h-0 w-full max-w-none left-0 top-0 translate-x-0 translate-y-0 flex-col !flex-col gap-0 overflow-clip rounded-none border-[#E5E7EB] bg-white p-0 shadow-[0_24px_80px_rgba(15,23,42,0.18)] duration-200 md:left-[50%] md:top-[50%] md:h-[min(88vh,860px)] md:max-h-[calc(100vh-2.5rem)] md:w-[90vw] md:max-w-[1250px] md:translate-x-[-50%] md:translate-y-[-50%] md:rounded-2xl"
         >
           <DialogHeader className="shrink-0 space-y-3 border-b border-[#EEF2F6] px-5 py-4 pr-14 text-left md:px-6">
             <div className="flex items-start gap-3">

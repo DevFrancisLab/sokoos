@@ -170,7 +170,7 @@ export function InboxWorkspace({
   };
 
   return (
-    <div className={`grid gap-6 px-6 py-6 transition-all duration-300 ease-out items-stretch h-full grid-cols-1 ${customerCollapsed ? "md:grid-cols-[320px_1fr]" : "md:grid-cols-[320px_1fr_minmax(330px,360px)]"}`}>
+    <div className={`grid h-full grid-cols-1 items-stretch gap-6 px-4 py-4 transition-all duration-300 ease-out sm:px-6 sm:py-6 ${customerCollapsed ? "lg:grid-cols-[minmax(260px,320px)_minmax(0,1fr)] xl:grid-cols-[360px_minmax(0,1fr)]" : "lg:grid-cols-[minmax(240px,300px)_minmax(0,1fr)_minmax(280px,360px)] xl:grid-cols-[minmax(300px,360px)_minmax(0,1fr)_minmax(320px,420px)]"}`}>
       <section className={`${CARD} w-full h-full min-h-0 flex flex-col min-w-0`}>
         <div className="border-b border-[#ECECEC] px-5 py-2">
           <div className="flex items-center justify-between gap-3">
@@ -402,7 +402,7 @@ export function InboxWorkspace({
 
       {!customerCollapsed && (
         <section
-          className={`${CARD} w-full h-full min-h-0 flex flex-col transition-all duration-300 ease-out ${customerPanelFading ? "opacity-80 translate-y-1" : "opacity-100 translate-y-0"} min-w-[330px] max-w-[360px]`}
+          className={`${CARD} w-full h-full min-h-0 flex flex-col transition-all duration-300 ease-out ${customerPanelFading ? "opacity-80 translate-y-1" : "opacity-100 translate-y-0"} min-w-0 max-w-full xl:max-w-[420px]`}
         >
           <div className="flex items-start justify-between gap-3 shrink-0 px-5 py-4 border-b border-[#ECECEC]">
             <div>

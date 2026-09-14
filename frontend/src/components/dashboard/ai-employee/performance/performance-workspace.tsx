@@ -104,7 +104,7 @@ export function PerformanceWorkspace({
               </div>
             </div>
 
-            <div className="mt-6 grid gap-4 md:grid-cols-2">
+            <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
               {[
                 {
                   label: "Conversations handled",
@@ -250,7 +250,7 @@ export function PerformanceWorkspace({
               </button>
             </div>
 
-            <div className="mt-6 grid gap-4 lg:grid-cols-2">
+            <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
               {[
                 {
                   label: "Conversations handled",
@@ -375,7 +375,7 @@ export function PerformanceWorkspace({
               </div>
             </div>
 
-            <div className="mt-6 grid gap-4 lg:grid-cols-2">
+            <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
               {[
                 {
                   label: "Leads engaged",
@@ -481,7 +481,7 @@ export function PerformanceWorkspace({
               </div>
             </div>
 
-            <div className="mt-6 grid gap-4 lg:grid-cols-2">
+            <div className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
               {[
                 {
                   label: "Customer satisfaction",

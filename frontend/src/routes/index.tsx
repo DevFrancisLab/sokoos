@@ -481,9 +481,9 @@ function Hero() {
       className="relative flex min-h-[calc(100svh-4rem)] items-center overflow-hidden"
       style={{ backgroundImage: "var(--gradient-hero)" }}
     >
-      <div className="container-page relative py-16 sm:py-20">
+      <div className="container-page relative py-16 sm:py-20 lg:py-24 xl:py-28">
         <Reveal>
-          <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
+          <div className="mx-auto flex max-w-3xl flex-col items-center text-center xl:max-w-4xl">
             <h1 className="mt-6 text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl md:text-7xl">
               Your Business With a <br className="hidden sm:block" />
               <span className="text-[#16A34A]">Bot</span> That Sells
@@ -567,7 +567,7 @@ function SectionHeader({
   subtitle?: string;
 }) {
   return (
-    <div className="mx-auto max-w-2xl text-center">
+    <div className="mx-auto max-w-2xl text-center xl:max-w-3xl">
       {eyebrow && (
         <span className="text-xs font-semibold uppercase tracking-wider text-primary">
           {eyebrow}
@@ -619,7 +619,7 @@ function Features() {
     },
   ];
   return (
-    <section id="features" className="py-20 sm:py-28">
+    <section id="features" className="py-20 sm:py-28 xl:py-32">
       <div className="container-page">
         <Reveal>
           <SectionHeader
@@ -627,7 +627,7 @@ function Features() {
             title="Everything Your Business Bot Needs to Sell"
           />
         </Reveal>
-        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:gap-5">
           {features.map((f, i) => (
             <Reveal key={f.title} delay={i * 60}>
               <div className="group relative h-full overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-soft)] transition-all hover:-translate-y-1 hover:shadow-[var(--shadow-elevated)]">
@@ -674,7 +674,7 @@ function HowItWorks() {
     },
   ];
   return (
-    <section id="how-it-works" className="bg-surface py-20 sm:py-28">
+    <section id="how-it-works" className="bg-surface py-20 sm:py-28 xl:py-32">
       <div className="container-page">
         <Reveal>
           <SectionHeader
@@ -682,7 +682,7 @@ function HowItWorks() {
             title="Get Your Business Bot Working in Minutes"
           />
         </Reveal>
-        <div className="relative mt-16 grid gap-8 md:grid-cols-4">
+        <div className="relative mt-16 grid gap-8 sm:grid-cols-2 md:grid-cols-4">
           <div className="absolute left-8 right-8 top-6 hidden h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent md:block" />
           {steps.map((s, i) => (
             <Reveal key={s.title} delay={i * 100}>
@@ -787,7 +787,7 @@ function Pricing() {
     },
   ];
   return (
-    <section id="pricing" className="py-20 sm:py-28">
+    <section id="pricing" className="py-20 sm:py-28 xl:py-32">
       <div className="container-page">
         <Reveal>
           <SectionHeader
@@ -795,7 +795,7 @@ function Pricing() {
             title="Plans that grow with your business"
           />
         </Reveal>
-        <div className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-2">
+        <div className="mt-14 mx-auto grid w-full max-w-[72rem] grid-cols-1 gap-5 md:grid-cols-2">
           {tiers.map((t, i) => (
             <Reveal key={t.name} delay={i * 100}>
               <div
@@ -892,7 +892,7 @@ function Pricing() {
 
 function FinalCTA() {
   return (
-    <section id="cta" className="py-20 sm:py-28">
+    <section id="cta" className="py-20 sm:py-28 xl:py-32">
       <div className="container-page">
         <Reveal>
           <div className="relative overflow-hidden rounded-3xl bg-foreground p-10 text-background shadow-[var(--shadow-elevated)] sm:p-16">
