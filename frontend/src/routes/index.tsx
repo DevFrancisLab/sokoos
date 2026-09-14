@@ -708,42 +708,12 @@ function HowItWorks() {
   );
 }
 
-type PricingCurrency = "KSh" | "USD";
-
-const pricingCurrencyKey = "sokoos-pricing-currency";
-
-function isPricingCurrency(value: string | null): value is PricingCurrency {
-  return value === "KSh" || value === "USD";
-}
-
-function isKenyanPricingLocale(): boolean {
-  try {
-    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const languages = [
-      ...(typeof navigator !== "undefined" ? (navigator.languages ?? []) : []),
-      typeof navigator !== "undefined" ? navigator.language : "",
-    ].filter(Boolean);
-
-    return (
-      timeZone === "Africa/Nairobi" ||
-      languages.some((language) => /-(KE)$/i.test(language))
-    );
-  } catch {
-    // When locale APIs are unavailable, keep the Kenya switcher available.
-    return true;
-  }
-}
-
 function Pricing() {
-  const [currency, setCurrency] = useState<PricingCurrency>("KSh");
-  const [showCurrencySwitcher, setShowCurrencySwitcher] = useState(false);
   const tiers = [
     {
       name: "Starter",
-      prices: {
-        KSh: { amount: "KSh 3,500", period: "/month" },
-        USD: { amount: "$30", period: "/month" },
-      },
+      amount: "$30",
+      period: "/month",
       desc: "For businesses ready to automate customer conversations.",
       features: [
         { text: "Up to 1,000 AI replies/month", emphasis: true },
@@ -762,10 +732,8 @@ function Pricing() {
     },
     {
       name: "Growth",
-      prices: {
-        KSh: { amount: "KSh 7,500", period: "/month" },
-        USD: { amount: "$60", period: "/month" },
-      },
+      amount: "$60",
+      period: "/month",
       desc: "For growing businesses that need more automation and team collaboration.",
       features: [
         { text: "Up to 3,500 AI replies/month", emphasis: true },
@@ -780,10 +748,8 @@ function Pricing() {
     },
     {
       name: "Professional",
-      prices: {
-        KSh: { amount: "KSh 15,000", period: "/month" },
-        USD: { amount: "$120", period: "/month" },
-      },
+      amount: "$120",
+      period: "/month",
       desc: "For businesses handling high customer and sales volumes.",
       features: [
         { text: "Up to 12,000 AI replies/month", emphasis: true },
@@ -800,10 +766,8 @@ function Pricing() {
     },
     {
       name: "Custom",
-      prices: {
-        KSh: { amount: "Flexible pricing", period: "" },
-        USD: { amount: "Custom pricing", period: "" },
-      },
+      amount: "Custom pricing",
+      period: "",
       desc: "For businesses with unique needs or changing volumes.",
       features: [
         { text: "Seasonal businesses" },
@@ -823,31 +787,6 @@ function Pricing() {
     },
   ];
 
-  useEffect(() => {
-    if (!isKenyanPricingLocale()) {
-      setShowCurrencySwitcher(false);
-      setCurrency("USD");
-      return;
-    }
-
-    setShowCurrencySwitcher(true);
-    try {
-      const stored = localStorage.getItem(pricingCurrencyKey);
-      setCurrency(isPricingCurrency(stored) ? stored : "KSh");
-    } catch {
-      setCurrency("KSh");
-    }
-  }, []);
-
-  const selectCurrency = (next: PricingCurrency) => {
-    setCurrency(next);
-    try {
-      localStorage.setItem(pricingCurrencyKey, next);
-    } catch {
-      // Ignore storage failures; the switcher still updates for this visit.
-    }
-  };
-
   return (
     <section id="pricing" className="py-20 sm:py-28 xl:py-32">
       <div className="container-page">
@@ -856,38 +795,9 @@ function Pricing() {
             eyebrow="Pricing"
             title="Plans that grow with your business"
           />
-          {showCurrencySwitcher ? (
-            <div
-              className="mt-8 flex justify-center"
-              role="group"
-              aria-label="Pricing currency"
-            >
-              <div className="inline-flex rounded-full border border-border bg-card p-1 shadow-[var(--shadow-soft)]">
-                {(["KSh", "USD"] as const).map((option) => {
-                  const active = currency === option;
-                  return (
-                    <button
-                      key={option}
-                      type="button"
-                      aria-pressed={active}
-                      onClick={() => selectCurrency(option)}
-                      className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${
-                        active
-                          ? "bg-foreground text-background"
-                          : "text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      {option}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          ) : null}
         </Reveal>
         <div className="mx-auto mt-10 grid w-full max-w-[72rem] grid-cols-1 gap-5 md:grid-cols-2">
           {tiers.map((t, i) => {
-            const price = t.prices[currency];
             return (
               <Reveal key={t.name} delay={i * 100}>
                 <div
@@ -916,9 +826,9 @@ function Pricing() {
                   </div>
                   <div className="mt-6 flex items-baseline gap-1">
                     <span className="text-4xl font-extrabold tracking-tight break-words leading-none">
-                      {price.amount}
+                      {t.amount}
                     </span>
-                    {price.period ? (
+                    {t.period ? (
                       <span
                         className={`text-sm ${
                           t.highlight
@@ -926,7 +836,7 @@ function Pricing() {
                             : "text-muted-foreground"
                         }`}
                       >
-                        {price.period}
+                        {t.period}
                       </span>
                     ) : null}
                   </div>
