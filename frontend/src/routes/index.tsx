@@ -712,46 +712,75 @@ function Pricing() {
   const tiers = [
     {
       name: "Starter",
-      price: "KSh 2,500",
+      price: "KSh 3,500",
       period: "/month",
-      desc: "For solo businesses getting started.",
+      desc: "For businesses ready to automate customer conversations.",
       features: [
-        "1 WhatsApp number",
-        "Business Bot — 500 replies/month",
-        "Unified inbox",
-        "Products & services catalog",
-        "Email support",
+        { text: "Up to 1,000 AI replies/month", emphasis: true },
+        { text: "AI Employee" },
+        { text: "Product & service catalog" },
+        { text: "Product images in customer replies" },
+        { text: "Automated follow-ups" },
+        { text: "Human takeover" },
+        { text: "Unified inbox" },
+        { text: "1 team member" },
+        { text: "Business dashboard" },
+        { text: "Email support" },
       ],
       cta: "Get Started",
       highlight: false,
     },
     {
-      name: "Business",
-      price: "KSh 5,000",
+      name: "Growth",
+      price: "KSh 7,500",
       period: "/month",
-      desc: "For growing businesses selling every day.",
+      desc: "For growing businesses that need more automation and team collaboration.",
       features: [
-        "1 WhatsApp number",
-        "Business Bot — unlimited replies",
-        "Human takeover — up to 5 team members",
-        "Status scheduler",
-        "Business insights",
-        "Priority support",
+        { text: "Up to 3,500 AI replies/month", emphasis: true },
+        { text: "Everything in Starter", emphasis: true },
+        { text: "Up to 3 team members" },
+        { text: "Lead tracking & analytics" },
+        { text: "Smart product recommendations" },
+        { text: "Priority support" },
       ],
       cta: "Get Started",
       highlight: true,
     },
     {
-      name: "Enterprise",
-      price: "Custom",
-      period: "",
-      desc: "For larger and multi-location businesses.",
+      name: "Professional",
+      price: "KSh 15,000",
+      period: "/month",
+      desc: "For businesses handling high customer and sales volumes.",
       features: [
-        "Multiple WhatsApp numbers",
-        "Unlimited team members",
-        "Custom bot training",
-        "API access & integrations",
-        "Dedicated account support",
+        { text: "Up to 12,000 AI replies/month", emphasis: true },
+        { text: "Everything in Growth", emphasis: true },
+        { text: "Up to 5 team members" },
+        { text: "Order & inventory sync" },
+        { text: "Advanced business insights" },
+        { text: "Advanced automation" },
+        { text: "Custom integrations" },
+        { text: "Priority support" },
+      ],
+      cta: "Get Started",
+      highlight: false,
+    },
+    {
+      name: "Custom",
+      price: "Flexible pricing",
+      period: "",
+      desc: "For businesses with unique needs or changing volumes.",
+      features: [
+        { text: "Seasonal businesses" },
+        { text: "Businesses just getting started" },
+        { text: "Established businesses with custom requirements" },
+        { text: "Flexible usage options" },
+        { text: "Custom AI Employee training" },
+        { text: "Multiple communication channels" },
+        { text: "Multiple WhatsApp numbers" },
+        { text: "Custom integrations" },
+        { text: "API access" },
+        { text: "Custom team sizes" },
+        { text: "Dedicated support" },
       ],
       cta: "Contact Sales",
       highlight: false,
@@ -763,15 +792,14 @@ function Pricing() {
         <Reveal>
           <SectionHeader
             eyebrow="Pricing"
-            title="Simple Pricing for Growing Businesses"
-            subtitle="Choose a plan that fits your business and upgrade as you grow."
+            title="Plans that grow with your business"
           />
         </Reveal>
-        <div className="mt-14 grid gap-5 md:grid-cols-3">
+        <div className="mt-14 grid grid-cols-1 gap-5 md:grid-cols-2">
           {tiers.map((t, i) => (
             <Reveal key={t.name} delay={i * 100}>
               <div
-                className={`relative flex h-full flex-col rounded-2xl border p-7 transition-all hover:-translate-y-1 ${
+                className={`relative flex h-full min-w-0 flex-col rounded-2xl border p-7 transition-all hover:-translate-y-1 ${
                   t.highlight
                     ? "border-primary bg-foreground text-background shadow-[var(--shadow-glow)]"
                     : "border-border bg-card shadow-[var(--shadow-soft)]"
@@ -779,7 +807,7 @@ function Pricing() {
               >
                 {t.highlight && (
                   <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-primary-foreground">
-                    Recommended
+                    Most Popular
                   </span>
                 )}
                 <div>
@@ -795,29 +823,36 @@ function Pricing() {
                   </p>
                 </div>
                 <div className="mt-6 flex items-baseline gap-1">
-                  <span className="text-4xl font-extrabold tracking-tight">
+                  <span className="text-4xl font-extrabold tracking-tight break-words leading-none">
                     {t.price}
                   </span>
-                  <span
-                    className={`text-sm ${
-                      t.highlight
-                        ? "text-background/70"
-                        : "text-muted-foreground"
-                    }`}
-                  >
-                    {t.period}
-                  </span>
+                  {t.period ? (
+                    <span
+                      className={`text-sm ${
+                        t.highlight
+                          ? "text-background/70"
+                          : "text-muted-foreground"
+                      }`}
+                    >
+                      {t.period}
+                    </span>
+                  ) : null}
                 </div>
                 <ul className="mt-6 flex-1 space-y-3">
                   {t.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2.5 text-sm">
+                    <li
+                      key={f.text}
+                      className="flex items-start gap-2.5 text-sm"
+                    >
                       <Check
-                        className={`mt-0.5 h-4 w-4 shrink-0 ${
-                          t.highlight ? "text-primary" : "text-primary"
-                        }`}
+                        className="mt-0.5 h-4 w-4 shrink-0 text-primary"
                         strokeWidth={3}
                       />
-                      <span>{f}</span>
+                      <span
+                        className={f.emphasis ? "font-semibold" : undefined}
+                      >
+                        {f.text}
+                      </span>
                     </li>
                   ))}
                 </ul>
