@@ -160,12 +160,12 @@ export default function TrainingWorkspace({
   return (
     <div className="mx-auto w-full max-w-[1280px] space-y-6 px-4 pb-10 lg:px-6">
       <header className="max-w-3xl">
-        <p className="text-[12px] font-semibold uppercase tracking-[0.24em] text-[#6B7280]">AI Training</p>
+        <p className="text-[12px] font-semibold uppercase tracking-[0.24em] text-[#6B7280]">AI Employee Setup</p>
         <h2 className="mt-2 text-[24px] font-semibold tracking-[-0.02em] text-[#111827] lg:text-[26px]">
-          Your AI Employee&apos;s training workspaces
+          Your AI Employee Setup Workspace
         </h2>
         <p className="mt-2 text-sm leading-6 text-[#6B7280]">
-          Train your AI Employee one workspace at a time.
+          Prepare your AI Employee to understand your business, follow your instructions, and connect with customers.
         </p>
       </header>
 
