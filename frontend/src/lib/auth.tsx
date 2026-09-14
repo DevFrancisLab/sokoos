@@ -9,6 +9,7 @@ export type AuthUser = {
 
 const authTokenKey = "sokoos-auth-token";
 const currentUserKey = "sokoos-current-user";
+const hasSignedInKey = "sokoos-has-signed-in";
 let transientAuthToken: string | null = null;
 let transientCurrentUser: AuthUser | null = null;
 
@@ -63,6 +64,37 @@ export function clearAuthSession() {
     transientAuthToken = null;
     transientCurrentUser = null;
   }
+}
+
+export function markHasSignedIn() {
+  try {
+    localStorage.setItem(hasSignedInKey, "true");
+  } catch {
+    // Ignore storage failures; the sign-in heading will fall back to first-visit copy.
+  }
+}
+
+export function hasPreviouslySignedIn() {
+  try {
+    return localStorage.getItem(hasSignedInKey) === "true";
+  } catch {
+    return false;
+  }
+}
+
+export function subscribeHasSignedIn(onStoreChange: () => void) {
+  if (typeof window === "undefined") {
+    return () => {};
+  }
+
+  const handleStorage = (event: StorageEvent) => {
+    if (event.key === hasSignedInKey || event.key === null) {
+      onStoreChange();
+    }
+  };
+
+  window.addEventListener("storage", handleStorage);
+  return () => window.removeEventListener("storage", handleStorage);
 }
 
 export function isAuthenticated() {

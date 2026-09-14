@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 
 import { Checkbox } from "@/components/auth/checkbox";
 import { PasswordInput } from "@/components/auth/password-input";
@@ -9,7 +9,14 @@ import { AuthCard } from "@/components/auth-card";
 import { AuthHeader } from "@/components/auth-header";
 import { AuthLayout } from "@/components/auth-layout";
 import { ApiError, apiRequest } from "@/lib/api";
-import { isAuthenticated, saveAuthSession, type AuthUser } from "@/lib/auth";
+import {
+  hasPreviouslySignedIn,
+  isAuthenticated,
+  markHasSignedIn,
+  saveAuthSession,
+  subscribeHasSignedIn,
+  type AuthUser,
+} from "@/lib/auth";
 
 export const Route = createFileRoute("/sign-in")({
   component: SignIn,
@@ -36,6 +43,11 @@ function getErrorMessage(data: unknown) {
 export function SignIn() {
   const router = useRouter();
   const authenticated = isAuthenticated();
+  const returningBrowser = useSyncExternalStore(
+    subscribeHasSignedIn,
+    hasPreviouslySignedIn,
+    () => false,
+  );
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
@@ -75,6 +87,7 @@ export function SignIn() {
 
       if (response.data?.success && response.data.token) {
         saveAuthSession(response.data.token, response.data.user, rememberMe);
+        markHasSignedIn();
         void router.navigate({ to: "/dashboard", replace: true });
         return;
       }
@@ -110,7 +123,7 @@ export function SignIn() {
       >
         <div className="space-y-6">
           <AuthHeader
-            title="Welcome back"
+            title={returningBrowser ? "Welcome back" : "Welcome to Sokoos"}
             description="Sign in to your Sokoos account."
           />
 
