@@ -716,28 +716,27 @@ function isPricingCurrency(value: string | null): value is PricingCurrency {
   return value === "KSh" || value === "USD";
 }
 
-function detectDefaultPricingCurrency(): PricingCurrency {
+function isKenyanPricingLocale(): boolean {
   try {
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const languages = [
       ...(typeof navigator !== "undefined" ? (navigator.languages ?? []) : []),
       typeof navigator !== "undefined" ? navigator.language : "",
     ].filter(Boolean);
-    const inKenya =
+
+    return (
       timeZone === "Africa/Nairobi" ||
-      languages.some((language) => /-(KE)$/i.test(language));
-
-    if (inKenya) return "KSh";
-    if (timeZone || languages.length > 0) return "USD";
+      languages.some((language) => /-(KE)$/i.test(language))
+    );
   } catch {
-    // Fall through to the KSh default when locale APIs are unavailable.
+    // When locale APIs are unavailable, keep the Kenya switcher available.
+    return true;
   }
-
-  return "KSh";
 }
 
 function Pricing() {
   const [currency, setCurrency] = useState<PricingCurrency>("KSh");
+  const [showCurrencySwitcher, setShowCurrencySwitcher] = useState(false);
   const tiers = [
     {
       name: "Starter",
@@ -825,13 +824,18 @@ function Pricing() {
   ];
 
   useEffect(() => {
+    if (!isKenyanPricingLocale()) {
+      setShowCurrencySwitcher(false);
+      setCurrency("USD");
+      return;
+    }
+
+    setShowCurrencySwitcher(true);
     try {
       const stored = localStorage.getItem(pricingCurrencyKey);
-      setCurrency(
-        isPricingCurrency(stored) ? stored : detectDefaultPricingCurrency(),
-      );
+      setCurrency(isPricingCurrency(stored) ? stored : "KSh");
     } catch {
-      setCurrency(detectDefaultPricingCurrency());
+      setCurrency("KSh");
     }
   }, []);
 
@@ -852,32 +856,34 @@ function Pricing() {
             eyebrow="Pricing"
             title="Plans that grow with your business"
           />
-          <div
-            className="mt-8 flex justify-center"
-            role="group"
-            aria-label="Pricing currency"
-          >
-            <div className="inline-flex rounded-full border border-border bg-card p-1 shadow-[var(--shadow-soft)]">
-              {(["KSh", "USD"] as const).map((option) => {
-                const active = currency === option;
-                return (
-                  <button
-                    key={option}
-                    type="button"
-                    aria-pressed={active}
-                    onClick={() => selectCurrency(option)}
-                    className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${
-                      active
-                        ? "bg-foreground text-background"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    {option}
-                  </button>
-                );
-              })}
+          {showCurrencySwitcher ? (
+            <div
+              className="mt-8 flex justify-center"
+              role="group"
+              aria-label="Pricing currency"
+            >
+              <div className="inline-flex rounded-full border border-border bg-card p-1 shadow-[var(--shadow-soft)]">
+                {(["KSh", "USD"] as const).map((option) => {
+                  const active = currency === option;
+                  return (
+                    <button
+                      key={option}
+                      type="button"
+                      aria-pressed={active}
+                      onClick={() => selectCurrency(option)}
+                      className={`rounded-full px-4 py-1.5 text-sm font-semibold transition-colors ${
+                        active
+                          ? "bg-foreground text-background"
+                          : "text-muted-foreground hover:text-foreground"
+                      }`}
+                    >
+                      {option}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          ) : null}
         </Reveal>
         <div className="mx-auto mt-10 grid w-full max-w-[72rem] grid-cols-1 gap-5 md:grid-cols-2">
           {tiers.map((t, i) => {
