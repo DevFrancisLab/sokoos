@@ -1,6 +1,12 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Check, ChevronDown, type LucideIcon } from "lucide-react";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
 export type TrainingWorkspaceItem = {
@@ -37,6 +43,8 @@ type Props = {
   aiReadinessDetail: string;
   aiConfigurationError: string | null;
   onContinueTraining: () => void;
+  onReviewAndFinishTraining: () => void;
+  onRetryAiConfiguration?: () => void;
   lessons?: TrainingLessonNavItem[];
   onSelectLesson?: (index: number) => void;
   children?: ReactNode;
@@ -48,7 +56,13 @@ const workspaceStatus = (item: TrainingWorkspaceItem) => {
   return "Not started";
 };
 
-function LessonStatusMark({ lesson, index }: { lesson: TrainingLessonNavItem; index: number }) {
+function LessonStatusMark({
+  lesson,
+  index,
+}: {
+  lesson: TrainingLessonNavItem;
+  index: number;
+}) {
   if (lesson.completed) {
     return (
       <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#22C55E] text-white">
@@ -60,14 +74,20 @@ function LessonStatusMark({ lesson, index }: { lesson: TrainingLessonNavItem; in
 
   if (lesson.current) {
     return (
-      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#111827] text-[10px] font-semibold text-white" aria-hidden="true">
+      <span
+        className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#111827] text-[10px] font-semibold text-white"
+        aria-hidden="true"
+      >
         {index + 1}
       </span>
     );
   }
 
   return (
-    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#D1D5DB] bg-white" aria-hidden="true">
+    <span
+      className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#D1D5DB] bg-white"
+      aria-hidden="true"
+    >
       <span className="h-1.5 w-1.5 rounded-full bg-[#D1D5DB]" />
     </span>
   );
@@ -106,9 +126,14 @@ function LessonNavList({
                 "flex w-full items-center gap-2.5 rounded-lg px-2 py-2 text-left text-sm leading-5 transition",
                 "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2",
                 lesson.current && "bg-[#ECFDF5] font-semibold text-[#14532D]",
-                !lesson.current && lesson.completed && "font-medium text-[#166534] hover:bg-[#F8FAFC]",
-                !lesson.current && !lesson.completed && "text-[#64748B] hover:bg-[#F8FAFC] hover:text-[#111827]",
-                lesson.disabled && "cursor-not-allowed opacity-45 hover:bg-transparent",
+                !lesson.current &&
+                  lesson.completed &&
+                  "font-medium text-[#166534] hover:bg-[#F8FAFC]",
+                !lesson.current &&
+                  !lesson.completed &&
+                  "text-[#64748B] hover:bg-[#F8FAFC] hover:text-[#111827]",
+                lesson.disabled &&
+                  "cursor-not-allowed opacity-45 hover:bg-transparent",
               )}
             >
               <LessonStatusMark lesson={lesson} index={index} />
@@ -131,26 +156,62 @@ export default function TrainingWorkspace({
   currentTrainingStepNumber,
   currentTrainingLessonCount,
   currentTrainingLessonLabel,
-  completedTrainingLessonCount,
-  totalTrainingLessonCount,
-  overallTrainingPercent,
   aiReadinessStatus,
   aiReadinessDetail,
   aiConfigurationError,
   onContinueTraining,
+  onReviewAndFinishTraining,
+  onRetryAiConfiguration,
   lessons = [],
   onSelectLesson,
   children,
 }: Props) {
-  const activeItem = workspaceNavigatorItems.find((item) => item.section === activeWorkspaceSection);
+  const activeItem = workspaceNavigatorItems.find(
+    (item) => item.section === activeWorkspaceSection,
+  );
   const ActiveIcon = activeItem?.Icon;
   const currentLessonIndex = lessons.findIndex((lesson) => lesson.current);
-  const currentLesson = currentLessonIndex >= 0 ? lessons[currentLessonIndex] : undefined;
+  const currentLesson =
+    currentLessonIndex >= 0 ? lessons[currentLessonIndex] : undefined;
   const lessonCount = lessons.length;
-  const lessonNumber = currentLessonIndex >= 0 ? currentLessonIndex + 1 : currentTrainingStepNumber;
+  const lessonNumber =
+    currentLessonIndex >= 0
+      ? currentLessonIndex + 1
+      : currentTrainingStepNumber;
   const totalLessons = lessonCount || currentTrainingLessonCount;
-  const completedLessonCount = lessons.filter((lesson) => lesson.completed).length;
-  const lessonPercent = totalLessons > 0 ? Math.round((completedLessonCount / totalLessons) * 100) : activeItem?.percent ?? 0;
+  const completedLessonCount = lessons.filter(
+    (lesson) => lesson.completed,
+  ).length;
+  const lessonPercent =
+    totalLessons > 0
+      ? Math.round((completedLessonCount / totalLessons) * 100)
+      : (activeItem?.percent ?? 0);
+  const completedWorkspaceCount = workspaceNavigatorItems.filter(
+    (item) => item.complete,
+  ).length;
+  const totalWorkspaceCount = workspaceNavigatorItems.length;
+  const workspaceProgressPercent =
+    totalWorkspaceCount > 0
+      ? Math.round((completedWorkspaceCount / totalWorkspaceCount) * 100)
+      : 0;
+  const currentSetupWorkspace =
+    workspaceNavigatorItems.find((item) => !item.complete) ??
+    workspaceNavigatorItems[workspaceNavigatorItems.length - 1];
+  const trainingHasStarted = workspaceNavigatorItems.some(
+    (item) => item.complete || item.percent > 0,
+  );
+  const allWorkspacesComplete =
+    totalWorkspaceCount > 0 && completedWorkspaceCount >= totalWorkspaceCount;
+  const primaryActionLabel = allWorkspacesComplete
+    ? "Review & Finish Training"
+    : trainingHasStarted
+      ? "Continue training"
+      : "Start Business Setup";
+  const onPrimaryAction = allWorkspacesComplete
+    ? onReviewAndFinishTraining
+    : onContinueTraining;
+  const readinessIsError = Boolean(aiConfigurationError);
+  const readinessIsReady = aiReadinessStatus === "Ready";
   const [mobileLessonNavOpen, setMobileLessonNavOpen] = useState(false);
 
   useEffect(() => {
@@ -160,54 +221,94 @@ export default function TrainingWorkspace({
   return (
     <div className="w-full space-y-6 pb-10">
       <header className="max-w-3xl">
-        <p className="text-[12px] font-semibold uppercase tracking-[0.24em] text-[#6B7280]">AI Employee Setup</p>
-        <h2 className="mt-2 text-[24px] font-semibold tracking-[-0.02em] text-[#111827] lg:text-[26px]">
-          Your AI Employee Setup Workspace
+        <h2 className="text-[24px] font-semibold tracking-[-0.02em] text-[#111827] lg:text-[26px]">
+          AI Employee Setup
         </h2>
         <p className="mt-2 text-sm leading-6 text-[#6B7280]">
-          Prepare your AI Employee to understand your business, follow your instructions, and connect with customers.
+          Prepare your AI Employee to understand your business, follow your
+          instructions, and connect with customers.
         </p>
       </header>
 
-      <section className="rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)]" aria-label="AI setup score">
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-center">
-          <div className="flex gap-3">
-            <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-lg shadow-sm ${overallTrainingComplete ? "bg-[#22C55E] text-white" : "bg-[#ECFDF5] text-[#166534]"}`}>
-              {overallTrainingComplete ? "🎉" : "🤖"}
-            </span>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-[#111827]">{overallTrainingComplete ? "Setup checklist complete" : "Setting up your AI Employee"}</p>
-              <p className="mt-1 text-xs text-[#475569]">
-                {overallTrainingComplete
-                  ? "The available configuration and knowledge workflow steps are complete."
-                  : `Step ${currentTrainingStepNumber} of ${currentTrainingLessonCount} · ${currentTrainingLessonLabel}`}
-              </p>
-              <p className="mt-1 text-xs leading-5 text-[#64748B]">
-                {overallTrainingComplete
-                  ? "You can update this configuration as your business changes."
-                  : "Open a workspace to continue training."}
-              </p>
-              <div className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]">
-                <div className="h-full rounded-full bg-[#22C55E] transition-all duration-300" style={{ width: `${overallTrainingComplete ? 100 : overallTrainingPercent}%` }} />
-              </div>
-              <p className="mt-2 text-[11px] font-semibold text-[#166534]">
-                {completedTrainingLessonCount} of {totalTrainingLessonCount} workflow steps complete · {overallTrainingComplete ? 100 : overallTrainingPercent}% complete
-              </p>
+      <section
+        className="rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)] sm:p-5"
+        aria-label="Training progress"
+      >
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(220px,280px)] lg:items-start">
+          <div className="min-w-0">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#64748B]">
+              Training progress
+            </p>
+            <p className="mt-1 text-sm font-semibold text-[#111827]">
+              {completedWorkspaceCount} of {totalWorkspaceCount} workspaces
+              complete ·{" "}
+              {allWorkspacesComplete ? 100 : workspaceProgressPercent}% complete
+            </p>
+            <div
+              className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]"
+              aria-hidden="true"
+            >
+              <div
+                className={`h-full rounded-full transition-all duration-300 ${allWorkspacesComplete || overallTrainingComplete ? "bg-[#22C55E]" : "bg-[#86EFAC]"}`}
+                style={{
+                  width: `${Math.max(0, Math.min(100, allWorkspacesComplete ? 100 : workspaceProgressPercent))}%`,
+                }}
+              />
+            </div>
+
+            <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#64748B]">
+              Current workspace
+            </p>
+            <p className="mt-1 text-base font-semibold text-[#111827]">
+              {currentSetupWorkspace?.title ?? "Identity"}
+            </p>
+
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <button
+                type="button"
+                onClick={onPrimaryAction}
+                className="inline-flex h-11 w-full items-center justify-center rounded-lg bg-[#111827] px-4 text-sm font-semibold text-white transition hover:bg-[#334155] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 sm:w-auto"
+              >
+                {primaryActionLabel}
+              </button>
+              {allWorkspacesComplete ? null : (
+                <button
+                  type="button"
+                  onClick={onReviewAndFinishTraining}
+                  className="inline-flex h-11 w-full items-center justify-center rounded-lg border border-[#E5E7EB] bg-white px-4 text-sm font-semibold text-[#111827] transition hover:bg-[#F8FAFB] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 sm:w-auto"
+                >
+                  Review & Finish Training
+                </button>
+              )}
             </div>
           </div>
-          <div className="rounded-xl border border-[#BBF7D0] bg-[#F7FEF9] p-3">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#166534]">AI Readiness</p>
-            <p className="mt-1 text-lg font-semibold text-[#111827]">{aiReadinessStatus}</p>
-            <p role={aiConfigurationError ? "alert" : undefined} className={`mt-1 text-xs ${aiConfigurationError ? "text-[#B91C1C]" : "text-[#64748B]"}`}>
+
+          <div
+            className={`rounded-xl border p-3 ${readinessIsError ? "border-[#FECACA] bg-[#FEF2F2]" : readinessIsReady ? "border-[#BBF7D0] bg-[#F7FEF9]" : "border-[#E5E7EB] bg-[#F8FAFC]"}`}
+          >
+            <p
+              className={`text-[10px] font-semibold uppercase tracking-[0.12em] ${readinessIsError ? "text-[#B91C1C]" : "text-[#166534]"}`}
+            >
+              AI Readiness
+            </p>
+            <p className="mt-1 text-lg font-semibold text-[#111827]">
+              {aiReadinessStatus}
+            </p>
+            <p
+              role={readinessIsError ? "alert" : undefined}
+              className={`mt-1 text-xs leading-5 ${readinessIsError ? "text-[#B91C1C]" : "text-[#64748B]"}`}
+            >
               {aiReadinessDetail}
             </p>
-            <button
-              type="button"
-              onClick={onContinueTraining}
-              className="mt-3 text-xs font-semibold text-[#166534] transition hover:text-[#047857] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2"
-            >
-              Continue training
-            </button>
+            {readinessIsError && onRetryAiConfiguration ? (
+              <button
+                type="button"
+                onClick={onRetryAiConfiguration}
+                className="mt-3 text-xs font-semibold text-[#111827] underline decoration-[#CBD5E1] underline-offset-4 transition hover:text-[#166534] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2"
+              >
+                Retry
+              </button>
+            ) : null}
           </div>
         </div>
       </section>
@@ -224,17 +325,34 @@ export default function TrainingWorkspace({
                 className="group cursor-pointer rounded-[20px] border border-[#E5E7EB] bg-white p-5 text-left shadow-[0_8px_24px_rgba(15,23,42,0.04)] transition duration-200 hover:-translate-y-0.5 hover:border-[#86EFAC] hover:shadow-[0_14px_32px_rgba(15,23,42,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2"
               >
                 <div className="flex items-start justify-between gap-3">
-                  <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${item.complete ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#ECFDF5] text-[#166534]"}`}>
-                    {item.complete ? <Check className="h-5 w-5" /> : <item.Icon className="h-5 w-5" />}
+                  <span
+                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${item.complete ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#ECFDF5] text-[#166534]"}`}
+                  >
+                    {item.complete ? (
+                      <Check className="h-5 w-5" />
+                    ) : (
+                      <item.Icon className="h-5 w-5" />
+                    )}
                   </span>
-                  <span className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${item.complete ? "bg-[#ECFDF5] text-[#166534]" : item.percent > 0 ? "bg-[#FFFBEB] text-[#B45309]" : "bg-[#F8FAFC] text-[#64748B]"}`}>
+                  <span
+                    className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${item.complete ? "bg-[#ECFDF5] text-[#166534]" : item.percent > 0 ? "bg-[#FFFBEB] text-[#B45309]" : "bg-[#F8FAFC] text-[#64748B]"}`}
+                  >
                     {status}
                   </span>
                 </div>
-                <p className="mt-4 text-base font-semibold text-[#111827]">{item.title}</p>
-                <p className="mt-1 text-sm leading-6 text-[#64748B]">{item.description}</p>
+                <p className="mt-4 text-base font-semibold text-[#111827]">
+                  {item.title}
+                </p>
+                <p className="mt-1 text-sm leading-6 text-[#64748B]">
+                  {item.description}
+                </p>
                 <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]">
-                  <div className={`h-full rounded-full transition-all duration-500 ${item.complete ? "bg-[#22C55E]" : "bg-[#86EFAC]"}`} style={{ width: `${Math.max(0, Math.min(100, item.percent))}%` }} />
+                  <div
+                    className={`h-full rounded-full transition-all duration-500 ${item.complete ? "bg-[#22C55E]" : "bg-[#86EFAC]"}`}
+                    style={{
+                      width: `${Math.max(0, Math.min(100, item.percent))}%`,
+                    }}
+                  />
                 </div>
                 <div className="mt-2 flex items-center justify-between text-xs font-semibold text-[#64748B]">
                   <span>{item.percent}%</span>
@@ -254,8 +372,14 @@ export default function TrainingWorkspace({
           <DialogHeader className="shrink-0 space-y-3 border-b border-[#EEF2F6] px-5 py-4 pr-14 text-left md:px-6">
             <div className="flex items-start gap-3">
               {ActiveIcon ? (
-                <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${activeItem?.complete ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#ECFDF5] text-[#166534]"}`}>
-                  {activeItem?.complete ? <Check className="h-5 w-5" /> : <ActiveIcon className="h-5 w-5" />}
+                <span
+                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${activeItem?.complete ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#ECFDF5] text-[#166534]"}`}
+                >
+                  {activeItem?.complete ? (
+                    <Check className="h-5 w-5" />
+                  ) : (
+                    <ActiveIcon className="h-5 w-5" />
+                  )}
                 </span>
               ) : null}
               <div className="min-w-0">
@@ -263,7 +387,8 @@ export default function TrainingWorkspace({
                   {activeItem?.title ?? activeWorkspaceSection}
                 </DialogTitle>
                 <DialogDescription className="mt-1 text-sm leading-6 text-[#64748B]">
-                  {activeItem?.description ?? "Continue training this workspace."}
+                  {activeItem?.description ??
+                    "Continue training this workspace."}
                 </DialogDescription>
               </div>
             </div>
@@ -271,16 +396,25 @@ export default function TrainingWorkspace({
               <div>
                 <div className="flex items-center justify-between gap-3 text-xs font-medium text-[#64748B]">
                   <p>
-                    <span className="font-semibold text-[#111827]">{activeItem?.title ?? activeWorkspaceSection}</span>
+                    <span className="font-semibold text-[#111827]">
+                      {activeItem?.title ?? activeWorkspaceSection}
+                    </span>
                     <span className="mx-1.5 text-[#D1D5DB]">·</span>
                     {completedLessonCount} of {totalLessons} lessons complete
                   </p>
-                  <span className="tabular-nums text-[#166534]">{Math.max(0, Math.min(100, lessonPercent))}%</span>
+                  <span className="tabular-nums text-[#166534]">
+                    {Math.max(0, Math.min(100, lessonPercent))}%
+                  </span>
                 </div>
-                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]" aria-hidden="true">
+                <div
+                  className="mt-2 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]"
+                  aria-hidden="true"
+                >
                   <div
                     className={`h-full rounded-full transition-all duration-300 ${lessonPercent >= 100 ? "bg-[#22C55E]" : "bg-[#86EFAC]"}`}
-                    style={{ width: `${Math.max(0, Math.min(100, lessonPercent))}%` }}
+                    style={{
+                      width: `${Math.max(0, Math.min(100, lessonPercent))}%`,
+                    }}
                   />
                 </div>
               </div>
@@ -291,7 +425,12 @@ export default function TrainingWorkspace({
                   <span className="text-[#166534]">{activeItem.percent}%</span>
                 </div>
                 <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]">
-                  <div className={`h-full rounded-full ${activeItem.complete ? "bg-[#22C55E]" : "bg-[#86EFAC]"}`} style={{ width: `${Math.max(0, Math.min(100, activeItem.percent))}%` }} />
+                  <div
+                    className={`h-full rounded-full ${activeItem.complete ? "bg-[#22C55E]" : "bg-[#86EFAC]"}`}
+                    style={{
+                      width: `${Math.max(0, Math.min(100, activeItem.percent))}%`,
+                    }}
+                  />
                 </div>
               </div>
             ) : null}
@@ -314,10 +453,18 @@ export default function TrainingWorkspace({
                     {currentLesson?.title ?? currentTrainingLessonLabel}
                   </span>
                 </span>
-                <ChevronDown className={cn("h-4 w-4 shrink-0 text-[#64748B] transition", mobileLessonNavOpen && "rotate-180")} />
+                <ChevronDown
+                  className={cn(
+                    "h-4 w-4 shrink-0 text-[#64748B] transition",
+                    mobileLessonNavOpen && "rotate-180",
+                  )}
+                />
               </button>
               {mobileLessonNavOpen ? (
-                <div id="training-mobile-lesson-nav" className="mt-3 max-h-[40vh] overflow-y-auto rounded-xl border border-[#EEF2F6] bg-white p-2">
+                <div
+                  id="training-mobile-lesson-nav"
+                  className="mt-3 max-h-[40vh] overflow-y-auto rounded-xl border border-[#EEF2F6] bg-white p-2"
+                >
                   <LessonNavList
                     workspaceTitle={activeItem?.title ?? activeWorkspaceSection}
                     lessons={lessons}
@@ -340,14 +487,17 @@ export default function TrainingWorkspace({
               </aside>
             ) : null}
             <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
-              <div data-training-lesson-scroll className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-5 py-5 sm:px-7 sm:py-6">
+              <div
+                data-training-lesson-scroll
+                className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto px-5 py-5 sm:px-7 sm:py-6"
+              >
                 <div className="flex min-h-full flex-col">
-                {currentLesson ? (
-                  <p className="mb-4 text-xs font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">
-                    Lesson {lessonNumber} of {totalLessons}
-                  </p>
-                ) : null}
-                {children}
+                  {currentLesson ? (
+                    <p className="mb-4 text-xs font-semibold uppercase tracking-[0.16em] text-[#94A3B8]">
+                      Lesson {lessonNumber} of {totalLessons}
+                    </p>
+                  ) : null}
+                  {children}
                 </div>
               </div>
             </div>

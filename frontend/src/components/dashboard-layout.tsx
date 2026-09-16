@@ -3720,7 +3720,32 @@ export default function DashboardLayout() {
     setWritingStyleOptions({ "Use emojis": writingStyle.use_emojis ?? false, "Keep replies short": writingStyle.keep_replies_short ?? false, "Explain simply": writingStyle.explain_simply ?? false, "Ask follow-up questions": writingStyle.ask_follow_up_questions ?? false, "Personalize responses": writingStyle.personalize_responses ?? false });
     setKnowledgeTraining((current) => ({ ...current, companyInformation: { ...current.companyInformation, vision: String(context.vision ?? ""), mission: String(context.mission ?? ""), shortTermGoals: String(context.short_term_goals ?? ""), longTermGoals: String(context.long_term_goals ?? ""), targetCustomers: String(context.target_customers ?? ""), customerProblems: String(context.customer_problems ?? ""), primaryMarket: String(context.primary_market ?? ""), customerSegments: String(context.customer_segments ?? ""), differentiators: String(context.differentiators ?? ""), competitiveAdvantages: String(context.competitive_advantages ?? ""), keySellingPoints: String(context.key_selling_points ?? ""), competitors: String(context.competitors ?? ""), preferredBrandTones: Array.isArray(context.preferred_brand_tones) ? context.preferred_brand_tones.filter((tone): tone is string => typeof tone === "string") : [], wordsToUse: String(context.words_to_use ?? ""), wordsToAvoid: String(context.words_to_avoid ?? ""), brandGuidance: String(context.brand_guidance ?? ""), importantThingsToKnow: String(context.important_things_to_know ?? ""), additionalNotes: String(context.additional_notes ?? "") } }));
   };
-  useEffect(() => { let active = true; void (async () => { try { const result = await getAIEmployeeConfiguration(); if (!active) return; if (result.data) applyAIConfiguration(result.data); else { setAiConfigurationReadiness({ configured_sections: [], missing_sections: [], is_configured: false }); setHasPersistedAiConfiguration(false); } } catch (error) { if (active) setAiConfigurationError(getApiErrorMessage(error, "The AI configuration could not be loaded.")); } finally { if (active) setAiConfigurationLoading(false); } })(); return () => { active = false; }; }, []);
+  useEffect(() => { let active = true; void (async () => { try { const result = await getAIEmployeeConfiguration(); if (!active) return; if (result.data) applyAIConfiguration(result.data); else { setAiConfigurationReadiness({ configured_sections: [], missing_sections: [], is_configured: false }); setHasPersistedAiConfiguration(false); } setAiConfigurationError(null); } catch (error) { if (!active) return; if (error instanceof ApiError && error.status === 404) { setAiConfigurationReadiness({ configured_sections: [], missing_sections: [], is_configured: false }); setHasPersistedAiConfiguration(false); setAiConfigurationError(null); } else { setAiConfigurationError(getApiErrorMessage(error, "The AI configuration could not be loaded.")); } } finally { if (active) setAiConfigurationLoading(false); } })(); return () => { active = false; }; }, []);
+  const retryAIEmployeeConfiguration = () => {
+    setAiConfigurationLoading(true);
+    setAiConfigurationError(null);
+    void (async () => {
+      try {
+        const result = await getAIEmployeeConfiguration();
+        if (result.data) applyAIConfiguration(result.data);
+        else {
+          setAiConfigurationReadiness({ configured_sections: [], missing_sections: [], is_configured: false });
+          setHasPersistedAiConfiguration(false);
+        }
+        setAiConfigurationError(null);
+      } catch (error) {
+        if (error instanceof ApiError && error.status === 404) {
+          setAiConfigurationReadiness({ configured_sections: [], missing_sections: [], is_configured: false });
+          setHasPersistedAiConfiguration(false);
+          setAiConfigurationError(null);
+        } else {
+          setAiConfigurationError(getApiErrorMessage(error, "The AI configuration could not be loaded."));
+        }
+      } finally {
+        setAiConfigurationLoading(false);
+      }
+    })();
+  };
   const applyKnowledgeSources = (sources: APIKnowledgeSource[]) => {
     const website = sources.find((source) => source.kind === "website");
     setWebsiteSourceId(website?.id ?? null);
@@ -4022,32 +4047,6 @@ export default function DashboardLayout() {
   const currentTrainingLessonLabel = currentWorkspaceLessonMeta.label;
   const currentTrainingLessonCount = currentWorkspaceLessonMeta.count;
   const currentTrainingStepNumber = currentWorkspaceLessonMeta.step + 1;
-  const aiReadinessLabel = aiConfigurationReadiness?.is_configured ? "Configured" : "Needs setup";
-  const catalogNotSetUp = !catalogLoading && !catalogError && catalogProducts.length === 0;
-  const aiReadinessStatus = aiConfigurationLoading
-    ? "Loading…"
-    : aiConfigurationError && !aiConfigurationReadiness
-      ? "Unavailable"
-      : aiReadinessLabel;
-  const aiReadinessDetail = aiConfigurationError
-    ? aiConfigurationError
-    : aiConfigurationReadiness?.is_configured && !catalogNotSetUp
-      ? "Configuration requirements are saved"
-      : [
-          aiConfigurationReadiness?.missing_sections.length ? `Missing: ${aiConfigurationReadiness.missing_sections.join(", ")}` : null,
-          catalogNotSetUp ? "Catalogue has not been added yet." : null,
-        ].filter(Boolean).join(" ")
-        || (aiConfigurationLoading ? "Checking saved configuration" : "Setup has not been completed yet.");
-  const totalProductMediaAssets = catalogProducts.reduce((count, product) => count + (product.mediaAssets?.length ?? 0), 0);
-  const workspacePrerequisites: Record<string, string[]> = {
-    Identity: [],
-    "Knowledge Hub": ["Identity"],
-    Catalogue: ["Knowledge Hub"],
-    "Sales Playbooks": ["Catalogue"],
-    Policies: ["Knowledge Hub"],
-    Skills: ["Policies"],
-    Integrations: ["Knowledge Hub"],
-  };
   const workspaceProgressBySection = {
     Identity: identityWorkspacePercent,
     "Knowledge Hub": knowledgeWorkspacePercent,
@@ -4066,6 +4065,25 @@ export default function DashboardLayout() {
     { title: "Skills", description: "Work it can do", section: "Skills" as const, Icon: Sparkles, complete: workspaceProgressBySection.Skills >= 100, percent: workspaceProgressBySection.Skills, unlocked: true },
     { title: "Integrations", description: "Where it connects", section: "Integrations" as const, Icon: Plug, complete: workspaceProgressBySection.Integrations >= 100, percent: workspaceProgressBySection.Integrations, unlocked: true },
   ];
+  const trainingHasStarted = workspaceNavigatorItems.some((item) => item.complete || item.percent > 0);
+  const aiReadinessStatus = aiConfigurationLoading
+    ? "Loading…"
+    : aiConfigurationError
+      ? "Unavailable"
+      : aiConfigurationReadiness?.is_configured
+        ? "Ready"
+        : trainingHasStarted
+          ? "Getting ready"
+          : "Not set up yet";
+  const aiReadinessDetail = aiConfigurationLoading
+    ? "Loading your business setup…"
+    : aiConfigurationError
+      ? aiConfigurationError
+      : aiConfigurationReadiness?.is_configured
+        ? "Your AI Employee has the information and instructions it needs to work for your business."
+        : trainingHasStarted
+          ? "Your AI Employee is being trained with your business information and instructions."
+          : "Your business profile hasn't been set up. Complete Business Identity to begin training your AI Employee.";
   const openWorkspaceDialog = (section: typeof activeWorkspaceSection) => {
     setActiveWorkspaceSection(section);
     setWorkspaceDialogOpen(true);
@@ -4757,6 +4775,27 @@ export default function DashboardLayout() {
     if (step < catalogueLessons.length - 1) {
       window.setTimeout(() => focusProductStep(step + 1), 500);
     }
+  };
+
+  const openTrainingWorkspace = (section: (typeof workspaceNavigatorItems)[number]["section"]) => {
+    openWorkspaceDialog(section);
+    window.setTimeout(() => {
+      if (section === "Identity") focusIdentityLesson(activeIdentityStep);
+      else if (section === "Knowledge Hub") focusKnowledgeLesson(activeKnowledgeStep);
+      else if (section === "Catalogue") focusProductStep(activeProductStep);
+      else if (section === "Sales Playbooks") focusSalesLesson(activeSalesStep);
+      else if (section === "Policies") focusPolicyLesson(activePolicyStep);
+      else if (section === "Skills") focusSkillsLesson(activeSkillsStep);
+      else if (section === "Integrations") focusIntegrationLesson(activeIntegrationStep);
+    }, 0);
+  };
+  const openReviewAndFinishTraining = () => {
+    openWorkspaceDialog("Integrations");
+    window.setTimeout(() => focusIntegrationLesson(integrationLessonSequence.length - 1), 0);
+  };
+  const continueCurrentTraining = () => {
+    const nextWorkspace = workspaceNavigatorItems.find((item) => !item.complete) ?? workspaceNavigatorItems[0];
+    openTrainingWorkspace(nextWorkspace?.section ?? "Identity");
   };
 
   trainingLessonTabsApiRef.current = {
@@ -6350,15 +6389,9 @@ export default function DashboardLayout() {
               aiReadinessStatus={aiReadinessStatus}
               aiReadinessDetail={aiReadinessDetail}
               aiConfigurationError={aiConfigurationError}
-              onContinueTraining={() => {
-                if (activeWorkspaceSection === "Knowledge Hub") {
-                  openWorkspaceDialog("Knowledge Hub");
-                  focusKnowledgeLesson(activeKnowledgeStep);
-                } else {
-                  openWorkspaceDialog("Identity");
-                  focusIdentityLesson(activeIdentityStep);
-                }
-              }}
+              onContinueTraining={continueCurrentTraining}
+              onReviewAndFinishTraining={openReviewAndFinishTraining}
+              onRetryAiConfiguration={retryAIEmployeeConfiguration}
               lessons={
                 activeWorkspaceSection === "Identity"
                   ? identityLessons.map((title, index) => ({
