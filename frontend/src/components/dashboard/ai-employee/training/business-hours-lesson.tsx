@@ -1,8 +1,16 @@
-import { useState } from "react";
-import { Calendar as CalendarIcon, Check, ChevronRight, Clock, Plus, X } from "lucide-react";
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { Calendar as CalendarIcon, Check, ChevronDown, ChevronRight, Clock, Plus, X } from "lucide-react";
 import { format } from "date-fns";
 
 import { Calendar } from "@/components/ui/calendar";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
@@ -36,12 +44,282 @@ type HoursErrors = Record<string, string>;
 
 const WEEKDAY_SET = new Set<WeekDay>(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]);
 
-const TIMEZONE_OPTIONS = [
-  "East Africa Time (EAT)",
-  "West Africa Time (WAT)",
-  "Central Africa Time (CAT)",
+const LEGACY_TIMEZONES: Record<string, string> = {
+  "East Africa Time (EAT)": "Africa/Nairobi",
+  "West Africa Time (WAT)": "Africa/Lagos",
+  "Central Africa Time (CAT)": "Africa/Maputo",
+  UTC: "UTC",
+};
+
+const UNSET_TIMEZONES = new Set(["", "East Africa Time (EAT)"]);
+
+const FALLBACK_TIMEZONES = [
   "UTC",
-] as const;
+  "Africa/Abidjan",
+  "Africa/Cairo",
+  "Africa/Casablanca",
+  "Africa/Johannesburg",
+  "Africa/Lagos",
+  "Africa/Maputo",
+  "Africa/Nairobi",
+  "America/Chicago",
+  "America/Denver",
+  "America/Los_Angeles",
+  "America/Mexico_City",
+  "America/New_York",
+  "America/Sao_Paulo",
+  "America/Toronto",
+  "Asia/Dubai",
+  "Asia/Hong_Kong",
+  "Asia/Kolkata",
+  "Asia/Seoul",
+  "Asia/Shanghai",
+  "Asia/Singapore",
+  "Asia/Tokyo",
+  "Australia/Sydney",
+  "Europe/Berlin",
+  "Europe/London",
+  "Europe/Moscow",
+  "Europe/Paris",
+  "Pacific/Auckland",
+];
+
+const REGION_ORDER = [
+  "Africa",
+  "America",
+  "Antarctica",
+  "Arctic",
+  "Asia",
+  "Atlantic",
+  "Australia",
+  "Europe",
+  "Indian",
+  "Pacific",
+  "Etc",
+  "UTC",
+];
+
+const subscribeToNothing = () => () => {};
+
+export function detectUserTimezone(): string {
+  try {
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (timeZone) return timeZone;
+  } catch {
+    // Fall through to UTC when locale APIs are unavailable.
+  }
+  return "UTC";
+}
+
+function getAllTimezones(): string[] {
+  try {
+    if (typeof Intl !== "undefined" && "supportedValuesOf" in Intl) {
+      const timeZones = Intl.supportedValuesOf("timeZone");
+      if (timeZones.length > 0) return timeZones;
+    }
+  } catch {
+    // Use the compact fallback list below.
+  }
+  return FALLBACK_TIMEZONES;
+}
+
+function timezoneRegion(timeZone: string): string {
+  if (timeZone === "UTC") return "UTC";
+  return timeZone.split("/")[0] || "Other";
+}
+
+function formatTimezoneCity(timeZone: string): string {
+  if (timeZone === "UTC" || timeZone === "Etc/UTC" || timeZone === "Etc/GMT") {
+    return "UTC";
+  }
+  const location = timeZone.split("/").slice(1).join(", ").replace(/_/g, " ");
+  return location || timeZone.replace(/_/g, " ");
+}
+
+function formatTimezoneName(
+  timeZone: string,
+  now: Date,
+  timeZoneName: "short" | "shortOffset" | "longOffset",
+): string {
+  try {
+    return (
+      new Intl.DateTimeFormat("en-US", { timeZone, timeZoneName })
+        .formatToParts(now)
+        .find((part) => part.type === "timeZoneName")?.value ?? ""
+    );
+  } catch {
+    return "";
+  }
+}
+
+function formatTimezoneLabel(timeZone: string, now: Date): string {
+  const city = formatTimezoneCity(timeZone);
+  const shortName = formatTimezoneName(timeZone, now, "short");
+  const offset =
+    formatTimezoneName(timeZone, now, "shortOffset") ||
+    formatTimezoneName(timeZone, now, "longOffset");
+  const details = [shortName, offset].filter(
+    (value, index, values) => value && values.indexOf(value) === index,
+  );
+  return details.length > 0 ? `${city} (${details.join(", ")})` : city;
+}
+
+function normalizeTimezone(value: string, fallback: string): string {
+  if (!value) return fallback;
+  return LEGACY_TIMEZONES[value] ?? value;
+}
+
+type TimezoneOption = {
+  value: string;
+  label: string;
+  region: string;
+};
+
+function buildTimezoneOptions(
+  preferred: string,
+  selected: string,
+): {
+  preferred: TimezoneOption;
+  groups: { region: string; options: TimezoneOption[] }[];
+} {
+  const now = new Date();
+  const preferredOption: TimezoneOption = {
+    value: preferred,
+    label: formatTimezoneLabel(preferred, now),
+    region: timezoneRegion(preferred),
+  };
+  const options = [...new Set([preferred, selected, ...getAllTimezones()].filter(Boolean))]
+    .map((value) => ({
+      value,
+      label: formatTimezoneLabel(value, now),
+      region: timezoneRegion(value),
+    }))
+    .sort((a, b) => a.label.localeCompare(b.label));
+
+  const grouped = new Map<string, TimezoneOption[]>();
+  for (const option of options) {
+    const current = grouped.get(option.region) ?? [];
+    current.push(option);
+    grouped.set(option.region, current);
+  }
+
+  const groups = [...grouped.entries()]
+    .sort(([a], [b]) => {
+      const aIndex = REGION_ORDER.indexOf(a);
+      const bIndex = REGION_ORDER.indexOf(b);
+      if (aIndex === -1 && bIndex === -1) return a.localeCompare(b);
+      if (aIndex === -1) return 1;
+      if (bIndex === -1) return -1;
+      return aIndex - bIndex;
+    })
+    .map(([region, regionOptions]) => ({ region, options: regionOptions }));
+
+  return { preferred: preferredOption, groups };
+}
+
+function timezoneSearchValue(option: TimezoneOption, extra = ""): string {
+  return [option.label, option.value, option.value.replace(/[_/]/g, " "), option.region, extra]
+    .filter(Boolean)
+    .join(" ");
+}
+
+function TimezoneCombobox({
+  id,
+  selected,
+  preferred,
+  groups,
+  fieldClassName,
+  onSelect,
+}: {
+  id: string;
+  selected: string;
+  preferred: TimezoneOption;
+  groups: { region: string; options: TimezoneOption[] }[];
+  fieldClassName: string;
+  onSelect: (value: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const selectedOption =
+    (selected === preferred.value ? preferred : undefined) ||
+    groups.flatMap((group) => group.options).find((option) => option.value === selected);
+  const selectedLabel = selectedOption?.label || selected;
+  const isPreferred = selected === preferred.value;
+
+  return (
+    <Popover open={open} onOpenChange={setOpen} modal>
+      <PopoverTrigger asChild>
+        <button
+          id={id}
+          type="button"
+          aria-expanded={open}
+          aria-haspopup="listbox"
+          className={cn(
+            fieldClassName,
+            "mt-0 flex items-center justify-between gap-3 pr-3.5 text-left",
+          )}
+        >
+          <span className="min-w-0 truncate text-sm font-medium text-[#111827]">
+            {isPreferred ? `${selectedLabel} — your timezone` : selectedLabel}
+          </span>
+          <ChevronDown
+            className={cn("h-4 w-4 shrink-0 text-[#64748B] transition", open && "rotate-180")}
+            aria-hidden="true"
+          />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent
+        align="start"
+        sideOffset={8}
+        collisionPadding={16}
+        className="z-[80] w-[var(--radix-popover-trigger-width)] max-w-[calc(100vw-2rem)] p-0"
+        onWheel={(event) => event.stopPropagation()}
+        onTouchMove={(event) => event.stopPropagation()}
+      >
+        <Command className="rounded-md">
+          <CommandInput placeholder="Search timezones" />
+          <CommandList className="max-h-[min(20rem,50dvh)] overflow-y-auto overscroll-contain sm:max-h-80">
+            <CommandEmpty>No timezone found.</CommandEmpty>
+            <CommandGroup heading="Your timezone">
+              <CommandItem
+                value={`your:${timezoneSearchValue(preferred, "your timezone current")}`}
+                onSelect={() => {
+                  onSelect(preferred.value);
+                  setOpen(false);
+                }}
+                className="min-h-11 cursor-pointer"
+              >
+                <span className="min-w-0 flex-1 truncate">{preferred.label}</span>
+                {selected === preferred.value ? (
+                  <Check className="h-4 w-4 shrink-0 text-[#22C55E]" />
+                ) : null}
+              </CommandItem>
+            </CommandGroup>
+            {groups.map((group) => (
+              <CommandGroup key={group.region} heading={group.region}>
+                {group.options.map((option) => (
+                  <CommandItem
+                    key={`${group.region}-${option.value}`}
+                    value={`${group.region}:${timezoneSearchValue(option, group.region)}`}
+                    onSelect={() => {
+                      onSelect(option.value);
+                      setOpen(false);
+                    }}
+                    className="min-h-11 cursor-pointer"
+                  >
+                    <span className="min-w-0 flex-1 truncate">{option.label}</span>
+                    {selected === option.value ? (
+                      <Check className="h-4 w-4 shrink-0 text-[#22C55E]" />
+                    ) : null}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            ))}
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
+}
 
 function createDefaultSchedule(): DayHours[] {
   return WEEK_DAYS.map((day) => {
@@ -390,6 +668,22 @@ export function BusinessHoursLesson({
   const [vacationMessage, setVacationMessage] = useState("");
   const [emergencyContact, setEmergencyContact] = useState("");
   const [errors, setErrors] = useState<HoursErrors>({});
+  const detectedTimezone = useSyncExternalStore(
+    subscribeToNothing,
+    detectUserTimezone,
+    () => "UTC",
+  );
+  const selectedTimezone = normalizeTimezone(timezone, detectedTimezone);
+  const timezoneOptions = useMemo(
+    () => buildTimezoneOptions(detectedTimezone, selectedTimezone),
+    [detectedTimezone, selectedTimezone],
+  );
+
+  useEffect(() => {
+    if (UNSET_TIMEZONES.has(timezone)) {
+      onTimezoneChange(detectedTimezone);
+    }
+  }, [detectedTimezone, onTimezoneChange, timezone]);
 
   const markDirty = () => {
     onDirty();
@@ -460,21 +754,17 @@ export function BusinessHoursLesson({
           <label className="sr-only" htmlFor="timezone">
             Timezone
           </label>
-          <select
+          <TimezoneCombobox
             id="timezone"
-            value={timezone}
-            onChange={(event) => {
-              onTimezoneChange(event.target.value);
+            selected={selectedTimezone}
+            preferred={timezoneOptions.preferred}
+            groups={timezoneOptions.groups}
+            fieldClassName={fieldClassName}
+            onSelect={(value) => {
+              onTimezoneChange(value);
               markDirty();
             }}
-            className={fieldClassName}
-          >
-            {TIMEZONE_OPTIONS.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
+          />
         </section>
 
         <section className="space-y-4">

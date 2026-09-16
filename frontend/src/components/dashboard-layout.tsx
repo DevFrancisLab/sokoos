@@ -3548,7 +3548,7 @@ export default function DashboardLayout() {
     "Ask follow-up questions": false,
     "Personalize responses": true,
   });
-  const [timezone, setTimezone] = useState("East Africa Time (EAT)");
+  const [timezone, setTimezone] = useState("");
   const [businessHoursLessonReset, setBusinessHoursLessonReset] = useState(0);
   const [avatarFileName, setAvatarFileName] = useState("");
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
@@ -3800,7 +3800,7 @@ export default function DashboardLayout() {
     });
     setTone("Friendly");
     setBusinessHours("");
-    setTimezone("East Africa Time (EAT)");
+    setTimezone("");
     setBusinessHoursLessonReset((current) => current + 1);
     setAvatarFileName("");
     setLogoPreview(null);
