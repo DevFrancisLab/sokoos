@@ -542,6 +542,12 @@ const AI_TRAINING_LESSON_ACTIONS_BETWEEN =
   "mt-auto flex items-center justify-between gap-3 border-t border-[#EEF2F6] bg-white pt-5";
 const AI_TRAINING_SAVE_BUTTON =
   "inline-flex items-center justify-center rounded-lg border border-[#E5E7EB] bg-white px-4 py-2.5 text-sm font-semibold text-[#111827] transition hover:bg-[#F8FAFB] disabled:cursor-not-allowed disabled:opacity-45";
+
+const uniqueCompletedLessonCount = (steps: number[], total: number) =>
+  new Set(steps.filter((step) => Number.isInteger(step) && step >= 0 && step < total)).size;
+
+const lessonCompletionPercent = (completedCount: number, total: number) =>
+  total > 0 ? Math.min(100, Math.round((completedCount / total) * 100)) : 0;
 // Typography tokens for consistent hierarchy
 const PANEL_TITLE = "text-[24px] font-semibold text-[#111827]";
 const SECTION_HEADING =
@@ -1412,6 +1418,9 @@ type TrainingLessonTabsApi = {
   handleSaveChanges: () => void | Promise<void>;
   setActiveWorkspaceSection: (section: TrainingWorkspaceSection) => void;
   focusSalesLesson: (step: number) => void;
+  focusSkillsLesson: (step: number) => void;
+  completeSalesLesson: (step: number) => void;
+  completeSkillsLesson: (step: number) => void;
 };
 
 export default function DashboardLayout() {
@@ -1839,6 +1848,10 @@ export default function DashboardLayout() {
   const [completedIdentitySteps, setCompletedIdentitySteps] = useState<number[]>([]);
   const [activeIntegrationStep, setActiveIntegrationStep] = useState(0);
   const [completedIntegrationSteps, setCompletedIntegrationSteps] = useState<number[]>([]);
+  const [completedSalesSteps, setCompletedSalesSteps] = useState<number[]>([]);
+  const [completedSkillsSteps, setCompletedSkillsSteps] = useState<number[]>([]);
+  const [completedPolicySteps, setCompletedPolicySteps] = useState<number[]>([]);
+  const [completedCatalogueSteps, setCompletedCatalogueSteps] = useState<number[]>([]);
   type KnowledgeDocument = {
     id: string;
     name: string;
@@ -1929,6 +1942,25 @@ export default function DashboardLayout() {
   const previewMessagesRef = useRef<HTMLDivElement>(null);
   const identityLessons = ["Business Identity", "Brand Voice", "Greetings", "Languages", "Business Hours", "Locations", "Review"];
   const identityLessonCompletionNames = ["Business Identity", "Brand Voice", "Greetings", "Languages", "Business Hours", "Locations", "Review"];
+  const catalogueLessons = ["Products", "Pricing"];
+  const salesLessons = [
+    "Sales Objectives",
+    "Customer Qualification",
+    "Sales Strategy",
+    "Pricing & Negotiation",
+    "Human Handoff",
+    "Closing & Follow-up",
+    "Review",
+  ];
+  const skillsLessons = [
+    "Communication",
+    "Leads & Sales",
+    "Bookings",
+    "Orders & Payments",
+    "Customer Support",
+    "Follow-up",
+    "Review",
+  ];
   const integrationLessonSequence = ["Channels", "Payments", "Business Tools", "Communication", "Data & Sync", "Review"] as const;
   const knowledgeLessons = ["Knowledge Sources", "Review"];
   const knowledgeSourceLessonTitles = {
@@ -1945,9 +1977,11 @@ export default function DashboardLayout() {
   const knowledgeLessonCompletionNames = knowledgeLessonSequence;
   const sanitizeStepIndices = (steps: unknown[], maxLength: number) =>
     Array.isArray(steps)
-      ? steps
-          .filter((step) => typeof step === "number" && step >= 0 && step < maxLength)
-          .map((step) => Number(step))
+      ? [...new Set(
+          steps
+            .filter((step) => typeof step === "number" && Number.isInteger(step) && step >= 0 && step < maxLength)
+            .map((step) => Number(step)),
+        )]
           .sort((a, b) => a - b)
       : [];
 
@@ -2553,10 +2587,11 @@ export default function DashboardLayout() {
   const [activeProductStep, setActiveProductStep] = useState(0);
   const productStepRefs = useRef<(HTMLElement | null)[]>([]);
   const focusProductStep = (index: number) => {
-    const id = productSectionIds[index];
+    const nextStep = Math.min(Math.max(index, 0), catalogueLessons.length - 1);
+    setActiveProductStep(nextStep);
+    const id = productSectionIds[nextStep];
     const el = document.getElementById(id);
     if (!el) return;
-    setActiveProductStep(index);
     el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
   useEffect(() => {
@@ -2607,9 +2642,6 @@ export default function DashboardLayout() {
 
   const catalogProductCount = catalogProducts.filter((item) => item.type === "Product").length;
   const catalogServiceCount = catalogProducts.filter((item) => item.type === "Service").length;
-
-  const productLessonCompleted = productSteps.filter((step) => step.done).length;
-  const productLessonProgress = Math.round((productLessonCompleted / productSteps.length) * 100);
 
   const productCompletionMounted = useRef(false);
 
@@ -3936,47 +3968,60 @@ export default function DashboardLayout() {
     (businessInfo.whatsapp || "").replace(/\D/g, "").length >= 7,
   );
 
-  const identityWorkspacePercent = Math.min(100, Math.round(
-    (completedIdentitySteps.filter((step) => step >= 0 && step < identityLessons.length).length / Math.max(1, identityLessons.length)) * 100,
-  ));
-  const knowledgeLessonPercent = Math.min(100, Math.round(
-    (completedKnowledgeSteps.filter((step) => step >= 0 && step < knowledgeLessonSequence.length).length / Math.max(1, knowledgeLessonSequence.length)) * 100,
-  ));
-  const knowledgeDataSignals = [
-    Boolean(knowledgeTraining.companyInformation.vision.trim() && knowledgeTraining.companyInformation.mission.trim()),
-    faqItems.some((faq) => faq.question.trim() && faq.answer.trim()),
-    knowledgeDocuments.length > 0,
-    isValidWebsiteUrl(knowledgeTraining.website.websiteUrl) && knowledgeTraining.website.status !== "not_connected",
-  ];
-  const knowledgeDataPercent = Math.min(100, Math.round(
-    (knowledgeDataSignals.filter(Boolean).length / Math.max(1, knowledgeDataSignals.length)) * 100,
-  ));
-  const knowledgeWorkspacePercent = Math.max(knowledgeLessonPercent, knowledgeDataPercent);
-  const connectedIntegrationCount = getAllIntegrationItems().filter((item) => getIntegrationStatus(item.id) === "connected").length;
-  const integrationConnectionPercent = Math.min(100, Math.round(
-    (connectedIntegrationCount / Math.max(1, getAllIntegrationItems().length)) * 100,
-  ));
-  const integrationLessonPercent = Math.min(100, Math.round(
-    (completedIntegrationSteps.filter((step) => step >= 0 && step < integrationLessonSequence.length).length / Math.max(1, integrationLessonSequence.length)) * 100,
-  ));
-  const configuredCustomerPolicies = customerPolicies.filter((policy) => policy.name.trim() && policy.description.trim());
-  const policiesWorkspacePercent = customerPolicies.length === 0
-    ? 0
-    : Math.min(100, Math.round((configuredCustomerPolicies.length / customerPolicies.length) * 100));
+  const identityCompletedCount = uniqueCompletedLessonCount(completedIdentitySteps, identityLessons.length);
+  const knowledgeCompletedCount = uniqueCompletedLessonCount(completedKnowledgeSteps, knowledgeLessonSequence.length);
+  const catalogueCompletedCount = uniqueCompletedLessonCount(completedCatalogueSteps, catalogueLessons.length);
+  const salesCompletedCount = uniqueCompletedLessonCount(completedSalesSteps, salesLessons.length);
+  const policiesCompletedCount = uniqueCompletedLessonCount(completedPolicySteps, policySections.length);
+  const skillsCompletedCount = uniqueCompletedLessonCount(completedSkillsSteps, skillsLessons.length);
+  const integrationsCompletedCount = uniqueCompletedLessonCount(completedIntegrationSteps, integrationLessonSequence.length);
+  const identityWorkspacePercent = lessonCompletionPercent(identityCompletedCount, identityLessons.length);
+  const knowledgeWorkspacePercent = lessonCompletionPercent(knowledgeCompletedCount, knowledgeLessonSequence.length);
+  const catalogueWorkspacePercent = lessonCompletionPercent(catalogueCompletedCount, catalogueLessons.length);
+  const salesWorkspacePercent = lessonCompletionPercent(salesCompletedCount, salesLessons.length);
+  const policiesWorkspacePercent = lessonCompletionPercent(policiesCompletedCount, policySections.length);
+  const skillsWorkspacePercent = lessonCompletionPercent(skillsCompletedCount, skillsLessons.length);
+  const integrationLessonPercent = lessonCompletionPercent(integrationsCompletedCount, integrationLessonSequence.length);
 
   const trainingCompletedSteps = [...new Set(
     completedIdentitySteps.filter((step) => step >= 0 && step < identityLessons.length),
   )];
   const minutesRemaining = Math.max(0, 6 - trainingCompletedSteps.length);
-  const completedTrainingLessonCount = completedIdentitySteps.length + completedKnowledgeSteps.length;
-  const totalTrainingLessonCount = identityLessons.length + knowledgeLessonSequence.length;
-  const overallTrainingPercent = Math.round((completedTrainingLessonCount / Math.max(1, totalTrainingLessonCount)) * 100);
-  const overallTrainingComplete = completedTrainingLessonCount >= totalTrainingLessonCount;
-  const currentTrainingLessonLabel = activeWorkspaceSection === "Knowledge Hub"
-    ? knowledgeLessonSequence[activeKnowledgeStep] ?? knowledgeLessonSequence[0]
-    : identityLessons[activeIdentityStep] ?? identityLessons[0];
-  const currentTrainingLessonCount = activeWorkspaceSection === "Knowledge Hub" ? knowledgeLessonSequence.length : identityLessons.length;
-  const currentTrainingStepNumber = activeWorkspaceSection === "Knowledge Hub" ? activeKnowledgeStep + 1 : activeIdentityStep + 1;
+  const completedTrainingLessonCount =
+    identityCompletedCount +
+    knowledgeCompletedCount +
+    catalogueCompletedCount +
+    salesCompletedCount +
+    policiesCompletedCount +
+    skillsCompletedCount +
+    integrationsCompletedCount;
+  const totalTrainingLessonCount =
+    identityLessons.length +
+    knowledgeLessonSequence.length +
+    catalogueLessons.length +
+    salesLessons.length +
+    policySections.length +
+    skillsLessons.length +
+    integrationLessonSequence.length;
+  const overallTrainingPercent = lessonCompletionPercent(completedTrainingLessonCount, totalTrainingLessonCount);
+  const overallTrainingComplete = totalTrainingLessonCount > 0 && completedTrainingLessonCount >= totalTrainingLessonCount;
+  const currentWorkspaceLessonMeta =
+    activeWorkspaceSection === "Knowledge Hub"
+      ? { count: knowledgeLessonSequence.length, step: activeKnowledgeStep, label: knowledgeLessonSequence[activeKnowledgeStep] ?? knowledgeLessonSequence[0] }
+      : activeWorkspaceSection === "Catalogue"
+        ? { count: catalogueLessons.length, step: activeProductStep, label: catalogueLessons[activeProductStep] ?? catalogueLessons[0] }
+        : activeWorkspaceSection === "Sales Playbooks"
+          ? { count: salesLessons.length, step: activeSalesStep, label: salesLessons[activeSalesStep] ?? salesLessons[0] }
+          : activeWorkspaceSection === "Policies"
+            ? { count: policySections.length, step: activePolicyStep, label: policySections[activePolicyStep]?.title ?? policySections[0]?.title ?? "Policies" }
+            : activeWorkspaceSection === "Skills"
+              ? { count: skillsLessons.length, step: activeSkillsStep, label: skillsLessons[activeSkillsStep] ?? skillsLessons[0] }
+              : activeWorkspaceSection === "Integrations"
+                ? { count: integrationLessonSequence.length, step: activeIntegrationStep, label: integrationLessonSequence[activeIntegrationStep] ?? integrationLessonSequence[0] }
+                : { count: identityLessons.length, step: activeIdentityStep, label: identityLessons[activeIdentityStep] ?? identityLessons[0] };
+  const currentTrainingLessonLabel = currentWorkspaceLessonMeta.label;
+  const currentTrainingLessonCount = currentWorkspaceLessonMeta.count;
+  const currentTrainingStepNumber = currentWorkspaceLessonMeta.step + 1;
   const aiReadinessLabel = aiConfigurationReadiness?.is_configured ? "Configured" : "Needs setup";
   const catalogNotSetUp = !catalogLoading && !catalogError && catalogProducts.length === 0;
   const aiReadinessStatus = aiConfigurationLoading
@@ -4006,11 +4051,11 @@ export default function DashboardLayout() {
   const workspaceProgressBySection = {
     Identity: identityWorkspacePercent,
     "Knowledge Hub": knowledgeWorkspacePercent,
-    Catalogue: productLessonProgress,
-    "Sales Playbooks": playbooks.length > 0 ? 100 : 0,
+    Catalogue: catalogueWorkspacePercent,
+    "Sales Playbooks": salesWorkspacePercent,
     Policies: policiesWorkspacePercent,
-    Skills: 0,
-    Integrations: Math.max(integrationLessonPercent, integrationConnectionPercent),
+    Skills: skillsWorkspacePercent,
+    Integrations: integrationLessonPercent,
   };
   const workspaceNavigatorItems = [
     { title: "Identity", description: "Who your AI represents", section: "Identity" as const, Icon: User, complete: workspaceProgressBySection.Identity >= 100, percent: workspaceProgressBySection.Identity, unlocked: true },
@@ -4057,6 +4102,16 @@ export default function DashboardLayout() {
           selectedKnowledgeSources?: unknown[];
           completedKnowledge?: number[];
           activeKnowledgeStep?: number;
+          completedCatalogue?: number[];
+          activeProductStep?: number;
+          completedSales?: number[];
+          activeSalesStep?: number;
+          completedPolicies?: number[];
+          activePolicyStep?: number;
+          completedSkills?: number[];
+          activeSkillsStep?: number;
+          completedIntegrations?: number[];
+          activeIntegrationStep?: number;
         };
         if (isDevMode) {
           window.localStorage.removeItem("sokoos-ai-training-progress-v2");
@@ -4070,6 +4125,16 @@ export default function DashboardLayout() {
           const loadedKnowledgeSequenceLength = 1 + loadedSelectedKnowledgeSources.length + 1;
           if (Array.isArray(progress.completedKnowledge)) setCompletedKnowledgeSteps(sanitizeStepIndices(progress.completedKnowledge, loadedKnowledgeSequenceLength));
           if (typeof progress.activeKnowledgeStep === "number") setActiveKnowledgeStep(Math.min(Math.max(progress.activeKnowledgeStep, 0), loadedKnowledgeSequenceLength - 1));
+          if (Array.isArray(progress.completedCatalogue)) setCompletedCatalogueSteps(sanitizeStepIndices(progress.completedCatalogue, catalogueLessons.length));
+          if (typeof progress.activeProductStep === "number") setActiveProductStep(Math.min(Math.max(progress.activeProductStep, 0), catalogueLessons.length - 1));
+          if (Array.isArray(progress.completedSales)) setCompletedSalesSteps(sanitizeStepIndices(progress.completedSales, salesLessons.length));
+          if (typeof progress.activeSalesStep === "number") setActiveSalesStep(Math.min(Math.max(progress.activeSalesStep, 0), salesLessons.length - 1));
+          if (Array.isArray(progress.completedPolicies)) setCompletedPolicySteps(sanitizeStepIndices(progress.completedPolicies, 7));
+          if (typeof progress.activePolicyStep === "number") setActivePolicyStep(Math.min(Math.max(progress.activePolicyStep, 0), 6));
+          if (Array.isArray(progress.completedSkills)) setCompletedSkillsSteps(sanitizeStepIndices(progress.completedSkills, skillsLessons.length));
+          if (typeof progress.activeSkillsStep === "number") setActiveSkillsStep(Math.min(Math.max(progress.activeSkillsStep, 0), skillsLessons.length - 1));
+          if (Array.isArray(progress.completedIntegrations)) setCompletedIntegrationSteps(sanitizeStepIndices(progress.completedIntegrations, integrationLessonSequence.length));
+          if (typeof progress.activeIntegrationStep === "number") setActiveIntegrationStep(Math.min(Math.max(progress.activeIntegrationStep, 0), integrationLessonSequence.length - 1));
           if (progress.launched) setAiEmployeeLaunched(true);
           if (typeof progress.scrollY === "number") window.requestAnimationFrame(() => window.scrollTo({ top: progress.scrollY, behavior: "auto" }));
         }
@@ -4087,10 +4152,20 @@ export default function DashboardLayout() {
       activeKnowledgeStep,
       completedKnowledge: completedKnowledgeSteps,
       selectedKnowledgeSources,
+      activeProductStep,
+      completedCatalogue: completedCatalogueSteps,
+      activeSalesStep,
+      completedSales: completedSalesSteps,
+      activePolicyStep,
+      completedPolicies: completedPolicySteps,
+      activeSkillsStep,
+      completedSkills: completedSkillsSteps,
+      activeIntegrationStep,
+      completedIntegrations: completedIntegrationSteps,
       launched: aiEmployeeLaunched,
       scrollY: window.scrollY,
     }));
-  }, [activeIdentityStep, completedIdentitySteps, activeKnowledgeStep, completedKnowledgeSteps, selectedKnowledgeSources, aiEmployeeLaunched, onboardingRestored]);
+  }, [activeIdentityStep, completedIdentitySteps, activeKnowledgeStep, completedKnowledgeSteps, selectedKnowledgeSources, activeProductStep, completedCatalogueSteps, activeSalesStep, completedSalesSteps, activePolicyStep, completedPolicySteps, activeSkillsStep, completedSkillsSteps, activeIntegrationStep, completedIntegrationSteps, aiEmployeeLaunched, onboardingRestored]);
   const [businessProfile, setBusinessProfile] = useState({
     name: "",
     industry: "",
@@ -4627,25 +4702,6 @@ export default function DashboardLayout() {
     );
   };
 
-  const salesLessons = [
-    'Sales Objectives',
-    'Customer Qualification',
-    'Sales Strategy',
-    'Pricing & Negotiation',
-    'Human Handoff',
-    'Closing & Follow-up',
-    'Review',
-  ];
-  const skillsLessons = [
-    'Communication',
-    'Leads & Sales',
-    'Bookings',
-    'Orders & Payments',
-    'Customer Support',
-    'Follow-up',
-    'Review',
-  ];
-
   const focusSalesLesson = (step: number) => {
     setActiveSalesStep(step);
     window.setTimeout(() => {
@@ -4667,6 +4723,42 @@ export default function DashboardLayout() {
     }, 0);
   };
 
+  const completeSalesLesson = (step: number) => {
+    setCompletedSalesSteps((current) => (current.includes(step) ? current : [...current, step]));
+    setCompletionToast(`${salesLessons[step] ?? "Lesson"} complete — your sales playbooks training path is moving forward.`);
+    window.setTimeout(() => setCompletionToast(null), 2200);
+    if (step < salesLessons.length - 1) {
+      window.setTimeout(() => focusSalesLesson(step + 1), 500);
+    }
+  };
+
+  const completeSkillsLesson = (step: number) => {
+    setCompletedSkillsSteps((current) => (current.includes(step) ? current : [...current, step]));
+    setCompletionToast(`${skillsLessons[step] ?? "Lesson"} complete — your skills training path is moving forward.`);
+    window.setTimeout(() => setCompletionToast(null), 2200);
+    if (step < skillsLessons.length - 1) {
+      window.setTimeout(() => focusSkillsLesson(step + 1), 500);
+    }
+  };
+
+  const completePolicyLesson = (step: number) => {
+    setCompletedPolicySteps((current) => (current.includes(step) ? current : [...current, step]));
+    setCompletionToast(`${policySections[step]?.title ?? "Lesson"} complete — your policies training path is moving forward.`);
+    window.setTimeout(() => setCompletionToast(null), 2200);
+    if (step < policySections.length - 1) {
+      window.setTimeout(() => focusPolicyLesson(step + 1), 500);
+    }
+  };
+
+  const completeCatalogueLesson = (step: number) => {
+    setCompletedCatalogueSteps((current) => (current.includes(step) ? current : [...current, step]));
+    setCompletionToast(`${catalogueLessons[step] ?? "Lesson"} complete — your catalogue training path is moving forward.`);
+    window.setTimeout(() => setCompletionToast(null), 2200);
+    if (step < catalogueLessons.length - 1) {
+      window.setTimeout(() => focusProductStep(step + 1), 500);
+    }
+  };
+
   trainingLessonTabsApiRef.current = {
     activeSkillsStep,
     activeSalesStep,
@@ -4675,6 +4767,9 @@ export default function DashboardLayout() {
     handleSaveChanges,
     setActiveWorkspaceSection,
     focusSalesLesson,
+    focusSkillsLesson,
+    completeSalesLesson,
+    completeSkillsLesson,
   };
 
   if (!skillsLessonTabsComponentRef.current) {
@@ -4685,6 +4780,8 @@ export default function DashboardLayout() {
         getIntegrationName,
         handleSaveChanges,
         setActiveWorkspaceSection,
+        focusSkillsLesson,
+        completeSkillsLesson,
       } = trainingLessonTabsApiRef.current!;
     type SkillCapability = {
       id: string;
@@ -5269,12 +5366,37 @@ export default function DashboardLayout() {
               );
             })}
 
-            <div className="mt-4 flex justify-end gap-3">
-              <button type="button" onClick={() => { void handleSaveChanges(); }} className={AI_TRAINING_SAVE_BUTTON}>Save</button>
-              <button type="button" onClick={() => { handleSaveChanges(); setActiveWorkspaceSection('Policies'); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue</button>
-            </div>
           </div>
         )}
+
+        <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
+          <button
+            type="button"
+            onClick={() => focusSkillsLesson(activeSkillsStep - 1)}
+            disabled={activeSkillsStep === 0}
+            className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827] disabled:cursor-not-allowed disabled:opacity-45"
+          >
+            Back
+          </button>
+          <div className="flex items-center gap-3">
+            {activeSkillsStep === 6 ? (
+              <button type="button" onClick={() => { void handleSaveChanges(); }} className={AI_TRAINING_SAVE_BUTTON}>Save</button>
+            ) : null}
+            <button
+              type="button"
+              onClick={() => {
+                completeSkillsLesson(activeSkillsStep);
+                if (activeSkillsStep >= 6) {
+                  handleSaveChanges();
+                  setActiveWorkspaceSection("Integrations");
+                }
+              }}
+              className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]"
+            >
+              Save & Continue <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
       </section>
     );
     };
@@ -5283,7 +5405,7 @@ export default function DashboardLayout() {
 
   if (!salesLessonTabsComponentRef.current) {
     salesLessonTabsComponentRef.current = function SalesLessonTabs() {
-      const { activeSalesStep, handleSaveChanges, setActiveWorkspaceSection, focusSalesLesson } = trainingLessonTabsApiRef.current!;
+      const { activeSalesStep, handleSaveChanges, setActiveWorkspaceSection, focusSalesLesson, completeSalesLesson } = trainingLessonTabsApiRef.current!;
     const initialObjectives = [
       'Sell products or services',
       'Generate qualified leads',
@@ -5630,12 +5752,11 @@ export default function DashboardLayout() {
             <button
               type="button"
               onClick={() => {
-                if (activeSalesStep < 6) {
-                  focusSalesLesson(activeSalesStep + 1);
-                  return;
+                completeSalesLesson(activeSalesStep);
+                if (activeSalesStep >= 6) {
+                  handleSaveChanges();
+                  setActiveWorkspaceSection("Policies");
                 }
-                handleSaveChanges();
-                setActiveWorkspaceSection("Policies");
               }}
               className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]"
             >
@@ -6261,22 +6382,28 @@ export default function DashboardLayout() {
                       : activeWorkspaceSection === "Sales Playbooks"
                         ? salesLessons.map((title, index) => ({
                             title,
-                            completed: false,
+                            completed: completedSalesSteps.includes(index),
                             current: activeSalesStep === index,
                           }))
                         : activeWorkspaceSection === "Skills"
                           ? skillsLessons.map((title, index) => ({
                               title,
-                              completed: false,
+                              completed: completedSkillsSteps.includes(index),
                               current: activeSkillsStep === index,
                             }))
                           : activeWorkspaceSection === "Policies"
                             ? policySections.map((section, index) => ({
                                 title: section.title,
-                                completed: false,
+                                completed: completedPolicySteps.includes(index),
                                 current: activePolicyStep === index,
                               }))
-                            : []
+                            : activeWorkspaceSection === "Catalogue"
+                              ? catalogueLessons.map((title, index) => ({
+                                  title,
+                                  completed: completedCatalogueSteps.includes(index),
+                                  current: activeProductStep === index,
+                                }))
+                              : []
               }
               onSelectLesson={(index) => {
                 if (activeWorkspaceSection === "Knowledge Hub") {
@@ -6299,11 +6426,15 @@ export default function DashboardLayout() {
                   focusPolicyLesson(index);
                   return;
                 }
+                if (activeWorkspaceSection === "Catalogue") {
+                  focusProductStep(index);
+                  return;
+                }
                 focusIdentityLesson(index);
               }}
             >
                 <div className="space-y-5">
-                  {activeWorkspaceSection !== "Identity" && activeWorkspaceSection !== "Knowledge Hub" && activeWorkspaceSection !== "Integrations" && activeWorkspaceSection !== "Sales Playbooks" && activeWorkspaceSection !== "Skills" && activeWorkspaceSection !== "Policies" ? (
+                  {activeWorkspaceSection !== "Identity" && activeWorkspaceSection !== "Knowledge Hub" && activeWorkspaceSection !== "Integrations" && activeWorkspaceSection !== "Sales Playbooks" && activeWorkspaceSection !== "Skills" && activeWorkspaceSection !== "Policies" && activeWorkspaceSection !== "Catalogue" ? (
                   <div className="max-w-3xl">
                     <p className="text-[12px] font-semibold uppercase tracking-[0.2em] text-[#6B7280]">
                       {activeWorkspaceSection === "Catalogue"
@@ -7386,6 +7517,35 @@ export default function DashboardLayout() {
                           </div>
                         </div>
 
+                        <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
+                          <button
+                            type="button"
+                            onClick={() => focusProductStep(activeProductStep - 1)}
+                            disabled={activeProductStep === 0}
+                            className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827] disabled:cursor-not-allowed disabled:opacity-45"
+                          >
+                            Back
+                          </button>
+                          <div className="flex items-center gap-3">
+                            {activeProductStep === catalogueLessons.length - 1 ? (
+                              <button type="button" onClick={() => { void handleSaveChanges(); }} className={AI_TRAINING_SAVE_BUTTON}>Save</button>
+                            ) : null}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                completeCatalogueLesson(activeProductStep);
+                                if (activeProductStep >= catalogueLessons.length - 1) {
+                                  handleSaveChanges();
+                                  setActiveWorkspaceSection("Sales Playbooks");
+                                }
+                              }}
+                              className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]"
+                            >
+                              Save & Continue <ChevronRight className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </div>
+
                         {addItemChoiceOpen ? (
                           <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0F172A]/30 p-4" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setAddItemChoiceOpen(false); }}>
                             <section role="dialog" aria-modal="true" aria-labelledby="catalogue-item-type-title" className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
@@ -8160,7 +8320,7 @@ export default function DashboardLayout() {
                                   {index === policySections.length - 1 ? (
                                     <button type="button" onClick={() => { void handleSaveChanges(); }} disabled={saveState === "saving"} className={AI_TRAINING_SAVE_BUTTON}>Save</button>
                                   ) : null}
-                                  <button type="button" onClick={() => { if (index < policySections.length - 1) focusPolicyLesson(index + 1); else { handleSaveChanges(); setActiveWorkspaceSection("Skills"); } }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                                  <button type="button" onClick={() => { completePolicyLesson(index); if (index >= policySections.length - 1) { handleSaveChanges(); setActiveWorkspaceSection("Skills"); } }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
                                 </div>
                               </div>
                             </section>

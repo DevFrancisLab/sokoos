@@ -273,7 +273,7 @@ export default function TrainingWorkspace({
                   <p>
                     <span className="font-semibold text-[#111827]">{activeItem?.title ?? activeWorkspaceSection}</span>
                     <span className="mx-1.5 text-[#D1D5DB]">·</span>
-                    {lessonNumber} of {totalLessons} lessons
+                    {completedLessonCount} of {totalLessons} lessons complete
                   </p>
                   <span className="tabular-nums text-[#166534]">{Math.max(0, Math.min(100, lessonPercent))}%</span>
                 </div>
