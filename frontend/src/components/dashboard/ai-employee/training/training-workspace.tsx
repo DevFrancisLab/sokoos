@@ -16,6 +16,8 @@ export type TrainingWorkspaceItem = {
   Icon: LucideIcon;
   complete: boolean;
   percent: number;
+  completedLessons: number;
+  totalLessons: number;
   unlocked: boolean;
 };
 
@@ -68,9 +70,38 @@ const workspaceStatus = (
   trainingFinished: boolean,
 ) => {
   if (item.complete) return trainingFinished ? "Configured" : "Complete";
-  if (item.percent > 0) return "In progress";
+  if (item.completedLessons > 0 || item.percent > 0) return "In progress";
   return "Not started";
 };
+
+function TrainingProgressBar({
+  percent,
+  complete = false,
+  size = "md",
+}: {
+  percent: number;
+  complete?: boolean;
+  size?: "md" | "sm";
+}) {
+  const width = Math.max(0, Math.min(100, percent));
+  return (
+    <div
+      className={cn(
+        "overflow-hidden rounded-full bg-[#EEF2F6]",
+        size === "sm" ? "h-1" : "h-2",
+      )}
+      aria-hidden="true"
+    >
+      <div
+        className={cn(
+          "h-full rounded-full transition-all duration-300",
+          complete ? "bg-[#22C55E]" : "bg-[#86EFAC]",
+        )}
+        style={{ width: `${width}%` }}
+      />
+    </div>
+  );
+}
 
 function LessonStatusMark({
   lesson,
@@ -211,12 +242,40 @@ export default function TrainingWorkspace({
     totalWorkspaceCount > 0
       ? Math.round((completedWorkspaceCount / totalWorkspaceCount) * 100)
       : 0;
-  const currentSetupWorkspace =
-    workspaceNavigatorItems.find((item) => !item.complete) ??
-    workspaceNavigatorItems[workspaceNavigatorItems.length - 1];
   const allWorkspacesComplete =
     totalWorkspaceCount > 0 && completedWorkspaceCount >= totalWorkspaceCount;
   const trainingFinished = headerCta.id === "manage";
+  const progressLoading = headerCta.id === "loading";
+  const headerWorkspace = dialogOpen
+    ? activeItem
+    : (workspaceNavigatorItems.find((item) => !item.complete) ??
+      workspaceNavigatorItems[workspaceNavigatorItems.length - 1]);
+  const headerWorkspaceLessonCount =
+    dialogOpen && lessonCount > 0
+      ? lessonCount
+      : (headerWorkspace?.totalLessons ?? 0);
+  const headerWorkspaceCompletedLessons =
+    dialogOpen && lessonCount > 0
+      ? completedLessonCount
+      : (headerWorkspace?.completedLessons ?? 0);
+  const headerWorkspaceLessonPercent =
+    headerWorkspaceLessonCount > 0
+      ? Math.round(
+          (headerWorkspaceCompletedLessons / headerWorkspaceLessonCount) * 100,
+        )
+      : 0;
+  const headerWorkspaceLessonsComplete =
+    headerWorkspaceLessonCount > 0 &&
+    headerWorkspaceCompletedLessons >= headerWorkspaceLessonCount;
+  const hasStartedWorkspaceProgress = workspaceNavigatorItems.some(
+    (item) => item.completedLessons > 0 || item.percent > 0,
+  );
+  const showCurrentWorkspaceProgress =
+    !trainingFinished &&
+    !progressLoading &&
+    Boolean(headerWorkspace) &&
+    headerWorkspaceLessonCount > 0 &&
+    (dialogOpen || hasStartedWorkspaceProgress);
   const showSecondaryReview =
     headerCta.id !== "review-finish" &&
     headerCta.id !== "manage" &&
@@ -263,35 +322,56 @@ export default function TrainingWorkspace({
               {trainingFinished ? "AI Employee ready" : "Training progress"}
             </p>
             <p className="mt-1 text-sm font-semibold text-[#111827]">
-              {`${completedWorkspaceCount} of ${totalWorkspaceCount} workspaces complete · ${allWorkspacesComplete ? 100 : workspaceProgressPercent}% complete`}
+              {progressLoading
+                ? "Loading training progress…"
+                : `${completedWorkspaceCount} of ${totalWorkspaceCount} workspaces complete · ${allWorkspacesComplete ? 100 : workspaceProgressPercent}% complete`}
             </p>
-            <div
-              className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]"
-              aria-hidden="true"
-            >
-              <div
-                className={`h-full rounded-full transition-all duration-300 ${allWorkspacesComplete || overallTrainingComplete ? "bg-[#22C55E]" : "bg-[#86EFAC]"}`}
-                style={{
-                  width: `${Math.max(0, Math.min(100, allWorkspacesComplete ? 100 : workspaceProgressPercent))}%`,
-                }}
-              />
-            </div>
+            {progressLoading ? null : (
+              <div className="mt-3">
+                <TrainingProgressBar
+                  percent={
+                    allWorkspacesComplete ? 100 : workspaceProgressPercent
+                  }
+                  complete={allWorkspacesComplete || overallTrainingComplete}
+                  size="md"
+                />
+              </div>
+            )}
 
             {trainingFinished ? (
               <p className="mt-4 text-sm leading-6 text-[#64748B]">
                 Training complete. You can continue updating your AI Employee
                 whenever your business changes.
               </p>
-            ) : (
-              <>
-                <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#64748B]">
+            ) : showCurrentWorkspaceProgress && headerWorkspace ? (
+              <div className="mt-4">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">
                   Current workspace
                 </p>
-                <p className="mt-1 text-base font-semibold text-[#111827]">
-                  {currentSetupWorkspace?.title ?? "Identity"}
+                <p className="mt-1 text-sm font-semibold text-[#111827]">
+                  {headerWorkspace.title}
                 </p>
-              </>
-            )}
+                <p className="mt-0.5 text-xs font-medium text-[#64748B]">
+                  {headerWorkspaceCompletedLessons} of{" "}
+                  {headerWorkspaceLessonCount} lessons complete ·{" "}
+                  {headerWorkspaceLessonsComplete
+                    ? 100
+                    : headerWorkspaceLessonPercent}
+                  % complete
+                </p>
+                <div className="mt-2">
+                  <TrainingProgressBar
+                    percent={
+                      headerWorkspaceLessonsComplete
+                        ? 100
+                        : headerWorkspaceLessonPercent
+                    }
+                    complete={headerWorkspaceLessonsComplete}
+                    size="sm"
+                  />
+                </div>
+              </div>
+            ) : null}
 
             <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <button
@@ -371,7 +451,7 @@ export default function TrainingWorkspace({
                     )}
                   </span>
                   <span
-                    className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${item.complete ? "bg-[#ECFDF5] text-[#166534]" : item.percent > 0 ? "bg-[#FFFBEB] text-[#B45309]" : "bg-[#F8FAFC] text-[#64748B]"}`}
+                    className={`rounded-full px-2.5 py-1 text-[11px] font-semibold ${item.complete ? "bg-[#ECFDF5] text-[#166534]" : item.completedLessons > 0 || item.percent > 0 ? "bg-[#FFFBEB] text-[#B45309]" : "bg-[#F8FAFC] text-[#64748B]"}`}
                   >
                     {status}
                   </span>
@@ -382,17 +462,20 @@ export default function TrainingWorkspace({
                 <p className="mt-1 text-sm leading-6 text-[#64748B]">
                   {item.description}
                 </p>
-                <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]">
-                  <div
-                    className={`h-full rounded-full transition-all duration-500 ${item.complete ? "bg-[#22C55E]" : "bg-[#86EFAC]"}`}
-                    style={{
-                      width: `${Math.max(0, Math.min(100, item.percent))}%`,
-                    }}
+                <div className="mt-4">
+                  <TrainingProgressBar
+                    percent={item.percent}
+                    complete={item.complete}
+                    size="sm"
                   />
                 </div>
-                <div className="mt-2 flex items-center justify-between text-xs font-semibold text-[#64748B]">
-                  <span>{item.percent}%</span>
-                  <span className="text-[#166534]">{actionLabel}</span>
+                <div className="mt-2 flex items-center justify-between gap-2 text-xs font-semibold text-[#64748B]">
+                  <span className="min-w-0 truncate">
+                    {item.totalLessons > 0
+                      ? `${item.completedLessons} of ${item.totalLessons} lessons`
+                      : `${item.percent}%`}
+                  </span>
+                  <span className="shrink-0 text-[#166534]">{actionLabel}</span>
                 </div>
               </button>
             );
@@ -444,15 +527,11 @@ export default function TrainingWorkspace({
                     {Math.max(0, Math.min(100, lessonPercent))}%
                   </span>
                 </div>
-                <div
-                  className="mt-2 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]"
-                  aria-hidden="true"
-                >
-                  <div
-                    className={`h-full rounded-full transition-all duration-300 ${lessonPercent >= 100 ? "bg-[#22C55E]" : "bg-[#86EFAC]"}`}
-                    style={{
-                      width: `${Math.max(0, Math.min(100, lessonPercent))}%`,
-                    }}
+                <div className="mt-2">
+                  <TrainingProgressBar
+                    percent={lessonPercent}
+                    complete={lessonPercent >= 100}
+                    size="sm"
                   />
                 </div>
               </div>
@@ -462,12 +541,11 @@ export default function TrainingWorkspace({
                   <span>{workspaceStatus(activeItem, trainingFinished)}</span>
                   <span className="text-[#166534]">{activeItem.percent}%</span>
                 </div>
-                <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]">
-                  <div
-                    className={`h-full rounded-full ${activeItem.complete ? "bg-[#22C55E]" : "bg-[#86EFAC]"}`}
-                    style={{
-                      width: `${Math.max(0, Math.min(100, activeItem.percent))}%`,
-                    }}
+                <div className="mt-2">
+                  <TrainingProgressBar
+                    percent={activeItem.percent}
+                    complete={activeItem.complete}
+                    size="sm"
                   />
                 </div>
               </div>

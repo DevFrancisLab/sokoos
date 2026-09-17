@@ -4060,23 +4060,14 @@ export default function DashboardLayout() {
   const currentTrainingLessonLabel = currentWorkspaceLessonMeta.label;
   const currentTrainingLessonCount = currentWorkspaceLessonMeta.count;
   const currentTrainingStepNumber = currentWorkspaceLessonMeta.step + 1;
-  const workspaceProgressBySection = {
-    Identity: identityWorkspacePercent,
-    "Knowledge Hub": knowledgeWorkspacePercent,
-    Catalogue: catalogueWorkspacePercent,
-    "Sales Playbooks": salesWorkspacePercent,
-    Policies: policiesWorkspacePercent,
-    Skills: skillsWorkspacePercent,
-    Integrations: integrationLessonPercent,
-  };
   const workspaceNavigatorItems = [
-    { title: "Identity", description: "Who your AI represents", section: "Identity" as const, Icon: User, complete: workspaceProgressBySection.Identity >= 100, percent: workspaceProgressBySection.Identity, unlocked: true },
-    { title: "Knowledge", description: "What it can answer", section: "Knowledge Hub" as const, Icon: BookOpen, complete: workspaceProgressBySection["Knowledge Hub"] >= 100, percent: workspaceProgressBySection["Knowledge Hub"], unlocked: true },
-    { title: "Catalogue", description: "Offers it can recommend", section: "Catalogue" as const, Icon: Package, complete: workspaceProgressBySection.Catalogue >= 100, percent: workspaceProgressBySection.Catalogue, unlocked: true },
-    { title: "Sales Playbooks", description: "How it handles selling", section: "Sales Playbooks" as const, Icon: Target, complete: workspaceProgressBySection["Sales Playbooks"] >= 100, percent: workspaceProgressBySection["Sales Playbooks"], unlocked: true },
-    { title: "Policies", description: "Rules it follows", section: "Policies" as const, Icon: Shield, complete: workspaceProgressBySection.Policies >= 100, percent: workspaceProgressBySection.Policies, unlocked: true },
-    { title: "Skills", description: "Work it can do", section: "Skills" as const, Icon: Sparkles, complete: workspaceProgressBySection.Skills >= 100, percent: workspaceProgressBySection.Skills, unlocked: true },
-    { title: "Integrations", description: "Where it connects", section: "Integrations" as const, Icon: Plug, complete: workspaceProgressBySection.Integrations >= 100, percent: workspaceProgressBySection.Integrations, unlocked: true },
+    { title: "Identity", description: "Who your AI represents", section: "Identity" as const, Icon: User, complete: identityWorkspacePercent >= 100, percent: identityWorkspacePercent, completedLessons: identityCompletedCount, totalLessons: identityLessons.length, unlocked: true },
+    { title: "Knowledge", description: "What it can answer", section: "Knowledge Hub" as const, Icon: BookOpen, complete: knowledgeWorkspacePercent >= 100, percent: knowledgeWorkspacePercent, completedLessons: knowledgeCompletedCount, totalLessons: knowledgeLessonSequence.length, unlocked: true },
+    { title: "Catalogue", description: "Offers it can recommend", section: "Catalogue" as const, Icon: Package, complete: catalogueWorkspacePercent >= 100, percent: catalogueWorkspacePercent, completedLessons: catalogueCompletedCount, totalLessons: catalogueLessons.length, unlocked: true },
+    { title: "Sales Playbooks", description: "How it handles selling", section: "Sales Playbooks" as const, Icon: Target, complete: salesWorkspacePercent >= 100, percent: salesWorkspacePercent, completedLessons: salesCompletedCount, totalLessons: salesLessons.length, unlocked: true },
+    { title: "Policies", description: "Rules it follows", section: "Policies" as const, Icon: Shield, complete: policiesWorkspacePercent >= 100, percent: policiesWorkspacePercent, completedLessons: policiesCompletedCount, totalLessons: policySections.length, unlocked: true },
+    { title: "Skills", description: "Work it can do", section: "Skills" as const, Icon: Sparkles, complete: skillsWorkspacePercent >= 100, percent: skillsWorkspacePercent, completedLessons: skillsCompletedCount, totalLessons: skillsLessons.length, unlocked: true },
+    { title: "Integrations", description: "Where it connects", section: "Integrations" as const, Icon: Plug, complete: integrationLessonPercent >= 100, percent: integrationLessonPercent, completedLessons: integrationsCompletedCount, totalLessons: integrationLessonSequence.length, unlocked: true },
   ];
   const trainingHasStarted = workspaceNavigatorItems.some((item) => item.complete || item.percent > 0);
   const allTrainingWorkspacesComplete = workspaceNavigatorItems.length > 0 && workspaceNavigatorItems.every((item) => item.complete);
