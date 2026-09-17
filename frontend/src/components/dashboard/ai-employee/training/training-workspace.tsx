@@ -33,11 +33,16 @@ export type TrainingHeaderCta = {
     | "loading"
     | "start"
     | "continue-setup"
-    | "continue-training"
-    | "review-finish"
+    | "connect-channel"
+    | "activate"
     | "manage";
   label: string;
   disabled?: boolean;
+};
+
+export type TrainingEssentialItem = {
+  title: string;
+  complete: boolean;
 };
 
 type Props = {
@@ -56,9 +61,10 @@ type Props = {
   aiReadinessStatus: string;
   aiReadinessDetail: string;
   aiConfigurationError: string | null;
+  essentialSetupItems?: TrainingEssentialItem[];
   headerCta: TrainingHeaderCta;
   onHeaderCta: () => void;
-  onReviewAndFinishTraining: () => void;
+  onContinueTraining?: () => void;
   onRetryAiConfiguration?: () => void;
   lessons?: TrainingLessonNavItem[];
   onSelectLesson?: (index: number) => void;
@@ -67,9 +73,9 @@ type Props = {
 
 const workspaceStatus = (
   item: TrainingWorkspaceItem,
-  trainingFinished: boolean,
+  managementMode: boolean,
 ) => {
-  if (item.complete) return trainingFinished ? "Configured" : "Complete";
+  if (item.complete) return managementMode ? "Configured" : "Complete";
   if (item.completedLessons > 0 || item.percent > 0) return "In progress";
   return "Not started";
 };
@@ -206,9 +212,10 @@ export default function TrainingWorkspace({
   aiReadinessStatus,
   aiReadinessDetail,
   aiConfigurationError,
+  essentialSetupItems = [],
   headerCta,
   onHeaderCta,
-  onReviewAndFinishTraining,
+  onContinueTraining,
   onRetryAiConfiguration,
   lessons = [],
   onSelectLesson,
@@ -244,8 +251,18 @@ export default function TrainingWorkspace({
       : 0;
   const allWorkspacesComplete =
     totalWorkspaceCount > 0 && completedWorkspaceCount >= totalWorkspaceCount;
-  const trainingFinished = headerCta.id === "manage";
+  const aiEmployeeActive = headerCta.id === "manage";
   const progressLoading = headerCta.id === "loading";
+  const showEssentialSetupList =
+    !progressLoading &&
+    !aiEmployeeActive &&
+    (headerCta.id === "continue-setup" || headerCta.id === "connect-channel") &&
+    essentialSetupItems.length > 0;
+  const showContinueTraining =
+    Boolean(onContinueTraining) &&
+    !progressLoading &&
+    !allWorkspacesComplete &&
+    (aiEmployeeActive || headerCta.id === "activate");
   const headerWorkspace = dialogOpen
     ? activeItem
     : (workspaceNavigatorItems.find((item) => !item.complete) ??
@@ -271,17 +288,17 @@ export default function TrainingWorkspace({
     (item) => item.completedLessons > 0 || item.percent > 0,
   );
   const showCurrentWorkspaceProgress =
-    !trainingFinished &&
+    !allWorkspacesComplete &&
     !progressLoading &&
     Boolean(headerWorkspace) &&
     headerWorkspaceLessonCount > 0 &&
     (dialogOpen || hasStartedWorkspaceProgress);
-  const showSecondaryReview =
-    headerCta.id !== "review-finish" &&
-    headerCta.id !== "manage" &&
-    headerCta.id !== "loading";
   const readinessIsError = Boolean(aiConfigurationError);
-  const readinessIsReady = aiReadinessStatus === "Ready";
+  const readinessIsActive = aiReadinessStatus === "Active";
+  const readinessIsPositive =
+    readinessIsActive ||
+    aiReadinessStatus === "Ready to activate" ||
+    aiReadinessStatus === "Ready to connect";
   const [mobileLessonNavOpen, setMobileLessonNavOpen] = useState(false);
 
   useEffect(() => {
@@ -294,14 +311,15 @@ export default function TrainingWorkspace({
         <h2 className="text-[24px] font-semibold tracking-[-0.02em] text-[#111827] lg:text-[26px]">
           AI Employee Setup
         </h2>
-        {trainingFinished ? (
+        {aiEmployeeActive ? (
           <>
             <p className="mt-2 text-base font-semibold text-[#111827]">
-              Your AI Employee is trained and ready
+              {allWorkspacesComplete
+                ? "Your AI Employee is trained and ready"
+                : "Your AI Employee is working for your business"}
             </p>
             <p className="mt-1 text-sm leading-6 text-[#6B7280]">
-              Your AI Employee is active. You can update its information,
-              instructions, and connected channels at any time.
+              You can continue improving its training at any time.
             </p>
           </>
         ) : (
@@ -314,124 +332,145 @@ export default function TrainingWorkspace({
 
       <section
         className="rounded-xl border border-[#E5E7EB] bg-white p-4 shadow-[0_8px_24px_rgba(15,23,42,0.05)] sm:p-5"
-        aria-label="Training progress"
+        aria-label="AI Employee readiness and training progress"
       >
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(220px,280px)] lg:items-start">
-          <div className="min-w-0">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#64748B]">
-              {trainingFinished ? "AI Employee ready" : "Training progress"}
+        <div
+          className={`rounded-xl border p-3 sm:p-4 ${readinessIsError ? "border-[#FECACA] bg-[#FEF2F2]" : readinessIsPositive ? "border-[#BBF7D0] bg-[#F7FEF9]" : "border-[#E5E7EB] bg-[#F8FAFC]"}`}
+        >
+          <p
+            className={`text-[10px] font-semibold uppercase tracking-[0.12em] ${readinessIsError ? "text-[#B91C1C]" : "text-[#166534]"}`}
+          >
+            AI Readiness
+          </p>
+          <p className="mt-1 text-lg font-semibold text-[#111827]">
+            {aiReadinessStatus}
+          </p>
+          <p
+            role={readinessIsError ? "alert" : undefined}
+            className={`mt-1 text-sm leading-6 ${readinessIsError ? "text-[#B91C1C]" : "text-[#64748B]"}`}
+          >
+            {aiReadinessDetail}
+          </p>
+          {readinessIsError && onRetryAiConfiguration ? (
+            <button
+              type="button"
+              onClick={onRetryAiConfiguration}
+              className="mt-3 text-xs font-semibold text-[#111827] underline decoration-[#CBD5E1] underline-offset-4 transition hover:text-[#166534] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2"
+            >
+              Retry
+            </button>
+          ) : null}
+          {showEssentialSetupList ? (
+            <ul className="mt-3 grid gap-1.5 sm:grid-cols-2">
+              {essentialSetupItems.map((item) => (
+                <li
+                  key={item.title}
+                  className="flex items-center gap-2 text-xs font-medium text-[#334155]"
+                >
+                  <span
+                    className={
+                      item.complete ? "text-[#166534]" : "text-[#94A3B8]"
+                    }
+                    aria-hidden="true"
+                  >
+                    {item.complete ? "✓" : "○"}
+                  </span>
+                  {item.title}
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </div>
+
+        <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <button
+            type="button"
+            onClick={onHeaderCta}
+            disabled={headerCta.disabled}
+            aria-label={headerCta.label}
+            className="inline-flex h-11 w-full items-center justify-center rounded-lg bg-[#111827] px-4 text-sm font-semibold text-white transition hover:bg-[#334155] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-45 sm:w-auto"
+          >
+            {headerCta.label}
+          </button>
+          {showContinueTraining ? (
+            <button
+              type="button"
+              onClick={onContinueTraining}
+              className="inline-flex h-11 w-full items-center justify-center rounded-lg border border-[#E5E7EB] bg-white px-4 text-sm font-semibold text-[#111827] transition hover:bg-[#F8FAFB] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 sm:w-auto"
+            >
+              Continue Training
+            </button>
+          ) : null}
+        </div>
+
+        <div className="mt-5 min-w-0 border-t border-[#EEF2F6] pt-4">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#64748B]">
+            Training progress
+          </p>
+          <p className="mt-1 text-sm font-semibold text-[#111827]">
+            {progressLoading
+              ? "Loading training progress…"
+              : `${completedWorkspaceCount} of ${totalWorkspaceCount} workspaces complete · ${allWorkspacesComplete ? 100 : workspaceProgressPercent}% complete`}
+          </p>
+          {progressLoading ? null : (
+            <div className="mt-3">
+              <TrainingProgressBar
+                percent={allWorkspacesComplete ? 100 : workspaceProgressPercent}
+                complete={allWorkspacesComplete || overallTrainingComplete}
+                size="md"
+              />
+            </div>
+          )}
+          {allWorkspacesComplete ? (
+            <p className="mt-3 text-sm leading-6 text-[#64748B]">
+              Training complete. You can continue updating your AI Employee
+              whenever your business changes.
             </p>
-            <p className="mt-1 text-sm font-semibold text-[#111827]">
-              {progressLoading
-                ? "Loading training progress…"
-                : `${completedWorkspaceCount} of ${totalWorkspaceCount} workspaces complete · ${allWorkspacesComplete ? 100 : workspaceProgressPercent}% complete`}
+          ) : aiEmployeeActive ? (
+            <p className="mt-3 text-sm leading-6 text-[#64748B]">
+              Continue improving your AI Employee
             </p>
-            {progressLoading ? null : (
-              <div className="mt-3">
+          ) : null}
+
+          {showCurrentWorkspaceProgress && headerWorkspace ? (
+            <div className="mt-4">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">
+                Current workspace
+              </p>
+              <p className="mt-1 text-sm font-semibold text-[#111827]">
+                {headerWorkspace.title}
+              </p>
+              <p className="mt-0.5 text-xs font-medium text-[#64748B]">
+                {headerWorkspaceCompletedLessons} of{" "}
+                {headerWorkspaceLessonCount} lessons complete ·{" "}
+                {headerWorkspaceLessonsComplete
+                  ? 100
+                  : headerWorkspaceLessonPercent}
+                % complete
+              </p>
+              <div className="mt-2">
                 <TrainingProgressBar
                   percent={
-                    allWorkspacesComplete ? 100 : workspaceProgressPercent
+                    headerWorkspaceLessonsComplete
+                      ? 100
+                      : headerWorkspaceLessonPercent
                   }
-                  complete={allWorkspacesComplete || overallTrainingComplete}
-                  size="md"
+                  complete={headerWorkspaceLessonsComplete}
+                  size="sm"
                 />
               </div>
-            )}
-
-            {trainingFinished ? (
-              <p className="mt-4 text-sm leading-6 text-[#64748B]">
-                Training complete. You can continue updating your AI Employee
-                whenever your business changes.
-              </p>
-            ) : showCurrentWorkspaceProgress && headerWorkspace ? (
-              <div className="mt-4">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">
-                  Current workspace
-                </p>
-                <p className="mt-1 text-sm font-semibold text-[#111827]">
-                  {headerWorkspace.title}
-                </p>
-                <p className="mt-0.5 text-xs font-medium text-[#64748B]">
-                  {headerWorkspaceCompletedLessons} of{" "}
-                  {headerWorkspaceLessonCount} lessons complete ·{" "}
-                  {headerWorkspaceLessonsComplete
-                    ? 100
-                    : headerWorkspaceLessonPercent}
-                  % complete
-                </p>
-                <div className="mt-2">
-                  <TrainingProgressBar
-                    percent={
-                      headerWorkspaceLessonsComplete
-                        ? 100
-                        : headerWorkspaceLessonPercent
-                    }
-                    complete={headerWorkspaceLessonsComplete}
-                    size="sm"
-                  />
-                </div>
-              </div>
-            ) : null}
-
-            <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <button
-                type="button"
-                onClick={onHeaderCta}
-                disabled={headerCta.disabled}
-                aria-label={headerCta.label}
-                className="inline-flex h-11 w-full items-center justify-center rounded-lg bg-[#111827] px-4 text-sm font-semibold text-white transition hover:bg-[#334155] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-45 sm:w-auto"
-              >
-                {headerCta.label}
-              </button>
-              {showSecondaryReview ? (
-                <button
-                  type="button"
-                  onClick={onReviewAndFinishTraining}
-                  className="inline-flex h-11 w-full items-center justify-center rounded-lg border border-[#E5E7EB] bg-white px-4 text-sm font-semibold text-[#111827] transition hover:bg-[#F8FAFB] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 sm:w-auto"
-                >
-                  Review & Finish Training
-                </button>
-              ) : null}
             </div>
-          </div>
-
-          <div
-            className={`rounded-xl border p-3 ${readinessIsError ? "border-[#FECACA] bg-[#FEF2F2]" : readinessIsReady ? "border-[#BBF7D0] bg-[#F7FEF9]" : "border-[#E5E7EB] bg-[#F8FAFC]"}`}
-          >
-            <p
-              className={`text-[10px] font-semibold uppercase tracking-[0.12em] ${readinessIsError ? "text-[#B91C1C]" : "text-[#166534]"}`}
-            >
-              AI Readiness
-            </p>
-            <p className="mt-1 text-lg font-semibold text-[#111827]">
-              {aiReadinessStatus}
-            </p>
-            <p
-              role={readinessIsError ? "alert" : undefined}
-              className={`mt-1 text-xs leading-5 ${readinessIsError ? "text-[#B91C1C]" : "text-[#64748B]"}`}
-            >
-              {aiReadinessDetail}
-            </p>
-            {readinessIsError && onRetryAiConfiguration ? (
-              <button
-                type="button"
-                onClick={onRetryAiConfiguration}
-                className="mt-3 text-xs font-semibold text-[#111827] underline decoration-[#CBD5E1] underline-offset-4 transition hover:text-[#166534] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2"
-              >
-                Retry
-              </button>
-            ) : null}
-          </div>
+          ) : null}
         </div>
       </section>
 
       <section aria-label="AI employee training workspaces">
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {workspaceNavigatorItems.map((item) => {
-            const status = workspaceStatus(item, trainingFinished);
-            const showWorkspaceIcon = trainingFinished || !item.complete;
+            const status = workspaceStatus(item, aiEmployeeActive);
+            const showWorkspaceIcon = aiEmployeeActive || !item.complete;
             const actionLabel =
-              trainingFinished && item.complete ? "Edit workspace" : "Open";
+              aiEmployeeActive && item.complete ? "Edit workspace" : "Open";
             return (
               <button
                 key={item.section}
@@ -507,7 +546,7 @@ export default function TrainingWorkspace({
                 </DialogTitle>
                 <DialogDescription className="mt-1 text-sm leading-6 text-[#64748B]">
                   {activeItem?.description ??
-                    (trainingFinished
+                    (aiEmployeeActive
                       ? "Update this workspace whenever your business changes."
                       : "Continue training this workspace.")}
                 </DialogDescription>
@@ -538,7 +577,7 @@ export default function TrainingWorkspace({
             ) : activeItem ? (
               <div>
                 <div className="flex items-center justify-between text-xs font-semibold text-[#64748B]">
-                  <span>{workspaceStatus(activeItem, trainingFinished)}</span>
+                  <span>{workspaceStatus(activeItem, aiEmployeeActive)}</span>
                   <span className="text-[#166534]">{activeItem.percent}%</span>
                 </div>
                 <div className="mt-2">

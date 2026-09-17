@@ -1415,7 +1415,7 @@ type TrainingLessonTabsApi = {
   activeSalesStep: number;
   isIntegrationConnected: (id: string) => boolean;
   getIntegrationName: (id: string | null) => string;
-  handleSaveChanges: () => void | Promise<void>;
+  handleSaveChanges: (overrides?: { is_enabled?: boolean }) => void | Promise<void>;
   setActiveWorkspaceSection: (section: TrainingWorkspaceSection) => void;
   focusSalesLesson: (step: number) => void;
   focusSkillsLesson: (step: number) => void;
@@ -3469,7 +3469,7 @@ export default function DashboardLayout() {
     needsAttention: true,
   });
   const chartMax = Math.max(...ANALYTICS_CHART.map((point) => point.value));
-  const [aiEnabled, setAiEnabled] = useState(true);
+  const [aiEnabled, setAiEnabled] = useState(false);
   const [businessHours, setBusinessHours] = useState(
     "",
   );
@@ -3733,7 +3733,7 @@ export default function DashboardLayout() {
     setWritingStyleOptions({ "Use emojis": writingStyle.use_emojis ?? false, "Keep replies short": writingStyle.keep_replies_short ?? false, "Explain simply": writingStyle.explain_simply ?? false, "Ask follow-up questions": writingStyle.ask_follow_up_questions ?? false, "Personalize responses": writingStyle.personalize_responses ?? false });
     setKnowledgeTraining((current) => ({ ...current, companyInformation: { ...current.companyInformation, vision: String(context.vision ?? ""), mission: String(context.mission ?? ""), shortTermGoals: String(context.short_term_goals ?? ""), longTermGoals: String(context.long_term_goals ?? ""), targetCustomers: String(context.target_customers ?? ""), customerProblems: String(context.customer_problems ?? ""), primaryMarket: String(context.primary_market ?? ""), customerSegments: String(context.customer_segments ?? ""), differentiators: String(context.differentiators ?? ""), competitiveAdvantages: String(context.competitive_advantages ?? ""), keySellingPoints: String(context.key_selling_points ?? ""), competitors: String(context.competitors ?? ""), preferredBrandTones: Array.isArray(context.preferred_brand_tones) ? context.preferred_brand_tones.filter((tone): tone is string => typeof tone === "string") : [], wordsToUse: String(context.words_to_use ?? ""), wordsToAvoid: String(context.words_to_avoid ?? ""), brandGuidance: String(context.brand_guidance ?? ""), importantThingsToKnow: String(context.important_things_to_know ?? ""), additionalNotes: String(context.additional_notes ?? "") } }));
   };
-  useEffect(() => { let active = true; void (async () => { try { const result = await getAIEmployeeConfiguration(); if (!active) return; if (result.data) applyAIConfiguration(result.data); else { setAiConfigurationReadiness({ configured_sections: [], missing_sections: [], is_configured: false }); setHasPersistedAiConfiguration(false); } setAiConfigurationError(null); } catch (error) { if (!active) return; if (error instanceof ApiError && error.status === 404) { setAiConfigurationReadiness({ configured_sections: [], missing_sections: [], is_configured: false }); setHasPersistedAiConfiguration(false); setAiConfigurationError(null); } else { setAiConfigurationError(getApiErrorMessage(error, "The AI configuration could not be loaded.")); } } finally { if (active) setAiConfigurationLoading(false); } })(); return () => { active = false; }; }, []);
+  useEffect(() => { let active = true; void (async () => { try { const result = await getAIEmployeeConfiguration(); if (!active) return; if (result.data) applyAIConfiguration(result.data); else { setAiConfigurationReadiness({ configured_sections: [], missing_sections: [], is_configured: false }); setHasPersistedAiConfiguration(false); setAiEnabled(false); } setAiConfigurationError(null); } catch (error) { if (!active) return; if (error instanceof ApiError && error.status === 404) { setAiConfigurationReadiness({ configured_sections: [], missing_sections: [], is_configured: false }); setHasPersistedAiConfiguration(false); setAiEnabled(false); setAiConfigurationError(null); } else { setAiConfigurationError(getApiErrorMessage(error, "The AI configuration could not be loaded.")); } } finally { if (active) setAiConfigurationLoading(false); } })(); return () => { active = false; }; }, []);
   const retryAIEmployeeConfiguration = () => {
     setAiConfigurationLoading(true);
     setAiConfigurationError(null);
@@ -3744,12 +3744,14 @@ export default function DashboardLayout() {
         else {
           setAiConfigurationReadiness({ configured_sections: [], missing_sections: [], is_configured: false });
           setHasPersistedAiConfiguration(false);
+          setAiEnabled(false);
         }
         setAiConfigurationError(null);
       } catch (error) {
         if (error instanceof ApiError && error.status === 404) {
           setAiConfigurationReadiness({ configured_sections: [], missing_sections: [], is_configured: false });
           setHasPersistedAiConfiguration(false);
+          setAiEnabled(false);
           setAiConfigurationError(null);
         } else {
           setAiConfigurationError(getApiErrorMessage(error, "The AI configuration could not be loaded."));
@@ -3777,14 +3779,16 @@ export default function DashboardLayout() {
     finally { if (requestId === knowledgeRequestId.current) setKnowledgeLoading(false); }
   };
   useEffect(() => { void refreshKnowledgeSources(); }, []);
-  const handleSaveChanges = async () => {
+  const handleSaveChanges = async (overrides?: { is_enabled?: boolean }) => {
     if (saveState === "saving") return;
+    const enabled = overrides?.is_enabled ?? aiEnabled;
     setSaveState("saving");
     setAiConfigurationError(null);
     try {
       const company = knowledgeTraining.companyInformation;
-      const result = await updateAIEmployeeConfiguration({ is_enabled: aiEnabled, human_takeover_enabled: humanTakeover, primary_language: primaryLanguage, supported_languages: supportedLanguages, personality, communication_style: communicationStyle, emoji_usage: emojiUsage, preferred_tone: preferredTone, writing_examples: writingExamples, writing_style_options: { use_emojis: writingStyleOptions["Use emojis"] ?? false, keep_replies_short: writingStyleOptions["Keep replies short"] ?? false, explain_simply: writingStyleOptions["Explain simply"] ?? false, ask_follow_up_questions: writingStyleOptions["Ask follow-up questions"] ?? false, personalize_responses: writingStyleOptions["Personalize responses"] ?? false }, welcome_message: welcomeMessage, away_message: awayMessage, closing_message: closingMessage, outside_hours_mode: outsideHoursMode, max_ai_messages: maxAiMessages, upsell_products: upsellProducts, recommend_alternatives: recommendAlternatives, close_sales_automatically: closeSalesAutomatically, business_context: { vision: company.vision, mission: company.mission, short_term_goals: company.shortTermGoals, long_term_goals: company.longTermGoals, target_customers: company.targetCustomers, customer_problems: company.customerProblems, primary_market: company.primaryMarket, customer_segments: company.customerSegments, differentiators: company.differentiators, competitive_advantages: company.competitiveAdvantages, key_selling_points: company.keySellingPoints, competitors: company.competitors, preferred_brand_tones: company.preferredBrandTones, words_to_use: company.wordsToUse, words_to_avoid: company.wordsToAvoid, brand_guidance: company.brandGuidance, important_things_to_know: company.importantThingsToKnow, additional_notes: company.additionalNotes } });
+      const result = await updateAIEmployeeConfiguration({ is_enabled: enabled, human_takeover_enabled: humanTakeover, primary_language: primaryLanguage, supported_languages: supportedLanguages, personality, communication_style: communicationStyle, emoji_usage: emojiUsage, preferred_tone: preferredTone, writing_examples: writingExamples, writing_style_options: { use_emojis: writingStyleOptions["Use emojis"] ?? false, keep_replies_short: writingStyleOptions["Keep replies short"] ?? false, explain_simply: writingStyleOptions["Explain simply"] ?? false, ask_follow_up_questions: writingStyleOptions["Ask follow-up questions"] ?? false, personalize_responses: writingStyleOptions["Personalize responses"] ?? false }, welcome_message: welcomeMessage, away_message: awayMessage, closing_message: closingMessage, outside_hours_mode: outsideHoursMode, max_ai_messages: maxAiMessages, upsell_products: upsellProducts, recommend_alternatives: recommendAlternatives, close_sales_automatically: closeSalesAutomatically, business_context: { vision: company.vision, mission: company.mission, short_term_goals: company.shortTermGoals, long_term_goals: company.longTermGoals, target_customers: company.targetCustomers, customer_problems: company.customerProblems, primary_market: company.primaryMarket, customer_segments: company.customerSegments, differentiators: company.differentiators, competitive_advantages: company.competitiveAdvantages, key_selling_points: company.keySellingPoints, competitors: company.competitors, preferred_brand_tones: company.preferredBrandTones, words_to_use: company.wordsToUse, words_to_avoid: company.wordsToAvoid, brand_guidance: company.brandGuidance, important_things_to_know: company.importantThingsToKnow, additional_notes: company.additionalNotes } });
       if (result.data) applyAIConfiguration(result.data.ai_employee);
+      else if (overrides?.is_enabled !== undefined) setAiEnabled(overrides.is_enabled);
       setHasUnsavedChanges(false);
       setSaveState("saved");
       window.setTimeout(() => setSaveState("idle"), 1200);
@@ -4072,30 +4076,62 @@ export default function DashboardLayout() {
   const trainingHasStarted = workspaceNavigatorItems.some((item) => item.complete || item.percent > 0);
   const allTrainingWorkspacesComplete = workspaceNavigatorItems.length > 0 && workspaceNavigatorItems.every((item) => item.complete);
   const integrationsReviewComplete = completedIntegrationSteps.includes(integrationLessonSequence.length - 1);
-  // Initial training completed. Workspaces stay editable; this flag only changes CTA copy and finish-training presentation.
+  // Full 7-workspace training. Separate from activation; workspaces stay editable after this.
   const trainingFinished = allTrainingWorkspacesComplete && integrationsReviewComplete;
   trainingFinishedRef.current = trainingFinished;
   const lessonPrimaryActionLabel = trainingFinished ? "Save changes" : "Save & Continue";
-  const aiReadinessStatus = aiConfigurationLoading
+  // Catalogue is required for activation: every current business model maps to a catalogue offer type.
+  const catalogueRequiredForActivation = true;
+  const identityActivationReady = identityWorkspacePercent >= 100;
+  const knowledgeActivationReady = knowledgeWorkspacePercent >= 100;
+  const catalogueActivationReady = !catalogueRequiredForActivation || catalogueWorkspacePercent >= 100;
+  const policiesActivationReady = policiesWorkspacePercent >= 100;
+  const essentialWorkspacesComplete = identityActivationReady && knowledgeActivationReady && catalogueActivationReady && policiesActivationReady;
+  const hasConnectedCustomerChannel = (getIntegrationSection("Channels")?.items ?? []).some((item) => isIntegrationConnected(item.id));
+  const aiEmployeeActive = essentialWorkspacesComplete && hasConnectedCustomerChannel && aiEnabled;
+  const essentialSetupItems = [
+    { title: "Business Identity", complete: identityActivationReady },
+    { title: "Knowledge", complete: knowledgeActivationReady },
+    ...(catalogueRequiredForActivation ? [{ title: "Catalogue", complete: catalogueActivationReady }] : []),
+    { title: "Policies", complete: policiesActivationReady },
+    { title: "Channel connection", complete: hasConnectedCustomerChannel },
+  ];
+  const firstIncompleteEssentialSection =
+    !identityActivationReady
+      ? "Identity"
+      : !knowledgeActivationReady
+        ? "Knowledge Hub"
+        : catalogueRequiredForActivation && !catalogueActivationReady
+          ? "Catalogue"
+          : !policiesActivationReady
+            ? "Policies"
+            : "Identity";
+  const aiReadinessStatus = aiConfigurationLoading || !onboardingRestored
     ? "Loading…"
     : aiConfigurationError
       ? "Unavailable"
-      : aiConfigurationReadiness?.is_configured
-        ? "Ready"
-        : trainingHasStarted
-          ? "Getting ready"
-          : "Not set up yet";
-  const aiReadinessDetail = aiConfigurationLoading
+      : aiEmployeeActive
+        ? "Active"
+        : essentialWorkspacesComplete && hasConnectedCustomerChannel
+          ? "Ready to activate"
+          : essentialWorkspacesComplete
+            ? "Ready to connect"
+            : trainingHasStarted
+              ? "Almost ready"
+              : "Not set up yet";
+  const aiReadinessDetail = aiConfigurationLoading || !onboardingRestored
     ? "Loading your business setup…"
     : aiConfigurationError
       ? aiConfigurationError
-      : aiConfigurationReadiness?.is_configured
-        ? trainingFinished
-          ? "Your AI Employee is active. You can update its information, instructions, and connected channels at any time."
-          : "Your AI Employee has the information and instructions it needs to work for your business."
-        : trainingHasStarted
-          ? "Your AI Employee is being trained with your business information and instructions."
-          : "Your business profile hasn't been set up. Complete Business Identity to begin training your AI Employee.";
+      : aiEmployeeActive
+        ? "Your AI Employee is working for your business. You can continue improving its training at any time."
+        : essentialWorkspacesComplete && hasConnectedCustomerChannel
+          ? "Your AI Employee has the essential information and setup needed to start working for your business."
+          : essentialWorkspacesComplete
+            ? "Your AI Employee has the essential business information it needs. Connect a channel to start serving customers."
+            : trainingHasStarted
+              ? "Complete the remaining essential setup before activating your AI Employee."
+              : "Complete your business information to start preparing your AI Employee.";
   const openWorkspaceDialog = (section: typeof activeWorkspaceSection) => {
     setActiveWorkspaceSection(section);
     setWorkspaceDialogOpen(true);
@@ -4821,12 +4857,17 @@ export default function DashboardLayout() {
   const firstIncompleteIdentityLesson = identityLessons.findIndex((_, index) => !completedIdentitySteps.includes(index));
   const identitySetupStarted = identityCompletedCount > 0 || Boolean((businessInfo.name || "").trim()) || hasPersistedAiConfiguration;
   const identitySetupComplete = identityWorkspacePercent >= 100;
-  const contentWorkspacesComplete = workspaceNavigatorItems
-    .filter((item) => item.section !== "Integrations")
-    .every((item) => item.complete);
   const openIdentitySetupLesson = (step: number) => {
     openWorkspaceDialog("Identity");
     window.setTimeout(() => focusIdentityLesson(Math.max(0, step)), 0);
+  };
+  const openConnectChannel = () => {
+    openWorkspaceDialog("Integrations");
+    window.setTimeout(() => focusIntegrationLesson(0), 0);
+  };
+  const activateAiEmployee = () => {
+    setWorkspaceDialogOpen(false);
+    void handleSaveChanges({ is_enabled: true });
   };
   const openManageAiEmployee = () => {
     setWorkspaceDialogOpen(false);
@@ -4841,14 +4882,20 @@ export default function DashboardLayout() {
   };
   const headerCta = aiConfigurationLoading || !onboardingRestored
     ? { id: "loading" as const, label: "Loading…", disabled: true, run: () => {} }
-    : trainingFinished
+    : aiEmployeeActive
       ? { id: "manage" as const, label: "Manage AI Employee", disabled: false, run: openManageAiEmployee }
-      : contentWorkspacesComplete
-        ? { id: "review-finish" as const, label: "Review & Finish Training", disabled: false, run: openReviewAndFinishTraining }
-        : identitySetupStarted && !identitySetupComplete
-          ? { id: "continue-setup" as const, label: "Continue Setup", disabled: false, run: () => openIdentitySetupLesson(firstIncompleteIdentityLesson) }
-          : workspaceNavigatorItems.some((item) => !item.complete) && identitySetupComplete
-            ? { id: "continue-training" as const, label: "Continue Training", disabled: false, run: continueCurrentTraining }
+      : essentialWorkspacesComplete && hasConnectedCustomerChannel
+        ? { id: "activate" as const, label: "Activate AI Employee", disabled: saveState === "saving", run: activateAiEmployee }
+        : essentialWorkspacesComplete
+          ? { id: "connect-channel" as const, label: "Connect a Channel", disabled: false, run: openConnectChannel }
+          : identitySetupStarted
+            ? { id: "continue-setup" as const, label: "Continue Setup", disabled: false, run: () => {
+              if (!identitySetupComplete) {
+                openIdentitySetupLesson(firstIncompleteIdentityLesson);
+                return;
+              }
+              openTrainingWorkspace(firstIncompleteEssentialSection);
+            } }
             : { id: "start" as const, label: "Start Business Setup", disabled: false, run: () => openIdentitySetupLesson(0) };
 
   trainingLessonTabsApiRef.current = {
@@ -6446,9 +6493,10 @@ export default function DashboardLayout() {
               aiReadinessStatus={aiReadinessStatus}
               aiReadinessDetail={aiReadinessDetail}
               aiConfigurationError={aiConfigurationError}
+              essentialSetupItems={essentialSetupItems}
               headerCta={headerCta}
               onHeaderCta={headerCta.run}
-              onReviewAndFinishTraining={openReviewAndFinishTraining}
+              onContinueTraining={continueCurrentTraining}
               onRetryAiConfiguration={retryAIEmployeeConfiguration}
               lessons={
                 activeWorkspaceSection === "Identity"
