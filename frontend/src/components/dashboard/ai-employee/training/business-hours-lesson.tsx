@@ -1,5 +1,13 @@
 import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
-import { Calendar as CalendarIcon, Check, ChevronDown, ChevronRight, Clock, Plus, X } from "lucide-react";
+import {
+  Calendar as CalendarIcon,
+  Check,
+  ChevronDown,
+  ChevronRight,
+  Clock,
+  Plus,
+  X,
+} from "lucide-react";
 import { format } from "date-fns";
 
 import { Calendar } from "@/components/ui/calendar";
@@ -11,7 +19,11 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
 const WEEK_DAYS = [
@@ -42,7 +54,13 @@ type HolidayPeriod = {
 
 type HoursErrors = Record<string, string>;
 
-const WEEKDAY_SET = new Set<WeekDay>(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]);
+const WEEKDAY_SET = new Set<WeekDay>([
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+]);
 
 const LEGACY_TIMEZONES: Record<string, string> = {
   "East Africa Time (EAT)": "Africa/Nairobi",
@@ -188,7 +206,9 @@ function buildTimezoneOptions(
     label: formatTimezoneLabel(preferred, now),
     region: timezoneRegion(preferred),
   };
-  const options = [...new Set([preferred, selected, ...getAllTimezones()].filter(Boolean))]
+  const options = [
+    ...new Set([preferred, selected, ...getAllTimezones()].filter(Boolean)),
+  ]
     .map((value) => ({
       value,
       label: formatTimezoneLabel(value, now),
@@ -218,7 +238,13 @@ function buildTimezoneOptions(
 }
 
 function timezoneSearchValue(option: TimezoneOption, extra = ""): string {
-  return [option.label, option.value, option.value.replace(/[_/]/g, " "), option.region, extra]
+  return [
+    option.label,
+    option.value,
+    option.value.replace(/[_/]/g, " "),
+    option.region,
+    extra,
+  ]
     .filter(Boolean)
     .join(" ");
 }
@@ -241,7 +267,9 @@ function TimezoneCombobox({
   const [open, setOpen] = useState(false);
   const selectedOption =
     (selected === preferred.value ? preferred : undefined) ||
-    groups.flatMap((group) => group.options).find((option) => option.value === selected);
+    groups
+      .flatMap((group) => group.options)
+      .find((option) => option.value === selected);
   const selectedLabel = selectedOption?.label || selected;
   const isPreferred = selected === preferred.value;
 
@@ -262,7 +290,10 @@ function TimezoneCombobox({
             {isPreferred ? `${selectedLabel} — your timezone` : selectedLabel}
           </span>
           <ChevronDown
-            className={cn("h-4 w-4 shrink-0 text-[#64748B] transition", open && "rotate-180")}
+            className={cn(
+              "h-4 w-4 shrink-0 text-[#64748B] transition",
+              open && "rotate-180",
+            )}
             aria-hidden="true"
           />
         </button>
@@ -288,7 +319,9 @@ function TimezoneCombobox({
                 }}
                 className="min-h-11 cursor-pointer"
               >
-                <span className="min-w-0 flex-1 truncate">{preferred.label}</span>
+                <span className="min-w-0 flex-1 truncate">
+                  {preferred.label}
+                </span>
                 {selected === preferred.value ? (
                   <Check className="h-4 w-4 shrink-0 text-[#22C55E]" />
                 ) : null}
@@ -306,7 +339,9 @@ function TimezoneCombobox({
                     }}
                     className="min-h-11 cursor-pointer"
                   >
-                    <span className="min-w-0 flex-1 truncate">{option.label}</span>
+                    <span className="min-w-0 flex-1 truncate">
+                      {option.label}
+                    </span>
                     {selected === option.value ? (
                       <Check className="h-4 w-4 shrink-0 text-[#22C55E]" />
                     ) : null}
@@ -370,7 +405,11 @@ function parseISODate(value: string): Date | undefined {
   const month = Number(match[2]);
   const day = Number(match[3]);
   const date = new Date(year, month - 1, day);
-  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== month - 1 ||
+    date.getDate() !== day
+  ) {
     return undefined;
   }
   return date;
@@ -394,7 +433,12 @@ function shortDayName(day: WeekDay): string {
 }
 
 export function summarizeBusinessHours(days: DayHours[]): string {
-  const groups: { start: WeekDay; end: WeekDay; opens: string; closes: string }[] = [];
+  const groups: {
+    start: WeekDay;
+    end: WeekDay;
+    opens: string;
+    closes: string;
+  }[] = [];
 
   for (const day of days) {
     if (!day.open) continue;
@@ -454,14 +498,17 @@ function validateHours(options: {
   }
 
   options.holidays.forEach((holiday, index) => {
-    const hasAnyValue = Boolean(holiday.name.trim() || holiday.from || holiday.to);
+    const hasAnyValue = Boolean(
+      holiday.name.trim() || holiday.from || holiday.to,
+    );
     if (!hasAnyValue) return;
     if (!holiday.from || !holiday.to) {
       errors[`holiday-${index}`] = "Choose a start date and an end date.";
       return;
     }
     if (holiday.to < holiday.from) {
-      errors[`holiday-${index}`] = "End date must be on or after the start date.";
+      errors[`holiday-${index}`] =
+        "End date must be on or after the start date.";
     }
   });
 
@@ -488,7 +535,11 @@ function SegmentedChoice({
   onChange: (value: string) => void;
 }) {
   return (
-    <div className="inline-flex rounded-full border border-[#E5E7EB] bg-[#F8FAFC] p-1" role="group" aria-label={legend}>
+    <div
+      className="inline-flex rounded-full border border-[#E5E7EB] bg-[#F8FAFC] p-1"
+      role="group"
+      aria-label={legend}
+    >
       {options.map((option) => {
         const active = value === option.value;
         return (
@@ -531,7 +582,10 @@ function TimePickerField({
 
   return (
     <div className="min-w-0 space-y-1.5">
-      <label htmlFor={id} className="block text-sm font-semibold text-[#111827]">
+      <label
+        htmlFor={id}
+        className="block text-sm font-semibold text-[#111827]"
+      >
         {label}
       </label>
       <input
@@ -541,11 +595,15 @@ function TimePickerField({
         value={value}
         onChange={(event) => onChange(normalizeTime(event.target.value))}
         aria-invalid={Boolean(error)}
-        aria-describedby={error ? `${id}-error` : display ? `${id}-display` : undefined}
+        aria-describedby={
+          error ? `${id}-error` : display ? `${id}-display` : undefined
+        }
         className={cn(
           fieldClassName,
           "mt-0 min-h-12 cursor-pointer appearance-auto pr-3.5",
-          error ? "border-[#FECACA] focus:border-[#FECACA] focus:ring-[#FEE2E2]/80" : "",
+          error
+            ? "border-[#FECACA] focus:border-[#FECACA] focus:ring-[#FEE2E2]/80"
+            : "",
         )}
       />
       {display ? (
@@ -583,7 +641,10 @@ function DatePickerField({
 
   return (
     <div className="min-w-0 space-y-1.5">
-      <label htmlFor={id} className="block text-sm font-semibold text-[#111827]">
+      <label
+        htmlFor={id}
+        className="block text-sm font-semibold text-[#111827]"
+      >
         {label}
       </label>
       <Popover open={open} onOpenChange={setOpen} modal>
@@ -596,13 +657,24 @@ function DatePickerField({
             className={cn(
               fieldClassName,
               "mt-0 flex items-center justify-between gap-3 pr-3.5 text-left",
-              error ? "border-[#FECACA] focus:border-[#FECACA] focus:ring-[#FEE2E2]/80" : "",
+              error
+                ? "border-[#FECACA] focus:border-[#FECACA] focus:ring-[#FEE2E2]/80"
+                : "",
             )}
           >
-            <span className={display ? "truncate text-sm font-medium text-[#111827]" : "truncate text-sm text-[#94A3B8]"}>
+            <span
+              className={
+                display
+                  ? "truncate text-sm font-medium text-[#111827]"
+                  : "truncate text-sm text-[#94A3B8]"
+              }
+            >
               {display || "Select date"}
             </span>
-            <CalendarIcon className="h-4 w-4 shrink-0 text-[#64748B]" aria-hidden="true" />
+            <CalendarIcon
+              className="h-4 w-4 shrink-0 text-[#64748B]"
+              aria-hidden="true"
+            />
           </button>
         </PopoverTrigger>
         <PopoverContent
@@ -643,6 +715,7 @@ type BusinessHoursLessonProps = {
   onDirty: () => void;
   onBack: () => void;
   onSaveAndContinue: () => void;
+  saveLabel?: string;
   fieldClassName: string;
   textareaClassName: string;
   actionsClassName: string;
@@ -655,12 +728,15 @@ export function BusinessHoursLesson({
   onDirty,
   onBack,
   onSaveAndContinue,
+  saveLabel = "Save & Continue",
   fieldClassName,
   textareaClassName,
   actionsClassName,
 }: BusinessHoursLessonProps) {
   const [days, setDays] = useState<DayHours[]>(createDefaultSchedule);
-  const [holidays, setHolidays] = useState<HolidayPeriod[]>(() => [createHolidayPeriod()]);
+  const [holidays, setHolidays] = useState<HolidayPeriod[]>(() => [
+    createHolidayPeriod(),
+  ]);
   const [holidayMessage, setHolidayMessage] = useState("");
   const [vacationEnabled, setVacationEnabled] = useState(false);
   const [vacationFrom, setVacationFrom] = useState("");
@@ -736,9 +812,12 @@ export function BusinessHoursLesson({
           <Clock className="h-5 w-5" />
         </div>
         <div>
-          <p className="text-[20px] font-semibold text-[#111827]">Business Hours</p>
+          <p className="text-[20px] font-semibold text-[#111827]">
+            Business Hours
+          </p>
           <p className="mt-2 text-sm leading-6 text-[#6B7280]">
-            Teach your AI when your business is open so it can answer availability questions.
+            Teach your AI when your business is open so it can answer
+            availability questions.
           </p>
         </div>
       </div>
@@ -746,7 +825,9 @@ export function BusinessHoursLesson({
       <div className="space-y-8">
         <section className="space-y-2">
           <div>
-            <h3 className="text-[15px] font-semibold tracking-[-0.01em] text-[#111827]">Timezone</h3>
+            <h3 className="text-[15px] font-semibold tracking-[-0.01em] text-[#111827]">
+              Timezone
+            </h3>
             <p className="mt-1 text-sm leading-6 text-[#6B7280]">
               Choose the timezone used by your business.
             </p>
@@ -772,15 +853,22 @@ export function BusinessHoursLesson({
             <h3 className="text-[15px] font-semibold tracking-[-0.01em] text-[#111827]">
               Weekly schedule
             </h3>
-            <p className="mt-1 text-sm leading-6 text-[#6B7280]">Set your normal opening hours.</p>
+            <p className="mt-1 text-sm leading-6 text-[#6B7280]">
+              Set your normal opening hours.
+            </p>
           </div>
           <div className="space-y-4">
             {days.map((day) => {
               const rangeError = errors[`${day.day}-range`];
               return (
-                <div key={day.day} className="rounded-xl border border-[#E5E7EB] bg-white p-4">
+                <div
+                  key={day.day}
+                  className="rounded-xl border border-[#E5E7EB] bg-white p-4"
+                >
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                    <p className="text-sm font-semibold text-[#111827]">{day.day}</p>
+                    <p className="text-sm font-semibold text-[#111827]">
+                      {day.day}
+                    </p>
                     <SegmentedChoice
                       legend={`${day.day} availability`}
                       value={day.open ? "open" : "closed"}
@@ -805,7 +893,9 @@ export function BusinessHoursLesson({
                         value={day.opens}
                         error={errors[`${day.day}-opens`]}
                         fieldClassName={fieldClassName}
-                        onChange={(value) => updateDay(day.day, { opens: value })}
+                        onChange={(value) =>
+                          updateDay(day.day, { opens: value })
+                        }
                       />
                       <TimePickerField
                         id={`${day.day}-closes`}
@@ -813,11 +903,15 @@ export function BusinessHoursLesson({
                         value={day.closes}
                         error={errors[`${day.day}-closes`] || rangeError}
                         fieldClassName={fieldClassName}
-                        onChange={(value) => updateDay(day.day, { closes: value })}
+                        onChange={(value) =>
+                          updateDay(day.day, { closes: value })
+                        }
                       />
                     </div>
                   ) : (
-                    <p className="mt-3 text-sm text-[#64748B]">{day.day} is marked closed.</p>
+                    <p className="mt-3 text-sm text-[#64748B]">
+                      {day.day} is marked closed.
+                    </p>
                   )}
                 </div>
               );
@@ -830,21 +924,33 @@ export function BusinessHoursLesson({
             <h3 className="text-[15px] font-semibold tracking-[-0.01em] text-[#111827]">
               Holiday Mode
             </h3>
-            <p className="mt-1 text-sm leading-6 text-[#6B7280]">Set temporary holiday closures.</p>
+            <p className="mt-1 text-sm leading-6 text-[#6B7280]">
+              Set temporary holiday closures.
+            </p>
           </div>
           <div className="space-y-4">
             {holidays.map((holiday, index) => (
-              <div key={holiday.id} className="space-y-3 rounded-xl border border-[#E5E7EB] bg-white p-4">
+              <div
+                key={holiday.id}
+                className="space-y-3 rounded-xl border border-[#E5E7EB] bg-white p-4"
+              >
                 <div className="flex items-start justify-between gap-3">
-                  <label className="min-w-0 flex-1 space-y-1.5" htmlFor={`holiday-name-${index}`}>
-                    <span className="block text-sm font-semibold text-[#111827]">Holiday name</span>
+                  <label
+                    className="min-w-0 flex-1 space-y-1.5"
+                    htmlFor={`holiday-name-${index}`}
+                  >
+                    <span className="block text-sm font-semibold text-[#111827]">
+                      Holiday name
+                    </span>
                     <input
                       id={`holiday-name-${index}`}
                       value={holiday.name}
                       onChange={(event) => {
                         const name = event.target.value;
                         setHolidays((current) =>
-                          current.map((item) => (item.id === holiday.id ? { ...item, name } : item)),
+                          current.map((item) =>
+                            item.id === holiday.id ? { ...item, name } : item,
+                          ),
                         );
                         markDirty();
                       }}
@@ -856,7 +962,9 @@ export function BusinessHoursLesson({
                     <button
                       type="button"
                       onClick={() => {
-                        setHolidays((current) => current.filter((item) => item.id !== holiday.id));
+                        setHolidays((current) =>
+                          current.filter((item) => item.id !== holiday.id),
+                        );
                         markDirty();
                       }}
                       className="mt-7 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[#E5E7EB] text-[#64748B] transition hover:text-[#111827]"
@@ -874,7 +982,9 @@ export function BusinessHoursLesson({
                     fieldClassName={fieldClassName}
                     onChange={(from) => {
                       setHolidays((current) =>
-                        current.map((item) => (item.id === holiday.id ? { ...item, from } : item)),
+                        current.map((item) =>
+                          item.id === holiday.id ? { ...item, from } : item,
+                        ),
                       );
                       setErrors((current) => {
                         const next = { ...current };
@@ -891,7 +1001,9 @@ export function BusinessHoursLesson({
                     fieldClassName={fieldClassName}
                     onChange={(to) => {
                       setHolidays((current) =>
-                        current.map((item) => (item.id === holiday.id ? { ...item, to } : item)),
+                        current.map((item) =>
+                          item.id === holiday.id ? { ...item, to } : item,
+                        ),
                       );
                       setErrors((current) => {
                         const next = { ...current };
@@ -921,7 +1033,10 @@ export function BusinessHoursLesson({
               Add holiday
             </button>
             <div className="space-y-1.5">
-              <label className="block text-sm font-semibold text-[#111827]" htmlFor="holiday-mode">
+              <label
+                className="block text-sm font-semibold text-[#111827]"
+                htmlFor="holiday-mode"
+              >
                 Holiday message
               </label>
               <textarea
@@ -945,7 +1060,9 @@ export function BusinessHoursLesson({
               <h3 className="text-[15px] font-semibold tracking-[-0.01em] text-[#111827]">
                 Vacation Mode
               </h3>
-              <p className="mt-1 text-sm leading-6 text-[#6B7280]">Set longer temporary closures.</p>
+              <p className="mt-1 text-sm leading-6 text-[#6B7280]">
+                Set longer temporary closures.
+              </p>
             </div>
             <SegmentedChoice
               legend="Vacation Mode"
@@ -1007,7 +1124,10 @@ export function BusinessHoursLesson({
             </div>
           ) : null}
           <div className="space-y-1.5">
-            <label className="block text-sm font-semibold text-[#111827]" htmlFor="vacation-mode">
+            <label
+              className="block text-sm font-semibold text-[#111827]"
+              htmlFor="vacation-mode"
+            >
               Vacation message
             </label>
             <textarea
@@ -1054,12 +1174,14 @@ export function BusinessHoursLesson({
           <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#22C55E] text-white">
             <Check className="h-3.5 w-3.5" />
           </span>
-          <p className="text-sm font-semibold text-[#166534]">How the AI uses these hours</p>
+          <p className="text-sm font-semibold text-[#166534]">
+            How the AI uses these hours
+          </p>
         </div>
         <p className="mt-3 text-sm leading-6 text-[#475569]">
-          These hours are used by the AI when customers ask whether the business is open. They help
-          set accurate expectations and guide when the AI should respond with availability
-          information.
+          These hours are used by the AI when customers ask whether the business
+          is open. They help set accurate expectations and guide when the AI
+          should respond with availability information.
         </p>
       </div>
 
@@ -1076,7 +1198,10 @@ export function BusinessHoursLesson({
           onClick={handleSaveAndContinue}
           className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45"
         >
-          Save & Continue <ChevronRight className="h-4 w-4" />
+          {saveLabel}
+          {saveLabel === "Save & Continue" ? (
+            <ChevronRight className="h-4 w-4" />
+          ) : null}
         </button>
       </div>
     </div>

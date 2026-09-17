@@ -1421,6 +1421,7 @@ type TrainingLessonTabsApi = {
   focusSkillsLesson: (step: number) => void;
   completeSalesLesson: (step: number) => void;
   completeSkillsLesson: (step: number) => void;
+  trainingFinished: boolean;
 };
 
 export default function DashboardLayout() {
@@ -1833,6 +1834,8 @@ export default function DashboardLayout() {
   const [activeSalesStep, setActiveSalesStep] = useState(0);
   const [activePolicyStep, setActivePolicyStep] = useState(0);
   const trainingLessonTabsApiRef = useRef<TrainingLessonTabsApi | null>(null);
+  // Initial training finished (all workspaces + Integrations Review). Does not lock editing.
+  const trainingFinishedRef = useRef(false);
   const skillsLessonTabsComponentRef = useRef<(() => JSX.Element) | null>(null);
   const salesLessonTabsComponentRef = useRef<(() => JSX.Element) | null>(null);
   const integrationsPageRef = useRef<HTMLDivElement | null>(null);
@@ -2003,8 +2006,17 @@ export default function DashboardLayout() {
     }, 0);
   };
 
+  const persistCompletedLessonEdits = () => {
+    if (!trainingFinishedRef.current) return false;
+    setCompletionToast("Changes saved");
+    window.setTimeout(() => setCompletionToast(null), 2200);
+    void trainingLessonTabsApiRef.current?.handleSaveChanges();
+    return true;
+  };
+
   const completeIdentityLesson = (step: number) => {
     setCompletedIdentitySteps((current) => (current.includes(step) ? current : [...current, step]));
+    if (persistCompletedLessonEdits()) return;
     setCompletionToast(`${identityLessonCompletionNames[step]} complete — your onboarding path is moving forward.`);
     window.setTimeout(() => setCompletionToast(null), 2200);
     if (step < identityLessons.length - 1) {
@@ -2026,6 +2038,7 @@ export default function DashboardLayout() {
   const completeKnowledgeLesson = (step: number) => {
     if (!canContinueKnowledgeLesson(step)) return;
     setCompletedKnowledgeSteps((current) => (current.includes(step) ? current : [...current, step]));
+    if (persistCompletedLessonEdits()) return;
     setCompletionToast(`${knowledgeLessonCompletionNames[step]} complete — your knowledge onboarding path is moving forward.`);
     window.setTimeout(() => setCompletionToast(null), 2200);
     if (step < knowledgeLessonSequence.length - 1) {
@@ -4066,6 +4079,12 @@ export default function DashboardLayout() {
     { title: "Integrations", description: "Where it connects", section: "Integrations" as const, Icon: Plug, complete: workspaceProgressBySection.Integrations >= 100, percent: workspaceProgressBySection.Integrations, unlocked: true },
   ];
   const trainingHasStarted = workspaceNavigatorItems.some((item) => item.complete || item.percent > 0);
+  const allTrainingWorkspacesComplete = workspaceNavigatorItems.length > 0 && workspaceNavigatorItems.every((item) => item.complete);
+  const integrationsReviewComplete = completedIntegrationSteps.includes(integrationLessonSequence.length - 1);
+  // Initial training completed. Workspaces stay editable; this flag only changes CTA copy and finish-training presentation.
+  const trainingFinished = allTrainingWorkspacesComplete && integrationsReviewComplete;
+  trainingFinishedRef.current = trainingFinished;
+  const lessonPrimaryActionLabel = trainingFinished ? "Save changes" : "Save & Continue";
   const aiReadinessStatus = aiConfigurationLoading
     ? "Loading…"
     : aiConfigurationError
@@ -4080,7 +4099,9 @@ export default function DashboardLayout() {
     : aiConfigurationError
       ? aiConfigurationError
       : aiConfigurationReadiness?.is_configured
-        ? "Your AI Employee has the information and instructions it needs to work for your business."
+        ? trainingFinished
+          ? "Your AI Employee is active. You can update its information, instructions, and connected channels at any time."
+          : "Your AI Employee has the information and instructions it needs to work for your business."
         : trainingHasStarted
           ? "Your AI Employee is being trained with your business information and instructions."
           : "Your business profile hasn't been set up. Complete Business Identity to begin training your AI Employee.";
@@ -4505,6 +4526,7 @@ export default function DashboardLayout() {
 
   const completeIntegrationLesson = (step: number) => {
     setCompletedIntegrationSteps((current) => (current.includes(step) ? current : [...current, step]));
+    if (persistCompletedLessonEdits()) return;
     setCompletionToast(`${integrationLessonCompletionNames[step]} complete — your integrations training path is moving forward.`);
     window.setTimeout(() => setCompletionToast(null), 2200);
     if (step < integrationLessonSequence.length - 1) {
@@ -4704,15 +4726,19 @@ export default function DashboardLayout() {
                   Save
                 </button>
               ) : null}
-              <button
-                type="button"
-                onClick={() => completeIntegrationLesson(activeIntegrationStep)}
-                disabled={!canContinueIntegrationLesson(activeIntegrationStep)}
-                className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45"
-              >
-                {activeIntegrationStep === integrationLessonSequence.length - 1 ? "Finish training" : "Save & Continue"}
-                <ChevronRight className="h-4 w-4" />
-              </button>
+              {activeIntegrationStep === integrationLessonSequence.length - 1 && trainingFinished ? (
+                <p className="text-sm font-semibold text-[#166534]">Training complete</p>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => completeIntegrationLesson(activeIntegrationStep)}
+                  disabled={!canContinueIntegrationLesson(activeIntegrationStep)}
+                  className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45"
+                >
+                  {activeIntegrationStep === integrationLessonSequence.length - 1 ? "Finish training" : lessonPrimaryActionLabel}
+                  {trainingFinished || activeIntegrationStep === integrationLessonSequence.length - 1 ? null : <ChevronRight className="h-4 w-4" />}
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -4743,6 +4769,7 @@ export default function DashboardLayout() {
 
   const completeSalesLesson = (step: number) => {
     setCompletedSalesSteps((current) => (current.includes(step) ? current : [...current, step]));
+    if (persistCompletedLessonEdits()) return;
     setCompletionToast(`${salesLessons[step] ?? "Lesson"} complete — your sales playbooks training path is moving forward.`);
     window.setTimeout(() => setCompletionToast(null), 2200);
     if (step < salesLessons.length - 1) {
@@ -4752,6 +4779,7 @@ export default function DashboardLayout() {
 
   const completeSkillsLesson = (step: number) => {
     setCompletedSkillsSteps((current) => (current.includes(step) ? current : [...current, step]));
+    if (persistCompletedLessonEdits()) return;
     setCompletionToast(`${skillsLessons[step] ?? "Lesson"} complete — your skills training path is moving forward.`);
     window.setTimeout(() => setCompletionToast(null), 2200);
     if (step < skillsLessons.length - 1) {
@@ -4761,6 +4789,7 @@ export default function DashboardLayout() {
 
   const completePolicyLesson = (step: number) => {
     setCompletedPolicySteps((current) => (current.includes(step) ? current : [...current, step]));
+    if (persistCompletedLessonEdits()) return;
     setCompletionToast(`${policySections[step]?.title ?? "Lesson"} complete — your policies training path is moving forward.`);
     window.setTimeout(() => setCompletionToast(null), 2200);
     if (step < policySections.length - 1) {
@@ -4770,6 +4799,7 @@ export default function DashboardLayout() {
 
   const completeCatalogueLesson = (step: number) => {
     setCompletedCatalogueSteps((current) => (current.includes(step) ? current : [...current, step]));
+    if (persistCompletedLessonEdits()) return;
     setCompletionToast(`${catalogueLessons[step] ?? "Lesson"} complete — your catalogue training path is moving forward.`);
     window.setTimeout(() => setCompletionToast(null), 2200);
     if (step < catalogueLessons.length - 1) {
@@ -4803,16 +4833,20 @@ export default function DashboardLayout() {
   const contentWorkspacesComplete = workspaceNavigatorItems
     .filter((item) => item.section !== "Integrations")
     .every((item) => item.complete);
-  const allTrainingWorkspacesComplete = workspaceNavigatorItems.length > 0 && workspaceNavigatorItems.every((item) => item.complete);
-  const integrationsReviewComplete = completedIntegrationSteps.includes(integrationLessonSequence.length - 1);
-  const trainingFinished = allTrainingWorkspacesComplete && integrationsReviewComplete;
   const openIdentitySetupLesson = (step: number) => {
     openWorkspaceDialog("Identity");
     window.setTimeout(() => focusIdentityLesson(Math.max(0, step)), 0);
   };
   const openManageAiEmployee = () => {
     setWorkspaceDialogOpen(false);
-    handleNavSelection("Performance", "/dashboard/performance");
+    if (selected !== "AI Employee" && selected !== "Training") {
+      handleNavSelection("AI Employee", "/dashboard/ai");
+    }
+    window.setTimeout(() => {
+      document
+        .querySelector('[aria-label="AI employee training workspaces"]')
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
   };
   const headerCta = aiConfigurationLoading || !onboardingRestored
     ? { id: "loading" as const, label: "Loading…", disabled: true, run: () => {} }
@@ -4837,6 +4871,7 @@ export default function DashboardLayout() {
     focusSkillsLesson,
     completeSalesLesson,
     completeSkillsLesson,
+    trainingFinished,
   };
 
   if (!skillsLessonTabsComponentRef.current) {
@@ -4849,6 +4884,7 @@ export default function DashboardLayout() {
         setActiveWorkspaceSection,
         focusSkillsLesson,
         completeSkillsLesson,
+        trainingFinished,
       } = trainingLessonTabsApiRef.current!;
     type SkillCapability = {
       id: string;
@@ -5453,14 +5489,15 @@ export default function DashboardLayout() {
               type="button"
               onClick={() => {
                 completeSkillsLesson(activeSkillsStep);
-                if (activeSkillsStep >= 6) {
+                if (activeSkillsStep >= 6 && !trainingFinished) {
                   handleSaveChanges();
                   setActiveWorkspaceSection("Integrations");
                 }
               }}
               className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]"
             >
-              Save & Continue <ChevronRight className="h-4 w-4" />
+              {trainingFinished ? "Save changes" : "Save & Continue"}
+              {trainingFinished ? null : <ChevronRight className="h-4 w-4" />}
             </button>
           </div>
         </div>
@@ -5472,7 +5509,7 @@ export default function DashboardLayout() {
 
   if (!salesLessonTabsComponentRef.current) {
     salesLessonTabsComponentRef.current = function SalesLessonTabs() {
-      const { activeSalesStep, handleSaveChanges, setActiveWorkspaceSection, focusSalesLesson, completeSalesLesson } = trainingLessonTabsApiRef.current!;
+      const { activeSalesStep, handleSaveChanges, setActiveWorkspaceSection, focusSalesLesson, completeSalesLesson, trainingFinished } = trainingLessonTabsApiRef.current!;
     const initialObjectives = [
       'Sell products or services',
       'Generate qualified leads',
@@ -5820,14 +5857,15 @@ export default function DashboardLayout() {
               type="button"
               onClick={() => {
                 completeSalesLesson(activeSalesStep);
-                if (activeSalesStep >= 6) {
+                if (activeSalesStep >= 6 && !trainingFinished) {
                   handleSaveChanges();
                   setActiveWorkspaceSection("Policies");
                 }
               }}
               className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]"
             >
-              Save & Continue <ChevronRight className="h-4 w-4" />
+              {trainingFinished ? "Save changes" : "Save & Continue"}
+              {trainingFinished ? null : <ChevronRight className="h-4 w-4" />}
             </button>
           </div>
         </div>
@@ -6043,8 +6081,8 @@ export default function DashboardLayout() {
             })}
           </div>
           <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
-            <button type="button" onClick={() => setActiveWorkspaceSection("Identity")} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-            <button type="button" onClick={() => completeKnowledgeLesson(0)} disabled={!canContinueKnowledgeLesson(0)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+            <button type="button" onClick={() => { if (!trainingFinished) setActiveWorkspaceSection("Identity"); }} disabled={trainingFinished} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827] disabled:cursor-not-allowed disabled:opacity-45">Back</button>
+            <button type="button" onClick={() => completeKnowledgeLesson(0)} disabled={!canContinueKnowledgeLesson(0)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">{lessonPrimaryActionLabel}{trainingFinished ? null : <ChevronRight className="h-4 w-4" />}</button>
           </div>
         </div>
       </section>
@@ -6175,7 +6213,7 @@ export default function DashboardLayout() {
             {(knowledgeLoading || knowledgeError) && <div role={knowledgeError ? "alert" : undefined} className={`rounded-xl px-4 py-3 text-sm ${knowledgeError ? "border border-[#FECACA] bg-[#FEF2F2] text-[#B91C1C]" : "bg-[#F8FAFC] text-[#64748B]"}`}>{knowledgeError ?? "Loading saved knowledge sources…"}</div>}
             <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
               <button type="button" onClick={() => focusKnowledgeLesson(activeKnowledgeStep - 1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-              <button type="button" disabled={sourceKey !== "company" && !canContinueKnowledgeLesson(activeKnowledgeStep)} onClick={() => { if (sourceKey === "company") setBusinessInformationValidationAttempted(true); if (!canContinueKnowledgeLesson(activeKnowledgeStep)) return; completeKnowledgeLesson(activeKnowledgeStep); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+              <button type="button" disabled={sourceKey !== "company" && !canContinueKnowledgeLesson(activeKnowledgeStep)} onClick={() => { if (sourceKey === "company") setBusinessInformationValidationAttempted(true); if (!canContinueKnowledgeLesson(activeKnowledgeStep)) return; completeKnowledgeLesson(activeKnowledgeStep); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">{lessonPrimaryActionLabel}{trainingFinished ? null : <ChevronRight className="h-4 w-4" />}</button>
             </div>
           </div>
         </section>
@@ -6224,7 +6262,7 @@ export default function DashboardLayout() {
             <button type="button" onClick={() => focusKnowledgeLesson(activeKnowledgeStep - 1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
             <div className="flex items-center gap-3">
               <button type="button" onClick={() => { void handleSaveChanges(); }} disabled={saveState === "saving"} className={AI_TRAINING_SAVE_BUTTON}>Save</button>
-              <button type="button" disabled={!canContinueKnowledgeLesson(activeKnowledgeStep)} onClick={() => { if (!canContinueKnowledgeLesson(activeKnowledgeStep)) return; completeKnowledgeLesson(activeKnowledgeStep); handleSaveChanges(); setActiveWorkspaceSection("Catalogue"); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+              <button type="button" disabled={!canContinueKnowledgeLesson(activeKnowledgeStep)} onClick={() => { if (!canContinueKnowledgeLesson(activeKnowledgeStep)) return; completeKnowledgeLesson(activeKnowledgeStep); handleSaveChanges(); if (!trainingFinished) setActiveWorkspaceSection("Catalogue"); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45">{lessonPrimaryActionLabel}{trainingFinished ? null : <ChevronRight className="h-4 w-4" />}</button>
             </div>
           </div>
         </div>
@@ -6707,8 +6745,8 @@ export default function DashboardLayout() {
                                       onClick={() => completeIdentityLesson(0)}
                                       className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155] disabled:cursor-not-allowed disabled:opacity-45"
                                     >
-                                      <span>Save & Continue</span>
-                                      <ChevronRight className="h-4 w-4" />
+                                      <span>{lessonPrimaryActionLabel}</span>
+                                      {trainingFinished ? null : <ChevronRight className="h-4 w-4" />}
                                     </button>
                                   </div>
                                 </div>
@@ -6840,7 +6878,7 @@ export default function DashboardLayout() {
 
                                   <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
                                     <button type="button" onClick={() => focusIdentityLesson(0)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" onClick={() => completeIdentityLesson(1)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" onClick={() => completeIdentityLesson(1)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">{lessonPrimaryActionLabel}{trainingFinished ? null : <ChevronRight className="h-4 w-4" />}</button>
                                   </div>
                                 </div>
                               </section>
@@ -6932,7 +6970,7 @@ export default function DashboardLayout() {
 
                                   <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
                                     <button type="button" onClick={() => focusIdentityLesson(1)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" onClick={() => completeIdentityLesson(2)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" onClick={() => completeIdentityLesson(2)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">{lessonPrimaryActionLabel}{trainingFinished ? null : <ChevronRight className="h-4 w-4" />}</button>
                                   </div>
                                 </div>
                               </section>
@@ -7020,7 +7058,7 @@ export default function DashboardLayout() {
                                   </div>
                                   <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
                                     <button type="button" onClick={() => focusIdentityLesson(2)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" onClick={() => completeIdentityLesson(3)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" onClick={() => completeIdentityLesson(3)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">{lessonPrimaryActionLabel}{trainingFinished ? null : <ChevronRight className="h-4 w-4" />}</button>
                                   </div>
                                 </div>
                               </section>
@@ -7034,6 +7072,7 @@ export default function DashboardLayout() {
                                   onDirty={() => setHasUnsavedChanges(true)}
                                   onBack={() => focusIdentityLesson(3)}
                                   onSaveAndContinue={() => completeIdentityLesson(4)}
+                                  saveLabel={lessonPrimaryActionLabel}
                                   fieldClassName={AI_TRAINING_FIELD}
                                   textareaClassName={AI_TRAINING_TEXTAREA}
                                   actionsClassName={AI_TRAINING_LESSON_ACTIONS_BETWEEN}
@@ -7087,7 +7126,7 @@ export default function DashboardLayout() {
 
                                   <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
                                     <button type="button" onClick={() => focusIdentityLesson(4)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
-                                    <button type="button" onClick={() => completeIdentityLesson(5)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                                    <button type="button" onClick={() => completeIdentityLesson(5)} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">{lessonPrimaryActionLabel}{trainingFinished ? null : <ChevronRight className="h-4 w-4" />}</button>
                                   </div>
                                 </div>
                               </section>
@@ -7128,7 +7167,7 @@ export default function DashboardLayout() {
                                     <button type="button" onClick={() => focusIdentityLesson(5)} className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827]">Back</button>
                                     <div className="flex items-center gap-3">
                                       <button type="button" onClick={() => { void handleSaveChanges(); }} disabled={saveState === "saving"} className={AI_TRAINING_SAVE_BUTTON}>Save</button>
-                                      <button type="button" onClick={() => { completeIdentityLesson(6); setAiEmployeeLaunched(true); handleSaveChanges(); setActiveWorkspaceSection("Knowledge Hub"); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                                      <button type="button" onClick={() => { completeIdentityLesson(6); setAiEmployeeLaunched(true); handleSaveChanges(); if (!trainingFinished) setActiveWorkspaceSection("Knowledge Hub"); }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">{lessonPrimaryActionLabel}{trainingFinished ? null : <ChevronRight className="h-4 w-4" />}</button>
                                     </div>
                                   </div>
                                 </div>
@@ -7596,14 +7635,14 @@ export default function DashboardLayout() {
                               type="button"
                               onClick={() => {
                                 completeCatalogueLesson(activeProductStep);
-                                if (activeProductStep >= catalogueLessons.length - 1) {
+                                if (activeProductStep >= catalogueLessons.length - 1 && !trainingFinished) {
                                   handleSaveChanges();
                                   setActiveWorkspaceSection("Sales Playbooks");
                                 }
                               }}
                               className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]"
                             >
-                              Save & Continue <ChevronRight className="h-4 w-4" />
+                              {lessonPrimaryActionLabel}{trainingFinished ? null : <ChevronRight className="h-4 w-4" />}
                             </button>
                           </div>
                         </div>
@@ -8382,7 +8421,7 @@ export default function DashboardLayout() {
                                   {index === policySections.length - 1 ? (
                                     <button type="button" onClick={() => { void handleSaveChanges(); }} disabled={saveState === "saving"} className={AI_TRAINING_SAVE_BUTTON}>Save</button>
                                   ) : null}
-                                  <button type="button" onClick={() => { completePolicyLesson(index); if (index >= policySections.length - 1) { handleSaveChanges(); setActiveWorkspaceSection("Skills"); } }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">Save & Continue <ChevronRight className="h-4 w-4" /></button>
+                                  <button type="button" onClick={() => { completePolicyLesson(index); if (index >= policySections.length - 1 && !trainingFinished) { handleSaveChanges(); setActiveWorkspaceSection("Skills"); } }} className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]">{lessonPrimaryActionLabel}{trainingFinished ? null : <ChevronRight className="h-4 w-4" />}</button>
                                 </div>
                               </div>
                             </section>

@@ -63,8 +63,11 @@ type Props = {
   children?: ReactNode;
 };
 
-const workspaceStatus = (item: TrainingWorkspaceItem) => {
-  if (item.complete) return "Complete";
+const workspaceStatus = (
+  item: TrainingWorkspaceItem,
+  trainingFinished: boolean,
+) => {
+  if (item.complete) return trainingFinished ? "Configured" : "Complete";
   if (item.percent > 0) return "In progress";
   return "Not started";
 };
@@ -232,10 +235,22 @@ export default function TrainingWorkspace({
         <h2 className="text-[24px] font-semibold tracking-[-0.02em] text-[#111827] lg:text-[26px]">
           AI Employee Setup
         </h2>
-        <p className="mt-2 text-sm leading-6 text-[#6B7280]">
-          Prepare your AI Employee to understand your business, follow your
-          instructions, and connect with customers.
-        </p>
+        {trainingFinished ? (
+          <>
+            <p className="mt-2 text-base font-semibold text-[#111827]">
+              Your AI Employee is trained and ready
+            </p>
+            <p className="mt-1 text-sm leading-6 text-[#6B7280]">
+              Your AI Employee is active. You can update its information,
+              instructions, and connected channels at any time.
+            </p>
+          </>
+        ) : (
+          <p className="mt-2 text-sm leading-6 text-[#6B7280]">
+            Prepare your AI Employee to understand your business, follow your
+            instructions, and connect with customers.
+          </p>
+        )}
       </header>
 
       <section
@@ -245,12 +260,10 @@ export default function TrainingWorkspace({
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(220px,280px)] lg:items-start">
           <div className="min-w-0">
             <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#64748B]">
-              Training progress
+              {trainingFinished ? "AI Employee ready" : "Training progress"}
             </p>
             <p className="mt-1 text-sm font-semibold text-[#111827]">
-              {trainingFinished
-                ? "Training complete"
-                : `${completedWorkspaceCount} of ${totalWorkspaceCount} workspaces complete · ${allWorkspacesComplete ? 100 : workspaceProgressPercent}% complete`}
+              {`${completedWorkspaceCount} of ${totalWorkspaceCount} workspaces complete · ${allWorkspacesComplete ? 100 : workspaceProgressPercent}% complete`}
             </p>
             <div
               className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]"
@@ -264,7 +277,12 @@ export default function TrainingWorkspace({
               />
             </div>
 
-            {trainingFinished ? null : (
+            {trainingFinished ? (
+              <p className="mt-4 text-sm leading-6 text-[#64748B]">
+                Training complete. You can continue updating your AI Employee
+                whenever your business changes.
+              </p>
+            ) : (
               <>
                 <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#64748B]">
                   Current workspace
@@ -330,22 +348,26 @@ export default function TrainingWorkspace({
       <section aria-label="AI employee training workspaces">
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
           {workspaceNavigatorItems.map((item) => {
-            const status = workspaceStatus(item);
+            const status = workspaceStatus(item, trainingFinished);
+            const showWorkspaceIcon = trainingFinished || !item.complete;
+            const actionLabel =
+              trainingFinished && item.complete ? "Edit workspace" : "Open";
             return (
               <button
                 key={item.section}
                 type="button"
                 onClick={() => onOpenWorkspace(item.section)}
+                aria-label={`${actionLabel} ${item.title}`}
                 className="group cursor-pointer rounded-[20px] border border-[#E5E7EB] bg-white p-5 text-left shadow-[0_8px_24px_rgba(15,23,42,0.04)] transition duration-200 hover:-translate-y-0.5 hover:border-[#86EFAC] hover:shadow-[0_14px_32px_rgba(15,23,42,0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2"
               >
                 <div className="flex items-start justify-between gap-3">
                   <span
                     className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${item.complete ? "bg-[#DCFCE7] text-[#166534]" : "bg-[#ECFDF5] text-[#166534]"}`}
                   >
-                    {item.complete ? (
-                      <Check className="h-5 w-5" />
-                    ) : (
+                    {showWorkspaceIcon ? (
                       <item.Icon className="h-5 w-5" />
+                    ) : (
+                      <Check className="h-5 w-5" />
                     )}
                   </span>
                   <span
@@ -370,7 +392,7 @@ export default function TrainingWorkspace({
                 </div>
                 <div className="mt-2 flex items-center justify-between text-xs font-semibold text-[#64748B]">
                   <span>{item.percent}%</span>
-                  <span className="text-[#166534]">Open</span>
+                  <span className="text-[#166534]">{actionLabel}</span>
                 </div>
               </button>
             );
@@ -402,7 +424,9 @@ export default function TrainingWorkspace({
                 </DialogTitle>
                 <DialogDescription className="mt-1 text-sm leading-6 text-[#64748B]">
                   {activeItem?.description ??
-                    "Continue training this workspace."}
+                    (trainingFinished
+                      ? "Update this workspace whenever your business changes."
+                      : "Continue training this workspace.")}
                 </DialogDescription>
               </div>
             </div>
@@ -435,7 +459,7 @@ export default function TrainingWorkspace({
             ) : activeItem ? (
               <div>
                 <div className="flex items-center justify-between text-xs font-semibold text-[#64748B]">
-                  <span>{workspaceStatus(activeItem)}</span>
+                  <span>{workspaceStatus(activeItem, trainingFinished)}</span>
                   <span className="text-[#166534]">{activeItem.percent}%</span>
                 </div>
                 <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]">
