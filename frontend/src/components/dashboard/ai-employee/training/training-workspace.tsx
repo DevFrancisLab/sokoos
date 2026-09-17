@@ -26,6 +26,18 @@ export type TrainingLessonNavItem = {
   disabled?: boolean;
 };
 
+export type TrainingHeaderCta = {
+  id:
+    | "loading"
+    | "start"
+    | "continue-setup"
+    | "continue-training"
+    | "review-finish"
+    | "manage";
+  label: string;
+  disabled?: boolean;
+};
+
 type Props = {
   workspaceNavigatorItems: TrainingWorkspaceItem[];
   activeWorkspaceSection: string;
@@ -42,7 +54,8 @@ type Props = {
   aiReadinessStatus: string;
   aiReadinessDetail: string;
   aiConfigurationError: string | null;
-  onContinueTraining: () => void;
+  headerCta: TrainingHeaderCta;
+  onHeaderCta: () => void;
   onReviewAndFinishTraining: () => void;
   onRetryAiConfiguration?: () => void;
   lessons?: TrainingLessonNavItem[];
@@ -159,7 +172,8 @@ export default function TrainingWorkspace({
   aiReadinessStatus,
   aiReadinessDetail,
   aiConfigurationError,
-  onContinueTraining,
+  headerCta,
+  onHeaderCta,
   onReviewAndFinishTraining,
   onRetryAiConfiguration,
   lessons = [],
@@ -197,19 +211,13 @@ export default function TrainingWorkspace({
   const currentSetupWorkspace =
     workspaceNavigatorItems.find((item) => !item.complete) ??
     workspaceNavigatorItems[workspaceNavigatorItems.length - 1];
-  const trainingHasStarted = workspaceNavigatorItems.some(
-    (item) => item.complete || item.percent > 0,
-  );
   const allWorkspacesComplete =
     totalWorkspaceCount > 0 && completedWorkspaceCount >= totalWorkspaceCount;
-  const primaryActionLabel = allWorkspacesComplete
-    ? "Review & Finish Training"
-    : trainingHasStarted
-      ? "Continue training"
-      : "Start Business Setup";
-  const onPrimaryAction = allWorkspacesComplete
-    ? onReviewAndFinishTraining
-    : onContinueTraining;
+  const trainingFinished = headerCta.id === "manage";
+  const showSecondaryReview =
+    headerCta.id !== "review-finish" &&
+    headerCta.id !== "manage" &&
+    headerCta.id !== "loading";
   const readinessIsError = Boolean(aiConfigurationError);
   const readinessIsReady = aiReadinessStatus === "Ready";
   const [mobileLessonNavOpen, setMobileLessonNavOpen] = useState(false);
@@ -240,9 +248,9 @@ export default function TrainingWorkspace({
               Training progress
             </p>
             <p className="mt-1 text-sm font-semibold text-[#111827]">
-              {completedWorkspaceCount} of {totalWorkspaceCount} workspaces
-              complete ·{" "}
-              {allWorkspacesComplete ? 100 : workspaceProgressPercent}% complete
+              {trainingFinished
+                ? "Training complete"
+                : `${completedWorkspaceCount} of ${totalWorkspaceCount} workspaces complete · ${allWorkspacesComplete ? 100 : workspaceProgressPercent}% complete`}
             </p>
             <div
               className="mt-3 h-1.5 overflow-hidden rounded-full bg-[#EEF2F6]"
@@ -256,22 +264,28 @@ export default function TrainingWorkspace({
               />
             </div>
 
-            <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#64748B]">
-              Current workspace
-            </p>
-            <p className="mt-1 text-base font-semibold text-[#111827]">
-              {currentSetupWorkspace?.title ?? "Identity"}
-            </p>
+            {trainingFinished ? null : (
+              <>
+                <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#64748B]">
+                  Current workspace
+                </p>
+                <p className="mt-1 text-base font-semibold text-[#111827]">
+                  {currentSetupWorkspace?.title ?? "Identity"}
+                </p>
+              </>
+            )}
 
             <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <button
                 type="button"
-                onClick={onPrimaryAction}
-                className="inline-flex h-11 w-full items-center justify-center rounded-lg bg-[#111827] px-4 text-sm font-semibold text-white transition hover:bg-[#334155] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 sm:w-auto"
+                onClick={onHeaderCta}
+                disabled={headerCta.disabled}
+                aria-label={headerCta.label}
+                className="inline-flex h-11 w-full items-center justify-center rounded-lg bg-[#111827] px-4 text-sm font-semibold text-white transition hover:bg-[#334155] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-45 sm:w-auto"
               >
-                {primaryActionLabel}
+                {headerCta.label}
               </button>
-              {allWorkspacesComplete ? null : (
+              {showSecondaryReview ? (
                 <button
                   type="button"
                   onClick={onReviewAndFinishTraining}
@@ -279,7 +293,7 @@ export default function TrainingWorkspace({
                 >
                   Review & Finish Training
                 </button>
-              )}
+              ) : null}
             </div>
           </div>
 

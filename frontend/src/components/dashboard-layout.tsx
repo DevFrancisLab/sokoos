@@ -4797,6 +4797,34 @@ export default function DashboardLayout() {
     const nextWorkspace = workspaceNavigatorItems.find((item) => !item.complete) ?? workspaceNavigatorItems[0];
     openTrainingWorkspace(nextWorkspace?.section ?? "Identity");
   };
+  const firstIncompleteIdentityLesson = identityLessons.findIndex((_, index) => !completedIdentitySteps.includes(index));
+  const identitySetupStarted = identityCompletedCount > 0 || Boolean((businessInfo.name || "").trim()) || hasPersistedAiConfiguration;
+  const identitySetupComplete = identityWorkspacePercent >= 100;
+  const contentWorkspacesComplete = workspaceNavigatorItems
+    .filter((item) => item.section !== "Integrations")
+    .every((item) => item.complete);
+  const allTrainingWorkspacesComplete = workspaceNavigatorItems.length > 0 && workspaceNavigatorItems.every((item) => item.complete);
+  const integrationsReviewComplete = completedIntegrationSteps.includes(integrationLessonSequence.length - 1);
+  const trainingFinished = allTrainingWorkspacesComplete && integrationsReviewComplete;
+  const openIdentitySetupLesson = (step: number) => {
+    openWorkspaceDialog("Identity");
+    window.setTimeout(() => focusIdentityLesson(Math.max(0, step)), 0);
+  };
+  const openManageAiEmployee = () => {
+    setWorkspaceDialogOpen(false);
+    handleNavSelection("Performance", "/dashboard/performance");
+  };
+  const headerCta = aiConfigurationLoading || !onboardingRestored
+    ? { id: "loading" as const, label: "Loading…", disabled: true, run: () => {} }
+    : trainingFinished
+      ? { id: "manage" as const, label: "Manage AI Employee", disabled: false, run: openManageAiEmployee }
+      : contentWorkspacesComplete
+        ? { id: "review-finish" as const, label: "Review & Finish Training", disabled: false, run: openReviewAndFinishTraining }
+        : identitySetupStarted && !identitySetupComplete
+          ? { id: "continue-setup" as const, label: "Continue Setup", disabled: false, run: () => openIdentitySetupLesson(firstIncompleteIdentityLesson) }
+          : workspaceNavigatorItems.some((item) => !item.complete) && identitySetupComplete
+            ? { id: "continue-training" as const, label: "Continue Training", disabled: false, run: continueCurrentTraining }
+            : { id: "start" as const, label: "Start Business Setup", disabled: false, run: () => openIdentitySetupLesson(0) };
 
   trainingLessonTabsApiRef.current = {
     activeSkillsStep,
@@ -6389,7 +6417,8 @@ export default function DashboardLayout() {
               aiReadinessStatus={aiReadinessStatus}
               aiReadinessDetail={aiReadinessDetail}
               aiConfigurationError={aiConfigurationError}
-              onContinueTraining={continueCurrentTraining}
+              headerCta={headerCta}
+              onHeaderCta={headerCta.run}
               onReviewAndFinishTraining={openReviewAndFinishTraining}
               onRetryAiConfiguration={retryAIEmployeeConfiguration}
               lessons={
