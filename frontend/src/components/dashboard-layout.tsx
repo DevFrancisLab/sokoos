@@ -30,9 +30,6 @@ import {
   BarChart3,
   CircleAlert,
   MapPin,
-  MoreVertical,
-  LayoutGrid,
-  List,
   X,
   ChevronRight,
   ChevronLeft,
@@ -52,53 +49,24 @@ import { HomeWorkspace } from "@/components/dashboard/home/home-workspace";
 import { InboxWorkspace } from "@/components/dashboard/inbox/inbox-workspace";
 import { CustomersWorkspace } from "@/components/dashboard/customers/customers-workspace";
 import { PerformanceWorkspace } from "@/components/dashboard/ai-employee/performance/performance-workspace";
-import { TemplateDownloadMenu } from "@/components/dashboard/ai-employee/training/template-download-menu";
 import { TrainingTemplateCard } from "@/components/dashboard/ai-employee/training/training-template-card";
 import TrainingWorkspace from "@/components/dashboard/ai-employee/training/training-workspace";
 import { BusinessHoursLesson } from "@/components/dashboard/ai-employee/training/business-hours-lesson";
+import CatalogueTrainingWorkspace from "@/components/dashboard/ai-employee/training/catalogue-workspace";
+import {
+  cloneCatalogueProduct,
+  createCatalogueDraft,
+  filterCatalogueProducts,
+  type CatalogueAttentionFilter,
+  type CatalogueImportState,
+  type CatalogueProduct,
+  type CatalogueTab,
+} from "@/components/dashboard/ai-employee/training/catalogue-model";
 import { AccountSettings } from "@/components/dashboard/account-settings";
 import { clearAuthSession, getAuthToken, getAuthorizationHeader, getCurrentUser, getUserDisplayName, saveAuthSession, signOutMock, type AuthUser } from "@/lib/auth";
 import { ApiError, apiRequest, changePassword, createCatalogCategory, createCatalogItem, createKnowledgeSource, deleteCatalogCategory, deleteCatalogItem, deleteCatalogMedia, deleteKnowledgeSource, getAIEmployeeConfiguration, getCatalog, getCatalogCategories, getCatalogMedia, getKnowledgeSources, getWhatsAppIntegration, saveWhatsAppIntegration, updateAIEmployeeConfiguration, updateCatalogCategory, updateCatalogItem, updateCatalogMedia, updateKnowledgeSource, updateWhatsAppIntegration, uploadCatalogMedia, type AIEmployeeConfiguration, type CatalogItem, type CatalogItemInput, type CatalogItemType, type KnowledgeSource as APIKnowledgeSource } from "@/lib/api";
 import EditProfileDialog, { type ProfileUpdate } from "@/components/dashboard/edit-profile-dialog";
 import sokoosLogo from "@/assets/sokoos_logo.png";
-
-function CatalogueItemImage({
-  src,
-  alt,
-  className,
-}: {
-  src?: string | null;
-  alt: string;
-  className: string;
-}) {
-  const [hasImageError, setHasImageError] = useState(false);
-  const imageSrc = src?.trim();
-
-  useEffect(() => {
-    setHasImageError(false);
-  }, [imageSrc]);
-
-  if (imageSrc && !hasImageError) {
-    return (
-      <img
-        src={imageSrc}
-        alt={alt}
-        className={className}
-        onError={() => setHasImageError(true)}
-      />
-    );
-  }
-
-  return (
-    <div
-      role="img"
-      aria-label={`${alt} image unavailable`}
-      className={`${className} flex items-center justify-center bg-[#F1F5F9] text-[#94A3B8]`}
-    >
-      <Package className="h-1/3 w-1/3 min-h-4 min-w-4" aria-hidden="true" />
-    </div>
-  );
-}
 
 const NAV_ITEMS = [
   {
@@ -1945,7 +1913,7 @@ export default function DashboardLayout() {
   const previewMessagesRef = useRef<HTMLDivElement>(null);
   const identityLessons = ["Business Identity", "Brand Voice", "Greetings", "Languages", "Business Hours", "Locations", "Review"];
   const identityLessonCompletionNames = ["Business Identity", "Brand Voice", "Greetings", "Languages", "Business Hours", "Locations", "Review"];
-  const catalogueLessons = ["Products", "Pricing"];
+  const catalogueLessons = ["Products & Services", "Catalogue Rules"];
   const salesLessons = [
     "Sales Objectives",
     "Customer Qualification",
@@ -2063,7 +2031,10 @@ export default function DashboardLayout() {
     );
     setHasUnsavedChanges(true);
   };
+  type CatalogProduct = CatalogueProduct;
   const [catalogProducts, setCatalogProducts] = useState<CatalogProduct[]>([]);
+  const [catalogDraft, setCatalogDraft] = useState<CatalogProduct | null>(null);
+  const [catalogPendingDelete, setCatalogPendingDelete] = useState<CatalogProduct | null>(null);
   const [catalogLoading, setCatalogLoading] = useState(true);
   const [categoriesLoading, setCategoriesLoading] = useState(true);
   const [catalogError, setCatalogError] = useState<string | null>(null);
@@ -2071,18 +2042,7 @@ export default function DashboardLayout() {
   const [catalogDeletingId, setCatalogDeletingId] = useState<number | null>(null);
   const [mediaUploading, setMediaUploading] = useState(false);
   const [productSearch, setProductSearch] = useState("");
-  const [catalogView, setCatalogView] = useState<'grid' | 'table'>('grid');
-  type CatalogueAttentionFilter = "all" | "low-stock" | "needs-information";
   const [catalogueAttentionFilter, setCatalogueAttentionFilter] = useState<CatalogueAttentionFilter>("all");
-  type CatalogueTab = "All" | "Products" | "Services" | "Subscriptions" | "Digital Products" | "Memberships" | "Rentals";
-  const CATALOG_TAB_TO_PRODUCT_TYPE: Record<Exclude<CatalogueTab, "All">, string> = {
-    Products: "Product",
-    Services: "Service",
-    Subscriptions: "Subscription",
-    "Digital Products": "Digital Product",
-    Memberships: "Membership",
-    Rentals: "Rental",
-  };
   const BUSINESS_MODEL_TO_ADD_LABEL: Record<string, string> = {
     "Physical Products": "Product",
     Services: "Service",
@@ -2100,19 +2060,7 @@ export default function DashboardLayout() {
     return "Add Item";
   };
   const addButtonLabel = getAddButtonLabel(businessModelSelections);
-
-  const catalogueFilterTabs: CatalogueTab[] = ["All", "Products", "Services", "Subscriptions", "Digital Products", "Memberships", "Rentals"];
-  const catalogueFilterTabOrder: CatalogueTab[] = ["All", "Products", "Services", "Subscriptions", "Digital Products", "Memberships", "Rentals"];
-  const sortedCatalogueFilterTabs = useMemo(
-    () => [...catalogueFilterTabs].sort((a, b) => catalogueFilterTabOrder.indexOf(a) - catalogueFilterTabOrder.indexOf(b)),
-    [catalogueFilterTabs],
-  );
   const [selectedCatalogueTab, setSelectedCatalogueTab] = useState<CatalogueTab>("All");
-  useEffect(() => {
-    if (!catalogueFilterTabs.includes(selectedCatalogueTab)) {
-      setSelectedCatalogueTab("All");
-    }
-  }, [catalogueFilterTabs, selectedCatalogueTab]);
   const [categories, setCategories] = useState<Array<{ id: number; name: string }>>([]);
   const [showAddCategoryInput, setShowAddCategoryInput] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
@@ -2162,24 +2110,11 @@ export default function DashboardLayout() {
     return input;
   };
   const addProduct = (type: string = "Product") => {
-    const id = -Date.now();
-    const newItem = {
-      id,
-      name: `${type} ${catalogProducts.length + 1}`,
-      category: categories[0]?.name ?? "",
-      categoryId: categories[0]?.id,
-      type,
-      price: "0.00",
-      description: "",
-      availability: "Available",
-      image: "/assets/sample/placeholder.png",
-      mediaAssets: [],
-    };
-    setCatalogProducts((p) => [newItem, ...p]);
-    // Open the product editor immediately so users don't need to scroll
-    setSelectedProductId(id);
+    setCatalogDraft(createCatalogueDraft(type, categories[0]));
+    setSelectedProductId(null);
     setProductDrawerTab("general");
     setProductDrawerOpen(true);
+    setProductFormErrors({});
   };
 
   const handleAddItemSelection = (type: string) => {
@@ -2209,65 +2144,25 @@ export default function DashboardLayout() {
     setAddItemChoiceOpen(true);
   };
   const updateCatalogProductField = (id: number, field: string, value: any) => {
-    setCatalogProducts((list) => list.map((p) => (p.id === id ? { ...p, [field]: value } : p)));
+    setCatalogDraft((current) => (current && current.id === id ? { ...current, [field]: value } : current));
   };
   const deleteCatalogProduct = async (id: number) => {
-    if (catalogDeletingId !== null || id < 0) return;
+    if (catalogDeletingId !== null || id < 0) return false;
     setCatalogDeletingId(id);
     setCatalogError(null);
     try {
       await deleteCatalogItem(id);
       setCatalogProducts((list) => list.filter((product) => product.id !== id));
-      if (selectedProductId === id) closeProductDrawer();
-    } catch (error) { setCatalogError(getApiErrorMessage(error)); }
-    finally { setCatalogDeletingId(null); }
+      if (catalogDraft?.id === id) closeProductDrawer();
+      setCatalogPendingDelete(null);
+      return true;
+    } catch (error) {
+      setCatalogError(getApiErrorMessage(error));
+      return false;
+    } finally {
+      setCatalogDeletingId(null);
+    }
   };
-  const duplicateCatalogProduct = async (id: number) => {
-    const original = catalogProducts.find((product) => product.id === id);
-    if (!original || catalogSaving) return;
-    setCatalogSaving(true); setCatalogError(null);
-    try {
-      const result = await createCatalogItem(toCatalogItemInput({ ...original, name: `${original.name} copy` }));
-      setCatalogProducts((list) => [toCatalogProduct(result.data!.catalog_item), ...list]);
-    } catch (error) { setCatalogError(getApiErrorMessage(error)); }
-    finally { setCatalogSaving(false); }
-  };
-  const previewCatalogProduct = (id: number) => {
-    console.log(`Preview catalogue item ${id} - placeholder`);
-  };
-  const getCatalogueItemReadiness = (item: CatalogProduct) => {
-    if (item.readiness) return { label: item.readiness.label, isReady: item.readiness.is_ready, needsInformation: item.readiness.needs_information, missingImage: item.readiness.missing_image, missingFaq: item.readiness.missing_faq };
-    const hasDescription = typeof item.description === "string" && item.description.trim().length > 0;
-    const hasImages = Boolean(
-      (item.image && item.image.trim().length > 0) ||
-      ((item.mediaAssets ?? []).length > 0),
-    );
-    const hasFAQs = Boolean((item as any).faqs && (item as any).faqs.length > 0);
-    const hasPrice = typeof item.price === "string" && item.price.trim().length > 0;
-    const hasInventory = typeof item.currentStock === "number";
-
-    const label = !hasImages
-      ? "Needs Images"
-      : !hasFAQs
-        ? "Needs FAQ"
-        : !hasDescription
-          ? "Needs Description"
-          : !hasPrice
-            ? "Needs Pricing"
-            : !hasInventory
-              ? "Needs Inventory"
-              : "100% Ready";
-
-    return {
-      label,
-      isReady: label === "100% Ready",
-      needsInformation: !hasDescription || !hasPrice || !hasInventory,
-      missingImage: !hasImages,
-      missingFaq: !hasFAQs,
-    };
-  };
-  const getCatalogueItemReadinessLabel = (item: CatalogProduct) => getCatalogueItemReadiness(item).label;
-  const archiveCatalogProduct = deleteCatalogProduct;
   const handleAddCategory = async () => {
     const trimmedName = newCategoryName.trim();
     if (!trimmedName) return;
@@ -2299,90 +2194,74 @@ export default function DashboardLayout() {
     isThumbnail?: boolean;
   };
 
-  type CatalogProduct = {
-    id: number;
-    name: string;
-    category: string;
-    categoryId?: number;
-    type: string;
-    price: string;
-    description: string;
-    availability: string;
-    image: string;
-    mediaAssets: MediaAsset[];
-    sku?: string;
-    tags?: string[];
-    priceNote?: string;
-    currentStock?: number;
-    stockStatus?: string;
-    lowStockThreshold?: number;
-    warehouseLocation?: string;
-    currency?: CatalogItem["currency"];
-    appointmentRequired?: boolean;
-    serviceDurationMinutes?: number;
-    faqs?: string[];
-    customerInformation?: string;
-    readiness?: CatalogItem["readiness"];
-  };
-
-  const [pricingSaved, setPricingSaved] = useState(false);
-  const [pricingSectionComplete, setPricingSectionComplete] = useState(false);
   const [availabilitySaved, setAvailabilitySaved] = useState(false);
   const [catalogueImportOpen, setCatalogueImportOpen] = useState(false);
-  const [showProductTypeDialog, setShowProductTypeDialog] = useState(false);
-  const [showAddProductForm, setShowAddProductForm] = useState(false);
-  const [selectedProductType, setSelectedProductType] = useState<string | null>(null);
   const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
   const [productDrawerOpen, setProductDrawerOpen] = useState(false);
   const [addItemChoiceOpen, setAddItemChoiceOpen] = useState(false);
   const [productDrawerTab, setProductDrawerTab] = useState<"general" | "pricing" | "media" | "inventory" | "ai">("general");
-  const [completedProductStepIds, setCompletedProductStepIds] = useState<string[]>([]);
-  const [addProductFormData, setAddProductFormData] = useState<{ name: string; category: string; price: string; availability: string; image?: string; type: string } | null>(null);
   const [productFormErrors, setProductFormErrors] = useState<Record<string, string>>({});
-  const productSectionIds = ["products","pricing"];
-  const selectedProduct = selectedProductId ? catalogProducts.find((product) => product.id === selectedProductId) ?? null : null;
+  const selectedProduct = catalogDraft;
+  const refreshCatalogItems = async () => {
+    setCatalogLoading(true);
+    setCatalogError(null);
+    try {
+      const result = await getCatalog();
+      if (result.data == null || Array.isArray(result.data)) {
+        setCatalogProducts((result.data ?? []).map(toCatalogProduct));
+      } else {
+        setCatalogError("Your catalogue could not be loaded.");
+      }
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 404) {
+        setCatalogProducts([]);
+        setCatalogError(null);
+      } else {
+        setCatalogError(getApiErrorMessage(error, "Your catalogue could not be loaded."));
+      }
+    } finally {
+      setCatalogLoading(false);
+    }
+  };
   useEffect(() => {
-    let active = true;
-    const loadCatalog = async () => {
-      setCatalogLoading(true); setCatalogError(null);
-      try {
-        const itemType = selectedCatalogueTab === "All" ? undefined : typeToApi[CATALOG_TAB_TO_PRODUCT_TYPE[selectedCatalogueTab as Exclude<CatalogueTab, "All">]];
-        const result = await getCatalog({ search: productSearch, item_type: itemType, low_stock: catalogueAttentionFilter === "low-stock" ? true : undefined, readiness: catalogueAttentionFilter === "needs-information" ? "needs_information" : undefined });
-        if (active) {
-          if (result.data == null || Array.isArray(result.data)) {
-            setCatalogProducts((result.data ?? []).map(toCatalogProduct));
-          } else {
-            setCatalogError("The catalog request could not be completed.");
-          }
-        }
-      } catch (error) { if (active) setCatalogError(getApiErrorMessage(error)); }
-      finally { if (active) setCatalogLoading(false); }
-    };
-    const timer = window.setTimeout(() => { void loadCatalog(); }, productSearch ? 250 : 0);
-    return () => { active = false; window.clearTimeout(timer); };
-  }, [productSearch, selectedCatalogueTab, catalogueAttentionFilter]);
+    void refreshCatalogItems();
+  }, []);
   useEffect(() => {
     let active = true;
     void (async () => {
       setCategoriesLoading(true);
-      try { const result = await getCatalogCategories(); if (active) setCategories(result.data ?? []); }
-      catch (error) { if (active) setCatalogError(getApiErrorMessage(error)); }
+      try {
+        const result = await getCatalogCategories();
+        if (active) setCategories(result.data ?? []);
+      } catch (error) {
+        if (!active) return;
+        if (error instanceof ApiError && error.status === 404) {
+          setCategories([]);
+        } else {
+          setCatalogError(getApiErrorMessage(error, "Your catalogue could not be loaded."));
+        }
+      }
       finally { if (active) setCategoriesLoading(false); }
     })();
     return () => { active = false; };
   }, []);
   useEffect(() => {
-    if (!productDrawerOpen) return;
+    if (!productDrawerOpen && !catalogDraft) return;
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") closeProductDrawer();
+      if (event.key === "Escape") {
+        if (catalogPendingDelete) setCatalogPendingDelete(null);
+        else closeProductDrawer();
+      }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [productDrawerOpen]);
+  }, [productDrawerOpen, catalogDraft, catalogPendingDelete]);
   const refreshCatalogMedia = async (productId: number) => {
     const result = await getCatalogMedia(productId);
     const mediaAssets = (result.data ?? []).map((media) => ({ id: media.id, name: media.original_name, fileType: media.mime_type.split("/")[0], uploadDate: media.created_at, size: "", url: media.file, mime: media.mime_type, altText: media.alt_text, isThumbnail: media.is_thumbnail }));
-    setCatalogProducts((items) => items.map((item) => item.id === productId ? { ...item, mediaAssets, image: mediaAssets.find((media) => media.isThumbnail)?.url ?? mediaAssets[0]?.url ?? "" } : item));
+    const nextImage = mediaAssets.find((media) => media.isThumbnail)?.url ?? mediaAssets[0]?.url ?? "";
+    setCatalogProducts((items) => items.map((item) => item.id === productId ? { ...item, mediaAssets, image: nextImage } : item));
+    setCatalogDraft((current) => current && current.id === productId ? { ...current, mediaAssets, image: nextImage } : current);
   };
   const addProductMediaAssets = async (productId: number, files: FileList | null) => {
     if (!files || productId < 0 || mediaUploading) return;
@@ -2402,64 +2281,52 @@ export default function DashboardLayout() {
   };
   const selectProductThumbnail = (productId: number, assetId: number) => updateProductMediaAssetField(productId, assetId, "isThumbnail", true);
   const openProductDrawer = (id: number) => {
+    const item = catalogProducts.find((product) => product.id === id);
+    if (!item) return;
+    setCatalogDraft(cloneCatalogueProduct(item));
     setSelectedProductId(id);
     setProductDrawerOpen(true);
     setProductDrawerTab("general");
     setProductFormErrors({});
   };
-  const openProductDrawerToTab = (id: number, tab: "general" | "pricing" | "media" | "inventory" | "ai") => {
-    setSelectedProductId(id);
-    setProductDrawerTab(tab);
-    setProductDrawerOpen(true);
-    setProductFormErrors({});
-  };
-
-  const fixMissingDescriptions = () => {
-    const target = catalogProducts.find((p) => !(p.description && p.description.trim().length > 0));
-    if (target) openProductDrawerToTab(target.id, "ai");
-  };
-
-  const fixMissingImages = () => {
-    const target = catalogProducts.find((p) => !(p.image && p.image.trim().length > 0) && ((p.mediaAssets ?? []).length === 0));
-    if (target) openProductDrawerToTab(target.id, "media");
-  };
-
-  const fixMissingFaqs = () => {
-    const target = catalogProducts.find((p) => !((p as any).faqs && (p as any).faqs.length > 0));
-    if (target) openProductDrawerToTab(target.id, "ai");
-  };
   const closeProductDrawer = () => {
     setProductDrawerOpen(false);
     setSelectedProductId(null);
+    setCatalogDraft(null);
     setProductFormErrors({});
   };
   const saveProductDrawer = async () => {
-    if (!selectedProduct) return;
+    if (!catalogDraft) return false;
     const errors: Record<string, string> = {};
-    if (!selectedProduct.name.trim()) errors.name = "Add a clear name so customers and Sokoos can identify this item.";
-    if (!selectedProduct.type.trim()) errors.type = "Choose whether this is a product or service.";
-    if (!selectedProduct.category.trim()) errors.category = "Add a category to help Sokoos recommend it.";
-    if (!selectedProduct.description.trim()) errors.description = "Describe what customers receive or can expect.";
-    if (!selectedProduct.price.trim()) errors.price = "Add a price or pricing guidance.";
+    if (!catalogDraft.name.trim()) errors.name = "Add a clear name so customers and Sokoos can identify this item.";
+    if (!catalogDraft.type.trim()) errors.type = "Choose whether this is a product or service.";
+    if (!catalogDraft.category.trim()) errors.category = "Add a category to help Sokoos recommend it.";
+    if (!catalogDraft.description.trim()) errors.description = "Describe what customers receive or can expect.";
+    if (!catalogDraft.price.trim()) errors.price = "Add a price or pricing guidance.";
     setProductFormErrors(errors);
-    if (Object.keys(errors).length > 0 || catalogSaving) return;
+    if (Object.keys(errors).length > 0 || catalogSaving) return false;
     setCatalogSaving(true); setCatalogError(null);
     try {
-      let categoryId = selectedProduct.categoryId;
-      const matchingCategory = categories.find((category) => category.name.trim().toLowerCase() === selectedProduct.category.trim().toLowerCase());
+      let categoryId = catalogDraft.categoryId;
+      const matchingCategory = categories.find((category) => category.name.trim().toLowerCase() === catalogDraft.category.trim().toLowerCase());
       if (matchingCategory) categoryId = matchingCategory.id;
       else {
-        const categoryResult = await createCatalogCategory(selectedProduct.category.trim());
+        const categoryResult = await createCatalogCategory(catalogDraft.category.trim());
         categoryId = categoryResult.data!.category.id;
         setCategories((current) => [...current, categoryResult.data!.category]);
       }
-      const input = toCatalogItemInput(selectedProduct, categoryId);
-      const result = selectedProduct.id < 0 ? await createCatalogItem(input) : await updateCatalogItem(selectedProduct.id, input);
+      const input = toCatalogItemInput(catalogDraft, categoryId);
+      const result = catalogDraft.id < 0 ? await createCatalogItem(input) : await updateCatalogItem(catalogDraft.id, input);
       const product = toCatalogProduct(result.data!.catalog_item);
-      setCatalogProducts((items) => selectedProduct.id < 0 ? [product, ...items.filter((item) => item.id !== selectedProduct.id)] : items.map((item) => item.id === product.id ? product : item));
+      setCatalogProducts((items) => catalogDraft.id < 0 ? [product, ...items.filter((item) => item.id !== catalogDraft.id && item.id > 0)] : items.map((item) => item.id === product.id ? product : item));
       closeProductDrawer();
-    } catch (error) { setCatalogError(error instanceof Error && !(error instanceof ApiError) ? error.message : getApiErrorMessage(error)); }
-    finally { setCatalogSaving(false); }
+      return true;
+    } catch (error) {
+      setCatalogError(error instanceof Error && !(error instanceof ApiError) ? error.message : getApiErrorMessage(error));
+      return false;
+    } finally {
+      setCatalogSaving(false);
+    }
   };
   const handleProductImageUpload = (files: FileList | null) => {
     if (!files || !selectedProduct) return;
@@ -2598,85 +2465,11 @@ export default function DashboardLayout() {
     </div>
   );
   const [activeProductStep, setActiveProductStep] = useState(0);
-  const productStepRefs = useRef<(HTMLElement | null)[]>([]);
   const focusProductStep = (index: number) => {
     const nextStep = Math.min(Math.max(index, 0), catalogueLessons.length - 1);
     setActiveProductStep(nextStep);
-    const id = productSectionIds[nextStep];
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-  useEffect(() => {
-    const ids = productSectionIds;
-    const els = ids.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
-    if (els.length === 0) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter((e) => e.isIntersecting);
-        if (visible.length > 0) {
-          visible.sort((a, b) => b.intersectionRatio - a.intersectionRatio);
-          const idx = ids.indexOf(visible[0].target.id);
-          if (idx !== -1) setActiveProductStep(idx);
-        } else {
-          const rects = els.map((el) => ({ id: el.id, top: Math.abs(el.getBoundingClientRect().top - 120) }));
-          rects.sort((a, b) => a.top - b.top);
-          setActiveProductStep(ids.indexOf(rects[0].id));
-        }
-      },
-      { threshold: [0.25, 0.5, 0.75], root: null, rootMargin: "-40% 0px -40% 0px" },
-    );
-    els.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, [catalogProducts.length]);
-
-  const getProductCompletionMessage = (id: string) => {
-    switch (id) {
-      case "product-types":
-        return "Product Types complete — your catalog formats are configured.";
-      case "products":
-        return "Products complete — your catalogue has been added and is ready to manage.";
-      case "pricing":
-        return "Pricing complete — your product prices are saved and ready to publish.";
-      case "product-media":
-        return "Product Media complete — your catalogue now includes visual assets.";
-      default:
-        return "Panel complete — your catalogue workspace is moving forward.";
-    }
   };
 
-  const productSteps = useMemo(
-    () => [
-      { id: "products", title: "Products", detail: "Add and manage catalog items", done: catalogProducts.length > 0 },
-      { id: "pricing", title: "Pricing", detail: "Set prices and billing", done: pricingSectionComplete },
-    ],
-    [catalogProducts.length, pricingSectionComplete],
-  );
-
-  const catalogProductCount = catalogProducts.filter((item) => item.type === "Product").length;
-  const catalogServiceCount = catalogProducts.filter((item) => item.type === "Service").length;
-
-  const productCompletionMounted = useRef(false);
-
-  useEffect(() => {
-    if (!productCompletionMounted.current) {
-      productCompletionMounted.current = true;
-      return;
-    }
-
-    const completedIds = productSteps.filter((step) => step.done).map((step) => step.id);
-    const newlyCompleted = completedIds.filter((id) => !completedProductStepIds.includes(id));
-    if (newlyCompleted.length === 0) return;
-
-    setCompletedProductStepIds((current) => [...current, ...newlyCompleted]);
-
-    newlyCompleted.forEach((id, index) => {
-      window.setTimeout(() => {
-        setCompletionToast(getProductCompletionMessage(id));
-        window.setTimeout(() => setCompletionToast(null), 2200);
-      }, index * 2400);
-    });
-  }, [completedProductStepIds, productSteps]);
 
   const productMediaFileInputRef = useRef<HTMLInputElement | null>(null);
   const serviceFileInputRef = useRef<HTMLInputElement | null>(null);
@@ -2837,21 +2630,6 @@ export default function DashboardLayout() {
     setCatalogServices((list) => [newService, ...list]);
     setSelectedServiceId(id);
   };
-  const addProductWithData = (data: { name: string; category: string; price: string; availability: string; image?: string; type: string }) => {
-    const id = -Date.now();
-    const newItem = {
-      id,
-      name: data.name,
-      category: data.category,
-      type: data.type || 'Product',
-      price: data.price,
-      description: "",
-      availability: data.availability,
-      image: data.image || "/assets/sample/placeholder.png",
-      mediaAssets: [],
-    };
-    setCatalogProducts((p) => [newItem, ...p]);
-  };
 
   const onDrop = (e: React.DragEvent<HTMLDivElement>, productId: number) => {
     e.preventDefault();
@@ -2864,9 +2642,7 @@ export default function DashboardLayout() {
     window.open(url, "_blank");
   };
 
-  type CatalogueImportPreview = { headers: string[]; rows: Array<Record<string, string>> };
-  type CatalogueImportStatus = "idle" | "selected" | "preview" | "error" | "ready" | "confirmed";
-  const [catalogueImport, setCatalogueImport] = useState<{ file?: File; status: CatalogueImportStatus; errors: string[]; preview?: CatalogueImportPreview }>({ status: "idle", errors: [] });
+  const [catalogueImport, setCatalogueImport] = useState<CatalogueImportState>({ status: "idle", errors: [] });
 
   const parseCatalogueCsvLine = (line: string) => {
     const values: string[] = [];
@@ -4833,6 +4609,24 @@ export default function DashboardLayout() {
       window.setTimeout(() => focusProductStep(step + 1), 500);
     }
   };
+  const handleCatalogueContinue = async () => {
+    if (catalogDraft) {
+      const saved = await saveProductDrawer();
+      if (!saved) return;
+    }
+    completeCatalogueLesson(activeProductStep);
+    if (activeProductStep >= catalogueLessons.length - 1 && !trainingFinished) {
+      void handleSaveChanges();
+      setActiveWorkspaceSection("Sales Playbooks");
+    }
+  };
+  const persistedCatalogProducts = catalogProducts.filter((item) => item.id > 0);
+  const filteredCatalogProducts = filterCatalogueProducts(
+    persistedCatalogProducts,
+    productSearch,
+    selectedCatalogueTab,
+    catalogueAttentionFilter,
+  );
 
   const openTrainingWorkspace = (section: (typeof workspaceNavigatorItems)[number]["section"]) => {
     openWorkspaceDialog(section);
@@ -7372,396 +7166,62 @@ export default function DashboardLayout() {
                     )}
 
                     {activeWorkspaceSection === "Catalogue" && (
-                      <div className="w-full min-w-0 space-y-4 overflow-x-hidden">
-                        <div className="rounded-[24px] border border-[#E5E7EB] bg-white p-4 shadow-[0_10px_30px_rgba(15,23,42,0.06)] sm:p-5">
-                          <div className="flex flex-col gap-3 xl:flex-row xl:items-start xl:justify-between">
-                            <div className="min-w-0">
-                              <h1 className="text-2xl font-semibold tracking-[-0.02em] text-[#111827]">Catalogue</h1>
-                              <p className="mt-1 max-w-3xl text-sm text-[#475569]">Manage the products and services in your business catalog. This remains separate from AI Employee configuration and standalone knowledge sources.</p>
-                            </div>
-
-                            <div className="w-full xl:w-[420px]">
-                              <div className="rounded-[18px] border border-[#E5E7EB] bg-[#F8FBFF] p-3">
-                                <div className="flex items-center justify-between gap-4">
-                                  <div className="min-w-0">
-                                    <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#64748B]">Catalogue summary</p>
-                                    <p className="mt-0.5 text-xs text-[#64748B]">{catalogProducts.length} items in your business catalog</p>
-                                  </div>
-                                  <div className="text-right text-xs font-semibold text-[#475569]">{catalogProductCount} products<br />{catalogServiceCount} services</div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="mt-4 w-full">
-                            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                              <div className="flex items-center gap-3">
-                                <button type="button" onClick={handleAddItemClick} className="inline-flex h-11 items-center justify-center rounded-[16px] bg-[#111827] px-5 text-sm font-semibold text-white shadow-sm transition duration-200 hover:bg-[#1F2937]">{addButtonLabel}</button>
-                                <button type="button" aria-expanded={catalogueImportOpen} onClick={() => setCatalogueImportOpen((open) => !open)} className="inline-flex h-11 items-center justify-center rounded-[16px] border border-[#E5E7EB] bg-white px-5 text-sm font-semibold text-[#111827] shadow-sm transition duration-200 hover:bg-[#F8FAFB]"><Upload className="mr-2 h-4 w-4 text-[#475569]" aria-hidden="true" />Import catalogue</button>
-                              </div>
-                            </div>
-
-                            {catalogueImportOpen ? (
-                              <section aria-labelledby="catalogue-import-title" className="mt-5 rounded-[24px] border border-[#E5E7EB] bg-[#F8FAFB] p-5 sm:p-6">
-                                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"><div><h2 id="catalogue-import-title" className="text-lg font-semibold text-[#111827]">Import catalogue</h2><p className="mt-1 text-sm text-[#64748B]">Add multiple products or services at once.</p></div><button type="button" onClick={() => setCatalogueImportOpen(false)} className="inline-flex h-9 w-9 items-center justify-center self-end rounded-lg text-[#64748B] hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] sm:self-auto" aria-label="Close catalogue import"><X className="h-4 w-4" aria-hidden="true" /></button></div>
-                                <div className="mt-5 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:items-center"><TemplateDownloadMenu templateHref="/templates/sokoos-catalogue-template.csv" className="w-full" triggerClassName="h-11 w-full rounded-xl border-[#E5E7EB] bg-white px-4 text-sm font-semibold text-[#111827] hover:bg-[#F8FAFB] hover:text-[#111827] focus-visible:ring-[#22C55E]" /><span className="text-center text-xs font-semibold uppercase tracking-[0.12em] text-[#94A3B8]">or</span><label className="inline-flex h-11 cursor-pointer items-center justify-center rounded-xl bg-[#111827] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937] focus-within:ring-2 focus-within:ring-[#22C55E] focus-within:ring-offset-2"><Upload className="mr-2 h-4 w-4" aria-hidden="true" />Upload completed template<input type="file" accept=".csv,.xlsx,.xls" className="sr-only" onChange={(event) => { void handleCatalogueImportFile(event.target.files?.[0]); event.currentTarget.value = ""; }} /></label></div>
-                                <p className="mt-3 text-center text-xs text-[#64748B]">Supported formats: CSV / Excel</p>
-
-                                {catalogueImport.file ? <div className="mt-5 rounded-xl border border-[#E5E7EB] bg-white p-4"><div className="flex items-start justify-between gap-3"><div><p className="text-sm font-semibold text-[#111827]">File selected</p><p className="mt-1 text-sm text-[#64748B]">{catalogueImport.file.name} · {(catalogueImport.file.size / 1024).toFixed(1)} KB</p></div><button type="button" onClick={() => setCatalogueImport({ status: "idle", errors: [] })} className="text-sm font-semibold text-[#475569] underline underline-offset-4 hover:text-[#111827]">Remove</button></div></div> : null}
-
-                                {catalogueImport.status === "selected" ? <div className="mt-4 rounded-xl border border-[#BFDBFE] bg-[#EFF6FF] p-4 text-sm text-[#1D4ED8]"><p className="font-semibold">Excel file selected</p><p className="mt-1">Excel row preview and validation will be enabled when the file parser or backend integration is connected. No items can be imported from this frontend prototype yet.</p></div> : null}
-                                {catalogueImport.preview ? <div className="mt-4 rounded-xl border border-[#E5E7EB] bg-white p-4"><div className="flex flex-wrap items-center justify-between gap-2"><div><p className="text-sm font-semibold text-[#111827]">Preview</p><p className="mt-1 text-sm text-[#64748B]">Showing the first {Math.min(catalogueImport.preview.rows.length, 5)} of {catalogueImport.preview.rows.length} items from your CSV.</p></div><span className={`rounded-full px-3 py-1 text-xs font-semibold ${catalogueImport.status === "ready" ? "bg-[#ECFDF5] text-[#166534]" : "bg-[#FFFBEB] text-[#B45309]"}`}>{catalogueImport.status === "ready" ? "Ready to import" : "Needs attention"}</span></div><div className="mt-4 overflow-x-auto"><table className="min-w-full text-left text-sm"><thead className="border-b border-[#E5E7EB] text-xs text-[#64748B]"><tr><th className="pb-2 pr-4 font-semibold">Name</th><th className="pb-2 pr-4 font-semibold">Category</th><th className="pb-2 font-semibold">Price</th></tr></thead><tbody className="divide-y divide-[#F1F5F9]">{catalogueImport.preview.rows.slice(0, 5).map((row, index) => <tr key={`${row.name}-${index}`}><td className="py-2 pr-4 text-[#111827]">{row.name || "—"}</td><td className="py-2 pr-4 text-[#475569]">{row.category || "—"}</td><td className="py-2 text-[#111827]">{row.price || "—"}</td></tr>)}</tbody></table></div></div> : null}
-                                {catalogueImport.errors.length > 0 ? <div className="mt-4 rounded-xl border border-[#FECACA] bg-[#FEF2F2] p-4 text-sm text-[#B91C1C]" role="alert"><p className="font-semibold">Fix these before confirming</p><ul className="mt-2 list-disc space-y-1 pl-5">{catalogueImport.errors.map((error) => <li key={error}>{error}</li>)}</ul></div> : null}
-                                {catalogueImport.status === "ready" ? <div className="mt-4 flex flex-col gap-3 rounded-xl border border-[#BBF7D0] bg-[#F0FDF4] p-4 sm:flex-row sm:items-center sm:justify-between"><p className="text-sm text-[#166534]">Your CSV is ready for the future import step. Confirming now will not change your catalogue.</p><button type="button" onClick={confirmCatalogueImport} className="inline-flex h-10 shrink-0 items-center justify-center rounded-lg bg-[#111827] px-4 text-sm font-semibold text-white transition hover:bg-[#1F2937] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2">Confirm import</button></div> : null}
-                                {catalogueImport.status === "confirmed" ? <div className="mt-4 rounded-xl border border-[#BBF7D0] bg-[#F0FDF4] p-4 text-sm text-[#166534]" role="status"><p className="font-semibold">Frontend import confirmed</p><p className="mt-1">No catalogue items were added or sent anywhere. This confirmation is ready to connect to the future import API.</p></div> : null}
-                              </section>
-                            ) : null}
-                          </div>
-
-                          <div className="mt-4 grid gap-4">
-                            {(() => {
-                              const query = productSearch.trim().toLowerCase();
-                              const isLowStock = (product: CatalogProduct) => {
-                                const stock = product.currentStock;
-                                const threshold = product.lowStockThreshold ?? 5;
-                                return product.availability.toLowerCase() === "low stock" || (typeof stock === "number" && stock <= threshold);
-                              };
-                              const needsInformation = (product: CatalogProduct) => !getCatalogueItemReadiness(product).isReady;
-                              const lowStockCount = catalogProducts.filter(isLowStock).length;
-                              const needsInformationCount = catalogProducts.filter(needsInformation).length;
-                              const filtered = catalogProducts;
-
-                              return (
-                                <div className="rounded-[20px] border border-[#E5E7EB] bg-white p-4 shadow-[0_6px_18px_rgba(15,23,42,0.05)] sm:p-5">
-                                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                                    <div className="min-w-0">
-                                      <p className="text-sm font-semibold text-[#111827]">Catalogue items</p>
-                                      <p className="mt-1 text-sm text-[#64748B]">Browse and update product and service information from your catalog.</p>
-                                    </div>
-                                    <div className="inline-flex items-center gap-2 rounded-full border border-[#E5E7EB] bg-[#F8FAFB] px-3 py-1.5 text-sm font-semibold text-[#111827]">
-                                      <span>{catalogProducts.length}</span>
-                                      <span className="text-[#64748B]">items</span>
-                                    </div>
-                                  </div>
-                                  <div className="relative mt-4">
-                                    <label className="sr-only" htmlFor="catalogue-search">Search products or services</label>
-                                    <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-[#64748B]" aria-hidden="true" />
-                                    <input id="catalogue-search" type="search" value={productSearch} onChange={(event) => setProductSearch(event.target.value)} placeholder="Search products or services..." className="h-11 w-full rounded-xl border border-[#E5E7EB] bg-white py-2 pl-11 pr-11 text-sm text-[#111827] outline-none transition placeholder:text-[#94A3B8] focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20" />
-                                    {productSearch ? (
-                                      <button type="button" aria-label="Clear catalogue search" onClick={() => setProductSearch("")} className="absolute right-2 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-[#64748B] transition hover:bg-[#F1F5F9] hover:text-[#111827] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]">
-                                        <X className="h-4 w-4" aria-hidden="true" />
-                                      </button>
-                                    ) : null}
-                                  </div>
-
-                                  <div className="mt-3 flex flex-col gap-2.5 lg:flex-row lg:items-center lg:justify-between">
-                                    <div className="flex flex-wrap gap-2" aria-label="Filter catalogue items by type">
-                                      {sortedCatalogueFilterTabs.map((tab) => (
-                                        <button key={tab} type="button" onClick={() => { setSelectedCatalogueTab(tab); if (tab === "All") setCatalogueAttentionFilter("all"); }} className={`inline-flex h-9 items-center justify-center rounded-full border px-3.5 text-xs font-semibold transition-colors ${selectedCatalogueTab === tab ? 'border-[#111827] bg-[#111827] text-white shadow-sm' : 'border-[#E5E7EB] bg-white text-[#475569] hover:border-[#CBD5E1] hover:bg-[#F8FAFB]'}`}>
-                                          {tab}
-                                        </button>
-                                      ))}
-                                    </div>
-
-                                    <div className="flex flex-wrap items-center gap-2">
-                                      <button type="button" aria-pressed={catalogueAttentionFilter === "low-stock"} onClick={() => setCatalogueAttentionFilter((current) => current === "low-stock" ? "all" : "low-stock")} className={`inline-flex h-9 items-center gap-2 rounded-full border px-3.5 text-xs font-semibold transition-colors ${catalogueAttentionFilter === "low-stock" ? 'border-[#B45309] bg-[#FFFBEB] text-[#B45309]' : 'border-[#E5E7EB] bg-white text-[#475569] hover:border-[#CBD5E1] hover:bg-[#F8FAFB]'}`}>
-                                        Low stock <span className="tabular-nums">{lowStockCount}</span>
-                                      </button>
-                                      <button type="button" aria-pressed={catalogueAttentionFilter === "needs-information"} onClick={() => setCatalogueAttentionFilter((current) => current === "needs-information" ? "all" : "needs-information")} className={`inline-flex h-9 items-center gap-2 rounded-full border px-3.5 text-xs font-semibold transition-colors ${catalogueAttentionFilter === "needs-information" ? 'border-[#B45309] bg-[#FFFBEB] text-[#B45309]' : 'border-[#E5E7EB] bg-white text-[#475569] hover:border-[#CBD5E1] hover:bg-[#F8FAFB]'}`}>
-                                        Needs information <span className="tabular-nums">{needsInformationCount}</span>
-                                      </button>
-                                      <div className="inline-flex items-center rounded-full border border-[#E5E7EB] bg-white p-1">
-                                        <button aria-label="Grid view" title="Grid view" onClick={() => setCatalogView('grid')} className={`inline-flex h-7 w-7 items-center justify-center rounded-full ${catalogView === 'grid' ? 'bg-[#111827] text-white shadow-sm' : 'text-[#475569] hover:bg-[#F3F4F6]'}`}><LayoutGrid className="h-4 w-4" /></button>
-                                        <button aria-label="List view" title="List view" onClick={() => setCatalogView('table')} className={`inline-flex h-7 w-7 items-center justify-center rounded-full ${catalogView === 'table' ? 'bg-[#111827] text-white shadow-sm' : 'text-[#475569] hover:bg-[#F3F4F6]'}`}><List className="h-4 w-4" /></button>
-                                      </div>
-                                    </div>
-                                  </div>
-
-                                  {(productSearch || selectedCatalogueTab !== "All" || catalogueAttentionFilter !== "all") ? (
-                                    <div className="mt-3 flex items-center gap-3 text-xs text-[#64748B]">
-                                      <span>{filtered.length} matching {filtered.length === 1 ? "item" : "items"}</span>
-                                      <button type="button" onClick={() => { setProductSearch(""); setSelectedCatalogueTab("All"); setCatalogueAttentionFilter("all"); }} className="font-semibold text-[#111827] underline decoration-[#CBD5E1] underline-offset-4 transition hover:text-[#166534]">Clear filters</button>
-                                    </div>
-                                  ) : null}
-
-                                  {catalogError ? <p role="alert" className="mt-4 rounded-xl border border-[#FECACA] bg-[#FEF2F2] px-4 py-3 text-sm text-[#B91C1C]">{catalogError}</p> : null}
-
-                                  {catalogLoading ? (
-                                    <div className="mt-6 rounded-[28px] border border-dashed border-[#CBD5E1] bg-[#F8FAFB] p-8 text-center text-sm text-[#64748B]">Loading catalogue items…</div>
-                                  ) : catalogProducts.length === 0 ? (
-                                    <div className="mt-6 rounded-[28px] border border-dashed border-[#CBD5E1] bg-[#F8FAFB] p-8 text-center shadow-sm">
-                                      <div className="mx-auto mb-6 flex h-40 w-40 items-center justify-center rounded-[2rem] bg-white shadow-sm">
-                                        <div className="flex h-24 w-24 items-center justify-center rounded-[1.75rem] bg-[#DBEAFE] text-[#1D4ED8]">
-                                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" className="h-16 w-16">
-                                            <rect x="8" y="20" width="48" height="32" rx="8" fill="#EFF6FF" />
-                                            <path d="M16 28h32" stroke="#2563EB" strokeWidth="3" strokeLinecap="round" />
-                                            <path d="M16 36h20" stroke="#2563EB" strokeWidth="3" strokeLinecap="round" />
-                                            <path d="M30 20v-8a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v8" stroke="#2563EB" strokeWidth="3" strokeLinecap="round" />
-                                            <circle cx="44" cy="34" r="4" fill="#2563EB" />
-                                          </svg>
-                                        </div>
-                                      </div>
-                                      <p className="text-2xl font-semibold text-[#111827]">No catalogue items yet</p>
-                                      <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-[#475569]">Add your first product or service to train your AI.</p>
-                                      <div className="mt-6 flex justify-center">
-                                        <button type="button" onClick={handleAddItemClick} className="inline-flex h-12 items-center justify-center rounded-[16px] bg-[#111827] px-6 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937]">Add Item</button>
-                                      </div>
-                                    </div>
-                                  ) : filtered.length === 0 ? (
-                                    <div className="mt-6 rounded-[28px] border border-dashed border-[#CBD5E1] bg-[#F8FAFB] p-10 text-center shadow-sm">
-                                      <div className="mx-auto mb-6 flex h-36 w-36 items-center justify-center rounded-[2rem] bg-white shadow-sm">
-                                        <div className="flex h-20 w-20 items-center justify-center rounded-[2rem] bg-[#DBEAFE] text-[#1D4ED8]">
-                                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" className="h-12 w-12">
-                                            <rect x="8" y="14" width="32" height="20" rx="6" fill="#EFF6FF" />
-                                            <path d="M14 20h20" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" />
-                                            <path d="M14 26h12" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" />
-                                            <circle cx="34" cy="18" r="3" fill="#2563EB" />
-                                            <path d="M34 22v8" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" />
-                                            <path d="M31 25h6" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" />
-                                          </svg>
-                                        </div>
-                                      </div>
-                                      <p className="text-2xl font-semibold text-[#111827]">No items found.</p>
-                                      <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#475569]">The selected filter returned no catalogue items. Add your first item to populate the catalogue workspace.</p>
-                                      <button type="button" onClick={handleAddItemClick} className="mt-6 inline-flex items-center justify-center rounded-[16px] bg-[#111827] px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937]">Add your first item</button>
-                                    </div>
-                                  ) : (
-                                    <div className="mt-4">
-                                      {catalogView === 'grid' ? (
-                                        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                                          {filtered.map((item) => {
-                                            const readinessLabel = getCatalogueItemReadinessLabel(item);
-                                            const isAvailable = item.availability === 'In stock' || item.availability === 'Available';
-                                            const itemTypeLabel = {
-                                              Product: 'Product',
-                                              Service: 'Service',
-                                              Subscription: 'Subscription',
-                                              'Digital Product': 'Digital',
-                                              Rental: 'Rental',
-                                              Membership: 'Membership',
-                                            }[item.type] ?? item.type;
-                                            const itemCategory = typeof item.category === 'string' ? item.category.trim() : '';
-                                            const categoryLabel = [itemCategory, itemTypeLabel].filter(Boolean).join(' · ');
-                                            const needsReadinessAction = readinessLabel !== '100% Ready';
-
-                                            return (
-                                              <article key={item.id} className="group flex h-full min-h-[328px] flex-col overflow-hidden rounded-[20px] border border-[#E5E7EB] bg-white shadow-[0_6px_18px_rgba(15,23,42,0.05)] transition duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_28px_rgba(15,23,42,0.10)]">
-                                                <div className="relative h-36 overflow-hidden bg-[#F5F5F4] sm:h-40">
-                                                  <CatalogueItemImage src={item.image} alt={item.name} className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]" />
-                                                  <div className="absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-transparent" />
-                                                </div>
-
-                                                <div className="flex flex-1 flex-col p-4">
-                                                  <div className="min-w-0">
-                                                    <p title={item.name} className="text-base font-semibold leading-6 text-[#111827] line-clamp-2">{item.name}</p>
-                                                    {categoryLabel ? (
-                                                      <p title={categoryLabel} className="mt-1 truncate text-sm text-[#64748B]">{categoryLabel}</p>
-                                                    ) : null}
-                                                    <p title={item.price} className="mt-3 text-base font-semibold tabular-nums text-[#111827]">{item.price}</p>
-                                                  </div>
-
-                                                  <div className="mt-3 flex flex-wrap gap-2">
-                                                    <span title={item.availability} className={`inline-flex h-8 items-center gap-1.5 rounded-full px-3 text-xs font-semibold ${isAvailable ? 'bg-[#ECFDF5] text-[#166534]' : 'bg-[#FFFBEB] text-[#B45309]'}`}>
-                                                      {isAvailable ? <Check className="h-3.5 w-3.5" aria-hidden="true" /> : <CircleAlert className="h-3.5 w-3.5" aria-hidden="true" />}
-                                                      {item.availability}
-                                                    </span>
-                                                    {needsReadinessAction ? (
-                                                      <span title={readinessLabel} className="inline-flex h-8 items-center gap-1.5 rounded-full bg-[#FFFBEB] px-3 text-xs font-semibold text-[#B45309]">
-                                                        <CircleAlert className="h-3.5 w-3.5" aria-hidden="true" />
-                                                        {readinessLabel}
-                                                      </span>
-                                                    ) : null}
-                                                  </div>
-
-                                                  <div className="mt-auto flex items-center justify-end gap-2 border-t border-[#F1F5F9] pt-3">
-                                                    <button type="button" aria-label={`Edit ${item.name}`} onClick={() => openProductDrawer(item.id)} className="inline-flex h-9 items-center justify-center rounded-lg border border-[#E5E7EB] bg-white px-3 text-xs font-semibold text-[#111827] transition hover:bg-[#F8FAFB] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2">Edit</button>
-                                                    <DropdownMenu>
-                                                      <DropdownMenuTrigger asChild>
-                                                        <button type="button" aria-label={`More actions for ${item.name}`} className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-[#E5E7EB] bg-white text-[#475569] transition hover:bg-[#F8FAFB] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2">
-                                                          <MoreVertical className="h-4 w-4" />
-                                                        </button>
-                                                      </DropdownMenuTrigger>
-                                                      <DropdownMenuContent align="end" className="w-40">
-                                                        <DropdownMenuItem onSelect={() => openProductDrawer(item.id)}>Edit</DropdownMenuItem>
-                                                        <DropdownMenuItem onSelect={() => duplicateCatalogProduct(item.id)}>Duplicate</DropdownMenuItem>
-                                                        <DropdownMenuItem onSelect={() => previewCatalogProduct(item.id)}>Preview</DropdownMenuItem>
-                                                        <DropdownMenuItem onSelect={() => deleteCatalogProduct(item.id)}>Delete</DropdownMenuItem>
-                                                      </DropdownMenuContent>
-                                                    </DropdownMenu>
-                                                  </div>
-                                                </div>
-                                              </article>
-                                            );
-                                          })}
-                                        </div>
-                                      ) : (
-                                        <div className="overflow-hidden rounded-[12px] border border-[#E5E7EB]">
-                                          <table className="min-w-full text-sm">
-                                            <thead className="bg-[#F8FAFB]">
-                                              <tr>
-                                                <th className="px-4 py-3 text-left font-semibold text-[#475569]">Image</th>
-                                                <th className="px-4 py-3 text-left font-semibold text-[#475569]">Name</th>
-                                                <th className="px-4 py-3 text-left font-semibold text-[#475569]">Category</th>
-                                                <th className="px-4 py-3 text-left font-semibold text-[#475569]">Price</th>
-                                                <th className="px-4 py-3 text-left font-semibold text-[#475569]">Inventory</th>
-                                                <th className="px-4 py-3 text-left font-semibold text-[#475569]">Completeness</th>
-                                                <th className="px-4 py-3 text-left font-semibold text-[#475569]">Status</th>
-                                                <th className="px-4 py-3 text-right font-semibold text-[#475569]">Actions</th>
-                                              </tr>
-                                            </thead>
-                                            <tbody className="divide-y bg-white">
-                                              {filtered.map((item) => {
-                                                const readinessLabel = getCatalogueItemReadinessLabel(item);
-                                                return (
-                                                  <tr key={item.id} onClick={() => openProductDrawer(item.id)} className="hover:bg-white hover:shadow-sm transition-transform hover:-translate-y-1 cursor-pointer">
-                                                    <td className="px-4 py-3 align-top">
-                                                      <CatalogueItemImage src={item.image} alt={item.name} className="h-12 w-12 rounded-md object-cover" />
-                                                    </td>
-                                                    <td className="px-4 py-3 align-top">
-                                                      <div className="text-sm font-semibold text-[#111827]">{item.name}</div>
-                                                    </td>
-                                                    <td className="px-4 py-3 align-top text-sm text-[#64748B]">{item.category}</td>
-                                                    <td className="px-4 py-3 align-top text-sm text-[#111827]">{item.price}</td>
-                                                    <td className="px-4 py-3 align-top text-sm text-[#111827]">{(item as any).currentStock ?? '-'}</td>
-                                                    <td className="px-4 py-3 align-top">
-                                                      <span className={`rounded-full px-3 py-1 text-xs font-semibold ${readinessLabel === '100% Ready' ? 'bg-[#ECFDF5] text-[#166534]' : 'bg-[#FFFBEB] text-[#B45309]'}`}>{readinessLabel}</span>
-                                                    </td>
-                                                    <td className="px-4 py-3 align-top text-sm">{item.availability}</td>
-                                                    <td className="px-4 py-3 align-top text-right" onClick={(e) => e.stopPropagation()}>
-                                                      <DropdownMenu>
-                                                        <DropdownMenuTrigger asChild>
-                                                          <button type="button" className="inline-flex h-8 w-8 items-center justify-center rounded-md bg-white text-[#475569] shadow-sm ring-1 ring-[#E5E7EB] transition hover:bg-white">
-                                                            <MoreVertical className="h-4 w-4" />
-                                                          </button>
-                                                        </DropdownMenuTrigger>
-                                                        <DropdownMenuContent align="end" className="w-40">
-                                                          <DropdownMenuItem onSelect={() => openProductDrawer(item.id)}>Edit</DropdownMenuItem>
-                                                          <DropdownMenuItem onSelect={() => duplicateCatalogProduct(item.id)}>Duplicate</DropdownMenuItem>
-                                                          <DropdownMenuItem onSelect={() => previewCatalogProduct(item.id)}>Preview</DropdownMenuItem>
-                                                          <DropdownMenuItem onSelect={() => deleteCatalogProduct(item.id)}>Delete</DropdownMenuItem>
-                                                        </DropdownMenuContent>
-                                                      </DropdownMenu>
-                                                    </td>
-                                                  </tr>
-                                                );
-                                              })}
-                                            </tbody>
-                                          </table>
-                                        </div>
-                                      )}
-                                    </div>
-                                  )}
-                                </div>
-                              );
-                            })()}
-                          </div>
-                        </div>
-
-                        <div className={AI_TRAINING_LESSON_ACTIONS_BETWEEN}>
-                          <button
-                            type="button"
-                            onClick={() => focusProductStep(activeProductStep - 1)}
-                            disabled={activeProductStep === 0}
-                            className="text-sm font-semibold text-[#64748B] transition hover:text-[#111827] disabled:cursor-not-allowed disabled:opacity-45"
-                          >
-                            Back
-                          </button>
-                          <div className="flex items-center gap-3">
-                            {activeProductStep === catalogueLessons.length - 1 ? (
-                              <button type="button" onClick={() => { void handleSaveChanges(); }} className={AI_TRAINING_SAVE_BUTTON}>Save</button>
-                            ) : null}
-                            <button
-                              type="button"
-                              onClick={() => {
-                                completeCatalogueLesson(activeProductStep);
-                                if (activeProductStep >= catalogueLessons.length - 1 && !trainingFinished) {
-                                  handleSaveChanges();
-                                  setActiveWorkspaceSection("Sales Playbooks");
-                                }
-                              }}
-                              className="inline-flex items-center gap-2 rounded-lg bg-[#111827] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#334155]"
-                            >
-                              {lessonPrimaryActionLabel}{trainingFinished ? null : <ChevronRight className="h-4 w-4" />}
-                            </button>
-                          </div>
-                        </div>
-
-                        {addItemChoiceOpen ? (
-                          <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0F172A]/30 p-4" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setAddItemChoiceOpen(false); }}>
-                            <section role="dialog" aria-modal="true" aria-labelledby="catalogue-item-type-title" className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
-                              <div className="flex items-start justify-between gap-4"><div><p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#64748B]">Add to catalogue</p><h2 id="catalogue-item-type-title" className="mt-1 text-xl font-semibold text-[#111827]">What are you adding?</h2><p className="mt-2 text-sm text-[#64748B]">Choose the offer type so Sokoos knows how to recommend it.</p></div><button type="button" aria-label="Close offer type selection" onClick={() => setAddItemChoiceOpen(false)} className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-[#64748B] hover:bg-[#F1F5F9] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]"><X className="h-5 w-5" aria-hidden="true" /></button></div>
-                              <div className="mt-5 grid gap-3 sm:grid-cols-2">{Array.from(new Set(businessModelSelections.map((model) => BUSINESS_MODEL_TO_ADD_LABEL[model]).filter(Boolean))).map((type) => <button key={type} type="button" onClick={() => handleAddItemSelection(type)} className="rounded-xl border border-[#E5E7EB] bg-white px-4 py-4 text-left text-sm font-semibold text-[#111827] transition hover:border-[#86EFAC] hover:bg-[#F0FDF4] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]">{type}</button>)}</div>
-                            </section>
-                          </div>
-                        ) : null}
-
-                        {productDrawerOpen && selectedProduct ? (() => {
-                          const readiness = getCatalogueItemReadiness(selectedProduct);
-                          const isStockItem = ["Product", "Rental"].includes(selectedProduct.type);
-                          const isService = ["Service", "Subscription", "Membership"].includes(selectedProduct.type);
-                          const faqs = selectedProduct.faqs ?? [];
-                          const inputClass = "mt-2 h-10 w-full rounded-lg border border-[#E5E7EB] bg-white px-3 text-sm text-[#111827] outline-none transition placeholder:text-[#94A3B8] focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20";
-                          const labelClass = "text-sm font-semibold text-[#111827]";
-                          return (
-                            <div className="fixed inset-0 z-50 flex justify-end bg-[#0F172A]/30" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) closeProductDrawer(); }}>
-                              <section role="dialog" aria-modal="true" aria-labelledby="catalogue-item-editor-title" className="flex h-full w-full max-w-2xl flex-col bg-[#F8FAFB] shadow-2xl">
-                                <header className="flex items-start justify-between gap-4 border-b border-[#E5E7EB] bg-white px-5 py-5 sm:px-7">
-                                  <div>
-                                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#64748B]">Teach Sokoos about your offer</p>
-                                    <h2 id="catalogue-item-editor-title" className="mt-1 text-xl font-semibold text-[#111827]">{selectedProduct.name.trim() ? `Edit ${selectedProduct.name}` : "Add item"}</h2>
-                                    <p className="mt-1 text-sm text-[#64748B]">Add the details customers need to make a confident choice.</p>
-                                  </div>
-                                  <button type="button" aria-label="Close item editor" onClick={closeProductDrawer} className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-[#64748B] transition hover:bg-[#F1F5F9] hover:text-[#111827] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]">
-                                    <X className="h-5 w-5" aria-hidden="true" />
-                                  </button>
-                                </header>
-
-                                <div className="flex-1 overflow-y-auto px-5 py-6 sm:px-7">
-                                  <form id="catalogue-item-form" noValidate onSubmit={(event) => { event.preventDefault(); saveProductDrawer(); }} className="space-y-5">
-                                    <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5">
-                                      <h3 className="text-base font-semibold text-[#111827]">Basic information</h3>
-                                      <p className="mt-1 text-sm text-[#64748B]">The essentials Sokoos uses to identify and describe this item.</p>
-                                      <div className="mt-5 grid gap-4 sm:grid-cols-2">
-                                        <label className="sm:col-span-2"><span className={labelClass}>Name <span className="text-[#DC2626]">*</span></span><input value={selectedProduct.name} onChange={(event) => updateCatalogProductField(selectedProduct.id, "name", event.target.value)} aria-invalid={Boolean(productFormErrors.name)} aria-describedby={productFormErrors.name ? "item-name-error" : undefined} className={inputClass} placeholder="e.g. Deluxe hair treatment" />{productFormErrors.name ? <span id="item-name-error" className="mt-1 block text-xs text-[#B91C1C]">{productFormErrors.name}</span> : null}</label>
-                                        <label><span className={labelClass}>Product or service <span className="text-[#DC2626]">*</span></span><select value={selectedProduct.type} onChange={(event) => updateCatalogProductField(selectedProduct.id, "type", event.target.value)} aria-invalid={Boolean(productFormErrors.type)} className={inputClass}><option value="Product">Product</option><option value="Service">Service</option><option value="Subscription">Subscription</option><option value="Digital Product">Digital product</option><option value="Membership">Membership</option><option value="Rental">Rental</option></select>{productFormErrors.type ? <span className="mt-1 block text-xs text-[#B91C1C]">{productFormErrors.type}</span> : null}</label>
-                                        <label><span className={labelClass}>Category <span className="text-[#DC2626]">*</span></span><input value={selectedProduct.category} onChange={(event) => updateCatalogProductField(selectedProduct.id, "category", event.target.value)} aria-invalid={Boolean(productFormErrors.category)} className={inputClass} placeholder="e.g. Hair care" />{productFormErrors.category ? <span className="mt-1 block text-xs text-[#B91C1C]">{productFormErrors.category}</span> : null}</label>
-                                        <label className="sm:col-span-2"><span className={labelClass}>Description <span className="text-[#DC2626]">*</span></span><textarea value={selectedProduct.description} onChange={(event) => updateCatalogProductField(selectedProduct.id, "description", event.target.value)} aria-invalid={Boolean(productFormErrors.description)} className="mt-2 min-h-28 w-full rounded-lg border border-[#E5E7EB] bg-white px-3 py-2 text-sm text-[#111827] outline-none transition placeholder:text-[#94A3B8] focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20" placeholder="What is it, and what does the customer get?" />{productFormErrors.description ? <span className="mt-1 block text-xs text-[#B91C1C]">{productFormErrors.description}</span> : null}</label>
-                                      </div>
-                                    </div>
-
-                                    <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5">
-                                      <h3 className="text-base font-semibold text-[#111827]">Pricing</h3>
-                                      <div className="mt-5 grid gap-4 sm:grid-cols-3"><label className="sm:col-span-2"><span className={labelClass}>Price <span className="text-[#DC2626]">*</span></span><input value={selectedProduct.price} onChange={(event) => updateCatalogProductField(selectedProduct.id, "price", event.target.value)} aria-invalid={Boolean(productFormErrors.price)} className={inputClass} placeholder="e.g. $45.00 or From $45" />{productFormErrors.price ? <span className="mt-1 block text-xs text-[#B91C1C]">{productFormErrors.price}</span> : null}</label><label><span className={labelClass}>Currency</span><select value={selectedProduct.currency ?? "USD"} onChange={(event) => updateCatalogProductField(selectedProduct.id, "currency", event.target.value)} className={inputClass}><option value="USD">USD</option><option value="KES">KES</option><option value="EUR">EUR</option><option value="GBP">GBP</option></select></label></div>
-                                    </div>
-
-                                    <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5">
-                                      <h3 className="text-base font-semibold text-[#111827]">Availability</h3>
-                                      <div className="mt-5 grid gap-4 sm:grid-cols-2"><label><span className={labelClass}>Customer availability</span><select value={selectedProduct.availability} onChange={(event) => updateCatalogProductField(selectedProduct.id, "availability", event.target.value)} className={inputClass}><option value="Available">Available</option><option value="In stock">In stock</option><option value="Low stock">Low stock</option><option value="Unavailable">Unavailable</option><option value="By appointment">By appointment</option></select></label>{isStockItem ? <label><span className={labelClass}>Stock on hand</span><input type="number" min="0" value={selectedProduct.currentStock ?? ""} onChange={(event) => updateCatalogProductField(selectedProduct.id, "currentStock", event.target.value === "" ? undefined : Number(event.target.value))} className={inputClass} placeholder="Optional" /></label> : null}</div>{isService ? <label className="mt-4 flex cursor-pointer items-center gap-3 rounded-xl bg-[#F8FAFB] p-3 text-sm text-[#475569]"><input type="checkbox" checked={Boolean(selectedProduct.appointmentRequired)} onChange={(event) => updateCatalogProductField(selectedProduct.id, "appointmentRequired", event.target.checked)} className="h-4 w-4 rounded border-[#CBD5E1] text-[#22C55E] focus:ring-[#22C55E]" />Appointment required</label> : null}</div>
-
-                                    <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5">
-                                      <h3 className="text-base font-semibold text-[#111827]">Customer information</h3><p className="mt-1 text-sm text-[#64748B]">Capture the details Sokoos should share with customers.</p>
-                                      <div className="mt-5 space-y-3">{faqs.map((faq, index) => <div key={`${selectedProduct.id}-faq-${index}`} className="flex gap-2"><input value={faq} onChange={(event) => updateCatalogProductField(selectedProduct.id, "faqs", faqs.map((item, itemIndex) => itemIndex === index ? event.target.value : item))} className="h-10 min-w-0 flex-1 rounded-lg border border-[#E5E7EB] px-3 text-sm outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20" placeholder="e.g. Is this suitable for sensitive skin?" /><button type="button" aria-label="Remove FAQ" onClick={() => updateCatalogProductField(selectedProduct.id, "faqs", faqs.filter((_, itemIndex) => itemIndex !== index))} className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-[#64748B] hover:bg-[#F1F5F9] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E]"><X className="h-4 w-4" aria-hidden="true" /></button></div>)}</div>
-                                      <button type="button" onClick={() => updateCatalogProductField(selectedProduct.id, "faqs", [...faqs, ""])} className="mt-3 text-sm font-semibold text-[#166534] hover:text-[#15803D] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2">+ Add FAQ</button>
-                                      <label className="mt-4 block"><span className={labelClass}>Important customer-facing information</span><textarea value={selectedProduct.customerInformation ?? ""} onChange={(event) => updateCatalogProductField(selectedProduct.id, "customerInformation", event.target.value)} className="mt-2 min-h-24 w-full rounded-lg border border-[#E5E7EB] px-3 py-2 text-sm outline-none focus:border-[#22C55E] focus:ring-2 focus:ring-[#22C55E]/20" placeholder="Anything customers should know before they buy or book." /></label>
-                                    </div>
-
-                                    <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5"><h3 className="text-base font-semibold text-[#111827]">Media</h3><p className="mt-1 text-sm text-[#64748B]">A clear image helps customers recognize this item.</p><div className="mt-4 flex items-center gap-4"><CatalogueItemImage src={selectedProduct.image} alt={selectedProduct.name || "Item"} className="h-16 w-16 shrink-0 rounded-xl object-cover" /><label className="inline-flex h-10 cursor-pointer items-center justify-center rounded-lg border border-[#E5E7EB] bg-white px-3 text-sm font-semibold text-[#111827] transition hover:bg-[#F8FAFB] focus-within:ring-2 focus-within:ring-[#22C55E]"><span>{mediaUploading ? "Uploading…" : "Upload image"}</span><input type="file" accept="image/*" disabled={mediaUploading || selectedProduct.id < 0} className="sr-only" onChange={(event) => handleProductImageUpload(event.target.files)} /></label></div>{selectedProduct.id < 0 ? <p className="mt-3 text-xs text-[#64748B]">Save the item before uploading images.</p> : selectedProduct.mediaAssets.length > 0 ? <div className="mt-4 flex flex-wrap gap-3">{selectedProduct.mediaAssets.map((asset) => <div key={asset.id} className="flex items-center gap-2 rounded-lg border border-[#E5E7EB] p-2"><CatalogueItemImage src={asset.url} alt={asset.altText || asset.name} className="h-10 w-10 rounded object-cover" /><div className="flex gap-1"><button type="button" disabled={asset.isThumbnail} onClick={() => selectProductThumbnail(selectedProduct.id, Number(asset.id))} className="rounded px-2 py-1 text-xs font-semibold text-[#166534] disabled:text-[#94A3B8]">{asset.isThumbnail ? "Thumbnail" : "Set thumbnail"}</button><button type="button" onClick={() => deleteProductMediaAsset(selectedProduct.id, Number(asset.id))} className="rounded px-2 py-1 text-xs font-semibold text-[#B91C1C]">Delete</button></div></div>)}</div> : null}</div>
-
-                                    <div className={`rounded-2xl border p-5 ${readiness.isReady ? "border-[#BBF7D0] bg-[#F0FDF4]" : "border-[#FDE68A] bg-[#FFFBEB]"}`}><div className="flex items-start gap-3">{readiness.isReady ? <Check className="mt-0.5 h-5 w-5 text-[#166534]" aria-hidden="true" /> : <CircleAlert className="mt-0.5 h-5 w-5 text-[#B45309]" aria-hidden="true" />}<div><h3 className="font-semibold text-[#111827]">AI readiness</h3><p className="mt-1 text-sm text-[#475569]">{readiness.isReady ? "Sokoos has the details it needs to recommend this item confidently." : `Still needed: ${readiness.label.replace("Needs ", "").toLowerCase()}.`}</p></div></div></div>
-                                  </form>
-                                </div>
-                                <footer className="flex items-center justify-end gap-3 border-t border-[#E5E7EB] bg-white px-5 py-4 sm:px-7"><button type="button" onClick={closeProductDrawer} disabled={catalogSaving} className="inline-flex h-10 items-center justify-center rounded-lg px-4 text-sm font-semibold text-[#475569] transition hover:bg-[#F1F5F9] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] disabled:opacity-60">Cancel</button><button type="submit" form="catalogue-item-form" disabled={catalogSaving} className="inline-flex h-10 items-center justify-center rounded-lg bg-[#111827] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#1F2937] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#22C55E] focus-visible:ring-offset-2 disabled:opacity-60">{catalogSaving ? "Saving…" : "Save item"}</button></footer>
-                              </section>
-                            </div>
-                          );
-                        })() : null}
-                        <TrainingTemplateOption
-                          workspaceName="Catalogue"
-                          description="Prepare products and services in a document or spreadsheet before adding them through the catalogue tools."
-                          templateHref="/templates/sokoos-catalogue-template.csv"
-                          acceptedFileTypes={[".csv", ".xlsx", ".xls", ".pdf"]}
-                        />
-                      </div>
+                      <CatalogueTrainingWorkspace
+                        activeStep={activeProductStep}
+                        addButtonLabel={addButtonLabel}
+                        products={persistedCatalogProducts}
+                        filteredProducts={filteredCatalogProducts}
+                        catalogLoading={catalogLoading}
+                        catalogError={catalogError}
+                        catalogSaving={catalogSaving}
+                        catalogDeletingId={catalogDeletingId}
+                        mediaUploading={mediaUploading}
+                        productSearch={productSearch}
+                        selectedTab={selectedCatalogueTab}
+                        attentionFilter={catalogueAttentionFilter}
+                        catalogueImportOpen={catalogueImportOpen}
+                        catalogueImport={catalogueImport}
+                        addItemChoiceOpen={addItemChoiceOpen}
+                        addItemTypes={Array.from(new Set(businessModelSelections.map((model) => BUSINESS_MODEL_TO_ADD_LABEL[model]).filter(Boolean)))}
+                        draft={catalogDraft}
+                        productFormErrors={productFormErrors}
+                        pendingDelete={catalogPendingDelete}
+                        upsellProducts={upsellProducts}
+                        recommendAlternatives={recommendAlternatives}
+                        askFollowUpQuestions={Boolean(writingStyleOptions["Ask follow-up questions"])}
+                        lessonPrimaryActionLabel={lessonPrimaryActionLabel}
+                        trainingFinished={trainingFinished}
+                        onProductSearchChange={setProductSearch}
+                        onSelectedTabChange={setSelectedCatalogueTab}
+                        onAttentionFilterChange={setCatalogueAttentionFilter}
+                        onClearFilters={() => { setProductSearch(""); setSelectedCatalogueTab("All"); setCatalogueAttentionFilter("all"); }}
+                        onRetryCatalog={() => { void refreshCatalogItems(); }}
+                        onAddItem={handleAddItemClick}
+                        onSelectAddItemType={handleAddItemSelection}
+                        onCloseAddItemChoice={() => setAddItemChoiceOpen(false)}
+                        onToggleImport={() => setCatalogueImportOpen((open) => !open)}
+                        onCloseImport={() => setCatalogueImportOpen(false)}
+                        onImportFile={(file) => { void handleCatalogueImportFile(file); }}
+                        onRemoveImport={() => setCatalogueImport({ status: "idle", errors: [] })}
+                        onConfirmImport={confirmCatalogueImport}
+                        onEditItem={openProductDrawer}
+                        onRequestDelete={setCatalogPendingDelete}
+                        onCancelDelete={() => setCatalogPendingDelete(null)}
+                        onConfirmDelete={() => { if (catalogPendingDelete) void deleteCatalogProduct(catalogPendingDelete.id); }}
+                        onUpdateDraftField={updateCatalogProductField}
+                        onCloseEditor={closeProductDrawer}
+                        onSaveItem={() => { void saveProductDrawer(); }}
+                        onUploadItemImage={handleProductImageUpload}
+                        onSetThumbnail={selectProductThumbnail}
+                        onDeleteMedia={deleteProductMediaAsset}
+                        onGoToProducts={() => focusProductStep(0)}
+                        onUpsellChange={(value) => { setUpsellProducts(value); setHasUnsavedChanges(true); }}
+                        onRecommendAlternativesChange={(value) => { setRecommendAlternatives(value); setHasUnsavedChanges(true); }}
+                        onAskFollowUpChange={(value) => { setWritingStyleOptions((current) => ({ ...current, "Ask follow-up questions": value })); setHasUnsavedChanges(true); }}
+                        onBack={() => focusProductStep(activeProductStep - 1)}
+                        onSave={() => { void handleSaveChanges(); }}
+                        onContinue={() => { void handleCatalogueContinue(); }}
+                      />
                     )}
 
                     {activeWorkspaceSection === "Sales Playbooks" && (
